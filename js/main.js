@@ -1,17 +1,14 @@
 /**
  * Comportamiento de las páginas propias de Kuyen Climbing (sin dependencias).
  *
- * - Menú móvil del header, cuando el sitio tenga más de una página.
- * - Selector de templates: marca cuál se estuvo mirando.
+ * - Menú móvil del header.
  *
- * El ToggleTheme que va dentro de cada página de template no vive acá: se
- * inyecta con su propio script en src/partials/toggle-tema.html, porque esas
- * páginas son capturas de terceros y no cargan este archivo.
+ * El ToggleTheme no vive acá: va con su propio script en
+ * src/partials/toggle-tema.html, junto al markup del toggle, para que el tema
+ * se aplique sin depender de que este archivo haya cargado.
  */
 (function () {
   'use strict'
-
-  var CLAVE = 'kuyen-tema'
 
   /* ---------- Menú móvil ---------- */
   document.querySelectorAll('[data-mobile-nav]').forEach(function (root) {
@@ -47,20 +44,4 @@
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape') set(false) })
   })
 
-  /* ---------- Selector de templates ---------- */
-  var tarjetas = document.querySelectorAll('[data-tema]')
-  if (!tarjetas.length) return
-
-  var ultimo = null
-  try { ultimo = localStorage.getItem(CLAVE) } catch (e) {}
-  if (!ultimo) return
-
-  tarjetas.forEach(function (t) {
-    if (t.getAttribute('data-tema') !== ultimo) return
-    t.classList.add('ring-2', 'ring-presa-400')
-    var marca = document.createElement('span')
-    marca.className = 'mt-4 inline-flex w-fit items-center rounded-full bg-presa-500/15 px-2.5 py-1 text-xs font-semibold text-presa-400'
-    marca.textContent = 'El último que viste'
-    t.appendChild(marca)
-  })
 })()

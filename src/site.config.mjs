@@ -72,17 +72,18 @@ export const NEGOCIO = {
 }
 
 /**
- * Templates de referencia, en el orden en que los cicla el ToggleTheme.
+ * Los cuatro temas del sitio, en el orden en que los cicla el ToggleTheme.
  *
- * Cada uno se captura tal cual con `node tools/capturar-tema.mjs <id> <url>`
- * (agregando --render si el template arma el HTML en el navegador). La captura
- * deja el markup en src/temas/<id>/pagina.html y los assets en
- * temas/<id>/assets/.
+ * Cada tema son los tokens visuales (color, tipografía, radio y tracking) de
+ * uno de los templates candidatos, aplicados al mismo contenido de Kuyen. Las
+ * definiciones viven en src/css/tailwind.css bajo `.tema-<id>`, y el toggle
+ * cambia entre ellas poniendo esa clase en <html>, igual que el ToggleTheme de
+ * Pagos Pendientes.
  *
- * OJO: son templates comerciales de terceros. Esto es maqueta de trabajo para
- * elegir dirección visual con Kuyen; el markup y los assets se reemplazan por
- * los propios antes de publicar. Por eso las páginas de tema salen con
- * noindex.
+ * `fuente` es el template del que salieron los tokens y las tipografías. Se
+ * captura tal cual con `node tools/capturar-tema.mjs <id> <url> --render` para
+ * poder comparar contra el original en /t/<id>; esa captura es material de
+ * referencia de terceros, va con noindex y fuera del sitemap.
  */
 export const TEMAS = [
   {
@@ -126,7 +127,20 @@ export const TEMAS = [
   },
 ]
 
-/** Ruta pública de la página de un tema. */
+/**
+ * Menú del sitio. Mientras todo viva en una página, son anclas de esa misma
+ * página; cuando se abran las páginas internas pasan a ser rutas.
+ */
+export const MENU = [
+  { href: '#el-muro', texto: 'El muro' },
+  { href: '#clases', texto: 'Clases' },
+  { href: '#visitanos', texto: 'Visítanos' },
+]
+
+/** El tema con el que se sirve la página a quien entra por primera vez. */
+export const TEMA_POR_DEFECTO = 'hive'
+
+/** Ruta pública de la captura de referencia de un template. */
 export const rutaTema = (id) => `/t/${id}`
 
 /**
@@ -141,21 +155,22 @@ export const MINIMO_PALABRAS_DEFAULT = 120
 export const LIMITES = { title: 60, description: 158 }
 
 /**
- * Páginas propias del sitio. Cada una lista las secciones de src/sections/ que
- * la componen, en orden, y lleva exactamente un <h1>.
+ * Páginas del sitio. Cada una lista las secciones de src/sections/ que la
+ * componen, en orden, y lleva exactamente un <h1>.
  *
- * Fase actual: la única página propia es el selector de templates. Las páginas
- * de contenido real (el muro, clases, precios, cómo llegar) se agregan cuando
- * se elija la dirección visual y Kuyen confirme los textos.
+ * El sitio es de una sola página por ahora: el contenido todavía es el que se
+ * pudo verificar de fuentes públicas. Cuando Kuyen confirme textos, horarios y
+ * precios se abren las páginas internas (el muro, clases, precios, cómo
+ * llegar), que hoy son anclas de esta misma página.
  */
 export const PAGES = [
   {
     slug: '',
-    title: 'Kuyen Climbing | Selector de templates',
+    title: 'Kuyen Climbing | Escalada en Padre Las Casas',
     description:
-      'Maqueta de trabajo: los cuatro templates candidatos para el sitio de Kuyen Climbing, con el selector para recorrerlos.',
+      'Centro de escalada en boulder en Padre Las Casas: desplomes hasta 25 grados, moonboard y clases guiadas. Los Patagones 375.',
     nav: null,
     breadcrumb: null,
-    sections: ['selector'],
+    sections: ['hero', 'el-muro', 'clases', 'comunidad', 'visitanos'],
   },
 ]
