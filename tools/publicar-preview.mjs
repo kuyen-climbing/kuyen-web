@@ -34,6 +34,9 @@ const trabajo = mkdtempSync(join(tmpdir(), 'kuyen-preview-'))
 try {
   console.log(`Clonando el espejo en ${trabajo}`)
   git(['clone', '--depth=1', ESPEJO, trabajo])
+  // Si el espejo está recién creado y vacío, el clon deja una rama sin nacer y
+  // con el nombre por defecto de quien clona; se fuerza main.
+  git(['checkout', '-B', 'main'], trabajo)
 
   // Se borra todo salvo .git y se copia la salida nueva: así desaparecen del
   // espejo los archivos que ya no existen.
@@ -52,7 +55,7 @@ try {
 
   const fecha = new Date().toISOString().slice(0, 10)
   git(['commit', '-m', `Preview del ${fecha}`], trabajo)
-  git(['push', 'origin', 'HEAD'], trabajo)
+  git(['push', 'origin', 'main'], trabajo)
   console.log('\nPublicado en https://kuyen-climbing.github.io/')
 } finally {
   rmSync(trabajo, { recursive: true, force: true })
