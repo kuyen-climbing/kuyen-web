@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{lang}}" class="h-full scroll-smooth bg-noche-950 antialiased">
+<html lang="{{lang}}" class="h-full scroll-smooth antialiased tema-{{temaPorDefecto}}">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,7 +8,23 @@
   <meta name="author" content="Kuyen Climbing">
   <meta name="robots" content="{{robots}}">
   <link rel="canonical" href="{{canonical}}">
-  <meta name="theme-color" content="#0a0e1d">
+
+  <!-- El tema guardado se aplica antes de pintar, para que la página no
+       aparezca un instante con el tema por defecto y salte al elegido.
+       Mismo rol que el script que inyecta next-themes en Pagos Pendientes. -->
+  <script>
+    (function () {
+      try {
+        var t = localStorage.getItem('kuyen-tema')
+        var validos = {{temasIds}}
+        if (t && validos.indexOf(t) !== -1) {
+          var r = document.documentElement
+          for (var i = 0; i < validos.length; i++) r.classList.remove('tema-' + validos[i])
+          r.classList.add('tema-' + t)
+        }
+      } catch (e) {}
+    })()
+  </script>
 
   <!-- Isotipo placeholder (luna creciente propia). PENDIENTE: reemplazar por
        el isotipo real de Kuyen cuando entreguen los archivos de marca. -->
@@ -30,10 +46,8 @@
 
   <!-- Datos estructurados -->
 {{jsonld}}
-  <!-- Tipografia: Inter para texto y Lexend para titulos (font-display),
-       autoalojadas en /fonts (licencia OFL, sin peticiones a terceros). -->
   <link rel="stylesheet" href="/css/styles.css?v={{cssv}}">
   <script src="/js/main.js?v={{jsv}}" defer></script>
 </head>
-<body class="flex h-full flex-col bg-noche-950 font-sans text-noche-100">
-  <a href="#contenido" class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-lg focus:bg-presa-500 focus:px-4 focus:py-2 focus:font-semibold focus:text-noche-950">Saltar al contenido</a>
+<body class="flex h-full flex-col bg-fondo text-texto">
+  <a href="#contenido" class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-tema focus:bg-primario focus:px-4 focus:py-2 focus:font-semibold focus:text-primario-texto">Saltar al contenido</a>

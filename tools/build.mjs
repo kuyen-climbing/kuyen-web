@@ -20,7 +20,7 @@ import { readFileSync, writeFileSync, readdirSync, rmSync, mkdirSync, cpSync, ex
 import { createHash } from 'node:crypto'
 import { join, dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { SITES, PAGES, TEMAS, LIMITES, MINIMO_PALABRAS_DEFAULT, NEGOCIO, rutaTema } from '../src/site.config.mjs'
+import { SITES, PAGES, TEMAS, MENU, TEMA_POR_DEFECTO, LIMITES, MINIMO_PALABRAS_DEFAULT, NEGOCIO, rutaTema } from '../src/site.config.mjs'
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..')
 const SRC = join(ROOT, 'src')
@@ -36,11 +36,12 @@ function fill(tpl, vars) {
 const urlOf = (site, slug) => (slug ? `${site.host}/${slug}` : `${site.host}/`)
 const pathOf = (slug) => (slug ? `/${slug}` : '/')
 
-// Clases de los enlaces de navegación sobre el fondo de noche.
+// Clases de los enlaces de navegación. Como todo el sitio se pinta con los
+// tokens del tema activo, el menú cambia de color junto con el resto.
 const CLASE_ENLACE =
-  'inline-block rounded-lg px-3 py-2 text-sm font-medium text-noche-200 transition hover:bg-white/10 hover:text-white aria-[current=page]:text-presa-400'
-const CLASE_ENLACE_MOVIL =
-  'block w-full rounded-lg px-3 py-3 text-base font-medium text-noche-100 hover:bg-white/10 aria-[current=page]:text-presa-400'
+  'inline-block rounded-tema px-3 py-2 text-sm font-medium text-suave-texto transition hover:bg-suave hover:text-texto'
+const CLASE_ENLACE_MOVIL = 'block w-full rounded-tema px-3 py-3 text-base font-medium hover:bg-suave'
+const CLASE_ENLACE_PIE = 'text-suave-texto transition hover:text-texto'
 
 /**
  * Datos estructurados. La home declara el negocio completo (SportsActivityLocation
@@ -88,14 +89,13 @@ function jsonLd(site, page) {
     .join('\n')
 }
 
-function navLinks(currentSlug, clase, sangria) {
+/**
+ * Enlaces del menú. Salen de MENU (hoy anclas de la única página); cuando se
+ * abran las páginas internas, MENU pasa a listar rutas y esto no cambia.
+ */
+function navLinks(clase, sangria) {
   const pad = ' '.repeat(sangria)
-  return PAGES.filter((p) => p.nav)
-    .map((p) => {
-      const current = p.slug === currentSlug ? ' aria-current="page"' : ''
-      return `${pad}<a class="${clase}" href="${pathOf(p.slug)}"${current}>${p.nav}</a>`
-    })
-    .join('\n')
+  return MENU.map((m) => `${pad}<a class="${clase}" href="${m.href}">${m.texto}</a>`).join('\n')
 }
 
 // Versión corta del contenido de css/ y js/: va como ?v= en las URLs para que
@@ -106,26 +106,6 @@ function versionDe(...archivos) {
   // Saltos de línea normalizados: el hash tiene que dar igual en Windows (CRLF) y en la CI (LF).
   for (const a of archivos) if (existsSync(join(ROOT, a))) h.update(readFileSync(join(ROOT, a), 'utf8').split(String.fromCharCode(13)).join(''))
   return h.digest('hex').slice(0, 8)
-}
-
-/** Tarjetas del selector, una por template, en el orden de TEMAS. */
-function tarjetasTemas() {
-  return TEMAS.map(
-    (t, i) => `        <li>
-          <a class="group flex h-full flex-col rounded-2xl border border-white/10 bg-white/5 p-6 transition hover:-translate-y-1 hover:border-presa-400/60 hover:bg-white/10" href="${rutaTema(t.id)}" data-tema="${t.id}">
-            <div class="flex items-center justify-between">
-              <span class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-presa-500 text-noche-950 [&amp;_svg]:h-5 [&amp;_svg]:w-5">${t.icono}</span>
-              <span class="text-xs font-semibold uppercase tracking-widest text-noche-400">0${i + 1}</span>
-            </div>
-            <h3 class="mt-5 font-display text-xl font-semibold text-white">${t.nombre}</h3>
-            <p class="mt-2 flex-1 text-sm leading-relaxed text-noche-300">${t.resumen}</p>
-            <span class="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-presa-400">
-              Ver el template
-              <svg class="h-4 w-4 transition group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-            </span>
-          </a>
-        </li>`
-  ).join('\n')
 }
 
 function buildPage(site, page, sections, partials) {
@@ -146,7 +126,8 @@ function buildPage(site, page, sections, partials) {
     comuna: NEGOCIO.comuna,
     region: NEGOCIO.region,
     anio: new Date().getFullYear(),
-    tarjetasTemas: tarjetasTemas(),
+    temaPorDefecto: TEMA_POR_DEFECTO,
+    temasIds: JSON.stringify(TEMAS.map((t) => t.id)),
   }
 
   const body = page.sections
@@ -164,26 +145,24 @@ function buildPage(site, page, sections, partials) {
     jsonld: jsonLd(site, page),
   })
 
-  // El bloque del menú móvil solo tiene sentido si hay páginas en el menú;
-  // mientras el sitio sea una sola página, el botón hamburguesa no va.
-  const hayMenu = PAGES.some((p) => p.nav)
-  const bloqueMovil = hayMenu
-    ? fill(partials.navMovil, { ...vars, mobileLinks: navLinks(page.slug, CLASE_ENLACE_MOVIL, 16) })
-    : ''
+  const bloqueMovil = fill(partials.navMovil, { ...vars, mobileLinks: navLinks(CLASE_ENLACE_MOVIL, 16) })
+
+  const porDefecto = TEMAS.find((t) => t.id === TEMA_POR_DEFECTO) || TEMAS[0]
+  const toggleTema = fill(partials.toggleTema, {
+    ...vars,
+    temasJson: JSON.stringify(TEMAS.map((t) => ({ id: t.id, nombre: t.nombre, icono: t.icono }))),
+    temaIconoInicial: porDefecto.icono,
+    temaNombreInicial: porDefecto.nombre,
+  })
 
   const nav = fill(partials.nav, {
     ...vars,
-    navLinks: navLinks(page.slug, CLASE_ENLACE, 12),
+    navLinks: navLinks(CLASE_ENLACE, 12),
     bloqueMovil,
+    toggleTema,
   })
 
-  // Mientras el sitio no tenga páginas propias además del selector, el pie
-  // lista los templates: es lo único que hay para navegar.
-  const enlacesPie = hayMenu
-    ? navLinks(page.slug, CLASE_ENLACE, 12)
-    : TEMAS.map((t) => `            <a class="${CLASE_ENLACE}" href="${rutaTema(t.id)}">${t.nombre}</a>`).join('\n')
-
-  const footer = fill(partials.footer, { ...vars, navLinks: enlacesPie })
+  const footer = fill(partials.footer, { ...vars, navLinks: navLinks(CLASE_ENLACE_PIE, 12) })
 
   const html = [head, nav, '', '  <main id="contenido">', body, '  </main>', '', footer].join('\n')
 
@@ -191,11 +170,11 @@ function buildPage(site, page, sections, partials) {
 }
 
 /**
- * Página de un tema: el HTML capturado del template, tal cual, con el
- * ToggleTheme inyectado antes de cerrar el body y un noindex en la cabecera
- * (es markup de terceros, no tiene por qué aparecer en buscadores).
+ * Captura de referencia de un template: el HTML original tal cual, con un
+ * noindex en la cabecera y un aviso de que es material de referencia. Sirve
+ * para comparar el tema del sitio contra el template del que salió.
  */
-function buildTema(tema, indice, toggleTpl) {
+function buildTema(tema) {
   const archivo = join(SRC, 'temas', tema.id, 'pagina.html')
   if (!existsSync(archivo)) {
     throw new Error(
@@ -208,15 +187,6 @@ function buildTema(tema, indice, toggleTpl) {
   // JavaScript original (carteles de error de escenas 3D, por ejemplo).
   for (const patron of tema.limpiar || []) html = html.replace(patron, '')
 
-  const toggle = fill(toggleTpl, {
-    temaId: tema.id,
-    temaNombre: tema.nombre,
-    temaIcono: tema.icono,
-    temaIndice: String(indice + 1),
-    temaTotal: String(TEMAS.length),
-    temasJson: JSON.stringify(TEMAS.map((t) => ({ id: t.id, nombre: t.nombre, url: rutaTema(t.id) }))),
-  })
-
   // Si el template ya trae su propio robots (Hive y Karate vienen con
   // index,follow), se reemplaza; si no trae, se agrega.
   const noindex = '<meta name="robots" content="noindex, nofollow">'
@@ -226,7 +196,14 @@ function buildTema(tema, indice, toggleTpl) {
     html = html.replace(/<head([^>]*)>/i, `<head$1>\n${noindex}`)
   }
 
-  html = /<\/body>/i.test(html) ? html.replace(/<\/body>/i, `${toggle}\n</body>`) : html + toggle
+  // Aviso fijo: quien abra esta URL tiene que saber que está viendo el
+  // template original de un tercero, no el sitio de Kuyen.
+  const aviso = `<div style="position:fixed;left:50%;bottom:1rem;transform:translateX(-50%);z-index:2147483000;display:flex;align-items:center;gap:.75rem;padding:.6rem 1rem;border-radius:9999px;background:rgba(10,14,29,.92);color:#f5f5f5;border:1px solid rgba(255,255,255,.16);box-shadow:0 10px 30px rgba(0,0,0,.35);font:600 12px/1 ui-sans-serif,system-ui,sans-serif;backdrop-filter:blur(8px)">
+  <span>Template de referencia: ${tema.nombre}</span>
+  <a href="/" style="color:#ff9b57;text-decoration:none">Ver el sitio de Kuyen</a>
+</div>`
+
+  html = /<\/body>/i.test(html) ? html.replace(/<\/body>/i, `${aviso}\n</body>`) : html + aviso
 
   return { tema, html }
 }
@@ -304,6 +281,7 @@ export function build({ siteId, out }) {
     head: read('partials', 'head.html'),
     nav: read('partials', 'nav.html'),
     navMovil: read('partials', 'nav-movil.html'),
+    toggleTema: read('partials', 'toggle-tema.html'),
     footer: read('partials', 'footer.html'),
   }
 
@@ -316,8 +294,7 @@ export function build({ siteId, out }) {
 
   // Las páginas de tema son markup de terceros capturado tal cual: no pasan
   // por las validaciones propias (títulos, un solo h1, rutas de asset).
-  const toggleTpl = read('partials', 'toggle-tema.html')
-  const temas = TEMAS.map((t, i) => buildTema(t, i, toggleTpl))
+  const temas = TEMAS.map((t) => buildTema(t))
 
   const problems = validate(site, built)
   if (problems.length) {

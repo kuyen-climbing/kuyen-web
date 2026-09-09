@@ -5,7 +5,7 @@
  *   node tools/serve.mjs dist --port=8099 &
  *   node tools/verify.mjs --port=8099
  */
-import { PAGES, TEMAS, rutaTema } from '../src/site.config.mjs'
+import { PAGES, TEMAS, TEMA_POR_DEFECTO, rutaTema } from '../src/site.config.mjs'
 
 const port = Number((process.argv.find((a) => a.startsWith('--port=')) || '--port=8099').split('=')[1])
 const BASE = `http://localhost:${port}`
@@ -25,13 +25,21 @@ for (const p of PAGES) {
 
   const h1 = (html.match(/<h1[\s>]/g) || []).length
   if (h1 !== 1) falla(`${ruta}: ${h1} etiquetas <h1>`)
+  if (!html.includes('data-tema-boton')) falla(`${ruta}: sin el ToggleTheme`)
+  // El toggle lleva los temas en un JSON; la clase la arma en el navegador.
+  for (const t of TEMAS) {
+    if (!html.includes(`"id":"${t.id}"`)) falla(`${ruta}: el toggle no conoce el tema ${t.id}`)
+  }
+  if (!html.includes(`class="h-full scroll-smooth antialiased tema-${TEMA_POR_DEFECTO}"`)) {
+    falla(`${ruta}: el <html> no sale con el tema por defecto`)
+  }
   if (!/<html lang="es-[A-Z]{2}"[^>]*>/.test(html)) falla(`${ruta}: falta lang="es-*" en <html>`)
   if (!html.includes('application/ld+json')) falla(`${ruta}: sin datos estructurados`)
 }
 
-// Páginas de template: markup de terceros, así que no se les piden ni h1 ni
-// datos estructurados. Lo que sí tiene que estar es el ToggleTheme, el
-// noindex y que los assets locales del template respondan.
+// Capturas de referencia: markup de terceros, así que no se les piden ni h1 ni
+// datos estructurados. Lo que sí tiene que estar es el noindex, el aviso de
+// que son referencia y que sus assets locales respondan.
 for (const tema of TEMAS) {
   const ruta = rutaTema(tema.id)
   const res = await fetch(BASE + ruta)
@@ -41,9 +49,8 @@ for (const tema of TEMAS) {
   }
   const html = await res.text()
 
-  if (!html.includes('data-toggle-tema')) falla(`${ruta}: sin el ToggleTheme`)
   if (!/name="robots"[^>]*noindex/.test(html)) falla(`${ruta}: sin noindex`)
-  if (html.includes(`>${tema.nombre}</span>`) === false) falla(`${ruta}: el toggle no muestra "${tema.nombre}"`)
+  if (!html.includes(`Template de referencia: ${tema.nombre}`)) falla(`${ruta}: sin el aviso de referencia`)
 
   // Una muestra de los assets del template, para detectar una captura a medias.
   const assets = [...new Set([...html.matchAll(new RegExp(`/temas/${tema.id}/assets/[\\w.-]+`, 'g'))].map((m) => m[0]))]

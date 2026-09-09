@@ -1,6 +1,4 @@
-/* Fuentes autoalojadas (Inter 3.19 y Lexend 1.007, licencia OFL, variables 100-900,
-   las mismas versiones que sirve el diseño de referencia),
-   como hace el diseño de referencia: sin peticiones a terceros. */
+/* Tipografías propias del sitio (Inter, licencia OFL, autoalojada en fonts/). */
 @font-face {
   font-family: 'Inter';
   font-style: normal;
@@ -17,26 +15,138 @@
   src: url('/fonts/inter-latin.woff2') format('woff2');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
-@font-face {
-  font-family: 'Lexend';
-  font-style: normal;
-  font-weight: 100 900;
-  font-display: swap;
-  src: url('/fonts/lexend-latin-ext.woff2') format('woff2');
-  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-@font-face {
-  font-family: 'Lexend';
-  font-style: normal;
-  font-weight: 100 900;
-  font-display: swap;
-  src: url('/fonts/lexend-latin.woff2') format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
+
+/* Tipografías de los templates de referencia. Generado por
+   tools/extraer-fuentes.mjs a partir de las capturas. */
+@import './fuentes-temas.css';
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/*
+  TEMAS
+  =====
+  Mismo mecanismo que el ToggleTheme de Pagos Pendientes: las variables viven
+  en :root, cada tema las redefine bajo su clase, y el toggle pone esa clase en
+  <html>. Acá cada tema reproduce los tokens de uno de los cuatro templates
+  candidatos (color, tipografía, radio y tracking), leídos de sus capturas.
+
+  Los valores de color van como triplete HSL sin envolver, para que Tailwind
+  pueda aplicarles opacidad (bg-fondo/60).
+*/
+/* Los bloques de tema van fuera de @layer: Tailwind poda de las capas todo
+   selector que no encuentre en el markup, y estas clases las pone el toggle en
+   tiempo de ejecución, así que no aparecen en ningún archivo fuente. */
+
+/* Tema Hive: estudio editorial, monocromo, serif enorme. */
+:root,
+.tema-hive {
+  --fondo: 0 0% 100%;
+  --texto: 0 0% 4%;
+  --superficie: 0 0% 100%;
+  --superficie-texto: 0 0% 4%;
+  --suave: 0 0% 96%;
+  --suave-texto: 0 0% 45%;
+  --borde: 0 0% 90%;
+  --primario: 0 0% 9%;
+  --primario-texto: 0 0% 98%;
+  --contraste: 0 0% 4%;
+  --contraste-texto: 0 0% 98%;
+
+  --radio: 0.625rem;
+  --radio-boton: 9999px;
+  --fuente-texto: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --fuente-display: 'Instrument Serif', ui-serif, Georgia, serif;
+  --fuente-acento: 'Instrument Serif', ui-serif, Georgia, serif;
+  --peso-display: 400;
+  --tracking-display: -0.02em;
+}
+
+/* Tema Karate: academia deportiva, rojo intenso sobre blanco. */
+.tema-karate {
+  --fondo: 0 0% 100%;
+  --texto: 0 0% 4%;
+  --superficie: 0 0% 97%;
+  --superficie-texto: 0 0% 4%;
+  --suave: 0 0% 96%;
+  --suave-texto: 0 0% 40%;
+  --borde: 0 0% 93%;
+  --primario: 357 76% 54%;
+  --primario-texto: 0 0% 100%;
+  --contraste: 0 0% 4%;
+  --contraste-texto: 0 0% 100%;
+
+  --radio: 1rem;
+  --radio-boton: 9999px;
+  --fuente-texto: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --fuente-display: 'DM Sans', ui-sans-serif, system-ui, sans-serif;
+  --fuente-acento: 'DM Sans', ui-sans-serif, system-ui, sans-serif;
+  --peso-display: 700;
+  --tracking-display: -0.03em;
+}
+
+/* Tema Hirael: agencia contemporánea, papel cálido y naranja quemado. */
+.tema-hirael {
+  --fondo: 45 27% 94%;
+  --texto: 215 21% 11%;
+  --superficie: 48 33% 97%;
+  --superficie-texto: 215 21% 11%;
+  --suave: 44 22% 90%;
+  --suave-texto: 219 13% 40%;
+  --borde: 39 20% 86%;
+  --primario: 19 79% 49%;
+  --primario-texto: 0 0% 100%;
+  --contraste: 215 21% 11%;
+  --contraste-texto: 48 33% 97%;
+
+  --radio: 0.625rem;
+  --radio-boton: 9999px;
+  --fuente-texto: 'DM Sans', ui-sans-serif, system-ui, sans-serif;
+  --fuente-display: 'Figtree', ui-sans-serif, system-ui, sans-serif;
+  --fuente-acento: 'Cormorant Garamond', ui-serif, Georgia, serif;
+  --peso-display: 600;
+  --tracking-display: -0.015em;
+}
+
+/* Tema NexStudio: estudio de producto, blanco y negro, retícula amplia. */
+.tema-nex {
+  --fondo: 0 0% 100%;
+  --texto: 0 0% 0%;
+  --superficie: 0 0% 98%;
+  --superficie-texto: 0 0% 0%;
+  --suave: 240 5% 96%;
+  --suave-texto: 240 4% 46%;
+  --borde: 240 5% 91%;
+  --primario: 0 0% 0%;
+  --primario-texto: 0 0% 100%;
+  --contraste: 0 0% 0%;
+  --contraste-texto: 0 0% 100%;
+
+  --radio: 0.5rem;
+  --radio-boton: 9999px;
+  --fuente-texto: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --fuente-display: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --fuente-acento: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --peso-display: 400;
+  --tracking-display: -0.045em;
+}
+
+body {
+  font-family: var(--fuente-texto);
+}
+
+/* Los títulos toman de una la tipografía, el peso y el tracking del tema, que
+   es lo que hace que cambiar de tema se note más allá del color. */
+.titulo {
+  font-family: var(--fuente-display);
+  font-weight: var(--peso-display);
+  letter-spacing: var(--tracking-display);
+}
+
+.acento {
+  font-family: var(--fuente-acento);
+}
 
 /* Sin anillo de foco al hacer clic con el mouse; se conserva con teclado. */
 .ui-not-focus-visible\:outline-none:focus:not(:focus-visible) {

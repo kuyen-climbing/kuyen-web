@@ -116,20 +116,25 @@ function urlsDeHtml(html, base) {
   return encontradas
 }
 
-/** URLs referenciadas dentro de una hoja de estilo. */
+/**
+ * Assets referenciados dentro de una hoja de estilo, como pares {crudo, abs}.
+ * El crudo importa: las hojas de Next.js apuntan a sus tipografías con rutas
+ * relativas (`url(../media/x.woff2)`) que no coinciden con la URL absoluta que
+ * se descargó, y son esas las que después hay que reemplazar.
+ */
 function urlsDeCss(css, base) {
-  const encontradas = new Set()
+  const encontradas = new Map()
   for (const m of css.matchAll(/url\((['"]?)([^)'"]+)\1\)/g)) {
-    const u = m[2].trim()
-    if (!u || u.startsWith('data:')) continue
+    const crudo = m[2].trim()
+    if (!crudo || crudo.startsWith('data:')) continue
     try {
-      const abs = new URL(u, base)
-      if (abs.protocol === 'http:' || abs.protocol === 'https:') encontradas.add(abs.href)
+      const abs = new URL(crudo, base)
+      if (abs.protocol === 'http:' || abs.protocol === 'https:') encontradas.set(crudo, abs.href)
     } catch {}
   }
   for (const m of css.matchAll(/@import\s+(?:url\()?['"]([^'"]+)['"]/g)) {
     try {
-      encontradas.add(new URL(m[1], base).href)
+      encontradas.set(m[1], new URL(m[1], base).href)
     } catch {}
   }
   return encontradas
@@ -179,10 +184,10 @@ async function capturar(id, url, { render = false } = {}) {
     const ext = extname(new URL(remota).pathname).toLowerCase()
     if (EXTENSIONES_TEXTO.has(ext) || recurso.tipo.includes('text/css')) {
       let css = recurso.buf.toString('utf8')
-      const anidadas = urlsDeCss(css, remota)
-      for (const a of anidadas) if (!vistas.has(a)) pendientes.push(a)
+      const refs = urlsDeCss(css, remota)
+      for (const a of refs.values()) if (!vistas.has(a)) pendientes.push(a)
       // Se reescribe al final, cuando el mapa esté completo.
-      mapa.set(remota, { nombre, css })
+      mapa.set(remota, { nombre, css, refs })
     } else {
       writeFileSync(destino, recurso.buf)
       mapa.set(remota, { nombre })
@@ -194,19 +199,17 @@ async function capturar(id, url, { render = false } = {}) {
     return e ? `/temas/${id}/assets/${e.nombre}` : null
   }
 
-  // Segunda pasada: reescribir las hojas de estilo ya con el mapa completo.
-  for (const [remota, entrada] of mapa) {
+  // Segunda pasada: reescribir las hojas de estilo ya con el mapa completo,
+  // por el texto tal como aparece en cada hoja (que puede ser relativo) y de
+  // más largo a más corto, para que una ruta no se coma el prefijo de otra.
+  for (const [, entrada] of mapa) {
     if (!entrada.css) continue
     let css = entrada.css
-    for (const [otra, e] of mapa) {
-      if (!e) continue
-      const local = `/temas/${id}/assets/${e.nombre}`
-      css = css.split(otra).join(local)
-      // También las formas relativas tal como aparecen en ese archivo.
-      try {
-        const rel = new URL(otra).href.replace(new URL(remota).origin, '')
-        if (rel && rel !== otra) css = css.split(`url(${rel})`).join(`url(${local})`)
-      } catch {}
+    const crudos = [...entrada.refs.keys()].sort((a, b) => b.length - a.length)
+    for (const crudo of crudos) {
+      const local = rutaLocal(entrada.refs.get(crudo))
+      if (!local) continue
+      css = css.split(crudo).join(local)
     }
     writeFileSync(join(dirAssets, entrada.nombre), css, 'utf8')
   }
