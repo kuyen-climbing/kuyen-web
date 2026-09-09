@@ -96,6 +96,20 @@ Push a `main` publica desde la raíz del repo. El workflow `verificar.yml` corre
 y en cada PR: regenera CSS y HTML y los compara contra lo comiteado, después levanta el
 servidor local y corre la verificación funcional.
 
+### Preview mientras no hay dominio
+
+La URL genérica de este repo no sirve para previsualizar: con `CNAME` redirige al dominio, y
+sin él las rutas absolutas se rompen bajo el subpath. El preview vive en el repo espejo
+`kuyen-climbing/kuyen-climbing.github.io`, que se sirve en la raíz:
+
+```bash
+npm run preview:publicar
+```
+
+Regenera la variante `preview` (sin CNAME y con `noindex`) y reemplaza el contenido del
+espejo. Queda en https://kuyen-climbing.github.io/. El espejo es solo salida: no lleva `src/`
+ni `tools/`.
+
 ## Pendientes
 
 - **Dominio**: `kuyenclimbing.cl` está puesto en `SITES.cl` y en `CNAME` como valor
