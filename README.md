@@ -3,72 +3,78 @@
 Sitio de **Kuyen Climbing**, centro de escalada en boulder en Los Patagones 375, Padre Las
 Casas, La Araucanía. Repo de la organización `kuyen-climbing`, servido por GitHub Pages.
 
-Usa el flujo de sitios estáticos documentado en
-`C:\Proyectos\INCBA\docs\Flujo-Sitios-Web-GitHub-Pages.md`: generador propio, Tailwind
-compilado localmente, verificación funcional y CI que impide publicar HTML desincronizado.
-La plantilla y las visuales son propias de este proyecto.
+Sigue el flujo de sitios estáticos documentado en
+`C:\Proyectos\INCBA\docs\Flujo-Sitios-Web-GitHub-Pages.md`: generador propio, verificación
+funcional y CI que impide publicar HTML desincronizado.
 
-## Estado (09-09-2026): un sitio, cuatro temas
+## Estado (09-09-2026): los cuatro templates, tal cual
 
-El sitio es una sola página con el contenido real de Kuyen que se pudo verificar, y un
-**ToggleTheme** en el header que cambia el tema de esa misma página, sin navegar. Cada tema
-son los tokens visuales de uno de los cuatro templates candidatos aplicados al contenido de
-Kuyen, así que la decisión se toma mirando el sitio propio, no una demo ajena.
+Todavía no hay contenido de Kuyen. Lo que hay son los **cuatro templates candidatos servidos
+tal como los publican sus autores**, cada uno en su ruta, y un marco en la raíz que muestra el
+activo a pantalla completa con el **ToggleTheme** encima para pasar al siguiente.
 
-| Tema | De dónde salen sus tokens |
+| Ruta | Template |
 |---|---|
-| Hive (por defecto) | [Hive](https://21st.dev/@shadcnblockscom/templates/hive): monocromo, serif Instrument Serif enorme |
-| Karate | [Karate](https://21st.dev/@dhileepkumargm/templates/karate): rojo intenso, DM Sans en negrita, radios amplios |
-| Hirael | [Hirael Agency Landing](https://21st.dev/@mohammadshehadeh/templates/hirael-agency-landing): papel cálido, naranja quemado, Figtree con acentos en Cormorant |
-| NexStudio | [NexStudio](https://21st.dev/@tailgrids/templates/tailgrids-nexstudio): blanco y negro, Inter con tracking muy cerrado |
+| `/` | El marco: el template activo más el toggle |
+| `/t/hive` | [Hive](https://21st.dev/@shadcnblockscom/templates/hive) |
+| `/t/karate` | [Karate](https://21st.dev/@dhileepkumargm/templates/karate) |
+| `/t/hirael` | [Hirael Agency Landing](https://21st.dev/@mohammadshehadeh/templates/hirael-agency-landing) |
+| `/t/nex` | [NexStudio](https://21st.dev/@tailgrids/templates/tailgrids-nexstudio) |
 
-### Cómo funciona el ToggleTheme
+Cada template se sirve entero dentro de su propio documento: su HTML, sus estilos, sus
+scripts y sus assets, sin compartir nada con el marco ni con los otros. Esa es la razón de que
+el marco use un `iframe`: es lo que permite tenerlos a los cuatro sin que se pisen entre sí y
+sin tocarles una línea.
 
-Es el mismo mecanismo que el de Pagos Pendientes
-(`APP-PAGOS-PENDIENTES-frontend/src/components/theme-toggle.tsx`), sin React:
+### Qué tan fiel es la copia
 
-- Los tokens de cada tema (color, tipografía, radio y tracking) son variables CSS definidas en
-  `src/css/tailwind.css`, una tanda por tema bajo `.tema-<id>`.
-- `tailwind.config.cjs` mapea los colores, el radio y las familias a esas variables, así que
-  cada clase de utilidad ya responde al tema activo.
-- El toggle es una píldora con el pulsador en la posición del tema activo y un icono por tema.
-  Cada clic pasa al siguiente, pone la clase en `<html>` y guarda la elección en
-  `localStorage`.
-- Un script corto en el `<head>` aplica el tema guardado antes de pintar, para que la página
-  no aparezca un instante con el tema por defecto.
+`tools/comparar-tema.mjs` toma la misma captura de pantalla completa del original en línea y
+de la copia local, las superpone y cuenta los píxeles distintos. Medición del 09-09-2026 a
+1440 px de ancho:
 
-Los bloques de tema van fuera de `@layer`: Tailwind poda de las capas todo selector que no
-encuentre en el markup, y estas clases las pone el toggle en tiempo de ejecución.
+| Template | Píxeles distintos |
+|---|---|
+| Hive | 0,13% |
+| Karate | 0,40% |
+| Hirael | 0,06% |
+| NexStudio | 0,10% |
 
-### Las capturas de referencia
+Nunca da cero: los templates tienen animaciones, videos y relojes que cambian entre una carga
+y otra. Sirve para detectar lo que importa, que es una sección que no cargó, una tipografía
+que no llegó o un bloque en blanco.
 
-En `/t/hive`, `/t/karate`, `/t/hirael` y `/t/nex` están los cuatro templates originales
-reproducidos tal cual, para poder comparar el tema contra su fuente. Son markup y assets de
-templates comerciales de terceros: van con `noindex`, fuera del `sitemap.xml` y con un aviso
-fijo que lo dice. No son el sitio, y se borran cuando se elija un tema.
+### El ToggleTheme
+
+Es el mismo patrón que el de Pagos Pendientes
+(`APP-PAGOS-PENDIENTES-frontend/src/components/theme-toggle.tsx`): una píldora con el pulsador
+en la posición del template activo, un icono por template, ciclo al siguiente en cada clic y
+la elección guardada en `localStorage`. Acá, en vez de poner una clase en `<html>`, cambia la
+fuente del marco: la página de arriba no se recarga.
+
+### Los templates son de terceros
+
+Son templates comerciales de 21st.dev, guardados enteros para elegir dirección visual con
+Kuyen. **No son el sitio definitivo**: elegido uno, se reescribe el markup y se reemplazan los
+assets por los de Kuyen. Por eso van con `noindex` y fuera del `sitemap.xml`.
 
 ## Cómo se edita
 
-**Los `.html` de la raíz y `css/styles.css` son generados. No los edites.** Se editan las
-fuentes de `src/` y se regenera:
+**Los `.html` de la raíz son generados. No los edites.** Se editan las fuentes de `src/` y se
+regenera:
 
 ```bash
-npm install          # una vez: instala Tailwind
-npm run build        # -> css/styles.css + los .html de la raíz + sitemap + robots
+npm run build        # -> index.html + t/<id>.html + sitemap + robots
 ```
+
+No hay dependencias que instalar: el generador es Node a secas.
 
 | Qué querés cambiar | Dónde |
 |---|---|
-| Texto de una sección | `src/sections/<nombre>.html` |
-| Qué secciones arman la página, título y descripción | `PAGES` en `src/site.config.mjs` |
-| El menú | `MENU` en `src/site.config.mjs` |
-| Qué temas hay, su orden, nombre e icono | `TEMAS` en `src/site.config.mjs` |
-| Con qué tema abre la página | `TEMA_POR_DEFECTO` en `src/site.config.mjs` |
-| Los tokens de cada tema | los bloques `.tema-<id>` de `src/css/tailwind.css` |
+| Qué templates hay, su orden, nombre e icono | `TEMAS` en `src/site.config.mjs` |
+| Con cuál abre el marco | `TEMA_POR_DEFECTO` en `src/site.config.mjs` |
+| El aspecto y el comportamiento del toggle | `src/partials/marco.html` |
+| Título y descripción de la página | `PAGINA` en `src/site.config.mjs` |
 | Dirección, teléfono, Instagram, coordenadas | `NEGOCIO` en `src/site.config.mjs` |
-| Header, pie y `<head>` | `src/partials/` |
-| El ToggleTheme (aspecto y comportamiento) | `src/partials/toggle-tema.html` |
-| Menú móvil | `js/main.js` |
 
 Para verlo local con las URLs resueltas como las resuelve GitHub Pages:
 
@@ -77,42 +83,57 @@ node tools/build.mjs --out=dist
 node tools/serve.mjs dist --port=8100
 node tools/verify.mjs --port=8100
 node --experimental-websocket tools/pruebas-ui.mjs http://localhost:8100
+node --experimental-websocket tools/comparar-tema.mjs http://localhost:8100
 ```
 
-`pruebas-ui.mjs` comprueba que el toggle cicle los cuatro temas sobre la misma página sin
-navegar, que cada tema cambie de verdad color y tipografía (compara los estilos calculados,
-no solo la clase), que la elección sobreviva a una recarga y que el menú móvil funcione. Deja
-una captura por tema en `dist-pruebas/`.
+`pruebas-ui.mjs` comprueba que el marco arranque con el template por defecto, que cada clic
+cargue el siguiente sin recargar la página de arriba, que la elección sobreviva a una recarga
+y que cada template cargue su contenido, sus estilos y sus imágenes sin caer en su propia
+página de 404. Deja una captura por template en `dist-pruebas/`.
 
-### Volver a capturar un template de referencia
+### Capturar o actualizar un template
 
 ```bash
-node --experimental-websocket tools/capturar-tema.mjs <id> <url> --render
+npm run capturar <id> <url>
 ```
 
-Baja el HTML, sus hojas de estilo, tipografías e imágenes, los guarda en
-`temas/<id>/assets/` y reescribe las referencias a rutas locales. El markup queda en
-`src/temas/<id>/pagina.html`. Después, `node tools/extraer-fuentes.mjs` junta las
-declaraciones `@font-face` de esas capturas en `src/css/fuentes-temas.css`, que es de donde
-los temas toman sus tipografías.
+Baja la página entera con lo que necesita para verse igual: hojas de estilo, tipografías,
+imágenes, videos y su JavaScript. Los archivos quedan bajo `temas/<id>/` **espejando la ruta
+original**, y todas las referencias se reescriben a ese prefijo.
 
-`--render` usa el Chrome instalado en modo headless para leer el DOM ya armado. Hace falta
-siempre que el template monte su contenido con JavaScript, que es el caso de los cuatro:
-sin eso, Framer deja secciones invisibles y React devuelve un cascarón vacío.
+Espejar la ruta no es un detalle: los bundles arman URLs en tiempo de ejecución concatenando
+un prefijo literal (`/_next/static/chunks/` y similares) con el nombre del chunk. Con la
+estructura intacta alcanza con reescribir ese prefijo dentro del JavaScript. Con nombres
+planos esos pedidos daban 404 y el template quedaba a medias.
+
+Lee el DOM ya renderizado con el Chrome instalado en headless, porque los cuatro arman su HTML
+en el navegador: bajándolos con HTTP a secas, Framer deja secciones invisibles y React
+devuelve un cascarón vacío.
+
+### Lo único que se les inyecta
+
+Dos arreglos, primeros de todo en el `<head>`, para que el template se comporte igual
+sirviéndose desde otra ruta (ver `arranque()` en `tools/build.mjs`):
+
+1. **La ruta.** El template vive en `/t/<id>`, pero su router espera la ruta original. Sin
+   esto, NexStudio no encuentra coincidencia y muestra su propia página de 404.
+2. **Las imágenes de Next.js.** Al hidratar, el componente de imagen vuelve a pedirlas a
+   `/_next/image?url=...&w=...`, un endpoint que en un sitio estático no existe. Se reapuntan
+   a la imagen original, que la captura descarga junto con las variantes.
+
+Fuera de eso, y del `noindex`, el HTML es el que publican sus autores.
 
 ### Si el build falla
 
-El generador valida antes de escribir y no deja nada a medias: título o descripción
-demasiado largos, metadatos repetidos entre páginas, más o menos de un `<h1>` por página,
-tokens sin resolver, rutas de asset relativas, enlaces a un ancla que no existe, o contenido
-por debajo del piso de palabras (`MINIMO_PALABRAS_DEFAULT`). Las páginas de template no
-pasan por estas validaciones: son markup de terceros.
+El generador valida antes de escribir y no deja nada a medias: título o descripción demasiado
+largos, más o menos de un `<h1>` en el marco, tokens sin resolver, o un template sin sus
+assets.
 
 ## Publicación
 
-Push a `main` publica desde la raíz del repo. El workflow `verificar.yml` corre en cada push
-y en cada PR: regenera CSS y HTML y los compara contra lo comiteado, después levanta el
-servidor local y corre la verificación funcional.
+Push a `main` publica desde la raíz del repo. El workflow `verificar.yml` corre en cada push y
+en cada PR: regenera el HTML y lo compara contra lo comiteado, después levanta el servidor
+local y corre la verificación funcional.
 
 ### Preview mientras no hay dominio
 
@@ -130,46 +151,32 @@ ni `tools/`.
 
 ## Pendientes
 
+- **Elegir template**: es la decisión que desbloquea todo lo demás. Elegido uno, se sacan los
+  otros tres de `TEMAS` y se borran sus capturas de `temas/`.
+- **Adaptar el elegido**: reemplazar textos, fotos y marca por los de Kuyen. Recién ahí entra
+  el contenido real.
 - **Dominio**: `kuyenclimbing.cl` está puesto en `SITES.cl` y en `CNAME` como valor
-  provisorio. No está comprado ni confirmado con Kuyen. Mientras tanto se puede publicar la
-  variante `preview` (`npm run preview`), que sale sin CNAME y con noindex para el repo
-  `kuyen-climbing.github.io`.
+  provisorio. No está comprado ni confirmado con Kuyen.
 - **DNS**: cuando exista el dominio, registros A a 185.199.108/109/110/111.153. Si el DNS
   queda en Cloudflare, tiene que estar "DNS only" (nube gris), nunca proxiado, o GitHub deja
   de renovar el certificado HTTPS.
-- **Elegir tema**: es la decisión que desbloquea todo lo demás. Elegido uno, se deja ese como
-  único tema, se sacan los otros tres de `TEMAS` y se borran sus capturas de `temas/`.
 - **Marca**: no hay archivos de logo. El isotipo `img/marca-luna.svg` es un placeholder propio
-  (luna creciente, por "küyen", luna en mapudungun). Los colores de cada tema salen del
-  template del que vienen, no de una paleta de Kuyen.
-- **Falta `og:image`**: hace falta una foto real del muro, de 1200x630.
-- **Contenido real**: fotos del muro, textos propios y datos por confirmar (abajo).
-- **Datos por confirmar con Kuyen**, tomados de publicaciones públicas de distinta fecha:
-  horario semanal (Google dice que cierra a las 22:00; una revista de 2023 decía lunes a
-  viernes de 14:00 a 22:00), pase diario ($3.500 según esa misma revista), horario bajo de
-  10:00 a 16:00 a $2.000, y el plan de 8 clases por $45.000. Nada de esto se escribe en el
-  sitio hasta que Kuyen lo confirme.
-- **Correo**: Kuyen no publica uno. Hoy el contacto va por WhatsApp e Instagram.
-- **Peso del repo**: las capturas de los templates ocupan cerca de 35 MB en `temas/`. Se
-  borran las que no se elijan una vez tomada la decisión.
-
-### Lo que las capturas de referencia no reproducen
-
-Las capturas no reusan el JavaScript de cada template, así que queda afuera lo que ese
-código dibuja en vivo:
-
-- **Hive**: dos escenas 3D (el hero y el pie). Se saca el cartel de error que dejan, con la
-  regla `limpiar` de ese tema en `TEMAS`; el espacio queda vacío.
-- **Karate**: el carrusel del equipo, en la sección "Built different", queda en blanco.
-- Los carruseles y acordeones que se ven en las demás páginas quedan en su estado inicial:
-  se ven, pero no se mueven.
+  (luna creciente, por "küyen", luna en mapudungun), y solo se usa como favicon del marco.
+- **Peso del repo**: las capturas ocupan cerca de 45 MB en `temas/`. Se van con los templates
+  descartados.
+- **Escenas 3D de Hive**: el hero y el pie montan escenas que necesitan GPU. En Chrome
+  headless fallan igual en el original que en la copia; en un navegador normal se ven.
 
 ## Datos del negocio
 
-Verificados el 09-09-2026 en la ficha de Google Maps y el perfil de Instagram del centro:
+Verificados el 09-09-2026 en la ficha de Google Maps y el perfil de Instagram del centro, y
+guardados en `NEGOCIO` de `src/site.config.mjs` para cuando entre el contenido real:
 
 - Los Patagones 375, Padre Las Casas, La Araucanía
 - +56 9 3502 8838
 - [@kuyen.climbing](https://www.instagram.com/kuyen.climbing/) · 2.928 seguidores
 - [Ficha de Google](https://maps.app.goo.gl/v9F89L5peqFyxcJc9): 5,0 con 14 reseñas
 - Muro de boulder con desplomes continuos hasta 25° y moonboard, y clases guiadas
+- Horarios, precios y planes de clases siguen **sin confirmar**: lo que circula sale de
+  publicaciones públicas de distinta fecha y no se escribe en el sitio hasta que Kuyen lo
+  confirme

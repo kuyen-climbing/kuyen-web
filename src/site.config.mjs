@@ -1,22 +1,15 @@
 /**
  * Fuente única de la configuración del sitio de Kuyen Climbing.
  *
- * Reusa el generador documentado en
- * C:\Proyectos\INCBA\docs\Flujo-Sitios-Web-GitHub-Pages.md. La plantilla y las
- * visuales son propias de Kuyen: fondo de noche, hero a pantalla completa y
- * secciones de centro de escalada. No se hereda nada de la maqueta de Isaminga
- * más allá del generador, la verificación y el flujo de publicación.
- *
- * ESTADO (09-09-2026): primera versión. El contenido sale de fuentes públicas
- * verificadas (Instagram @kuyen.climbing, ficha de Google Maps y la revista
- * Destino Temuco). Todo lo que necesita confirmación de Kuyen queda marcado
- * con el comentario POR CONFIRMAR en la sección correspondiente y listado en
- * el README.
+ * Etapa actual: los cuatro templates candidatos servidos tal cual, cada uno en
+ * /t/<id>, y un marco en la raíz que muestra el activo a pantalla completa con
+ * el ToggleTheme encima. Los templates no se adaptan todavía: eso viene
+ * después, cuando se elija uno.
  *
  * Dos variantes de sitio porque el dominio propio todavía no está comprado:
- *   - `cl`: el dominio definitivo (lleva CNAME y se indexa).
+ *   - `cl`: el dominio definitivo (lleva CNAME).
  *   - `preview`: kuyen-climbing.github.io, sin CNAME y con noindex, para que
- *     el cliente lo mire mientras tanto sin competirle en Google al definitivo.
+ *     el cliente lo mire mientras tanto.
  */
 
 export const HOST = 'https://kuyenclimbing.cl'
@@ -72,18 +65,15 @@ export const NEGOCIO = {
 }
 
 /**
- * Los cuatro temas del sitio, en el orden en que los cicla el ToggleTheme.
+ * Los cuatro templates candidatos, en el orden en que los cicla el ToggleTheme.
  *
- * Cada tema son los tokens visuales (color, tipografía, radio y tracking) de
- * uno de los templates candidatos, aplicados al mismo contenido de Kuyen. Las
- * definiciones viven en src/css/tailwind.css bajo `.tema-<id>`, y el toggle
- * cambia entre ellas poniendo esa clase en <html>, igual que el ToggleTheme de
- * Pagos Pendientes.
+ * Cada uno se sirve tal cual: el HTML capturado en src/temas/<id>/pagina.html
+ * con sus propios estilos, scripts y assets bajo temas/<id>/. Se capturan con
+ * `node --experimental-websocket tools/capturar-tema.mjs <id> <url>`.
  *
- * `fuente` es el template del que salieron los tokens y las tipografías. Se
- * captura tal cual con `node tools/capturar-tema.mjs <id> <url> --render` para
- * poder comparar contra el original en /t/<id>; esa captura es material de
- * referencia de terceros, va con noindex y fuera del sitemap.
+ * OJO: son templates comerciales de terceros. Están acá como material de
+ * trabajo para elegir dirección visual, van con noindex y se reemplazan por
+ * markup y assets propios de Kuyen cuando se elija uno.
  */
 export const TEMAS = [
   {
@@ -92,11 +82,7 @@ export const TEMAS = [
     resumen: 'Estudio editorial: tipografía serif enorme, monocromo y mucho aire.',
     fuente: 'https://hive-nextjs-template.vercel.app/',
     credito: 'https://21st.dev/@shadcnblockscom/templates/hive',
-    render: true,
     icono: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z"/></svg>',
-    // El template monta dos escenas 3D con su propio JavaScript, que la captura
-    // no reusa. Sin ese JavaScript dejan un cartel de error rojo; se saca.
-    limpiar: [/<div style="text-align: center; padding: 1rem;[^"]*">[\s\S]*?<\/div>/g],
   },
   {
     id: 'karate',
@@ -104,7 +90,6 @@ export const TEMAS = [
     resumen: 'Academia deportiva: rojo intenso, fotos grandes, horarios y programas.',
     fuente: 'https://karateacadamy.framer.website/',
     credito: 'https://21st.dev/@dhileepkumargm/templates/karate',
-    render: true,
     icono: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></svg>',
   },
   {
@@ -113,7 +98,6 @@ export const TEMAS = [
     resumen: 'Agencia contemporánea: oscuro, serif de acento y bloques de mucho contraste.',
     fuente: 'https://hirael.com/embed/templates/agency-landing',
     credito: 'https://21st.dev/@mohammadshehadeh/templates/hirael-agency-landing',
-    render: true,
     icono: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/></svg>',
   },
   {
@@ -122,55 +106,24 @@ export const TEMAS = [
     resumen: 'Estudio de producto: claro, retícula amplia, títulos grandes sin serif.',
     fuente: 'https://nexstudio.demos.tailgrids.com/',
     credito: 'https://21st.dev/@tailgrids/templates/tailgrids-nexstudio',
-    render: true,
     icono: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z"/><path d="m6.08 9.5-3.5 1.6a1 1 0 0 0 0 1.81l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9a1 1 0 0 0 0-1.83l-3.5-1.59"/><path d="m6.08 14.5-3.5 1.6a1 1 0 0 0 0 1.81l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9a1 1 0 0 0 0-1.83l-3.5-1.59"/></svg>',
   },
 ]
 
-/**
- * Menú del sitio. Mientras todo viva en una página, son anclas de esa misma
- * página; cuando se abran las páginas internas pasan a ser rutas.
- */
-export const MENU = [
-  { href: '#el-muro', texto: 'El muro' },
-  { href: '#clases', texto: 'Clases' },
-  { href: '#visitanos', texto: 'Visítanos' },
-]
-
-/** El tema con el que se sirve la página a quien entra por primera vez. */
+/** El template que se muestra a quien entra por primera vez. */
 export const TEMA_POR_DEFECTO = 'hive'
 
-/** Ruta pública de la captura de referencia de un template. */
+/** Ruta pública de un template. */
 export const rutaTema = (id) => `/t/${id}`
-
-/**
- * Piso de palabras de contenido por página. Bajo mientras el contenido es
- * borrador; subir a 300-450 cuando Kuyen confirme los textos.
- */
-export const MINIMO_PALABRAS_DEFAULT = 120
 
 /**
  * Topes de SEO: los puntos donde Google trunca título y descripción.
  */
 export const LIMITES = { title: 60, description: 158 }
 
-/**
- * Páginas del sitio. Cada una lista las secciones de src/sections/ que la
- * componen, en orden, y lleva exactamente un <h1>.
- *
- * El sitio es de una sola página por ahora: el contenido todavía es el que se
- * pudo verificar de fuentes públicas. Cuando Kuyen confirme textos, horarios y
- * precios se abren las páginas internas (el muro, clases, precios, cómo
- * llegar), que hoy son anclas de esta misma página.
- */
-export const PAGES = [
-  {
-    slug: '',
-    title: 'Kuyen Climbing | Escalada en Padre Las Casas',
-    description:
-      'Centro de escalada en boulder en Padre Las Casas: desplomes hasta 25 grados, moonboard y clases guiadas. Los Patagones 375.',
-    nav: null,
-    breadcrumb: null,
-    sections: ['hero', 'el-muro', 'clases', 'comunidad', 'visitanos'],
-  },
-]
+/** Metadatos del marco, la única página propia por ahora. */
+export const PAGINA = {
+  title: 'Kuyen Climbing | Templates candidatos',
+  description:
+    'Los cuatro templates candidatos para el sitio de Kuyen Climbing, servidos tal cual, con un selector para pasar de uno al siguiente.',
+}

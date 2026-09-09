@@ -2,62 +2,54 @@
  * Verificación funcional del sitio generado, contra un servidor levantado con
  * tools/serve.mjs (que resuelve las URLs igual que GitHub Pages).
  *
- *   node tools/serve.mjs dist --port=8099 &
- *   node tools/verify.mjs --port=8099
+ *   node tools/serve.mjs dist --port=8100 &
+ *   node tools/verify.mjs --port=8100
  */
-import { PAGES, TEMAS, TEMA_POR_DEFECTO, rutaTema } from '../src/site.config.mjs'
+import { TEMAS, TEMA_POR_DEFECTO, rutaTema } from '../src/site.config.mjs'
 
-const port = Number((process.argv.find((a) => a.startsWith('--port=')) || '--port=8099').split('=')[1])
+const port = Number((process.argv.find((a) => a.startsWith('--port=')) || '--port=8100').split('=')[1])
 const BASE = `http://localhost:${port}`
-const rutaDe = (slug) => (slug ? `/${slug}` : '/')
 
 const fallas = []
 const falla = (msg) => fallas.push(msg)
 
-for (const p of PAGES) {
-  const ruta = rutaDe(p.slug)
-  const res = await fetch(BASE + ruta)
-  if (res.status !== 200) {
-    falla(`${ruta}: respondió ${res.status}`)
-    continue
-  }
+// El marco.
+const res = await fetch(`${BASE}/`)
+if (res.status !== 200) {
+  falla(`/: respondió ${res.status}`)
+} else {
   const html = await res.text()
-
-  const h1 = (html.match(/<h1[\s>]/g) || []).length
-  if (h1 !== 1) falla(`${ruta}: ${h1} etiquetas <h1>`)
-  if (!html.includes('data-tema-boton')) falla(`${ruta}: sin el ToggleTheme`)
-  // El toggle lleva los temas en un JSON; la clase la arma en el navegador.
+  if ((html.match(/<h1[\s>]/g) || []).length !== 1) falla('/: tiene que haber exactamente un <h1>')
+  if (!/<html lang="es-[A-Z]{2}"[^>]*>/.test(html)) falla('/: falta lang="es-*" en <html>')
+  if (!html.includes('data-tema-boton')) falla('/: sin el ToggleTheme')
+  if (!html.includes(`src="${rutaTema(TEMA_POR_DEFECTO)}"`)) falla('/: el marco no abre con el template por defecto')
   for (const t of TEMAS) {
-    if (!html.includes(`"id":"${t.id}"`)) falla(`${ruta}: el toggle no conoce el tema ${t.id}`)
+    if (!html.includes(`"id":"${t.id}"`)) falla(`/: el toggle no conoce el template ${t.id}`)
   }
-  if (!html.includes(`class="h-full scroll-smooth antialiased tema-${TEMA_POR_DEFECTO}"`)) {
-    falla(`${ruta}: el <html> no sale con el tema por defecto`)
-  }
-  if (!/<html lang="es-[A-Z]{2}"[^>]*>/.test(html)) falla(`${ruta}: falta lang="es-*" en <html>`)
-  if (!html.includes('application/ld+json')) falla(`${ruta}: sin datos estructurados`)
 }
 
-// Capturas de referencia: markup de terceros, así que no se les piden ni h1 ni
-// datos estructurados. Lo que sí tiene que estar es el noindex, el aviso de
-// que son referencia y que sus assets locales respondan.
+// Los templates: que respondan, que lleven el arranque y el noindex, y que sus
+// assets estén donde el HTML dice.
 for (const tema of TEMAS) {
   const ruta = rutaTema(tema.id)
-  const res = await fetch(BASE + ruta)
-  if (res.status !== 200) {
-    falla(`${ruta}: respondió ${res.status}`)
+  const r = await fetch(BASE + ruta)
+  if (r.status !== 200) {
+    falla(`${ruta}: respondió ${r.status}`)
     continue
   }
-  const html = await res.text()
+  const html = await r.text()
 
   if (!/name="robots"[^>]*noindex/.test(html)) falla(`${ruta}: sin noindex`)
-  if (!html.includes(`Template de referencia: ${tema.nombre}`)) falla(`${ruta}: sin el aviso de referencia`)
+  if (!html.includes('history.replaceState')) falla(`${ruta}: sin el arranque que fija la ruta del router`)
 
-  // Una muestra de los assets del template, para detectar una captura a medias.
-  const assets = [...new Set([...html.matchAll(new RegExp(`/temas/${tema.id}/assets/[\\w.-]+`, 'g'))].map((m) => m[0]))]
-  if (!assets.length) falla(`${ruta}: no referencia ningún asset local`)
-  for (const a of assets.slice(0, 5)) {
-    const r = await fetch(BASE + a)
-    if (r.status !== 200) falla(`${ruta}: el asset ${a} respondió ${r.status}`)
+  const assets = [...new Set([...html.matchAll(new RegExp(`/temas/${tema.id}/[\\w./@-]+`, 'g'))].map((m) => m[0]))]
+  if (assets.length < 3) falla(`${ruta}: solo ${assets.length} assets locales referenciados`)
+
+  // Una muestra, y siempre el JavaScript, que es lo que se rompía al moverlo.
+  const js = assets.filter((a) => a.endsWith('.js')).slice(0, 4)
+  for (const a of [...assets.slice(0, 6), ...js]) {
+    const ra = await fetch(BASE + a)
+    if (ra.status !== 200) falla(`${ruta}: el asset ${a} respondió ${ra.status}`)
   }
 }
 
@@ -66,4 +58,4 @@ if (fallas.length) {
   console.error(fallas.map((f) => `  ${f}`).join('\n'))
   process.exit(1)
 }
-console.log(`Verificación OK: ${PAGES.length} página propia y ${TEMAS.length} templates.`)
+console.log(`Verificación OK: el marco y ${TEMAS.length} templates.`)

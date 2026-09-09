@@ -1,177 +1,161 @@
 <!DOCTYPE html>
-<html lang="es-CL" class="h-full scroll-smooth antialiased tema-hive">
+<html lang="es-CL">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Kuyen Climbing | Escalada en Padre Las Casas</title>
-  <meta name="description" content="Centro de escalada en boulder en Padre Las Casas: desplomes hasta 25 grados, moonboard y clases guiadas. Los Patagones 375.">
-  <meta name="author" content="Kuyen Climbing">
+  <title>Kuyen Climbing | Templates candidatos</title>
+  <meta name="description" content="Los cuatro templates candidatos para el sitio de Kuyen Climbing, servidos tal cual, con un selector para pasar de uno al siguiente.">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://kuyenclimbing.cl/">
+  <meta name="theme-color" content="#0a0e1d">
 
-  <!-- El tema guardado se aplica antes de pintar, para que la página no
-       aparezca un instante con el tema por defecto y salte al elegido.
-       Mismo rol que el script que inyecta next-themes en Pagos Pendientes. -->
-  <script>
-    (function () {
-      try {
-        var t = localStorage.getItem('kuyen-tema')
-        var validos = ["hive","karate","hirael","nex"]
-        if (t && validos.indexOf(t) !== -1) {
-          var r = document.documentElement
-          for (var i = 0; i < validos.length; i++) r.classList.remove('tema-' + validos[i])
-          r.classList.add('tema-' + t)
-        }
-      } catch (e) {}
-    })()
-  </script>
-
-  <!-- Isotipo placeholder (luna creciente propia). PENDIENTE: reemplazar por
-       el isotipo real de Kuyen cuando entreguen los archivos de marca. -->
   <link rel="icon" type="image/svg+xml" href="/img/marca-luna.svg">
   <link rel="apple-touch-icon" href="/img/marca-luna.svg">
 
-  <!-- Open Graph. PENDIENTE: falta og:image (1200x630) con una foto real del muro. -->
-  <meta property="og:title" content="Kuyen Climbing | Escalada en Padre Las Casas">
-  <meta property="og:description" content="Centro de escalada en boulder en Padre Las Casas: desplomes hasta 25 grados, moonboard y clases guiadas. Los Patagones 375.">
+  <meta property="og:title" content="Kuyen Climbing | Templates candidatos">
+  <meta property="og:description" content="Los cuatro templates candidatos para el sitio de Kuyen Climbing, servidos tal cual, con un selector para pasar de uno al siguiente.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://kuyenclimbing.cl/">
   <meta property="og:locale" content="es_CL">
   <meta property="og:site_name" content="Kuyen Climbing">
-
-  <!-- Twitter Card -->
-  <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="Kuyen Climbing | Escalada en Padre Las Casas">
-  <meta name="twitter:description" content="Centro de escalada en boulder en Padre Las Casas: desplomes hasta 25 grados, moonboard y clases guiadas. Los Patagones 375.">
-
-  <!-- Datos estructurados -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "SportsActivityLocation",
-    "name": "Kuyen Climbing",
-    "url": "https://kuyenclimbing.cl",
-    "description": "Centro de escalada en boulder en Padre Las Casas, La Araucanía: muro con desplomes hasta 25°, moonboard y clases guiadas.",
-    "telephone": "+56935028838",
-    "address": {
-      "@type": "PostalAddress",
-      "streetAddress": "Los Patagones 375",
-      "addressLocality": "Padre Las Casas",
-      "addressRegion": "La Araucanía",
-      "postalCode": "4850000",
-      "addressCountry": "CL"
-    },
-    "geo": {
-      "@type": "GeoCoordinates",
-      "latitude": -38.7605438,
-      "longitude": -72.5918641
-    },
-    "sameAs": [
-      "https://www.instagram.com/kuyen.climbing/",
-      "https://maps.app.goo.gl/v9F89L5peqFyxcJc9"
-    ],
-    "hasMap": "https://maps.app.goo.gl/v9F89L5peqFyxcJc9"
-  }
-  </script>
-  <link rel="stylesheet" href="/css/styles.css?v=c902702c">
-  <script src="/js/main.js?v=bdae44a5" defer></script>
 </head>
-<body class="flex h-full flex-col bg-fondo text-texto">
-  <a href="#contenido" class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-tema focus:bg-primario focus:px-4 focus:py-2 focus:font-semibold focus:text-primario-texto">Saltar al contenido</a>
+<body>
 
-  <header class="sticky top-0 z-50 border-b border-borde bg-fondo/90 backdrop-blur">
-    <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-      <nav class="relative flex h-16 items-center justify-between gap-4 sm:h-20">
-        <a aria-label="Kuyen Climbing, ir al inicio" href="/" class="flex shrink-0 items-center gap-3">
-          <img src="/img/marca-luna.svg" alt="" width="36" height="36" class="h-9 w-9" aria-hidden="true">
-          <span class="leading-none">
-            <span class="titulo block text-base text-texto sm:text-lg">Kuyen Climbing</span>
-            <span class="mt-1 block text-[0.65rem] uppercase tracking-[0.22em] text-suave-texto">Padre Las Casas</span>
-          </span>
-        </a>
+  <h1 class="kt-solo-lectores">Kuyen Climbing: templates candidatos</h1>
 
-        <div class="hidden items-center gap-1 md:flex">
-            <a class="inline-block rounded-tema px-3 py-2 text-sm font-medium text-suave-texto transition hover:bg-suave hover:text-texto" href="#el-muro">El muro</a>
-            <a class="inline-block rounded-tema px-3 py-2 text-sm font-medium text-suave-texto transition hover:bg-suave hover:text-texto" href="#clases">Clases</a>
-            <a class="inline-block rounded-tema px-3 py-2 text-sm font-medium text-suave-texto transition hover:bg-suave hover:text-texto" href="#visitanos">Visítanos</a>
-        </div>
+  <!-- Cada template se sirve entero, tal como está, dentro de su propio
+       documento. El marco solo lo muestra a pantalla completa y le cambia la
+       fuente cuando el toggle pasa al siguiente: así el template no comparte
+       estilos ni scripts con nada y se ve exactamente como el original. -->
+  <iframe id="kt-marco" title="Template Hive" src="/t/hive"></iframe>
 
-        <div class="flex items-center gap-3">
-<!-- ToggleTheme: el mismo patrón que el de Pagos Pendientes
-     (APP-PAGOS-PENDIENTES-frontend/src/components/theme-toggle.tsx): una
-     píldora con el pulsador en la posición del tema activo, un icono por tema,
-     ciclo al siguiente en cada clic y la elección guardada.
+  <!-- ToggleTheme: el mismo patrón que el de Pagos Pendientes
+       (APP-PAGOS-PENDIENTES-frontend/src/components/theme-toggle.tsx): una
+       píldora con el pulsador en la posición del tema activo, un icono por
+       tema, ciclo al siguiente en cada clic y la elección guardada. -->
+  <div class="kt-barra" data-tema-toggle>
+    <button type="button" class="kt-toggle" aria-label="Cambiar de template" data-tema-boton>
+      <span class="kt-knob" data-tema-knob><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z"/></svg></span>
+    </button>
+    <p class="kt-etiqueta">
+      <span data-tema-etiqueta>Hive</span>
+      <span class="kt-contador" data-tema-contador>1/4</span>
+    </p>
+  </div>
 
-     Cambia el tema de esta misma página: pone la clase en <html> y las
-     variables CSS hacen el resto. No navega a ningún lado. Los cuatro temas
-     están definidos en src/css/tailwind.css. -->
-<div class="flex items-center gap-2" data-tema-toggle>
-  <button
-    type="button"
-    class="relative inline-flex h-9 w-[7rem] items-center rounded-full bg-suave-texto/30 transition-colors duration-200 hover:bg-suave-texto/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-primario focus-visible:ring-offset-2 focus-visible:ring-offset-fondo"
-    aria-label="Cambiar de tema"
-    title="Tema"
-    data-tema-boton
-  >
-    <span
-      class="inline-flex h-7 w-7 translate-x-1 items-center justify-center rounded-full bg-fondo text-texto shadow-sm transition-transform duration-200 [&_svg]:h-4 [&_svg]:w-4"
-      data-tema-knob
-    ><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z"/></svg></span>
-  </button>
-  <p class="hidden text-xs font-semibold leading-none text-suave-texto sm:block">
-    <span data-tema-etiqueta>Hive</span>
-  </p>
-</div>
+<style>
+  html, body { height: 100%; margin: 0; background: #0a0e1d; }
+  .kt-solo-lectores {
+    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+  }
+  #kt-marco { display: block; width: 100%; height: 100%; border: 0; }
+
+  .kt-barra {
+    position: fixed;
+    left: 50%;
+    bottom: 1rem;
+    transform: translateX(-50%);
+    z-index: 2147483000;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem 0.9rem 0.5rem 0.5rem;
+    border-radius: 9999px;
+    background: rgba(10, 14, 29, 0.92);
+    color: #f5f5f5;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+    font: 600 12px/1 ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+    backdrop-filter: blur(8px);
+  }
+
+  .kt-toggle {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    height: 2.25rem;
+    width: 7rem;
+    padding: 0;
+    border: 0;
+    border-radius: 9999px;
+    background: rgba(255, 255, 255, 0.22);
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  .kt-toggle:hover { background: rgba(255, 255, 255, 0.32); }
+  .kt-toggle:focus-visible { outline: 2px solid #ff9b57; outline-offset: 2px; }
+
+  .kt-knob {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 1.75rem;
+    width: 1.75rem;
+    border-radius: 9999px;
+    background: #fff;
+    color: #0a0e1d;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    transform: translateX(0.25rem);
+    transition: transform 0.2s;
+  }
+  .kt-knob svg { width: 1rem; height: 1rem; }
+
+  .kt-etiqueta { margin: 0; display: flex; align-items: center; gap: 0.4rem; white-space: nowrap; }
+  .kt-contador { color: rgba(245, 245, 245, 0.55); font-weight: 500; }
+
+  @media (max-width: 480px) {
+    .kt-barra { gap: 0.5rem; padding: 0.4rem 0.7rem 0.4rem 0.4rem; }
+    .kt-toggle { width: 6rem; }
+  }
+</style>
 
 <script>
   (function () {
     'use strict'
 
-    var TEMAS = [{"id":"hive","nombre":"Hive","icono":"<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z\"/></svg>"},{"id":"karate","nombre":"Karate","icono":"<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z\"/></svg>"},{"id":"hirael","nombre":"Hirael","icono":"<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z\"/></svg>"},{"id":"nex","nombre":"NexStudio","icono":"<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"m12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z\"/><path d=\"m6.08 9.5-3.5 1.6a1 1 0 0 0 0 1.81l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9a1 1 0 0 0 0-1.83l-3.5-1.59\"/><path d=\"m6.08 14.5-3.5 1.6a1 1 0 0 0 0 1.81l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9a1 1 0 0 0 0-1.83l-3.5-1.59\"/></svg>"}]
+    var TEMAS = [{"id":"hive","nombre":"Hive","icono":"<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z\"/></svg>","ruta":"/t/hive"},{"id":"karate","nombre":"Karate","icono":"<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z\"/></svg>","ruta":"/t/karate"},{"id":"hirael","nombre":"Hirael","icono":"<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z\"/></svg>","ruta":"/t/hirael"},{"id":"nex","nombre":"NexStudio","icono":"<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"m12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z\"/><path d=\"m6.08 9.5-3.5 1.6a1 1 0 0 0 0 1.81l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9a1 1 0 0 0 0-1.83l-3.5-1.59\"/><path d=\"m6.08 14.5-3.5 1.6a1 1 0 0 0 0 1.81l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9a1 1 0 0 0 0-1.83l-3.5-1.59\"/></svg>","ruta":"/t/nex"}]
     var CLAVE = 'kuyen-tema'
-    var raiz = document.documentElement
 
-    var contenedor = document.querySelector('[data-tema-toggle]')
-    if (!contenedor) return
-    var boton = contenedor.querySelector('[data-tema-boton]')
-    var knob = contenedor.querySelector('[data-tema-knob]')
-    var etiqueta = contenedor.querySelector('[data-tema-etiqueta]')
-
-    function guardado() {
-      try {
-        var v = localStorage.getItem(CLAVE)
-        for (var i = 0; i < TEMAS.length; i++) if (TEMAS[i].id === v) return i
-      } catch (e) {}
-      return 0
-    }
+    var marco = document.getElementById('kt-marco')
+    var boton = document.querySelector('[data-tema-boton]')
+    var knob = document.querySelector('[data-tema-knob]')
+    var etiqueta = document.querySelector('[data-tema-etiqueta]')
+    var contador = document.querySelector('[data-tema-contador]')
+    if (!marco || !boton) return
 
     // Posiciones del pulsador: el ancho útil de la píldora repartido entre los
     // temas, como las translate-x fijas del toggle de Pagos Pendientes.
-    var ANCHO = 7 // rem, el mismo valor que la clase w-[7rem] del botón
-    var LIBRE = ANCHO - 1.75 - 0.5 // menos el pulsador y los márgenes
+    var ANCHO = 7 // rem, el mismo valor que .kt-toggle
+    var LIBRE = ANCHO - 1.75 - 0.5
     var PASO = TEMAS.length > 1 ? LIBRE / (TEMAS.length - 1) : 0
 
-    var indice = guardado()
+    var indice = 0
+    try {
+      var guardado = localStorage.getItem(CLAVE)
+      for (var i = 0; i < TEMAS.length; i++) if (TEMAS[i].id === guardado) indice = i
+    } catch (e) {}
 
-    function aplicar(i, guardar) {
+    function aplicar(i, cargar) {
       var tema = TEMAS[i]
       var siguiente = TEMAS[(i + 1) % TEMAS.length]
 
-      for (var j = 0; j < TEMAS.length; j++) raiz.classList.remove('tema-' + TEMAS[j].id)
-      raiz.classList.add('tema-' + tema.id)
+      if (cargar) marco.src = tema.ruta
+      marco.title = 'Template ' + tema.nombre
 
       knob.style.transform = 'translateX(' + (0.25 + PASO * i) + 'rem)'
       knob.innerHTML = tema.icono
-      if (etiqueta) etiqueta.textContent = tema.nombre
-      boton.setAttribute('title', 'Tema ' + tema.nombre)
-      boton.setAttribute('aria-label', 'Cambiar al tema ' + siguiente.nombre)
+      etiqueta.textContent = tema.nombre
+      contador.textContent = i + 1 + '/' + TEMAS.length
+      boton.setAttribute('title', 'Template ' + tema.nombre)
+      boton.setAttribute('aria-label', 'Cambiar al template ' + siguiente.nombre)
 
-      if (guardar) {
-        try { localStorage.setItem(CLAVE, tema.id) } catch (e) {}
-      }
+      try { localStorage.setItem(CLAVE, tema.id) } catch (e) {}
     }
 
-    aplicar(indice, false)
+    // El primer render ya trae el template por defecto en el src; solo se
+    // recarga el marco si lo guardado es otro.
+    aplicar(indice, indice !== 0)
 
     boton.addEventListener('click', function () {
       indice = (indice + 1) % TEMAS.length
@@ -180,331 +164,5 @@
   })()
 </script>
 
-          <a class="hidden items-center justify-center rounded-boton bg-primario px-5 py-2.5 text-sm font-semibold text-primario-texto transition hover:opacity-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-primario focus-visible:ring-offset-2 focus-visible:ring-offset-fondo sm:inline-flex" href="https://wa.me/56935028838" target="_blank" rel="noopener">
-            Escríbenos
-          </a>
-
-          <div class="md:hidden" data-mobile-nav>
-            <button type="button" class="relative z-10 flex h-10 w-10 items-center justify-center rounded-tema text-texto hover:bg-suave" aria-label="Abrir la navegación" aria-expanded="false" aria-controls="menu-movil" data-mobile-toggle>
-              <svg aria-hidden="true" class="h-4 w-4 overflow-visible stroke-current" fill="none" stroke-width="2" stroke-linecap="round">
-                <path d="M0 1H16M0 8H16M0 15H16" class="origin-center transition" data-icon-menu></path>
-                <path d="M2 2L14 14M14 2L2 14" class="origin-center scale-90 opacity-0 transition" data-icon-close></path>
-              </svg>
-            </button>
-            <div class="fixed inset-0 top-16 hidden bg-texto/40" data-mobile-overlay></div>
-            <div id="menu-movil" class="absolute inset-x-0 top-full mt-3 hidden flex-col gap-1 rounded-tema border border-borde bg-superficie p-3 shadow-2xl" data-mobile-panel>
-                <a class="block w-full rounded-tema px-3 py-3 text-base font-medium hover:bg-suave" href="#el-muro">El muro</a>
-                <a class="block w-full rounded-tema px-3 py-3 text-base font-medium hover:bg-suave" href="#clases">Clases</a>
-                <a class="block w-full rounded-tema px-3 py-3 text-base font-medium hover:bg-suave" href="#visitanos">Visítanos</a>
-              <a class="mt-2 block w-full rounded-boton bg-primario px-3 py-3 text-center text-base font-semibold text-primario-texto" href="https://wa.me/56935028838" target="_blank" rel="noopener">Escríbenos por WhatsApp</a>
-            </div>
-          </div>
-
-        </div>
-      </nav>
-    </div>
-  </header>
-
-
-  <main id="contenido">
-    <section class="border-b border-borde">
-      <div class="mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-24 lg:px-8 lg:py-28">
-        <p class="text-xs font-semibold uppercase tracking-[0.25em] text-primario">Padre Las Casas, La Araucanía</p>
-
-        <h1 class="titulo mt-6 max-w-4xl text-4xl leading-[1.05] sm:text-6xl lg:text-7xl">
-          Un muro hecho por escaladores, <span class="acento italic">para escaladores</span>
-        </h1>
-
-        <p class="mt-8 max-w-2xl text-lg leading-relaxed text-suave-texto">
-          Kuyen Climbing es un centro de escalada en boulder en Los Patagones 375. Desplomes continuos
-          hasta 25 grados, moonboard para quien viene a entrenar en serio, y clases guiadas para quien
-          nunca se colgó de una presa.
-        </p>
-
-        <div class="mt-10 flex flex-wrap items-center gap-4">
-          <a class="inline-flex items-center justify-center rounded-boton bg-primario px-7 py-3.5 text-base font-semibold text-primario-texto transition hover:opacity-90" href="https://wa.me/56935028838" target="_blank" rel="noopener">
-            Escríbenos por WhatsApp
-          </a>
-          <a class="inline-flex items-center gap-2 rounded-boton border border-borde px-7 py-3.5 text-base font-semibold transition hover:bg-suave" href="#visitanos">
-            Cómo llegar
-            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-          </a>
-        </div>
-
-        <dl class="mt-16 grid gap-8 border-t border-borde pt-10 sm:grid-cols-3">
-          <div>
-            <dt class="text-sm text-suave-texto">En Google</dt>
-            <dd class="titulo mt-2 text-3xl">5,0 <span class="text-base text-suave-texto">con 14 reseñas</span></dd>
-          </div>
-          <div>
-            <dt class="text-sm text-suave-texto">Desplomes continuos</dt>
-            <dd class="titulo mt-2 text-3xl">hasta 25°</dd>
-          </div>
-          <div>
-            <dt class="text-sm text-suave-texto">Para entrenar</dt>
-            <dd class="titulo mt-2 text-3xl">Moonboard</dd>
-          </div>
-        </dl>
-      </div>
-    </section>
-
-    <section id="el-muro" class="border-b border-borde bg-superficie text-superficie-texto">
-      <div class="mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
-        <div class="max-w-3xl">
-          <p class="text-xs font-semibold uppercase tracking-[0.25em] text-primario">El muro</p>
-          <h2 class="titulo mt-5 text-3xl sm:text-5xl">Boulder, sin cuerda y sin vueltas</h2>
-          <p class="mt-6 text-lg leading-relaxed text-suave-texto">
-            Escalada en boulder: bloques de pocos metros sobre colchoneta, donde se sube sin arnés ni
-            cuerda. Se entra, se prueba, se cae, se vuelve a probar. Es la forma más directa de empezar
-            y también donde entrena quien ya lleva años.
-          </p>
-        </div>
-
-        <div class="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          <article class="rounded-tema border border-borde bg-fondo p-7">
-            <h3 class="titulo text-xl">Desplomes hasta 25°</h3>
-            <p class="mt-3 text-sm leading-relaxed text-suave-texto">
-              Paredes con inclinación continua, para trabajar tensión de cuerpo y bloques de fuerza.
-              El muro da para moverse entre lo suave y lo bien vertical.
-            </p>
-          </article>
-
-          <article class="rounded-tema border border-borde bg-fondo p-7">
-            <h3 class="titulo text-xl">Moonboard</h3>
-            <p class="mt-3 text-sm leading-relaxed text-suave-texto">
-              El tablero de entrenamiento estandarizado que se usa en todo el mundo: mismos agarres,
-              mismos bloques, mismas medidas. Sirve para entrenar con un plan y comparar progreso.
-            </p>
-          </article>
-
-          <article class="rounded-tema border border-borde bg-fondo p-7">
-            <h3 class="titulo text-xl">Bloques para todos los niveles</h3>
-            <p class="mt-3 text-sm leading-relaxed text-suave-texto">
-              Rutas marcadas por dificultad, desde las de primera vez hasta las que cuestan a los
-              habituales. Se cambian seguido, así que el muro nunca queda igual mucho tiempo.
-            </p>
-          </article>
-        </div>
-
-        <!-- PENDIENTE: reemplazar por fotos reales del muro cuando Kuyen las entregue.
-             Mientras tanto, la sección se sostiene con texto. -->
-      </div>
-    </section>
-
-    <section id="clases" class="border-b border-borde">
-      <div class="mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
-        <div class="max-w-3xl">
-          <p class="text-xs font-semibold uppercase tracking-[0.25em] text-primario">Clases</p>
-          <h2 class="titulo mt-5 text-3xl sm:text-5xl">Guiadas, en grupos chicos</h2>
-          <p class="mt-6 text-lg leading-relaxed text-suave-texto">
-            No hace falta experiencia ni equipo propio para la primera vez. Las clases guiadas empiezan
-            por lo básico, cómo pararse, cómo caer, cómo leer un bloque, y siguen hasta el entrenamiento
-            con objetivos para quien ya escala.
-          </p>
-        </div>
-
-        <div class="mt-14 grid gap-6 lg:grid-cols-3">
-          <article class="flex flex-col rounded-tema border border-borde p-7">
-            <h3 class="titulo text-xl">Primera vez</h3>
-            <p class="mt-3 flex-1 text-sm leading-relaxed text-suave-texto">
-              Para quien nunca escaló. Se explica cómo funciona el muro, cómo caer sin lastimarse y se
-              prueban los primeros bloques acompañado.
-            </p>
-          </article>
-
-          <article class="flex flex-col rounded-tema border border-borde p-7">
-            <h3 class="titulo text-xl">Entrenamiento</h3>
-            <p class="mt-3 flex-1 text-sm leading-relaxed text-suave-texto">
-              Para quien ya escala y quiere avanzar en algo concreto: fuerza de dedos, tensión, lectura
-              de bloques o un proyecto que se le resiste. Acá entra el moonboard.
-            </p>
-          </article>
-
-          <article class="flex flex-col rounded-tema border border-borde p-7">
-            <h3 class="titulo text-xl">Kuyencit@s</h3>
-            <p class="mt-3 flex-1 text-sm leading-relaxed text-suave-texto">
-              Las clases para niñas y niños. Escalar, pasarlo bien y moverse, con acompañamiento en el
-              muro.
-            </p>
-          </article>
-        </div>
-
-        <div class="mt-10 rounded-tema bg-suave p-6 text-sm leading-relaxed text-suave-texto sm:p-8">
-          <!-- POR CONFIRMAR: días, horarios, cupos y valores de cada clase. Kuyen publicó
-               una promoción de 8 clases por $45.000, sin fecha de vigencia clara. -->
-          Los días, los cupos y los valores de cada clase se coordinan por WhatsApp o por Instagram.
-          <a class="font-semibold text-primario hover:opacity-80" href="https://wa.me/56935028838" target="_blank" rel="noopener">Escríbenos</a>
-          y te contamos cómo está el calendario esta semana.
-        </div>
-      </div>
-    </section>
-
-    <section class="border-b border-borde bg-contraste text-contraste-texto">
-      <div class="mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
-        <div class="grid gap-12 lg:grid-cols-2 lg:items-center">
-          <div>
-            <p class="text-xs font-semibold uppercase tracking-[0.25em] opacity-70">La comunidad</p>
-            <h2 class="titulo mt-5 text-3xl sm:text-5xl">Un espacio seguro para escalar</h2>
-            <p class="mt-6 text-lg leading-relaxed opacity-80">
-              En Kuyen se arman competencias, encuentros y jornadas abiertas. La ficha del centro está
-              marcada como espacio amigable con la comunidad LGBTQ+, y esa es la idea de fondo: que
-              cualquiera pueda entrar a probar sin sentirse fuera de lugar.
-            </p>
-            <a class="mt-8 inline-flex items-center gap-2 rounded-boton border border-current px-6 py-3 text-sm font-semibold transition hover:opacity-80" href="https://www.instagram.com/kuyen.climbing/" target="_blank" rel="noopener">
-              Seguir @kuyen.climbing
-              <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-            </a>
-          </div>
-
-          <ul class="grid gap-4 sm:grid-cols-2">
-            <li class="rounded-tema border border-current/20 p-6">
-              <p class="titulo text-2xl">Competencias</p>
-              <p class="mt-2 text-sm leading-relaxed opacity-75">
-                Formatos pensados para que participe todo el mundo, no solo quien compite.
-              </p>
-            </li>
-            <li class="rounded-tema border border-current/20 p-6">
-              <p class="titulo text-2xl">Encuentros</p>
-              <p class="mt-2 text-sm leading-relaxed opacity-75">
-                Jornadas abiertas con charlas y escalada, anunciadas en Instagram.
-              </p>
-            </li>
-            <li class="rounded-tema border border-current/20 p-6">
-              <p class="titulo text-2xl">2.900+</p>
-              <p class="mt-2 text-sm leading-relaxed opacity-75">
-                Personas siguen el día a día del muro en Instagram.
-              </p>
-            </li>
-            <li class="rounded-tema border border-current/20 p-6">
-              <p class="titulo text-2xl">5,0</p>
-              <p class="mt-2 text-sm leading-relaxed opacity-75">
-                La nota del centro en Google, sobre 14 reseñas.
-              </p>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </section>
-
-    <section id="visitanos">
-      <div class="mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
-        <div class="grid gap-12 lg:grid-cols-2">
-          <div>
-            <p class="text-xs font-semibold uppercase tracking-[0.25em] text-primario">Visítanos</p>
-            <h2 class="titulo mt-5 text-3xl sm:text-5xl">Los Patagones 375</h2>
-            <p class="mt-6 text-lg leading-relaxed text-suave-texto">
-              Estamos en Padre Las Casas, cruzando el río desde Temuco. Se llega en auto, en micro o
-              caminando desde el centro de la comuna.
-            </p>
-
-            <dl class="mt-10 space-y-6">
-              <div class="border-t border-borde pt-5">
-                <dt class="text-sm text-suave-texto">Dirección</dt>
-                <dd class="mt-1 text-lg">Los Patagones 375, Padre Las Casas, La Araucanía</dd>
-              </div>
-              <div class="border-t border-borde pt-5">
-                <dt class="text-sm text-suave-texto">Teléfono</dt>
-                <dd class="mt-1 text-lg"><a class="font-semibold text-primario hover:opacity-80" href="tel:+56935028838">+56 9 3502 8838</a></dd>
-              </div>
-              <div class="border-t border-borde pt-5">
-                <dt class="text-sm text-suave-texto">Horario</dt>
-                <!-- POR CONFIRMAR: el horario semanal completo. Google indica cierre a las
-                     22:00; una revista de 2023 publicaba lunes a viernes de 14:00 a 22:00. -->
-                <dd class="mt-1 text-lg">Cerramos a las 22:00. Confírmanos el día por WhatsApp.</dd>
-              </div>
-            </dl>
-
-            <div class="mt-10 flex flex-wrap gap-4">
-              <a class="inline-flex items-center justify-center rounded-boton bg-primario px-7 py-3.5 text-base font-semibold text-primario-texto transition hover:opacity-90" href="https://maps.app.goo.gl/v9F89L5peqFyxcJc9" target="_blank" rel="noopener">
-                Abrir en Google Maps
-              </a>
-              <a class="inline-flex items-center justify-center rounded-boton border border-borde px-7 py-3.5 text-base font-semibold transition hover:bg-suave" href="https://wa.me/56935028838" target="_blank" rel="noopener">
-                Escríbenos
-              </a>
-            </div>
-          </div>
-
-          <div class="rounded-tema border border-borde bg-superficie p-7 text-superficie-texto sm:p-9">
-            <h3 class="titulo text-2xl">Para la primera vez</h3>
-            <ul class="mt-6 space-y-5 text-sm leading-relaxed text-suave-texto">
-              <li class="flex gap-3">
-                <span class="mt-1 h-2 w-2 shrink-0 rounded-full bg-primario" aria-hidden="true"></span>
-                <span><strong class="font-semibold text-superficie-texto">Ropa cómoda.</strong> Cualquier ropa deportiva sirve. Nada de equipo especial para probar.</span>
-              </li>
-              <li class="flex gap-3">
-                <span class="mt-1 h-2 w-2 shrink-0 rounded-full bg-primario" aria-hidden="true"></span>
-                <span><strong class="font-semibold text-superficie-texto">Los pies de gato se arriendan.</strong> Escríbenos antes si necesitas una talla puntual.</span>
-              </li>
-              <li class="flex gap-3">
-                <span class="mt-1 h-2 w-2 shrink-0 rounded-full bg-primario" aria-hidden="true"></span>
-                <span><strong class="font-semibold text-superficie-texto">No hace falta reservar</strong> para escalar libre, sí para tomar una clase.</span>
-              </li>
-              <li class="flex gap-3">
-                <span class="mt-1 h-2 w-2 shrink-0 rounded-full bg-primario" aria-hidden="true"></span>
-                <span><strong class="font-semibold text-superficie-texto">Uñas cortas y sin anillos.</strong> Se agradece a la mitad del segundo bloque.</span>
-              </li>
-            </ul>
-
-            <p class="mt-8 border-t border-borde pt-6 text-xs leading-relaxed text-suave-texto">
-              Valores de entrada y planes: los coordinamos por WhatsApp mientras terminamos de
-              publicarlos acá.
-            </p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-  </main>
-
-  <footer class="border-t border-borde bg-superficie text-superficie-texto">
-    <div class="mx-auto max-w-6xl px-4 py-14 sm:px-6 lg:px-8">
-      <div class="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
-        <div class="lg:col-span-2">
-          <div class="flex items-center gap-3">
-            <img src="/img/marca-luna.svg" alt="" width="36" height="36" class="h-9 w-9" aria-hidden="true">
-            <span class="titulo text-lg">Kuyen Climbing</span>
-          </div>
-          <p class="mt-4 max-w-sm text-sm leading-relaxed text-suave-texto">
-            Centro de escalada en boulder en Padre Las Casas. Un proyecto hecho por escaladores para escaladores.
-          </p>
-        </div>
-
-        <div>
-          <h2 class="text-sm font-semibold uppercase tracking-widest">El centro</h2>
-          <nav class="mt-4 flex flex-col items-start gap-1 text-sm" aria-label="Enlaces del sitio">
-            <a class="text-suave-texto transition hover:text-texto" href="#el-muro">El muro</a>
-            <a class="text-suave-texto transition hover:text-texto" href="#clases">Clases</a>
-            <a class="text-suave-texto transition hover:text-texto" href="#visitanos">Visítanos</a>
-          </nav>
-        </div>
-
-        <div>
-          <h2 class="text-sm font-semibold uppercase tracking-widest">Dónde estamos</h2>
-          <address class="mt-4 text-sm not-italic leading-relaxed text-suave-texto">
-            Los Patagones 375<br>
-            Padre Las Casas, La Araucanía<br>
-            <a class="mt-2 inline-block font-semibold text-primario hover:opacity-80" href="tel:+56935028838">+56 9 3502 8838</a>
-          </address>
-          <div class="mt-4 flex gap-3">
-            <a class="group rounded-tema p-2 ring-1 ring-borde transition hover:bg-suave" aria-label="Kuyen Climbing en Instagram" href="https://www.instagram.com/kuyen.climbing/" target="_blank" rel="noopener">
-              <svg class="h-5 w-5 fill-suave-texto group-hover:fill-texto" aria-hidden="true" viewBox="0 0 24 24">
-                <path d="M12 2.16c3.2 0 3.58.01 4.85.07 1.17.05 1.8.25 2.23.41.56.22.96.48 1.38.9.42.42.68.82.9 1.38.16.42.36 1.06.41 2.23.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.05 1.17-.25 1.8-.41 2.23-.22.56-.48.96-.9 1.38-.42.42-.82.68-1.38.9-.42.16-1.06.36-2.23.41-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-1.17-.05-1.8-.25-2.23-.41-.56-.22-.96-.48-1.38-.9-.42-.42-.68-.82-.9-1.38-.16-.42-.36-1.06-.41-2.23-.06-1.27-.07-1.65-.07-4.85s.01-3.58.07-4.85c.05-1.17.25-1.8.41-2.23.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.42-.16 1.06-.36 2.23-.41 1.27-.06 1.65-.07 4.85-.07M12 0C8.74 0 8.33.01 7.05.07 5.78.13 4.9.33 4.14.63c-.79.3-1.46.72-2.13 1.38C1.35 2.68.93 3.35.63 4.14.33 4.9.13 5.78.07 7.05.01 8.33 0 8.74 0 12s.01 3.67.07 4.95c.06 1.27.26 2.15.56 2.91.3.79.72 1.46 1.38 2.13.67.66 1.34 1.08 2.13 1.38.76.3 1.64.5 2.91.56C8.33 23.99 8.74 24 12 24s3.67-.01 4.95-.07c1.27-.06 2.15-.26 2.91-.56.79-.3 1.46-.72 2.13-1.38.66-.67 1.08-1.34 1.38-2.13.3-.76.5-1.64.56-2.91.06-1.28.07-1.69.07-4.95s-.01-3.67-.07-4.95c-.06-1.27-.26-2.15-.56-2.91-.3-.79-.72-1.46-1.38-2.13C21.32 1.35 20.65.93 19.86.63c-.76-.3-1.64-.5-2.91-.56C15.67.01 15.26 0 12 0Zm0 5.84a6.16 6.16 0 1 0 0 12.32 6.16 6.16 0 0 0 0-12.32Zm0 10.16a4 4 0 1 1 0-8 4 4 0 0 1 0 8Zm7.85-10.4a1.44 1.44 0 1 1-2.88 0 1.44 1.44 0 0 1 2.88 0Z"></path>
-              </svg>
-            </a>
-            <a class="group rounded-tema p-2 ring-1 ring-borde transition hover:bg-suave" aria-label="Escribir a Kuyen Climbing por WhatsApp" href="https://wa.me/56935028838" target="_blank" rel="noopener">
-              <svg class="h-5 w-5 fill-suave-texto group-hover:fill-texto" aria-hidden="true" viewBox="0 0 24 24">
-                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"></path>
-              </svg>
-            </a>
-          </div>
-        </div>
-      </div>
-
-      <div class="mt-12 flex flex-col gap-3 border-t border-borde pt-8 text-sm text-suave-texto sm:flex-row sm:items-center sm:justify-between">
-        <p>&copy; 2026 Kuyen Climbing. Todos los derechos reservados.</p>
-        <p><a class="hover:text-texto" href="https://maps.app.goo.gl/v9F89L5peqFyxcJc9" target="_blank" rel="noopener">Ver en Google Maps</a></p>
-      </div>
-    </div>
-  </footer>
 </body>
 </html>

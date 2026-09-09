@@ -3,17 +3,12 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build:css": "tailwindcss -c tailwind.config.cjs -i src/css/tailwind.css -o css/styles.css --minify",
-    "build:html": "node tools/build.mjs --out=.",
-    "build": "npm run build:css && npm run build:html",
+    "build": "node tools/build.mjs --out=.",
     "preview": "node tools/build.mjs --site=preview --out=dist-preview",
     "serve": "node tools/serve.mjs dist",
-    "verify": "node tools/verify.mjs --port=8099",
+    "verify": "node tools/verify.mjs --port=8100",
     "test:ui": "node --experimental-websocket tools/pruebas-ui.mjs http://localhost:8100",
-    "preview:publicar": "npm run preview && node tools/publicar-preview.mjs"
-  },
-  "devDependencies": {
-    "@tailwindcss/forms": "^0.5.9",
-    "tailwindcss": "^3.4.19"
+    "preview:publicar": "npm run preview && node tools/publicar-preview.mjs",
+    "capturar": "node --experimental-websocket tools/capturar-tema.mjs"
   }
 }
