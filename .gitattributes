@@ -1,3 +1,8 @@
 # El workflow corre en un runner Linux: con CRLF el script falla.
 *.yml text eol=lf
 *.mjs text eol=lf
+
+# Las capturas de los templates se guardan tal cual llegaron: sin conversion
+# de saltos de linea, para que sean byte a byte lo que sirve el original.
+temas/** -text
+src/temas/** -text
