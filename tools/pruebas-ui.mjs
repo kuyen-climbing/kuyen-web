@@ -5,10 +5,12 @@
  *   node tools/serve.mjs dist --port=8100      (en otra terminal)
  *   npm run test:ui
  *
- * Lo que comprueba es el ToggleTheme: que cicle los cuatro temas sobre la misma
- * página sin navegar, que cada tema cambie de verdad color y tipografía, que la
- * elección sobreviva a una recarga y que el menú móvil siga funcionando.
- * Deja una captura por tema en dist-pruebas/.
+ * Comprueba el marco y el ToggleTheme: que arranque con el template por
+ * defecto, que cada clic cargue el siguiente sin recargar la página de arriba,
+ * que la elección se guarde y sobreviva a una recarga, y que cada template
+ * cargue de verdad su contenido y sus assets.
+ *
+ * Deja una captura por template en dist-pruebas/.
  */
 import { spawn } from 'node:child_process'
 import { writeFileSync, mkdirSync } from 'node:fs'
@@ -65,7 +67,7 @@ const evaluate = async (expression) => {
 }
 const metrics = (width, height) =>
   send('Emulation.setDeviceMetricsOverride', { width, height, deviceScaleFactor: 1, mobile: width < 768 })
-const goto = async (path, espera = 1800) => { await send('Page.navigate', { url: BASE + path }); await sleep(espera) }
+const goto = async (path, espera = 5000) => { await send('Page.navigate', { url: BASE + path }); await sleep(espera) }
 
 async function shot(name, { full = false } = {}) {
   const params = { format: 'jpeg', quality: 72 }
@@ -80,22 +82,8 @@ async function shot(name, { full = false } = {}) {
   console.log('captura', name)
 }
 
-/** Lo que define visualmente a un tema: fondo, texto, primario y tipografía del título. */
-const estilos = () =>
-  evaluate(`(function(){
-    var b = getComputedStyle(document.body)
-    var h1 = document.querySelector('h1')
-    return {
-      clase: document.documentElement.className,
-      fondo: b.backgroundColor,
-      texto: b.color,
-      cuerpoFuente: b.fontFamily,
-      tituloFuente: h1 ? getComputedStyle(h1).fontFamily : '',
-      tituloTracking: h1 ? getComputedStyle(h1).letterSpacing : '',
-      primario: getComputedStyle(document.querySelector('a[href^="https://wa.me"]')).backgroundColor,
-      radio: getComputedStyle(document.querySelector('.rounded-tema')).borderRadius
-    }
-  })()`)
+/** El documento cargado dentro del marco. */
+const dentro = (expr) => evaluate(`(function(){var d=document.getElementById('kt-marco').contentDocument;return ${expr}})()`)
 
 const results = []
 const check = (nombre, ok, detalle = '') => { results.push([nombre, ok, detalle]); console.log(ok ? 'OK   ' : 'FALLA', nombre, detalle) }
@@ -104,70 +92,62 @@ try {
   await metrics(1440, 900)
   await goto('/')
   // Chrome reusa su perfil entre corridas: sin esto la prueba arrancaría con
-  // el tema que quedó elegido la vez anterior.
+  // el template que quedó elegido la vez anterior.
   await evaluate('localStorage.removeItem("kuyen-tema"); "ok"')
   await goto('/')
 
-  check('la página tiene un solo h1', (await evaluate('document.querySelectorAll("h1").length')) === 1)
-  check('arranca con el tema por defecto', (await evaluate('document.documentElement.classList.contains("tema-' + TEMA_POR_DEFECTO + '")')))
-  check('el ToggleTheme está en la página', await evaluate('!!document.querySelector("[data-tema-boton]")'))
+  check('el marco tiene un solo h1', (await evaluate('document.querySelectorAll("h1").length')) === 1)
+  check('el ToggleTheme está en el marco', await evaluate('!!document.querySelector("[data-tema-boton]")'))
+  check('arranca con el template por defecto',
+    (await evaluate('new URL(document.getElementById("kt-marco").src).pathname')) === rutaTema(TEMA_POR_DEFECTO))
 
-  // Un ciclo completo: cada clic pasa al siguiente tema, sin navegar.
-  const urlInicial = await evaluate('location.href')
-  const vistos = []
+  const urlArriba = await evaluate('location.href')
+
   for (let i = 0; i < TEMAS.length; i++) {
     const tema = TEMAS[i]
-    const est = await estilos()
 
-    check(`${tema.id}: la clase del tema está en <html>`, est.clase.includes('tema-' + tema.id), est.clase)
-    check(`${tema.id}: la etiqueta del toggle lo nombra`, (await evaluate('document.querySelector("[data-tema-etiqueta]").textContent')) === tema.nombre)
-    check(`${tema.id}: el pulsador se movió a su posición`, (await evaluate('document.querySelector("[data-tema-knob]").style.transform')).includes('translateX'))
-    vistos.push({ id: tema.id, ...est })
+    check(`${tema.id}: la etiqueta del toggle lo nombra`,
+      (await evaluate('document.querySelector("[data-tema-etiqueta]").textContent')) === tema.nombre)
+    check(`${tema.id}: el contador muestra la posición`,
+      (await evaluate('document.querySelector("[data-tema-contador]").textContent')) === `${i + 1}/${TEMAS.length}`)
+    check(`${tema.id}: el pulsador se movió a su posición`,
+      (await evaluate('document.querySelector("[data-tema-knob]").style.transform')).includes('translateX'))
 
-    await shot(`tema-${tema.id}-desktop`, { full: true })
+    // El template cargado de verdad, con su contenido y sus assets.
+    check(`${tema.id}: el template cargó su contenido`, (await dentro('d.body.innerText.trim().length')) > 800)
+    check(`${tema.id}: el template trajo sus estilos`,
+      (await dentro('getComputedStyle(d.body).fontFamily')).length > 0 &&
+        (await dentro('getComputedStyle(d.body).fontFamily')) !== 'Times New Roman')
+    check(`${tema.id}: sin imágenes rotas`, (await dentro('[].slice.call(d.images).filter(function(i){return i.complete && i.naturalWidth === 0}).length')) === 0,
+      `${await dentro('d.images.length')} imágenes`)
+    check(`${tema.id}: el router no cayó en su página de error`,
+      !(await dentro('d.body.innerText')).match(/Page Not Found|404 - |Esta p[aá]gina no existe/i))
+
+    await shot(`marco-${tema.id}`)
 
     await evaluate('document.querySelector("[data-tema-boton]").click(); "ok"')
-    await sleep(400)
+    await sleep(5000)
   }
 
-  check('cambiar de tema no navega', (await evaluate('location.href')) === urlInicial)
-  check('vuelve al primer tema al completar el ciclo', await evaluate('document.documentElement.classList.contains("tema-' + TEMAS[0].id + '")'))
-
-  // Cada tema tiene que verse distinto de los demás, no solo llamarse distinto.
-  const firmas = vistos.map((v) => [v.fondo, v.texto, v.primario, v.tituloFuente, v.tituloTracking].join('|'))
-  check('los cuatro temas se ven distintos entre sí', new Set(firmas).size === TEMAS.length,
-    `${new Set(firmas).size} combinaciones distintas de ${TEMAS.length}`)
-  const fuentes = new Set(vistos.map((v) => v.tituloFuente.split(',')[0].trim()))
-  check('los temas usan tipografías de título distintas', fuentes.size >= 3, [...fuentes].join(' / '))
+  check('cambiar de template no recarga la página de arriba', (await evaluate('location.href')) === urlArriba)
+  check('vuelve al primero al completar el ciclo',
+    (await evaluate('new URL(document.getElementById("kt-marco").src).pathname')) === rutaTema(TEMAS[0].id))
 
   // La elección sobrevive a la recarga.
   await evaluate('document.querySelector("[data-tema-boton]").click(); "ok"')
-  await sleep(300)
+  await sleep(1500)
   const elegido = await evaluate('localStorage.getItem("kuyen-tema")')
+  check('la elección queda guardada', elegido === TEMAS[1].id, String(elegido))
   await goto('/')
-  check('la elección sobrevive a recargar', (await evaluate('localStorage.getItem("kuyen-tema")')) === elegido)
-  check('la recarga abre con el tema elegido', await evaluate(`document.documentElement.classList.contains('tema-' + ${JSON.stringify(elegido)})`))
-
-  // Capturas de referencia: el template original de cada tema.
-  for (const tema of TEMAS) {
-    const res = await evaluate(`fetch(${JSON.stringify(rutaTema(tema.id))}).then(r => r.status)`)
-    check(`la referencia ${rutaTema(tema.id)} responde`, res === 200, String(res))
-  }
+  check('la recarga abre con el template elegido',
+    (await evaluate('new URL(document.getElementById("kt-marco").src).pathname')) === rutaTema(elegido))
 
   // Móvil.
   await metrics(390, 844)
   await goto('/')
-  check('sin desborde horizontal en móvil', await evaluate('document.documentElement.scrollWidth <= window.innerWidth'),
-    await evaluate('document.documentElement.scrollWidth + "px de " + window.innerWidth'))
-  check('el toggle sigue visible en móvil', await evaluate(`(function(){var b=document.querySelector('[data-tema-boton]');var r=b.getBoundingClientRect();return r.width>0&&r.right<=window.innerWidth})()`))
-  check('menú móvil cerrado al cargar', await evaluate(`getComputedStyle(document.getElementById('menu-movil')).display === 'none'`))
-  await evaluate('document.querySelector("[data-mobile-toggle]").click(); "ok"')
-  await sleep(300)
-  check('el menú móvil se abre', await evaluate(`getComputedStyle(document.getElementById('menu-movil')).display === 'flex'`))
-  await shot('menu-mobile')
-  await evaluate('document.querySelector("[data-mobile-overlay]").click(); "ok"')
-  await sleep(300)
-  await shot('sitio-mobile', { full: true })
+  check('el toggle entra en pantalla chica',
+    await evaluate(`(function(){var b=document.querySelector('.kt-barra');var r=b.getBoundingClientRect();return r.width<=window.innerWidth})()`))
+  await shot('marco-mobile')
 } finally {
   ws.close()
   chrome.kill()
