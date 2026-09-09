@@ -1,0 +1,13 @@
+          <div class="md:hidden" data-mobile-nav>
+            <button type="button" class="relative z-10 flex h-10 w-10 items-center justify-center rounded-lg text-noche-100 hover:bg-white/10" aria-label="Abrir la navegación" aria-expanded="false" aria-controls="menu-movil" data-mobile-toggle>
+              <svg aria-hidden="true" class="h-4 w-4 overflow-visible stroke-current" fill="none" stroke-width="2" stroke-linecap="round">
+                <path d="M0 1H16M0 8H16M0 15H16" class="origin-center transition" data-icon-menu></path>
+                <path d="M2 2L14 14M14 2L2 14" class="origin-center scale-90 opacity-0 transition" data-icon-close></path>
+              </svg>
+            </button>
+            <div class="fixed inset-0 top-16 hidden bg-noche-950/70" data-mobile-overlay></div>
+            <div id="menu-movil" class="absolute inset-x-0 top-full mt-3 hidden flex-col gap-1 rounded-2xl border border-white/10 bg-noche-900 p-3 shadow-2xl" data-mobile-panel>
+{{mobileLinks}}
+              <a class="mt-2 block w-full rounded-lg bg-presa-500 px-3 py-3 text-center text-base font-semibold text-noche-950" href="{{whatsapp}}" target="_blank" rel="noopener">Escríbenos por WhatsApp</a>
+            </div>
+          </div>

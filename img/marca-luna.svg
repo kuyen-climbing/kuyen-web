@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Kuyen Climbing">
+  <!-- Isotipo PLACEHOLDER. "Küyen" es luna en mapudungun: luna creciente sobre
+       el fondo de noche. Se reemplaza por el isotipo real de Kuyen cuando
+       entreguen los archivos de marca. -->
+  <circle cx="32" cy="32" r="32" fill="#0a0e1d"/>
+  <path d="M40.8 42.6A15.2 15.2 0 0 1 27.4 19a18 18 0 1 0 20.9 25.2 15.2 15.2 0 0 1-7.5-1.6Z" fill="#f7f4ea"/>
+  <circle cx="44" cy="20" r="3" fill="#f97a2c"/>
+</svg>

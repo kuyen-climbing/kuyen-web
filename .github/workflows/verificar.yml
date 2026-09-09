@@ -1,0 +1,53 @@
+name: Verificar el sitio
+
+# El sitio se sirve desde la raíz del repo, así que los .html de la raíz y el
+# css/styles.css están comiteados y son salida del generador (HTML) y de
+# Tailwind (CSS). Este workflow existe para que nadie los edite a mano sin
+# enterarse: regenera todo y compara.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  verificar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Instalar dependencias (Tailwind)
+        run: npm ci
+
+      - name: Regenerar CSS y HTML sobre la raíz
+        run: npm run build
+
+      - name: Confirmar que lo comiteado coincide con lo generado
+        run: |
+          if ! git diff --exit-code; then
+            echo ''
+            echo 'Los .html de la raíz o css/styles.css no coinciden con lo generado.'
+            echo 'Editá src/ y corré: npm run build'
+            exit 1
+          fi
+
+      - name: Verificar rutas, meta tags y enlaces
+        run: |
+          node tools/build.mjs --out=dist
+          node tools/serve.mjs dist --port=8099 > /tmp/serve.log 2>&1 &
+          echo $! > /tmp/serve.pid
+          for i in $(seq 1 40); do
+            curl -sf -o /dev/null http://localhost:8099/ && break
+            sleep 0.25
+          done
+          node tools/verify.mjs --port=8099
+
+      - name: Bajar el servidor
+        if: always()
+        run: kill "$(cat /tmp/serve.pid)" 2>/dev/null || true
