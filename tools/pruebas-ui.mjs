@@ -59,6 +59,11 @@ const send = (method, params = {}) =>
   new Promise((res) => { const i = ++id; pending.set(i, res); ws.send(JSON.stringify({ id: i, method, params })) })
 await send('Page.enable')
 await send('Runtime.enable')
+// Sin caché: el perfil de Chrome se reusa entre corridas y GitHub Pages manda
+// max-age=600, así que contra el sitio publicado la prueba podía leer la
+// versión anterior y fallar por algo que ya estaba corregido.
+await send('Network.enable')
+await send('Network.setCacheDisabled', { cacheDisabled: true })
 
 const evaluate = async (expression) => {
   const r = await send('Runtime.evaluate', { expression, awaitPromise: true, returnByValue: true })
