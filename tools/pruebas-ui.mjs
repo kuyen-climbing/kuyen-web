@@ -137,17 +137,39 @@ try {
     check(`${tema.id}: el router no cayó en su página de error`,
       !(await dentro('d.body.innerText')).match(/Page Not Found|404 - |Esta p[aá]gina no existe/i))
 
-    // Lo que se pidió sacar de un template no se ve, y no deja hueco.
+    // Lo que se pidió sacar de un template (ver `ajustes` en TEMAS) no se ve, y
+    // no deja hueco.
     if (tema.ajustes?.ocultar) {
+      // El texto sigue en el DOM (se oculta, no se borra), pero ningún
+      // elemento que lo contenga se pinta.
       const texto = JSON.stringify(tema.ajustes.ocultar)
-      check(`${tema.id}: no se ve "${tema.ajustes.ocultar}"`, await dentro(`[].slice.call(d.querySelectorAll('span')).filter(function (s) {
-        return s.textContent.indexOf(${texto}) !== -1
-      }).every(function (s) {
-        var caja = s.closest('.bg-primary') || s
-        return caja.offsetHeight === 0
-      })`))
-      check(`${tema.id}: la cabecera no quedó con el margen de la franja`,
-        await dentro(`[].slice.call(d.querySelectorAll('.fixed')).every(function (el) { return getComputedStyle(el).marginTop === '0px' })`))
+      check(`${tema.id}: no se ve "${tema.ajustes.ocultar}"`, await dentro(`(function () {
+        var recorrido = d.createTreeWalker(d.body, NodeFilter.SHOW_TEXT), nodo, hallados = 0
+        while ((nodo = recorrido.nextNode())) {
+          if (nodo.nodeValue.indexOf(${texto}) === -1) continue
+          hallados++
+          if (nodo.parentElement && nodo.parentElement.getClientRects().length > 0) return false
+        }
+        return hallados > 0
+      })()`))
+    }
+    if (tema.ajustes?.sinMargen) {
+      check(`${tema.id}: no quedó el margen de lo que se sacó`,
+        await dentro(`[].slice.call(d.querySelectorAll(${JSON.stringify(tema.ajustes.sinMargen)})).every(function (el) { return getComputedStyle(el).marginTop === '0px' })`))
+    }
+    if (tema.ajustes?.contiguos) {
+      const [antes, despues] = tema.ajustes.contiguos
+      const selector = (nombre) => JSON.stringify(`[data-framer-name="${nombre}"]`)
+      check(`${tema.id}: "${antes}" y "${despues}" quedan seguidos, sin hueco`, await dentro(`(function () {
+        var a = d.querySelector(${selector(antes)}), b = d.querySelector(${selector(despues)})
+        if (!a || !b) return false
+        var separacion = parseFloat(getComputedStyle(a.parentElement).rowGap) || 0
+        return Math.abs(b.getBoundingClientRect().top - a.getBoundingClientRect().bottom - separacion) <= 2
+      })()`), await dentro(`(function () {
+        var a = d.querySelector(${selector(antes)}), b = d.querySelector(${selector(despues)})
+        if (!a || !b) return 'no encontré las secciones'
+        return 'distancia ' + Math.round(b.getBoundingClientRect().top - a.getBoundingClientRect().bottom) + 'px, separación del contenedor ' + getComputedStyle(a.parentElement).rowGap
+      })()`))
     }
 
     await evaluate('document.querySelector("[data-tema-boton]").click(); "ok"')

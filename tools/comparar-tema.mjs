@@ -72,10 +72,17 @@ const evaluate = async (expression) => {
   return r.result?.result?.value
 }
 
-/** Carga una URL, la recorre entera y devuelve la captura completa en base64. */
-async function captura(url, alto) {
+/**
+ * Carga una URL, la recorre entera y devuelve la captura completa en base64.
+ * Si recibe `css`, lo agrega a la página antes de capturar.
+ */
+async function captura(url, alto, css) {
   await send('Page.navigate', { url })
   await sleep(6000)
+  if (css) {
+    await evaluate(`(function(){var s=document.createElement('style');s.textContent=${JSON.stringify(css)};document.head.appendChild(s);return 'ok'})()`)
+    await sleep(800)
+  }
   await evaluate(
     `(async()=>{const h=document.body.scrollHeight;for(let y=0;y<h;y+=600){window.scrollTo(0,y);await new Promise(r=>setTimeout(r,120))}window.scrollTo(0,0);await new Promise(r=>setTimeout(r,1200));return 'ok'})()`
   )
@@ -112,16 +119,17 @@ async function diferencia(a, b) {
 const resultados = []
 try {
   for (const tema of TEMAS) {
-    // Si al template se le pidió un ajuste que depende de una cookie (Hive sin
-    // su franja de compra), el original se mira con esa misma cookie: así la
-    // comparación sigue midiendo fidelidad y no el ajuste pedido.
+    // Si al template se le pidieron ajustes (Hive sin su franja de compra, Karate
+    // sin la sección "Built Steps"), el original se mira con los mismos: la misma
+    // cookie y el mismo CSS. Así la comparación sigue midiendo fidelidad y no los
+    // ajustes pedidos.
     if (tema.ajustes?.cookie) {
       const [name, ...resto] = tema.ajustes.cookie.split('=')
       await send('Network.setCookie', { url: tema.fuente, name, value: resto.join('='), path: '/' })
     }
 
     process.stdout.write(`${tema.nombre}: capturando el original... `)
-    const original = await captura(tema.fuente)
+    const original = await captura(tema.fuente, undefined, tema.ajustes?.css)
     process.stdout.write('la copia... ')
     const copia = await captura(BASE + rutaTema(tema.id), original.alto)
 
