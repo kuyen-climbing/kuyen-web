@@ -123,6 +123,19 @@ try {
     check(`${tema.id}: el router no cayó en su página de error`,
       !(await dentro('d.body.innerText')).match(/Page Not Found|404 - |Esta p[aá]gina no existe/i))
 
+    // Lo que se pidió sacar de un template no se ve, y no deja hueco.
+    if (tema.ajustes?.ocultar) {
+      const texto = JSON.stringify(tema.ajustes.ocultar)
+      check(`${tema.id}: no se ve "${tema.ajustes.ocultar}"`, await dentro(`[].slice.call(d.querySelectorAll('span')).filter(function (s) {
+        return s.textContent.indexOf(${texto}) !== -1
+      }).every(function (s) {
+        var caja = s.closest('.bg-primary') || s
+        return caja.offsetHeight === 0
+      })`))
+      check(`${tema.id}: la cabecera no quedó con el margen de la franja`,
+        await dentro(`[].slice.call(d.querySelectorAll('.fixed')).every(function (el) { return getComputedStyle(el).marginTop === '0px' })`))
+    }
+
     await shot(`marco-${tema.id}`)
 
     await evaluate('document.querySelector("[data-tema-boton]").click(); "ok"')
