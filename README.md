@@ -46,8 +46,8 @@ que no llegó o un bloque en blanco.
 ### El ToggleTheme
 
 Es una copia del de Pagos Pendientes y Tipo de Cambio (`src/components/theme-toggle.tsx` en
-los dos repos), en su tamaño `sm` y en la misma posición que usan en su Login: arriba a la
-derecha. Misma píldora, mismos colores del tema oscuro que usan por defecto, pulsador blanco
+los dos repos), en su tamaño `sm`, a la izquierda y centrado verticalmente (pedido del
+10-09-2026; en el Login de PP va arriba a la derecha). Misma píldora, mismos colores del tema oscuro que usan por defecto, pulsador blanco
 con un icono por opción, ciclo al siguiente en cada clic, `title` con la opción activa y
 `aria-label` con la siguiente.
 
