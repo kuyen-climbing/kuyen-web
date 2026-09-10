@@ -92,6 +92,7 @@ export const TEMAS = [
       cookie: 'banner-dismissed=true',
       css: 'div.bg-primary:has(a[href*="shadcnblocks.com"]){display:none!important}.fixed.mt-14{margin-top:0!important}',
       ocultar: 'Purchase this theme on',
+      sinMargen: '.fixed',
     },
   },
   {
@@ -101,6 +102,16 @@ export const TEMAS = [
     fuente: 'https://karateacadamy.framer.website/',
     credito: 'https://21st.dev/@dhileepkumargm/templates/karate',
     icono: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></svg>',
+    // Sin la sección "Built different. Training different." (pedido de Camilo,
+    // 10-09-2026). Karate es Framer y se hidrata con React: sacar el bloque del
+    // HTML dejaría a React sin el nodo que espera. Se oculta con CSS el bloque
+    // entero, que Framer llama "Built Steps" (etiqueta, título, texto, "Meet the
+    // team" y las tarjetas), y la sección siguiente sube a su lugar.
+    ajustes: {
+      css: '[data-framer-name="Built Steps"]{display:none!important}',
+      ocultar: 'Built different.',
+      contiguos: ['Feature Section', 'Schedule'],
+    },
   },
   {
     id: 'hirael',

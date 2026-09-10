@@ -39,10 +39,10 @@ imágenes. Medición del 10-09-2026 a
 
 | Template | Píxeles distintos |
 |---|---|
-| Hive | 0,12% |
-| Karate | 0,01% |
-| Hirael | 0,02% |
-| NexStudio | 0,18% |
+| Hive | 0,14% |
+| Karate | 0,03% |
+| Hirael | 0,10% |
+| NexStudio | 0,01% |
 
 Nunca da cero: los templates tienen animaciones, videos y relojes que cambian entre una carga
 y otra. Sirve para detectar lo que importa, que es una sección que no cargó, una tipografía
@@ -77,6 +77,16 @@ npm run build        # -> index.html + t/<id>.html + sitemap + robots
 ```
 
 No hay dependencias que instalar: el generador es Node a secas.
+
+### Trabajar en local
+
+```bash
+npm run dev
+```
+
+Genera el sitio en `dist/`, lo sirve en http://localhost:8100 y lo vuelve a generar solo cada
+vez que cambia algo en `src/`. El servidor local responde sin caché, así que un cambio se ve con
+solo recargar, sin esperar los 10 minutos que GitHub Pages guarda cada versión publicada.
 
 | Qué querés cambiar | Dónde |
 |---|---|
@@ -139,6 +149,14 @@ entrada en `TEMAS`:
   cabecera lee ese estado y quita su margen de 3,5 rem, así que no queda hueco arriba. Un CSS
   corto evita que la franja se vea un instante antes de hidratar. `comparar-tema.mjs` mira el
   original con esa misma cookie, para seguir midiendo fidelidad y no el ajuste.
+- **Karate sin la sección "Built different. Training different."** (10-09-2026). Karate es
+  Framer y se hidrata con React, así que el bloque se oculta con CSS en vez de borrarlo del
+  HTML: borrarlo dejaría a React sin el nodo que espera. Se oculta el bloque entero, que Framer
+  llama "Built Steps" (etiqueta, título, texto, "Meet the team" y las tarjetas), y la sección
+  del horario sube a su lugar. `comparar-tema.mjs` le aplica el mismo CSS al original.
+
+Las pruebas de interfaz comprueban cada ajuste: que el texto sacado no se vea, que no quede el
+margen de lo que se sacó y que las secciones de alrededor queden seguidas, sin hueco.
 
 Fuera de eso, y del `noindex`, el HTML es el que publican sus autores.
 
