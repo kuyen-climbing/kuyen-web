@@ -83,6 +83,16 @@ export const TEMAS = [
     fuente: 'https://hive-nextjs-template.vercel.app/',
     credito: 'https://21st.dev/@shadcnblockscom/templates/hive',
     icono: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z"/></svg>',
+    // Sin la franja "Purchase this theme on shadcnblocks.com" (pedido de
+    // Camilo, 10-09-2026). Se cierra con el mismo mecanismo que usa el botón de
+    // cerrar del template, la cookie banner-dismissed: la cabecera lee ese
+    // estado y quita su margen de 3,5 rem, así que no queda hueco arriba. El
+    // CSS solo evita que la franja se vea un instante antes de hidratar.
+    ajustes: {
+      cookie: 'banner-dismissed=true',
+      css: 'div.bg-primary:has(a[href*="shadcnblocks.com"]){display:none!important}.fixed.mt-14{margin-top:0!important}',
+      ocultar: 'Purchase this theme on',
+    },
   },
   {
     id: 'karate',

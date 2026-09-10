@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <html lang="en" class="light" style="color-scheme: light;"><head>
+  <style>div.bg-primary:has(a[href*="shadcnblocks.com"]){display:none!important}.fixed.mt-14{margin-top:0!important}</style>
   <script>
   (function () {
     try { history.replaceState(null, '', "/") } catch (e) {}
+    try { document.cookie = "banner-dismissed=true; path=/; max-age=31536000; SameSite=Lax" } catch (e) {}
 
     var PREFIJO = "/temas/hive"
     var OPTIMIZADOR = /(?:\/temas\/[\w-]+)?\/_next\/image\?[^"'\s,]*url=([^&"'\s,]+)[^"'\s,]*/g

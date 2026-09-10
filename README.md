@@ -29,15 +29,15 @@ sin tocarles una línea.
 ### Qué tan fiel es la copia
 
 `tools/comparar-tema.mjs` toma la misma captura de pantalla completa del original en línea y
-de la copia local, las superpone y cuenta los píxeles distintos. Medición del 09-09-2026 a
+de la copia local, las superpone y cuenta los píxeles distintos. Medición del 10-09-2026 a
 1440 px de ancho:
 
 | Template | Píxeles distintos |
 |---|---|
-| Hive | 0,13% |
-| Karate | 0,40% |
-| Hirael | 0,06% |
-| NexStudio | 0,10% |
+| Hive | 0,12% |
+| Karate | 0,01% |
+| Hirael | 0,02% |
+| NexStudio | 0,18% |
 
 Nunca da cero: los templates tienen animaciones, videos y relojes que cambian entre una carga
 y otra. Sirve para detectar lo que importa, que es una sección que no cargó, una tipografía
@@ -120,6 +120,15 @@ sirviéndose desde otra ruta (ver `arranque()` en `tools/build.mjs`):
 2. **Las imágenes de Next.js.** Al hidratar, el componente de imagen vuelve a pedirlas a
    `/_next/image?url=...&w=...`, un endpoint que en un sitio estático no existe. Se reapuntan
    a la imagen original, que la captura descarga junto con las variantes.
+
+Además, los **ajustes pedidos** para un template puntual, declarados en `ajustes` de su
+entrada en `TEMAS`:
+
+- **Hive sin la franja "Purchase this theme on shadcnblocks.com"** (10-09-2026). Se cierra con
+  el mismo mecanismo que usa el botón de cerrar del template, la cookie `banner-dismissed`: la
+  cabecera lee ese estado y quita su margen de 3,5 rem, así que no queda hueco arriba. Un CSS
+  corto evita que la franja se vea un instante antes de hidratar. `comparar-tema.mjs` mira el
+  original con esa misma cookie, para seguir midiendo fidelidad y no el ajuste.
 
 Fuera de eso, y del `noindex`, el HTML es el que publican sus autores.
 

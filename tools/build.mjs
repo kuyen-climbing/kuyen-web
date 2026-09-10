@@ -69,9 +69,19 @@ function buildMarco(site, partials) {
 function arranque(tema) {
   const prefijo = `/temas/${tema.id}`
   const ruta = new URL(tema.fuente).pathname
-  return `  <script>
+  const ajustes = tema.ajustes || {}
+
+  // Ajustes pedidos para un template puntual (ver `ajustes` en TEMAS): una
+  // cookie que el template lee para cambiar su propio estado, y CSS para que el
+  // cambio no se vea un instante antes de hidratar.
+  const cookie = ajustes.cookie
+    ? `\n    try { document.cookie = ${JSON.stringify(`${ajustes.cookie}; path=/; max-age=31536000; SameSite=Lax`)} } catch (e) {}`
+    : ''
+  const estilos = ajustes.css ? `  <style>${ajustes.css}</style>\n` : ''
+
+  return `${estilos}  <script>
   (function () {
-    try { history.replaceState(null, '', ${JSON.stringify(ruta)}) } catch (e) {}
+    try { history.replaceState(null, '', ${JSON.stringify(ruta)}) } catch (e) {}${cookie}
 
     var PREFIJO = ${JSON.stringify(prefijo)}
     var OPTIMIZADOR = /(?:\\/temas\\/[\\w-]+)?\\/_next\\/image\\?[^"'\\s,]*url=([^&"'\\s,]+)[^"'\\s,]*/g

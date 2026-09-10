@@ -123,6 +123,14 @@ async function diferencia(a, b) {
 const resultados = []
 try {
   for (const tema of TEMAS) {
+    // Si al template se le pidió un ajuste que depende de una cookie (Hive sin
+    // su franja de compra), el original se mira con esa misma cookie: así la
+    // comparación sigue midiendo fidelidad y no el ajuste pedido.
+    if (tema.ajustes?.cookie) {
+      const [name, ...resto] = tema.ajustes.cookie.split('=')
+      await send('Network.setCookie', { url: tema.fuente, name, value: resto.join('='), path: '/' })
+    }
+
     process.stdout.write(`${tema.nombre}: capturando el original... `)
     const original = await captura(tema.fuente)
     process.stdout.write('la copia... ')
