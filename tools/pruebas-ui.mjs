@@ -101,6 +101,16 @@ try {
   check('arranca con el template por defecto',
     (await evaluate('new URL(document.getElementById("kt-marco").src).pathname')) === rutaTema(TEMA_POR_DEFECTO))
 
+  // A la izquierda, a 1rem del borde, y con su centro en el centro vertical de la pantalla.
+  const POSICION_TOGGLE = `(function(){
+    var r = document.querySelector('[data-tema-boton]').getBoundingClientRect()
+    var centrado = Math.abs(r.top + r.height / 2 - window.innerHeight / 2) <= 1
+    var izquierda = Math.abs(r.left - 16) <= 1
+    return centrado && izquierda
+  })()`
+  check('el toggle queda a la izquierda y centrado verticalmente', await evaluate(POSICION_TOGGLE),
+    await evaluate(`(function(){var r=document.querySelector('[data-tema-boton]').getBoundingClientRect();return 'left ' + r.left + 'px, centro ' + (r.top + r.height / 2) + 'px de ' + window.innerHeight})()`))
+
   const urlArriba = await evaluate('location.href')
 
   for (let i = 0; i < TEMAS.length; i++) {
@@ -159,8 +169,7 @@ try {
   // Móvil.
   await metrics(390, 844)
   await goto('/')
-  check('el toggle queda arriba a la derecha y dentro de la pantalla, como en el Login de PP',
-    await evaluate(`(function(){var r=document.querySelector('[data-tema-boton]').getBoundingClientRect();return r.top>=0&&r.top<40&&r.right<=window.innerWidth&&window.innerWidth-r.right<40})()`))
+  check('en móvil el toggle también queda a la izquierda y centrado verticalmente', await evaluate(POSICION_TOGGLE))
   await shot('marco-mobile')
 } finally {
   ws.close()
