@@ -45,11 +45,16 @@ que no llegó o un bloque en blanco.
 
 ### El ToggleTheme
 
-Es el mismo patrón que el de Pagos Pendientes
-(`APP-PAGOS-PENDIENTES-frontend/src/components/theme-toggle.tsx`): una píldora con el pulsador
-en la posición del template activo, un icono por template, ciclo al siguiente en cada clic y
-la elección guardada en `localStorage`. Acá, en vez de poner una clase en `<html>`, cambia la
-fuente del marco: la página de arriba no se recarga.
+Es una copia del de Pagos Pendientes y Tipo de Cambio (`src/components/theme-toggle.tsx` en
+los dos repos), en su tamaño `sm` y en la misma posición que usan en su Login: arriba a la
+derecha. Misma píldora, mismos colores del tema oscuro que usan por defecto, pulsador blanco
+con un icono por opción, ciclo al siguiente en cada clic, `title` con la opción activa y
+`aria-label` con la siguiente.
+
+Dos diferencias, las dos por el contenido: tiene cuatro posiciones en vez de tres (la píldora
+suma un paso de 1,375 rem y queda en 5,875 rem), y en vez de poner una clase en `<html>`
+cambia la fuente del marco, porque cada template vive en su propio documento. La elección se
+guarda en `localStorage` y la página de arriba no se recarga.
 
 ### Los templates son de terceros
 
