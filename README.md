@@ -29,7 +29,8 @@ sin tocarles una línea.
 ### Qué tan fiel es la copia
 
 `tools/comparar-tema.mjs` toma la misma captura de pantalla completa del original en línea y
-de la copia local, las superpone y cuenta los píxeles distintos. Medición del 10-09-2026 a
+de la copia local, las superpone en memoria y cuenta los píxeles distintos, sin guardar
+imágenes. Medición del 10-09-2026 a
 1440 px de ancho:
 
 | Template | Píxeles distintos |
@@ -94,7 +95,7 @@ node --experimental-websocket tools/comparar-tema.mjs http://localhost:8100
 `pruebas-ui.mjs` comprueba que el marco arranque con el template por defecto, que cada clic
 cargue el siguiente sin recargar la página de arriba, que la elección sobreviva a una recarga
 y que cada template cargue su contenido, sus estilos y sus imágenes sin caer en su propia
-página de 404. Deja una captura por template en `dist-pruebas/`.
+página de 404. No saca capturas: todo se comprueba leyendo el DOM y el resultado es texto.
 
 ### Capturar o actualizar un template
 
