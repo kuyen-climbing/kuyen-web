@@ -4,87 +4,77 @@
        documento. El marco solo lo muestra a pantalla completa y le cambia la
        fuente cuando el toggle pasa al siguiente: así el template no comparte
        estilos ni scripts con nada y se ve exactamente como el original. -->
-  <iframe id="kt-marco" title="Template Hive" src="{{temaInicialRuta}}"></iframe>
+  <iframe id="kt-marco" title="Template {{temaNombreInicial}}" src="{{temaInicialRuta}}"></iframe>
 
-  <!-- ToggleTheme: el mismo patrón que el de Pagos Pendientes
-       (APP-PAGOS-PENDIENTES-frontend/src/components/theme-toggle.tsx): una
-       píldora con el pulsador en la posición del tema activo, un icono por
-       tema, ciclo al siguiente en cada clic y la elección guardada. -->
-  <div class="kt-barra" data-tema-toggle>
-    <button type="button" class="kt-toggle" aria-label="Cambiar de template" data-tema-boton>
+  <!-- ThemeToggle: copia del de Pagos Pendientes y Tipo de Cambio
+       (src/components/theme-toggle.tsx en los dos repos), en su tamaño sm y en
+       la misma posición que usan en su Login: arriba a la derecha
+       (absolute top-4 right-4 z-10). Mismas clases traducidas a CSS, mismos
+       colores del tema oscuro, que es el que usan por defecto.
+
+       Dos diferencias, las dos por el contenido: tiene cuatro posiciones en vez
+       de tres, y en vez de poner una clase en <html> cambia la fuente del
+       marco, porque cada template vive en su propio documento. -->
+  <div class="kt-esquina">
+    <button type="button" class="kt-toggle" aria-label="Cambiar de template" title="Template {{temaNombreInicial}}" data-tema-boton>
       <span class="kt-knob" data-tema-knob>{{temaIconoInicial}}</span>
     </button>
-    <p class="kt-etiqueta">
-      <span data-tema-etiqueta>{{temaNombreInicial}}</span>
-      <span class="kt-contador" data-tema-contador>1/{{temaTotal}}</span>
-    </p>
   </div>
 
 <style>
-  html, body { height: 100%; margin: 0; background: #0a0e1d; }
+  html, body { height: 100%; margin: 0; background: #0a0a0a; }
   .kt-solo-lectores {
     position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
     overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
   }
   #kt-marco { display: block; width: 100%; height: 100%; border: 0; }
 
-  .kt-barra {
-    position: fixed;
-    left: 50%;
-    bottom: 1rem;
-    transform: translateX(-50%);
-    z-index: 2147483000;
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 0.5rem 0.9rem 0.5rem 0.5rem;
-    border-radius: 9999px;
-    background: rgba(10, 14, 29, 0.92);
-    color: #f5f5f5;
-    border: 1px solid rgba(255, 255, 255, 0.16);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
-    font: 600 12px/1 ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
-    backdrop-filter: blur(8px);
-  }
+  /* absolute top-4 right-4 z-10 */
+  .kt-esquina { position: absolute; top: 1rem; right: 1rem; z-index: 10; }
 
+  /* relative inline-flex items-center rounded-full transition-colors duration-200
+     h-7 w-[4.5rem] bg-muted-foreground/40, con los tokens del tema dark de PP
+     (--muted-foreground: 0 0% 63.9%). El ancho suma un paso de 1.375rem al de
+     PP para la cuarta posición: 4.5rem + 1.375rem = 5.875rem. */
   .kt-toggle {
     position: relative;
     display: inline-flex;
     align-items: center;
-    height: 2.25rem;
-    width: 7rem;
+    height: 1.75rem;
+    width: 5.875rem;
     padding: 0;
     border: 0;
     border-radius: 9999px;
-    background: rgba(255, 255, 255, 0.22);
+    background-color: hsl(0 0% 63.9% / 0.4);
     cursor: pointer;
-    transition: background-color 0.2s;
+    transition: color, background-color, border-color, fill, stroke;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 200ms;
   }
-  .kt-toggle:hover { background: rgba(255, 255, 255, 0.32); }
-  .kt-toggle:focus-visible { outline: 2px solid #ff9b57; outline-offset: 2px; }
+  /* focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2
+     focus:ring-offset-background (--ring: 25 95% 53%, --background: 0 0% 3.9%) */
+  .kt-toggle:focus {
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+    box-shadow: 0 0 0 2px hsl(0 0% 3.9%), 0 0 0 4px hsl(25 95% 53%);
+  }
 
+  /* inline-flex items-center justify-center rounded-full bg-white shadow-sm
+     transform transition-transform duration-200 h-5 w-5 translate-x-1 */
   .kt-knob {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    height: 1.75rem;
-    width: 1.75rem;
+    height: 1.25rem;
+    width: 1.25rem;
     border-radius: 9999px;
-    background: #fff;
-    color: #0a0e1d;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    background-color: #fff;
+    box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
     transform: translateX(0.25rem);
-    transition: transform 0.2s;
+    transition: transform 200ms cubic-bezier(0.4, 0, 0.2, 1);
   }
-  .kt-knob svg { width: 1rem; height: 1rem; }
-
-  .kt-etiqueta { margin: 0; display: flex; align-items: center; gap: 0.4rem; white-space: nowrap; }
-  .kt-contador { color: rgba(245, 245, 245, 0.55); font-weight: 500; }
-
-  @media (max-width: 480px) {
-    .kt-barra { gap: 0.5rem; padding: 0.4rem 0.7rem 0.4rem 0.4rem; }
-    .kt-toggle { width: 6rem; }
-  }
+  /* h-3 w-3 del icono */
+  .kt-knob svg { height: 0.75rem; width: 0.75rem; }
 </style>
 
 <script>
@@ -94,18 +84,20 @@
     var TEMAS = {{temasJson}}
     var CLAVE = 'kuyen-tema'
 
+    // POSITIONS del toggle sm de PP: translate-x-1, translate-x-[1.625rem],
+    // translate-x-[3rem]. Pasos de 1.375rem; la cuarta posición sigue el mismo
+    // paso.
+    var POSICIONES = TEMAS.map(function (_, i) { return 0.25 + 1.375 * i })
+
+    // iconClass de PP: la primera opción (dark) en text-muted-foreground y las
+    // demás en text-primary, con los tokens del tema dark.
+    var COLOR_PRIMERA = 'hsl(0 0% 63.9%)'
+    var COLOR_RESTO = 'hsl(25 95% 53%)'
+
     var marco = document.getElementById('kt-marco')
     var boton = document.querySelector('[data-tema-boton]')
     var knob = document.querySelector('[data-tema-knob]')
-    var etiqueta = document.querySelector('[data-tema-etiqueta]')
-    var contador = document.querySelector('[data-tema-contador]')
-    if (!marco || !boton) return
-
-    // Posiciones del pulsador: el ancho útil de la píldora repartido entre los
-    // temas, como las translate-x fijas del toggle de Pagos Pendientes.
-    var ANCHO = 7 // rem, el mismo valor que .kt-toggle
-    var LIBRE = ANCHO - 1.75 - 0.5
-    var PASO = TEMAS.length > 1 ? LIBRE / (TEMAS.length - 1) : 0
+    if (!marco || !boton || !knob) return
 
     var indice = 0
     try {
@@ -120,12 +112,13 @@
       if (cargar) marco.src = tema.ruta
       marco.title = 'Template ' + tema.nombre
 
-      knob.style.transform = 'translateX(' + (0.25 + PASO * i) + 'rem)'
+      knob.style.transform = 'translateX(' + POSICIONES[i] + 'rem)'
+      knob.style.color = i === 0 ? COLOR_PRIMERA : COLOR_RESTO
       knob.innerHTML = tema.icono
-      etiqueta.textContent = tema.nombre
-      contador.textContent = i + 1 + '/' + TEMAS.length
+
+      // Como en PP: title con la opción activa, aria-label con la siguiente.
       boton.setAttribute('title', 'Template ' + tema.nombre)
-      boton.setAttribute('aria-label', 'Cambiar al template ' + siguiente.nombre)
+      boton.setAttribute('aria-label', 'Cambiar a Template ' + siguiente.nombre)
 
       try { localStorage.setItem(CLAVE, tema.id) } catch (e) {}
     }
@@ -134,6 +127,7 @@
     // recarga el marco si lo guardado es otro.
     aplicar(indice, indice !== 0)
 
+    // Ciclo: Hive -> Karate -> Hirael -> NexStudio -> Hive
     boton.addEventListener('click', function () {
       indice = (indice + 1) % TEMAS.length
       aplicar(indice, true)

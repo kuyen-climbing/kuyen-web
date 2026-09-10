@@ -106,12 +106,13 @@ try {
   for (let i = 0; i < TEMAS.length; i++) {
     const tema = TEMAS[i]
 
-    check(`${tema.id}: la etiqueta del toggle lo nombra`,
-      (await evaluate('document.querySelector("[data-tema-etiqueta]").textContent')) === tema.nombre)
-    check(`${tema.id}: el contador muestra la posición`,
-      (await evaluate('document.querySelector("[data-tema-contador]").textContent')) === `${i + 1}/${TEMAS.length}`)
-    check(`${tema.id}: el pulsador se movió a su posición`,
-      (await evaluate('document.querySelector("[data-tema-knob]").style.transform')).includes('translateX'))
+    const siguiente = TEMAS[(i + 1) % TEMAS.length]
+    check(`${tema.id}: el title del toggle nombra el template activo`,
+      (await evaluate('document.querySelector("[data-tema-boton]").title')) === `Template ${tema.nombre}`)
+    check(`${tema.id}: el aria-label anuncia el siguiente, como en PP`,
+      (await evaluate('document.querySelector("[data-tema-boton]").getAttribute("aria-label")')) === `Cambiar a Template ${siguiente.nombre}`)
+    check(`${tema.id}: el pulsador está en su posición`,
+      (await evaluate('document.querySelector("[data-tema-knob]").style.transform')) === `translateX(${0.25 + 1.375 * i}rem)`)
 
     // El template cargado de verdad, con su contenido y sus assets.
     check(`${tema.id}: el template cargó su contenido`, (await dentro('d.body.innerText.trim().length')) > 800)
@@ -158,8 +159,8 @@ try {
   // Móvil.
   await metrics(390, 844)
   await goto('/')
-  check('el toggle entra en pantalla chica',
-    await evaluate(`(function(){var b=document.querySelector('.kt-barra');var r=b.getBoundingClientRect();return r.width<=window.innerWidth})()`))
+  check('el toggle queda arriba a la derecha y dentro de la pantalla, como en el Login de PP',
+    await evaluate(`(function(){var r=document.querySelector('[data-tema-boton]').getBoundingClientRect();return r.top>=0&&r.top<40&&r.right<=window.innerWidth&&window.innerWidth-r.right<40})()`))
   await shot('marco-mobile')
 } finally {
   ws.close()
