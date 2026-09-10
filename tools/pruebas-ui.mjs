@@ -1,5 +1,5 @@
 /**
- * Pruebas de interacción y capturas con Chrome headless (protocolo de depuración).
+ * Pruebas de interacción con Chrome headless (protocolo de depuración).
  *
  *   node tools/build.mjs --out=dist
  *   node tools/serve.mjs dist --port=8100      (en otra terminal)
@@ -10,20 +10,17 @@
  * que la elección se guarde y sobreviva a una recarga, y que cada template
  * cargue de verdad su contenido y sus assets.
  *
- * Deja una captura por template en dist-pruebas/.
+ * No saca capturas: todo se comprueba leyendo el DOM y el resultado es solo
+ * texto (regla de C:\Proyectos\CLAUDE.md: la verificación visual la hace Camilo).
  */
 import { spawn } from 'node:child_process'
-import { writeFileSync, mkdirSync } from 'node:fs'
-import { join, dirname } from 'node:path'
-import { fileURLToPath } from 'node:url'
+import { join } from 'node:path'
 import { tmpdir } from 'node:os'
 import { TEMAS, TEMA_POR_DEFECTO, rutaTema } from '../src/site.config.mjs'
 
 const CHROME = process.env.CHROME || 'C:/Program Files/Google/Chrome/Application/chrome.exe'
 const PORT = 9333
 const BASE = process.argv[2] || 'http://localhost:8100'
-const OUT = join(dirname(fileURLToPath(import.meta.url)), '..', 'dist-pruebas')
-mkdirSync(OUT, { recursive: true })
 
 const chrome = spawn(
   CHROME,
@@ -73,19 +70,6 @@ const evaluate = async (expression) => {
 const metrics = (width, height) =>
   send('Emulation.setDeviceMetricsOverride', { width, height, deviceScaleFactor: 1, mobile: width < 768 })
 const goto = async (path, espera = 5000) => { await send('Page.navigate', { url: BASE + path }); await sleep(espera) }
-
-async function shot(name, { full = false } = {}) {
-  const params = { format: 'jpeg', quality: 72 }
-  if (full) {
-    const h = Math.min(await evaluate('document.documentElement.scrollHeight'), 16000)
-    const w = await evaluate('window.innerWidth')
-    params.clip = { x: 0, y: 0, width: w, height: h, scale: 1 }
-    params.captureBeyondViewport = true
-  }
-  const r = await send('Page.captureScreenshot', params)
-  writeFileSync(`${OUT}/${name}.jpg`, Buffer.from(r.result.data, 'base64'))
-  console.log('captura', name)
-}
 
 /** El documento cargado dentro del marco. */
 const dentro = (expr) => evaluate(`(function(){var d=document.getElementById('kt-marco').contentDocument;return ${expr}})()`)
@@ -152,8 +136,6 @@ try {
         await dentro(`[].slice.call(d.querySelectorAll('.fixed')).every(function (el) { return getComputedStyle(el).marginTop === '0px' })`))
     }
 
-    await shot(`marco-${tema.id}`)
-
     await evaluate('document.querySelector("[data-tema-boton]").click(); "ok"')
     await sleep(5000)
   }
@@ -175,7 +157,6 @@ try {
   await metrics(390, 844)
   await goto('/')
   check('en móvil el toggle también queda a la izquierda y centrado verticalmente', await evaluate(POSICION_TOGGLE))
-  await shot('marco-mobile')
 } finally {
   ws.close()
   chrome.kill()

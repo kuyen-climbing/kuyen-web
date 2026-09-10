@@ -6,17 +6,16 @@
  *   node --experimental-websocket tools/comparar-tema.mjs [http://localhost:8100]
  *
  * Toma la misma captura de pantalla completa de los dos, las superpone en un
- * canvas y cuenta qué proporción de píxeles difiere. Deja las dos imágenes y el
- * mapa de diferencias en dist-comparacion/, para poder mirar dónde falla.
+ * canvas y cuenta qué proporción de píxeles difiere. Todo pasa en memoria: no
+ * guarda imágenes y el resultado es solo texto (regla de C:\Proyectos\CLAUDE.md:
+ * la verificación visual la hace Camilo).
  *
  * Nunca da 0: los templates tienen animaciones, videos y contenido que cambia
  * de una carga a otra. Sirve para detectar lo que importa, que es una sección
  * que no cargó, una tipografía que no llegó o un bloque en blanco.
  */
 import { spawn } from 'node:child_process'
-import { writeFileSync, mkdirSync } from 'node:fs'
-import { join, dirname } from 'node:path'
-import { fileURLToPath } from 'node:url'
+import { join } from 'node:path'
 import { tmpdir } from 'node:os'
 import { TEMAS, rutaTema } from '../src/site.config.mjs'
 
@@ -25,11 +24,9 @@ const PORT = 9355
 const BASE = process.argv[2] || 'http://localhost:8100'
 const ANCHO = 1440
 const ALTO = 900
-const OUT = join(dirname(fileURLToPath(import.meta.url)), '..', 'dist-comparacion')
-mkdirSync(OUT, { recursive: true })
 
 // Umbral por canal para considerar que un píxel cambió, y proporción de
-// píxeles distintos a partir de la cual conviene mirar la captura.
+// píxeles distintos a partir de la cual conviene revisar el template.
 const TOLERANCIA_CANAL = 24
 const MAXIMO_DIFERENCIA = 0.06
 
@@ -102,20 +99,12 @@ async function diferencia(a, b) {
     const w = Math.min(ia.width, ib.width), h = Math.min(ia.height, ib.height)
     const lienzo = (img) => { const c = document.createElement('canvas'); c.width = w; c.height = h; c.getContext('2d').drawImage(img, 0, 0); return c.getContext('2d').getImageData(0, 0, w, h).data }
     const da = lienzo(ia), db = lienzo(ib)
-    const salida = document.createElement('canvas'); salida.width = w; salida.height = h
-    const ctx = salida.getContext('2d'); const mapa = ctx.createImageData(w, h)
     let distintos = 0
     for (let i = 0; i < da.length; i += 4) {
       const d = Math.max(Math.abs(da[i] - db[i]), Math.abs(da[i+1] - db[i+1]), Math.abs(da[i+2] - db[i+2]))
-      const cambio = d > ${TOLERANCIA_CANAL}
-      if (cambio) distintos++
-      mapa.data[i] = cambio ? 255 : da[i]
-      mapa.data[i+1] = cambio ? 0 : da[i+1]
-      mapa.data[i+2] = cambio ? 0 : da[i+2]
-      mapa.data[i+3] = cambio ? 255 : 60
+      if (d > ${TOLERANCIA_CANAL}) distintos++
     }
-    ctx.putImageData(mapa, 0, 0)
-    return { proporcion: distintos / (w * h), alto: h, mapa: salida.toDataURL('image/png').split(',')[1] }
+    return { proporcion: distintos / (w * h), alto: h }
   })()`
   return evaluate(expr)
 }
@@ -139,10 +128,6 @@ try {
     const d = await diferencia(original.datos, copia.datos)
     resultados.push([tema, d.proporcion])
 
-    writeFileSync(join(OUT, `${tema.id}-original.png`), Buffer.from(original.datos, 'base64'))
-    writeFileSync(join(OUT, `${tema.id}-copia.png`), Buffer.from(copia.datos, 'base64'))
-    writeFileSync(join(OUT, `${tema.id}-diferencia.png`), Buffer.from(d.mapa, 'base64'))
-
     const pct = (d.proporcion * 100).toFixed(2)
     console.log(`${d.proporcion <= MAXIMO_DIFERENCIA ? 'OK   ' : 'REVISAR'} ${pct}% de píxeles distintos sobre ${ANCHO}x${d.alto}`)
   }
@@ -153,5 +138,4 @@ try {
 
 const malos = resultados.filter(([, p]) => p > MAXIMO_DIFERENCIA)
 console.log(`\n${resultados.length - malos.length}/${resultados.length} templates dentro del ${MAXIMO_DIFERENCIA * 100}% de diferencia`)
-console.log(`Capturas y mapas de diferencia en ${OUT}`)
 process.exit(malos.length ? 1 : 0)
