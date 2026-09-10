@@ -26,6 +26,10 @@ scripts y sus assets, sin compartir nada con el marco ni con los otros. Esa es l
 el marco use un `iframe`: es lo que permite tenerlos a los cuatro sin que se pisen entre sí y
 sin tocarles una línea.
 
+El marco pinta blanco detrás del `iframe`, que es el fondo que pone el navegador cuando una
+página no define el suyo. Un `iframe` es transparente, y NexStudio no pinta fondo propio: con
+el fondo oscuro que tenía antes el marco, su texto negro quedaba sobre casi negro.
+
 ### Qué tan fiel es la copia
 
 `tools/comparar-tema.mjs` toma la misma captura de pantalla completa del original en línea y

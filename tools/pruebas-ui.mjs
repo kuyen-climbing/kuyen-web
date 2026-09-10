@@ -120,6 +120,20 @@ try {
         (await dentro('getComputedStyle(d.body).fontFamily')) !== 'Times New Roman')
     check(`${tema.id}: sin imágenes rotas`, (await dentro('[].slice.call(d.images).filter(function(i){return i.complete && i.naturalWidth === 0}).length')) === 0,
       `${await dentro('d.images.length')} imágenes`)
+
+    // Si el template no pinta fondo propio (NexStudio), lo que se ve detrás es el
+    // iframe: tiene que ser el blanco por defecto del navegador, igual que al abrirlo
+    // solo. La comparación de píxeles mide /t/<id> suelto y no ve este caso.
+    check(`${tema.id}: el fondo detrás del contenido es el mismo que abriéndolo solo`, await evaluate(`(function(){
+      var marco = document.getElementById('kt-marco'), d = marco.contentDocument, w = d.defaultView
+      var el = d.elementFromPoint(720, 450)
+      while (el) {
+        var b = w.getComputedStyle(el).backgroundColor
+        if (b !== 'rgba(0, 0, 0, 0)' && b !== 'transparent') return true
+        el = el.parentElement
+      }
+      return getComputedStyle(marco).backgroundColor === 'rgb(255, 255, 255)'
+    })()`))
     check(`${tema.id}: el router no cayó en su página de error`,
       !(await dentro('d.body.innerText')).match(/Page Not Found|404 - |Esta p[aá]gina no existe/i))
 
