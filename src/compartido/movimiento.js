@@ -4,14 +4,16 @@
   var calmo = window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
   /* Paralaje: cada capa se desplaza según qué tan lejos está su contenedor del
-     centro de la pantalla. data-m-paralaje es el factor (negativo sube). */
+     centro de la pantalla. data-m-paralaje es el factor: negativo va más lento
+     que la página, como un fondo, y positivo, más rápido. Lo que empieza en la
+     primera pantalla parte en su lugar y se desplaza solo con el scroll. */
   var capas = [].slice.call(document.querySelectorAll('[data-m-paralaje]'))
   function paralaje() {
     var alto = window.innerHeight
     capas.forEach(function (el) {
       var caja = el.parentElement.getBoundingClientRect()
       if (caja.bottom < -200 || caja.top > alto + 200) return
-      var distancia = caja.top + caja.height / 2 - alto / 2
+      var distancia = caja.top + window.scrollY < alto ? -window.scrollY : caja.top + caja.height / 2 - alto / 2
       el.style.setProperty('--m-y', (distancia * parseFloat(el.getAttribute('data-m-paralaje'))).toFixed(1) + 'px')
     })
   }
@@ -59,6 +61,72 @@
       })
     }, { threshold: 0.15, rootMargin: '0px 0px -6% 0px' })
     elementos.forEach(function (el) { observador.observe(el) })
+  }
+
+  /* Entrada del hero: .m-listo cuando la foto principal está lista para
+     pintarse, o a los 1,2 s si tarda. */
+  document.querySelectorAll('[data-m-entrada]').forEach(function (zona) {
+    var listo = function () {
+      requestAnimationFrame(function () { requestAnimationFrame(function () { zona.classList.add('m-listo') }) })
+    }
+    if (calmo) { zona.classList.add('m-listo'); return }
+    var fotos = [].slice.call(zona.querySelectorAll('img[fetchpriority="high"]'))
+    var decodificadas = Promise.all(fotos.map(function (f) { return f.decode ? f.decode().catch(function () {}) : null }))
+    Promise.race([decodificadas, new Promise(function (r) { setTimeout(r, 1200) })]).then(listo)
+  })
+
+  var conMouse = window.matchMedia('(hover: hover)').matches
+
+  /* Profundidad con el puntero: [data-m-puntero] publica --m-mx y --m-my (de -1
+     a 1) con un seguimiento suave; las .m-capa de adentro se mueven según su
+     --m-prof. */
+  if (!calmo && conMouse) {
+    document.querySelectorAll('[data-m-puntero]').forEach(function (zona) {
+      var objetivo = { x: 0, y: 0 }
+      var actual = { x: 0, y: 0 }
+      var andando = false
+      function paso() {
+        actual.x += (objetivo.x - actual.x) * 0.07
+        actual.y += (objetivo.y - actual.y) * 0.07
+        zona.style.setProperty('--m-mx', actual.x.toFixed(4))
+        zona.style.setProperty('--m-my', actual.y.toFixed(4))
+        if (Math.abs(objetivo.x - actual.x) > 0.001 || Math.abs(objetivo.y - actual.y) > 0.001) requestAnimationFrame(paso)
+        else andando = false
+      }
+      function mover() { if (!andando) { andando = true; requestAnimationFrame(paso) } }
+      zona.addEventListener('pointermove', function (e) {
+        var caja = zona.getBoundingClientRect()
+        objetivo.x = ((e.clientX - caja.left) / caja.width - 0.5) * 2
+        objetivo.y = ((e.clientY - caja.top) / caja.height - 0.5) * 2
+        mover()
+      })
+      zona.addEventListener('pointerleave', function () { objetivo.x = 0; objetivo.y = 0; mover() })
+    })
+
+    /* Imán: el botón se corre un poco hacia el puntero y vuelve al salir, con
+       el mismo seguimiento suave. */
+    document.querySelectorAll('[data-m-iman]').forEach(function (el) {
+      el.classList.add('m-iman')
+      var objetivo = { x: 0, y: 0 }
+      var actual = { x: 0, y: 0 }
+      var andando = false
+      function paso() {
+        actual.x += (objetivo.x - actual.x) * 0.18
+        actual.y += (objetivo.y - actual.y) * 0.18
+        el.style.setProperty('--m-ix', actual.x.toFixed(2) + 'px')
+        el.style.setProperty('--m-iy', actual.y.toFixed(2) + 'px')
+        if (Math.abs(objetivo.x - actual.x) > 0.05 || Math.abs(objetivo.y - actual.y) > 0.05) requestAnimationFrame(paso)
+        else andando = false
+      }
+      function mover() { if (!andando) { andando = true; requestAnimationFrame(paso) } }
+      el.addEventListener('pointermove', function (e) {
+        var caja = el.getBoundingClientRect()
+        objetivo.x = (e.clientX - caja.left - caja.width / 2) * 0.25
+        objetivo.y = (e.clientY - caja.top - caja.height / 2) * 0.35
+        mover()
+      })
+      el.addEventListener('pointerleave', function () { objetivo.x = 0; objetivo.y = 0; mover() })
+    })
   }
 
   /* Rastro de tiza: polvo de magnesio que sigue al puntero, cae y se apaga.

@@ -15,9 +15,11 @@ captura tal cual hasta que les toque. El marco de la raíz muestra el activo a p
 con el **ToggleTheme** encima para pasar al siguiente.
 
 El estilo de las variantes, elegido el 15-09-2026: títulos en Rubik Dirt y texto en Rubik, la
-página entera de noche (tinta y gradiente del logo 2.0) con acento amarillo luna, el hero con la
-escena del logo (estrellas que titilan, luna y cordillera con los dos gatos) y movimiento en
-títulos, textos, fotos y secciones.
+página entera de noche (tinta y gradiente del logo 2.0) con acento amarillo luna y movimiento en
+títulos, textos, fotos y secciones. El hero abre con una composición de escalada (la escaladora
+en un arco, una foto redonda, la luna detrás y presas que flotan) sobre el cielo de estrellas que
+titilan, con entrada orquestada y profundidad que sigue al puntero; la cordillera con los dos
+gatos queda chica, al pie.
 
 Hive salió de los candidatos el 14-09-2026. Su captura sigue en el historial de git:
 `git checkout 3ba77fb -- src/temas/hive temas/hive`.
@@ -129,6 +131,7 @@ En las variantes propias revisa además:
 - que no haya desborde a lo ancho en 375, 640, 768, 1024 y 1440 px;
 - que el menú móvil abra y se cierre con Escape;
 - que el mapa de Google se cargue solo al hacer clic;
+- que la entrada del hero termine;
 - que no haya errores de JavaScript al cargar.
 
 Antes de medir el contraste recorre la página entera, porque los textos y las fotos que entran
@@ -148,7 +151,7 @@ markup, el CSS y el JavaScript de cada variante son propios.
 | Textos y datos del negocio | `src/contenido.mjs`, sin HTML: lo leen todas las variantes |
 | Paleta del logo 2.0, acento y tokens semánticos | `src/css/tokens.css` |
 | Tipografías (Rubik Dirt y Rubik, licencia OFL) | `fonts/` y `src/css/fuentes.css` |
-| Escena del logo y movimiento que comparten las variantes | `src/compartido/`: `escena.mjs` (cielo, luna, cordillera con los gatos, títulos que se arman, marquesina y cifras), `movimiento.css` y `movimiento.js` |
+| Escena del logo y movimiento que comparten las variantes | `src/compartido/`: `escena.mjs` (cielo, luna, cordillera con los gatos, presas que flotan, títulos que se arman, marquesina y cifras), `movimiento.css` y `movimiento.js` (entrada del hero, profundidad con el puntero, paralaje, rastro de tiza y apariciones) |
 | Fotos y derivados de marca | `img/fotos/` e `img/marca/`, generados con `tools/assets.mjs` |
 
 Mientras un template no tenga `pagina.mjs`, `/t/<id>` sigue sirviendo su captura. Con

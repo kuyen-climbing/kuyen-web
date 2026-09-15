@@ -2,6 +2,8 @@
   Movimiento compartido por las variantes de Kuyen:
   - Escena nocturna: estrellas de cuatro puntas que titilan, y la luna y la
     cordillera con los gatos del logo, con paralaje.
+  - Entrada orquestada del hero, capas con profundidad que siguen al puntero,
+    presas que flotan y botón que se deja atraer.
   - Rastro de tiza que sigue al puntero.
   - Títulos que se arman palabra por palabra, textos que entran y fotos que se
     revelan, al entrar en pantalla y una sola vez.
@@ -27,13 +29,52 @@
   mask: var(--m-estrella) center / contain no-repeat;
   opacity: 0.55;
 }
+/* Capa con profundidad: se mueve con el scroll (--m-y) y sigue al puntero
+   (--m-mx y --m-my, de -1 a 1) según su --m-prof. */
+.m-capa {
+  translate:
+    calc(var(--m-mx, 0) * var(--m-prof, 0) * 1px)
+    calc(var(--m-y, 0px) + var(--m-my, 0) * var(--m-prof, 0) * 1px);
+}
 .m-luna,
-.m-cordillera { translate: 0 var(--m-y, 0px); pointer-events: none; user-select: none; }
+.m-cordillera { pointer-events: none; user-select: none; }
 .m-luna { filter: drop-shadow(0 0 34px rgb(247 231 180 / 0.45)); }
+
+/* Presas que flotan. */
+.m-presa { position: absolute; display: block; color: var(--color); filter: drop-shadow(0 12px 18px rgb(23 26 30 / 0.4)); pointer-events: none; }
+.m-presa svg { display: block; width: 100%; height: auto; overflow: visible; rotate: var(--giro, 0deg); }
+.m-presa path { fill: currentColor; }
+.m-presa circle { fill: rgb(23 26 30 / 0.45); }
+
+/* Botón que se deja atraer por el puntero. */
+.m-iman { translate: var(--m-ix, 0px) var(--m-iy, 0px); }
 
 @media (prefers-reduced-motion: no-preference) {
   .m-estrella { animation: m-titilar var(--d) ease-in-out var(--r) infinite; }
   .m-luna { animation: m-mecer 9s ease-in-out infinite alternate; }
+  .m-presa svg { animation: m-flotar var(--dur, 8s) ease-in-out infinite alternate; }
+
+  /* Entrada del hero: con [data-m-entrada], las piezas esperan a .m-listo, que
+     llega cuando cargó la foto principal. Las estrellas se encienden, sube lo
+     marcado con .m-entra-sube, crece lo marcado con .m-entra-escala y se
+     descubre de abajo hacia arriba lo marcado con .m-entra-recorte. */
+  .m-js [data-m-entrada] .m-cielo { transition: opacity 1800ms ease; }
+  .m-js [data-m-entrada]:not(.m-listo) .m-cielo { opacity: 0; }
+  .m-js [data-m-entrada] :is(.m-entra-sube, .m-entra-escala) {
+    transition: opacity 1000ms ease var(--m-retraso, 0ms), transform 1300ms var(--m-curva) var(--m-retraso, 0ms);
+  }
+  .m-js [data-m-entrada] .m-entra-escala { transition-timing-function: ease, cubic-bezier(0.34, 1.56, 0.64, 1); }
+  .m-js [data-m-entrada]:not(.m-listo) .m-entra-sube { opacity: 0; transform: translateY(3rem); }
+  .m-js [data-m-entrada]:not(.m-listo) .m-entra-escala { opacity: 0; transform: scale(0.4) rotate(-12deg); }
+  .m-js [data-m-entrada] .m-entra-recorte > * { transition: clip-path 1500ms var(--m-curva) var(--m-retraso, 0ms); }
+  .m-js [data-m-entrada]:not(.m-listo) .m-entra-recorte > * { clip-path: inset(100% 0 0 0); }
+  .m-js [data-m-entrada] .m-entra-recorte { transition: box-shadow 1500ms ease var(--m-retraso, 0ms); }
+  .m-js [data-m-entrada]:not(.m-listo) .m-entra-recorte { box-shadow: none; }
+
+}
+@keyframes m-flotar {
+  from { transform: translateY(-9px) rotate(-7deg); }
+  to { transform: translateY(9px) rotate(7deg); }
 }
 @keyframes m-titilar {
   0%, 100% { opacity: 0.12; transform: scale(0.6) rotate(0deg); }
