@@ -16,17 +16,26 @@
  *   "4 · Horarios y valores" y "5 · Reglamento": intro de la sección 1 con las
  *   columnas del pie.
  *
+ * Revisión visual de Benjamín (15-09-2026): la página se veía plana. Se aplican
+ * la tipografía (Rubik Dirt y Rubik), la noche completa con acento amarillo luna
+ * y el movimiento de src/compartido/.
+ *
  * Diferencias con el template:
- * - El fondo animado del hero pasa a ser el gradiente del logo animado con CSS,
- *   con una estela que sigue al puntero.
+ * - Toda la página va sobre la noche del logo (el template es blanco y gris).
+ * - El fondo animado del hero pasa a ser la escena del logo: estrellas que
+ *   titilan, la luna y la cordillera con los dos gatos, con paralaje y rastro de
+ *   tiza. Hasta 1023 px la escena va arriba y el texto abajo, sobre la tinta.
+ * - Marquesina con la jerga del muro entre el hero y la sección 1, y cifras en
+ *   la sección 1.
+ * - Títulos que se arman palabra por palabra, textos que entran y fotos que se
+ *   revelan con paralaje; el template no tiene animaciones de entrada.
  * - Los videos de las tarjetas pasan a fotos de Kuyen.
  * - La intro usa un solo bloque de markup para móvil y escritorio (el template
  *   lo repite dos veces).
- * - Títulos en Bebas Neue, sin tracking negativo; en tarjetas, más grandes que
- *   los 14 a 15 px del template para que la condensada se lea.
  * - El menú móvil también se cierra con Escape y queda inerte mientras está
  *   cerrado.
  */
+import { cielo, luna, cordillera, titulo, marquesina, cifras } from '../../compartido/escena.mjs'
 
 const ICONOS = {
   flecha:
@@ -40,7 +49,7 @@ const ICONOS = {
   pin: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></svg>',
 }
 
-export default function pagina({ site, contenido, esc, foto, cabeza, leer }) {
+export default function pagina({ site, contenido, esc, foto, cabeza, leer, compartido }) {
   const {
     POR_CONFIRMAR,
     MARCA,
@@ -55,24 +64,26 @@ export default function pagina({ site, contenido, esc, foto, cabeza, leer }) {
     COMUNIDAD,
     REGLAMENTO,
     SOLICITUD,
+    MARQUESINA,
     TEXTOS,
   } = contenido
 
   const externo = ' target="_blank" rel="noopener"'
   const servicio = (id) => SERVICIOS.find((s) => s.id === id)
   const google = CIFRAS.find((c) => c.id === 'google')
+  const retraso = (ms) => (ms ? ` style="--m-retraso: ${ms}ms"` : '')
 
   /** Dato que Kuyen no confirmó: visible en la página y comentado en el código. */
   const pendiente = (falta) => `<!-- POR CONFIRMAR: ${falta} --><span class="pendiente">${POR_CONFIRMAR}</span>`
 
   /** Botón píldora con texto que rueda y círculo con flecha. */
-  const boton = ({ texto, href, variante = 'primario', afuera = false, clase = '' }) => `<a class="boton boton--${variante}${clase ? ` ${clase}` : ''}" href="${esc(href)}"${afuera ? externo : ''}>
+  const boton = ({ texto, href, variante = 'primario', afuera = false, clase = '', aparece = null }) => `<a class="boton boton--${variante}${clase ? ` ${clase}` : ''}" href="${esc(href)}"${afuera ? externo : ''}${aparece === null ? '' : ` data-m-aparece${retraso(aparece)}`}>
             <span class="boton__texto"><span class="boton__rollo"><span>${esc(texto)}</span><span aria-hidden="true">${esc(texto)}</span></span></span>
             <span class="boton__circulo">${ICONOS.flecha}</span>
           </a>`
 
   /** Círculo numerado más insignia con borde. */
-  const etiqueta = (numero, texto) => `<div class="etiqueta">
+  const etiqueta = (numero, texto) => `<div class="etiqueta" data-m-aparece>
           <span class="etiqueta__numero">${numero}</span>
           <span class="insignia">${esc(texto)}</span>
         </div>`
@@ -80,21 +91,21 @@ export default function pagina({ site, contenido, esc, foto, cabeza, leer }) {
   /** Píldora de 36 px que se estira en hover y muestra su texto. */
   const pildora = ({ texto, href, oscura = false, abierta, mapa }) => {
     const clases = `pildora${oscura ? ' pildora--oscura' : ''}`
-    const contenidoPildora = `<span class="pildora__icono">${mapa ? ICONOS.pin : ICONOS.diagonal}</span><span class="pildora__texto">${esc(texto)}</span>`
+    const interior = `<span class="pildora__icono">${mapa ? ICONOS.pin : ICONOS.diagonal}</span><span class="pildora__texto">${esc(texto)}</span>`
     if (mapa) {
-      return `<button type="button" class="${clases}" style="--abierta: ${abierta}" data-mapa="${esc(mapa.url)}" data-titulo="${esc(mapa.titulo)}">${contenidoPildora}</button>`
+      return `<button type="button" class="${clases}" style="--abierta: ${abierta}" data-mapa="${esc(mapa.url)}" data-titulo="${esc(mapa.titulo)}">${interior}</button>`
     }
-    return `<a class="${clases}" style="--abierta: ${abierta}" href="${esc(href)}"${externo}>${contenidoPildora}</a>`
+    return `<a class="${clases}" style="--abierta: ${abierta}" href="${esc(href)}"${externo}>${interior}</a>`
   }
 
-  /** Tarjeta de la sección 2: medio 4:3 con píldora, descripción y título. */
-  const tarjeta = ({ medio, pildoraHtml, descripcion, titulo, claseMedio = '' }) => `<article class="tarjeta">
-            <div class="tarjeta__medio${claseMedio ? ` ${claseMedio}` : ''}">
+  /** Tarjeta de la sección 2: medio 4:3 que se revela, con píldora, descripción y título. */
+  const tarjeta = ({ medio, pildoraHtml, descripcion, titulo: nombre, claseMedio = 'm-foto--zoom', desde = 0 }) => `<article class="tarjeta">
+            <div class="tarjeta__medio m-foto ${claseMedio}"${retraso(desde)}>
               ${medio}
               ${pildoraHtml}
             </div>
-            <p class="tarjeta__descripcion">${descripcion}</p>
-            <h3 class="tarjeta__titulo">${titulo}</h3>
+            <p class="tarjeta__descripcion" data-m-aparece${retraso(desde + 250)}>${descripcion}</p>
+            <h3 class="tarjeta__titulo" data-m-aparece${retraso(desde + 350)}>${nombre}</h3>
           </article>`
 
   const enlacesMenu = [
@@ -104,7 +115,10 @@ export default function pagina({ site, contenido, esc, foto, cabeza, leer }) {
     ['#visitanos', 'Visítanos'],
   ]
 
-  const lema = esc(MARCA.lema).replace(' por ', ' <br class="hero__salto">por ').replace(' para ', ' <br class="hero__salto">para ')
+  // "Un proyecto hecho por escaladores para escaladores", en tres renglones.
+  const [inicioLema, restoLema] = MARCA.lema.split(' por ')
+  const [medioLema, finLema] = restoLema.split(' para ')
+  const lineasLema = [inicioLema, `por ${medioLema}`, `para ${finLema}`]
 
   const enlacePie = (href, texto, afuera = false) =>
     `<li><a href="${esc(href)}"${afuera ? externo : ''}>${esc(texto)}${ICONOS.diagonal}</a></li>`
@@ -113,17 +127,13 @@ export default function pagina({ site, contenido, esc, foto, cabeza, leer }) {
 
   return `<!DOCTYPE html>
 <html lang="${site.lang}">
-${cabeza({ estilos: leer('estilos.css') })}
+${cabeza({ estilos: `${compartido('movimiento.css')}\n${leer('estilos.css')}` })}
 <body>
+  <script>document.documentElement.classList.add('m-js')</script>
   <a class="saltar" href="#contenido">Saltar al contenido</a>
 
-  <section class="hero tono-gradiente" data-hero>
-    <div class="hero__fondo" aria-hidden="true">
-      <div class="hero__remolino"></div>
-      <div class="hero__acanalado"></div>
-      <div class="hero__estela"></div>
-      <div class="hero__grano"></div>
-    </div>
+  <section class="hero tono-gradiente" data-hero data-m-tiza="255,255,255|247,231,180|201,185,240">
+    ${cielo({ estrellas: 46, semilla: 97, alto: 62 })}
 
     <header class="cabecera">
       <nav class="cabecera__nav tono-claro" aria-label="Principal">
@@ -144,13 +154,18 @@ ${cabeza({ estilos: leer('estilos.css') })}
       </nav>
     </header>
 
+    <div class="hero__escena" aria-hidden="true">
+      ${luna({ clase: 'hero__luna', paralaje: -0.16, tamanos: '(min-width: 1024px) 12vw, 26vw' })}
+      ${cordillera({ clase: 'hero__cordillera', paralaje: -0.04 })}
+    </div>
+
     <div class="hero__contenido" id="contenido" tabindex="-1">
       <div class="contenedor hero__interior">
-        <span class="hero__antetitulo">Escalada en boulder · ${esc(UBICACION.comuna)}</span>
-        <h1 class="titulo-grande">${lema}</h1>
+        <span class="hero__antetitulo" data-m-aparece>Escalada en boulder · ${esc(UBICACION.comuna)}</span>
+        <h1 class="titulo-grande" data-m-revelar style="--m-retraso: 150ms">${titulo(lineasLema)}</h1>
         <div class="hero__acciones">
-          ${boton({ texto: TEXTOS.acciones.solicitud, href: LINKS.solicitudIngreso, afuera: true })}
-          <div class="chip tono-claro">
+          ${boton({ texto: TEXTOS.acciones.solicitud, href: LINKS.solicitudIngreso, afuera: true, aparece: 700 })}
+          <div class="chip tono-claro" data-m-aparece style="--m-retraso: 850ms">
             ${ICONOS.estrella}
             <span class="chip__texto">${esc(google.valor)} en Google</span>
             <span class="chip__insignia">${esc(google.etiqueta.split(', con ')[1])}</span>
@@ -170,26 +185,35 @@ ${cabeza({ estilos: leer('estilos.css') })}
     </div>
   </div>
 
+  ${marquesina(MARQUESINA)}
+
   <main>
-    <section class="seccion seccion--intro tono-claro" id="kuyen">
+    <section class="seccion seccion--intro tono-oscuro" id="kuyen">
       <div class="contenedor">
         ${etiqueta(1, 'Qué es Kuyen')}
-        <h2 class="titulo-intro intro__titulo">${esc(MARCA.definicion)}<br> en ${esc(UBICACION.comuna)}.</h2>
+        <h2 class="titulo-intro intro__titulo" data-m-revelar>${titulo([`${MARCA.definicion}`, `en ${UBICACION.comuna}.`])}</h2>
         <div class="intro__grilla">
           <div class="intro__texto">
-            <p class="intro__parrafo">${esc(MARCA.significado)} Desde ${HISTORIA.desde}, ${esc(MARCA.lema.charAt(0).toLowerCase() + MARCA.lema.slice(1))}.</p>
-            ${boton({ texto: 'Conoce el muro', href: '#muro', clase: 'intro__boton' })}
+            <p class="intro__parrafo" data-m-aparece>${esc(MARCA.significado)} Desde ${HISTORIA.desde}, ${esc(MARCA.lema.charAt(0).toLowerCase() + MARCA.lema.slice(1))}.</p>
+            ${boton({ texto: 'Conoce el muro', href: '#muro', clase: 'intro__boton', aparece: 150 })}
           </div>
-          ${foto('pancita', { clase: 'intro__foto intro__foto--chica', tamanos: '(min-width: 1024px) 24vw, (min-width: 640px) 45vw, 100vw' })}
-          ${foto('escalador-muro-blanco', { clase: 'intro__foto intro__foto--grande', tamanos: '(min-width: 1024px) 44vw, (min-width: 640px) 55vw, 100vw' })}
+          <div class="m-foto intro__foto intro__foto--chica">
+            ${foto('pancita', { tamanos: '(min-width: 1024px) 24vw, (min-width: 640px) 45vw, 100vw' })}
+          </div>
+          <div class="m-foto intro__foto intro__foto--grande" style="--m-retraso: 180ms">
+            ${foto('escaladora-muro-azul', { tamanos: '(min-width: 1024px) 44vw, (min-width: 640px) 55vw, 100vw' })}
+          </div>
+        </div>
+        <div class="intro__cifras">
+          ${cifras(CIFRAS.filter((c) => c.id !== 'anios'))}
         </div>
       </div>
     </section>
 
-    <section class="seccion seccion--tarjetas seccion--tinte tono-claro" id="muro">
+    <section class="seccion seccion--tarjetas tono-gradiente" id="muro">
       <div class="contenedor">
         ${etiqueta(2, 'El muro y la comunidad')}
-        <h2 class="titulo-grande tarjetas__titulo">Escalar en Kuyen</h2>
+        <h2 class="titulo-grande tarjetas__titulo" data-m-revelar>${titulo('Escalar en Kuyen')}</h2>
         <div class="tarjetas">
           ${tarjeta({
             medio: foto('escalador-desplome-amarillo', { tamanos: '(min-width: 768px) 50vw, 100vw' }),
@@ -202,15 +226,16 @@ ${cabeza({ estilos: leer('estilos.css') })}
             pildoraHtml: pildora({ texto: 'Ver eventos', href: CONTACTO.instagram, oscura: true, abierta: '8.5rem' }),
             descripcion: esc(COMUNIDAD.resumen),
             titulo: 'Comunidad y eventos',
+            desde: 160,
           })}
         </div>
       </div>
     </section>
 
-    <section class="seccion seccion--tarjetas tono-claro" id="clases">
+    <section class="seccion seccion--tarjetas tono-oscuro" id="clases">
       <div class="contenedor">
         ${etiqueta(3, 'Clases y Kuyencit@s')}
-        <h2 class="titulo-grande tarjetas__titulo">Aprende con nosotros</h2>
+        <h2 class="titulo-grande tarjetas__titulo" data-m-revelar>${titulo('Aprende con nosotros')}</h2>
         <div class="tarjetas">
           ${tarjeta({
             medio: foto('escaladora-desplome', { tamanos: '(min-width: 768px) 50vw, 100vw' }),
@@ -223,23 +248,24 @@ ${cabeza({ estilos: leer('estilos.css') })}
             pildoraHtml: pildora({ texto: TEXTOS.acciones.escribenos, href: CONTACTO.whatsapp, oscura: true, abierta: '8.5rem' }),
             descripcion: `${esc(servicio('kuyencitos').resumen)} Edades y días: ${pendiente('edades, días, horario y valor de Kuyencit@s (pregunta 3)')}`,
             titulo: esc(servicio('kuyencitos').nombre),
+            desde: 160,
           })}
         </div>
       </div>
     </section>
 
-    <section class="seccion seccion--intro seccion--tinte tono-claro" id="horarios">
+    <section class="seccion seccion--intro tono-gradiente" id="horarios">
       <div class="contenedor">
         ${etiqueta(4, 'Horarios y valores')}
-        <h2 class="titulo-intro intro__titulo">Dos tramos para escalar:<br> horario bajo y horario normal.</h2>
+        <h2 class="titulo-intro intro__titulo" data-m-revelar>${titulo(['Dos tramos para escalar:', 'horario bajo y horario normal.'])}</h2>
         <div class="bloque">
-          <p class="intro__parrafo">Se paga al ingresar. Horarios y valores vigentes: ${pendiente('horario por día con los dos tramos y precios vigentes (preguntas 1 y 2)')}</p>
-          ${boton({ texto: 'Consultar por WhatsApp', href: CONTACTO.whatsapp, afuera: true, clase: 'intro__boton' })}
+          <p class="intro__parrafo" data-m-aparece>Se paga al ingresar. Horarios y valores vigentes: ${pendiente('horario por día con los dos tramos y precios vigentes (preguntas 1 y 2)')}</p>
+          ${boton({ texto: 'Consultar por WhatsApp', href: CONTACTO.whatsapp, afuera: true, clase: 'intro__boton', aparece: 150 })}
         </div>
         <div class="columnas">
           ${HORARIOS.tramos
             .map(
-              (tramo) => `<div class="columna">
+              (tramo, n) => `<div class="columna" data-m-aparece${retraso(n * 120)}>
             <h3 class="columna__titulo">${esc(tramo.nombre)}</h3>
             <ul class="columna__lista">
               <li>${esc(tramo.descripcion)}</li>
@@ -249,7 +275,7 @@ ${cabeza({ estilos: leer('estilos.css') })}
           </div>`
             )
             .join('\n          ')}
-          <div class="columna columna--ancha">
+          <div class="columna columna--ancha" data-m-aparece style="--m-retraso: 240ms">
             <h3 class="columna__titulo">Valores</h3>
             <ul class="columna__lista">
               ${PRECIOS.map((precio) => `<li>${esc(precio.nombre)}: ${pendiente(`valor de ${precio.nombre.toLowerCase()} (pregunta 2)`)}</li>`).join('\n              ')}
@@ -259,18 +285,18 @@ ${cabeza({ estilos: leer('estilos.css') })}
       </div>
     </section>
 
-    <section class="seccion seccion--intro tono-claro" id="reglamento">
+    <section class="seccion seccion--intro tono-oscuro" id="reglamento">
       <div class="contenedor">
         ${etiqueta(5, 'Reglamento')}
-        <h2 class="titulo-intro intro__titulo">Para cuidarnos<br> entre todos.</h2>
+        <h2 class="titulo-intro intro__titulo" data-m-revelar>${titulo(['Para cuidarnos', 'entre todos.'])}</h2>
         <div class="bloque">
-          <p class="intro__parrafo">${esc(SOLICITUD.resumen)}</p>
-          ${boton({ texto: TEXTOS.acciones.solicitud, href: LINKS.solicitudIngreso, afuera: true, clase: 'intro__boton' })}
+          <p class="intro__parrafo" data-m-aparece>${esc(SOLICITUD.resumen)}</p>
+          ${boton({ texto: TEXTOS.acciones.solicitud, href: LINKS.solicitudIngreso, afuera: true, clase: 'intro__boton', aparece: 150 })}
         </div>
         <div class="columnas">
           ${[0, 5, 10]
             .map(
-              (desde) => `<div class="columna${desde === 10 ? ' columna--ancha' : ''}">
+              (desde) => `<div class="columna${desde === 10 ? ' columna--ancha' : ''}" data-m-aparece${retraso(desde * 24)}>
             <h3 class="columna__titulo">Del ${desde + 1} al ${desde + 5}</h3>
             <ol class="columna__lista columna__lista--numerada" start="${desde + 1}">
               ${REGLAMENTO.slice(desde, desde + 5).map((regla) => `<li>${esc(regla)}</li>`).join('\n              ')}
@@ -282,15 +308,15 @@ ${cabeza({ estilos: leer('estilos.css') })}
       </div>
     </section>
 
-    <section class="seccion seccion--tarjetas seccion--tinte tono-claro" id="visitanos">
+    <section class="seccion seccion--tarjetas tono-gradiente" id="visitanos">
       <div class="contenedor">
         ${etiqueta(6, 'Visítanos')}
-        <h2 class="titulo-grande tarjetas__titulo">${esc(UBICACION.calle)}</h2>
+        <h2 class="titulo-grande tarjetas__titulo" data-m-revelar>${titulo(UBICACION.calle)}</h2>
         <div class="tarjetas">
           ${tarjeta({
-            claseMedio: 'tono-gradiente',
+            claseMedio: 'tarjeta__medio--mapa',
             medio: `<div class="mapa">
-                ${ICONOS.pin}
+                ${luna({ clase: 'mapa__luna', paralaje: -0.06, tamanos: '8rem' })}
                 <p class="mapa__direccion">${esc(UBICACION.calle)}<br>${esc(UBICACION.comuna)}, ${esc(UBICACION.region)}</p>
                 <p class="mapa__nota">${esc(TEXTOS.mapa)}</p>
               </div>`,
@@ -307,6 +333,7 @@ ${cabeza({ estilos: leer('estilos.css') })}
             pildoraHtml: pildora({ texto: TEXTOS.acciones.escribenos, href: CONTACTO.whatsapp, oscura: true, abierta: '8.5rem' }),
             descripcion: `WhatsApp ${esc(CONTACTO.telefono)} o mensaje directo en Instagram, ${esc(CONTACTO.instagramUsuario)}.`,
             titulo: 'Contacto',
+            desde: 160,
           })}
         </div>
       </div>
@@ -317,20 +344,20 @@ ${cabeza({ estilos: leer('estilos.css') })}
     <div class="contenedor pie__interior">
       <div class="pie__llamado">
         <div class="pie__llamado-texto">
-          <div class="etiqueta etiqueta--pie">
+          <div class="etiqueta etiqueta--pie" data-m-aparece>
             <img class="etiqueta__isotipo" src="/img/marca/isotipo-256.webp" width="256" height="256" alt="">
             <span class="insignia">¿Primera vez en Kuyen?</span>
           </div>
-          <h2 class="titulo-grande">Te esperamos <br class="pie__salto">en el muro.</h2>
+          <h2 class="titulo-grande" data-m-revelar>${titulo(['Te esperamos', 'en el muro.'])}</h2>
         </div>
-        <div class="pie__acciones">
+        <div class="pie__acciones" data-m-aparece style="--m-retraso: 300ms">
           ${boton({ texto: TEXTOS.acciones.solicitud, href: LINKS.solicitudIngreso, afuera: true })}
           <a class="pie__enlace" href="${esc(CONTACTO.whatsapp)}"${externo}>${esc(TEXTOS.acciones.whatsapp)}</a>
         </div>
       </div>
 
       <div class="pie__grilla">
-        <div class="pie__marca">
+        <div class="pie__marca" data-m-aparece>
           <a class="marca" href="#contenido" aria-label="${esc(MARCA.nombre)}, inicio">
             <img class="marca__isotipo" src="/img/marca/isotipo-256.webp" width="256" height="256" alt="">
             <span class="marca__nombre">${esc(MARCA.nombreLogo)}</span>
@@ -338,7 +365,7 @@ ${cabeza({ estilos: leer('estilos.css') })}
           <p class="pie__bio">${esc(MARCA.bio)}</p>
           <span class="pie__estado"><span class="pie__punto"></span>${esc(UBICACION.calle)}, ${esc(UBICACION.comuna)}</span>
         </div>
-        <nav class="pie__columna" aria-label="Kuyen">
+        <nav class="pie__columna" aria-label="Kuyen" data-m-aparece style="--m-retraso: 100ms">
           <h3 class="columna__titulo">Kuyen</h3>
           <ul>
             ${enlacePie('#kuyen', 'Qué es Kuyen')}
@@ -347,7 +374,7 @@ ${cabeza({ estilos: leer('estilos.css') })}
             ${enlacePie('#reglamento', 'Reglamento')}
           </ul>
         </nav>
-        <nav class="pie__columna" aria-label="Visítanos">
+        <nav class="pie__columna" aria-label="Visítanos" data-m-aparece style="--m-retraso: 200ms">
           <h3 class="columna__titulo">Visítanos</h3>
           <ul>
             ${enlacePie('#horarios', 'Horarios y valores')}
@@ -356,7 +383,7 @@ ${cabeza({ estilos: leer('estilos.css') })}
             ${enlacePie(LINKS.solicitudIngreso, TEXTOS.acciones.solicitud, true)}
           </ul>
         </nav>
-        <nav class="pie__columna" aria-label="Contacto">
+        <nav class="pie__columna" aria-label="Contacto" data-m-aparece style="--m-retraso: 300ms">
           <h3 class="columna__titulo">Contacto</h3>
           <ul>
             ${enlacePie(CONTACTO.whatsapp, 'WhatsApp', true)}
@@ -380,7 +407,8 @@ ${cabeza({ estilos: leer('estilos.css') })}
   </footer>
 
   <script>
-${leer('script.js')}
+${compartido('movimiento.js')};
+${leer('script.js')};
   </script>
 </body>
 </html>

@@ -31,24 +31,6 @@
     })
   }
 
-  /* Estela del hero: sigue al puntero y se apaga cuando deja de moverse. Solo con
-     mouse y sin preferencia de movimiento reducido. */
-  var hero = document.querySelector('[data-hero]')
-  var calmo = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-  if (hero && !calmo && window.matchMedia('(hover: hover)').matches) {
-    var espera = null
-    hero.addEventListener('pointermove', function (e) {
-      var caja = hero.getBoundingClientRect()
-      hero.style.setProperty('--px', e.clientX - caja.left + 'px')
-      hero.style.setProperty('--py', e.clientY - caja.top + 'px')
-      hero.style.setProperty('--estela', '1')
-      clearTimeout(espera)
-      espera = setTimeout(function () {
-        hero.style.setProperty('--estela', '0')
-      }, 700)
-    })
-  }
-
   /* Mapa: el iframe de Google se crea recién al hacer clic. Hasta entonces la
      página no pide nada a Google. */
   document.querySelectorAll('[data-mapa]').forEach(function (boton) {

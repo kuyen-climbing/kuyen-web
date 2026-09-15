@@ -29,8 +29,8 @@
   <meta name="twitter:description" content="Centro de escalada técnica en boulder en Padre Las Casas, La Araucanía: desplomes hasta 25°, moonboard, clases guiadas y comunidad.">
   <meta name="twitter:image" content="https://kuyenclimbing.cl/img/marca/og-kuyen.jpg">
 
-  <link rel="preload" href="/fonts/bebas-neue-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="preload" href="/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/rubik-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/rubik-dirt-latin.woff2" as="font" type="font/woff2" crossorigin>
 
   <script type="application/ld+json">
 {
@@ -68,25 +68,28 @@
   Tipografías del sitio, autoalojadas en fonts/ (licencia SIL Open Font License,
   textos en fonts/OFL-*.txt). No se pide nada a Google en producción.
 
+  - Rubik Dirt: títulos. Rubik con textura gastada, como una presa con magnesio.
+    Pesa cerca de 300 KB por la textura: va solo en títulos grandes.
+  - Rubik: texto, botones y etiquetas. Versión variable, de 300 a 900.
+
   Subset latino de Google Fonts: cubre el español completo (tildes, Ñ, Ü, ¿, ¡, °).
-  Inter es la versión variable, con todos los pesos en un archivo.
 */
 
 @font-face {
-  font-family: "Bebas Neue";
+  font-family: "Rubik Dirt";
   font-style: normal;
   font-weight: 400;
   font-display: swap;
-  src: url("/fonts/bebas-neue-latin.woff2") format("woff2");
+  src: url("/fonts/rubik-dirt-latin.woff2") format("woff2");
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
 @font-face {
-  font-family: "Inter";
+  font-family: "Rubik";
   font-style: normal;
-  font-weight: 100 900;
+  font-weight: 300 900;
   font-display: swap;
-  src: url("/fonts/inter-latin.woff2") format("woff2");
+  src: url("/fonts/rubik-latin.woff2") format("woff2");
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
@@ -94,20 +97,19 @@
   Tokens de Kuyen Climbing.
 
   Dos capas:
-  1. Marca: la paleta del logo 2.0, el acento y la tipografía. No cambian.
+  1. Marca: la paleta del logo 2.0, el acento amarillo luna y la tipografía. No cambian.
   2. Semánticos: lo que usan las variantes (--fondo, --texto, --superficie,
-     --primario, --acento, --borde). Cada variante los mapea a la marca según
-     sea clara u oscura, con las clases .tono-claro, .tono-oscuro y
-     .tono-gradiente o con su propio mapa.
+     --primario, --acento, --borde). Por defecto la página vive de noche: tinta y
+     gradiente con acento amarillo luna (decisión de Benjamín, 15-09-2026). Las
+     clases .tono-oscuro, .tono-gradiente y .tono-claro los remapean por bloque.
 
   Contraste verificado (WCAG):
-  - Texto #171A1E sobre blanco 17,46; #2E2A2A al 75% sobre blanco 6,32 y sobre
-    las superficies claras 5,96 como mínimo.
-  - Índigo #2B2E83 sobre blanco 11,53 (botones y enlaces en fondos claros).
-  - Blanco sobre los tonos 11,39 como mínimo; blanco al 72% sobre los tonos
-    6,65 y sobre la tinta 9,48.
-  - Lila #C9B9F0 sobre los tonos 6,34 como mínimo y sobre la tinta 9,71. Sobre
-    blanco da 1,80: no se usa en fondos claros.
+  - Amarillo luna #F7E7B4 sobre la tinta 14,17 y sobre los tonos del gradiente
+    9,24 como mínimo. Tinta sobre amarillo luna, para el texto de los botones, 14,17.
+  - Blanco sobre la tinta 17,46 y sobre los tonos 11,39 como mínimo; blanco al
+    72% sobre la tinta 9,48 y sobre los tonos 6,65 como mínimo.
+  - En bloques claros: tinta sobre blanco 17,46, #2E2A2A al 75% sobre blanco
+    6,32 e índigo #2B2E83 sobre blanco 11,53.
 */
 
 :root {
@@ -123,7 +125,9 @@
   --kuyen-gris: #989fa5;
   --kuyen-blanco: #ffffff;
 
-  /* Acento para botones y enlaces sobre fondos oscuros. */
+  /* Acento para botones, enlaces y detalles sobre la noche: la luna del logo. */
+  --kuyen-luna: #f7e7b4;
+  /* Tinte frío para brillos y partículas; no se usa como color de texto. */
   --kuyen-lila: #c9b9f0;
 
   --kuyen-gradiente: linear-gradient(180deg, #2b2e83 0%, #3c2d78 25%, #4e2a65 50%, #5b2652 75%, #671f37 100%);
@@ -138,34 +142,56 @@
   --kuyen-blanco-borde: rgb(255 255 255 / 0.14);
 
   /* ---------- Marca: tipografía ---------- */
-  --fuente-titulo: "Bebas Neue", "Arial Narrow", "Roboto Condensed", ui-sans-serif, system-ui, sans-serif;
-  --fuente-texto: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --fuente-titulo: "Rubik Dirt", "Rubik", ui-sans-serif, system-ui, sans-serif;
+  --fuente-texto: "Rubik", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 
-  /* Escala base. Bebas Neue tiene un solo peso y va siempre en mayúsculas: la
-     jerarquía sale del tamaño y el tracking. Cada variante ajusta sus tamaños a
-     los de su template. */
-  --tipo-h1: clamp(2.75rem, 1.6rem + 5.6vw, 6rem);
-  --tipo-h2: clamp(2.25rem, 1.6rem + 3.2vw, 4rem);
-  --tipo-h3: clamp(1.5rem, 1.25rem + 1.2vw, 2.25rem);
+  /* Escala base. Rubik Dirt es ancha y tiene un solo peso: la jerarquía sale del
+     tamaño. Cada variante ajusta sus tamaños a los de su template. */
+  --tipo-h1: clamp(2.4rem, 1.2rem + 4.4vw, 5rem);
+  --tipo-h2: clamp(2rem, 1.4rem + 2.8vw, 3.5rem);
+  --tipo-h3: clamp(1.375rem, 1.15rem + 1vw, 2rem);
   --tipo-cuerpo: 1rem;
   --tipo-grande: 1.125rem;
   --tipo-chico: 0.875rem;
   --tipo-etiqueta: 0.75rem;
-  --tracking-titulo: 0.01em;
-  --tracking-etiqueta: 0.12em;
-  --interlineado-titulo: 0.95;
+  --interlineado-titulo: 1.02;
 
-  /* ---------- Semánticos (por defecto, tono claro) ---------- */
-  --fondo: var(--kuyen-blanco);
-  --texto: var(--kuyen-tinta);
-  --texto-suave: var(--kuyen-texto-suave);
-  --superficie: var(--kuyen-tinte-indigo);
-  --borde: var(--kuyen-borde-claro);
-  --primario: var(--kuyen-indigo);
-  --primario-texto: var(--kuyen-blanco);
-  --acento: var(--kuyen-indigo);
+  /* ---------- Semánticos (por defecto, la noche) ---------- */
+  --fondo: var(--kuyen-tinta);
+  --texto: var(--kuyen-blanco);
+  --texto-suave: var(--kuyen-blanco-suave);
+  --superficie: var(--kuyen-blanco-tinte);
+  --borde: var(--kuyen-blanco-borde);
+  --primario: var(--kuyen-luna);
+  --primario-texto: var(--kuyen-tinta);
+  --acento: var(--kuyen-luna);
 }
 
+.tono-oscuro {
+  --fondo: var(--kuyen-tinta);
+  --texto: var(--kuyen-blanco);
+  --texto-suave: var(--kuyen-blanco-suave);
+  --superficie: var(--kuyen-blanco-tinte);
+  --borde: var(--kuyen-blanco-borde);
+  --primario: var(--kuyen-luna);
+  --primario-texto: var(--kuyen-tinta);
+  --acento: var(--kuyen-luna);
+}
+
+/* Igual que .tono-oscuro, con el gradiente del logo de fondo. --fondo es una
+   imagen: se usa en background, nunca en color. */
+.tono-gradiente {
+  --fondo: var(--kuyen-gradiente);
+  --texto: var(--kuyen-blanco);
+  --texto-suave: var(--kuyen-blanco-suave);
+  --superficie: var(--kuyen-blanco-tinte);
+  --borde: var(--kuyen-blanco-borde);
+  --primario: var(--kuyen-luna);
+  --primario-texto: var(--kuyen-tinta);
+  --acento: var(--kuyen-luna);
+}
+
+/* Para piezas blancas sobre la noche (cabecera en píldora, chips, hojas). */
 .tono-claro {
   --fondo: var(--kuyen-blanco);
   --texto: var(--kuyen-tinta);
@@ -177,42 +203,164 @@
   --acento: var(--kuyen-indigo);
 }
 
-.tono-oscuro {
-  --fondo: var(--kuyen-tinta);
-  --texto: var(--kuyen-blanco);
-  --texto-suave: var(--kuyen-blanco-suave);
-  --superficie: var(--kuyen-blanco-tinte);
-  --borde: var(--kuyen-blanco-borde);
-  --primario: var(--kuyen-lila);
-  --primario-texto: var(--kuyen-tinta);
-  --acento: var(--kuyen-lila);
+/*
+  Movimiento compartido por las variantes de Kuyen:
+  - Escena nocturna: estrellas de cuatro puntas que titilan, y la luna y la
+    cordillera con los gatos del logo, con paralaje.
+  - Rastro de tiza que sigue al puntero.
+  - Títulos que se arman palabra por palabra, textos que entran y fotos que se
+    revelan, al entrar en pantalla y una sola vez.
+  - Marquesina con la jerga del muro y cifras que suben.
+  Los estados de inicio aplican solo con JavaScript (.m-js en <html>) y sin
+  preferencia de movimiento reducido: sin eso todo queda visible y quieto.
+*/
+
+:root {
+  --m-estrella: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 1c.9 6.6 4.4 10.1 11 11-6.6.9-10.1 4.4-11 11-.9-6.6-4.4-10.1-11-11 6.6-.9 10.1-4.4 11-11z'/%3E%3C/svg%3E");
+  --m-curva: cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
-/* Igual que .tono-oscuro, con el gradiente del logo de fondo. --fondo es una
-   imagen: se usa en background, nunca en color. */
-.tono-gradiente {
-  --fondo: var(--kuyen-gradiente);
-  --texto: var(--kuyen-blanco);
-  --texto-suave: var(--kuyen-blanco-suave);
-  --superficie: var(--kuyen-blanco-tinte);
-  --borde: var(--kuyen-blanco-borde);
-  --primario: var(--kuyen-lila);
-  --primario-texto: var(--kuyen-tinta);
-  --acento: var(--kuyen-lila);
+/* ---------- Escena nocturna ---------- */
+
+.m-cielo { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+.m-estrella {
+  position: absolute;
+  width: var(--t);
+  height: var(--t);
+  background: var(--kuyen-blanco);
+  -webkit-mask: var(--m-estrella) center / contain no-repeat;
+  mask: var(--m-estrella) center / contain no-repeat;
+  opacity: 0.55;
+}
+.m-luna,
+.m-cordillera { translate: 0 var(--m-y, 0px); pointer-events: none; user-select: none; }
+.m-luna { filter: drop-shadow(0 0 34px rgb(247 231 180 / 0.45)); }
+
+@media (prefers-reduced-motion: no-preference) {
+  .m-estrella { animation: m-titilar var(--d) ease-in-out var(--r) infinite; }
+  .m-luna { animation: m-mecer 9s ease-in-out infinite alternate; }
+}
+@keyframes m-titilar {
+  0%, 100% { opacity: 0.12; transform: scale(0.6) rotate(0deg); }
+  50% { opacity: 1; transform: scale(1) rotate(45deg); }
+}
+@keyframes m-mecer {
+  from { rotate: -4deg; }
+  to { rotate: 3deg; }
+}
+
+/* ---------- Rastro de tiza ---------- */
+
+.m-tiza { position: absolute; inset: 0; z-index: 15; width: 100%; height: 100%; pointer-events: none; }
+
+/* ---------- Títulos, textos y fotos que entran ---------- */
+
+.m-linea { display: block; }
+.m-palabra { display: inline-block; }
+.m-foto { overflow: hidden; border-radius: var(--m-radio, 1rem); }
+.m-foto img { width: 100%; height: 100%; object-fit: cover; translate: 0 var(--m-y, 0px); }
+
+@media (prefers-reduced-motion: no-preference) {
+  .m-js .m-palabra { overflow: hidden; padding-block: 0.16em 0.08em; margin-block: -0.16em -0.08em; vertical-align: bottom; }
+  .m-js .m-palabra > span {
+    display: inline-block;
+    transform: translateY(115%);
+    transition: transform 950ms var(--m-curva) calc(var(--m-i) * 60ms + var(--m-retraso, 0ms));
+  }
+  .m-js .m-visible .m-palabra > span { transform: none; }
+
+  .m-js [data-m-aparece] {
+    opacity: 0;
+    transform: translateY(1.25rem);
+    transition: opacity 800ms ease var(--m-retraso, 0ms), transform 900ms var(--m-curva) var(--m-retraso, 0ms);
+  }
+  .m-js [data-m-aparece].m-visible { opacity: 1; transform: none; }
+
+  /* El recorte va en los hijos y no en el contenedor: con el contenedor recortado
+     entero, el IntersectionObserver no lo ve entrar y la foto nunca aparece. */
+  .m-js :where(.m-foto > *) {
+    clip-path: inset(100% 0 0 0);
+    transition: clip-path 1100ms var(--m-curva) var(--m-retraso, 0ms);
+  }
+  .m-js :where(.m-foto.m-visible > *) { clip-path: inset(0 0 0 0); }
+  .m-js .m-foto:not(.m-visible) { background-color: transparent; border-color: transparent; }
+  .m-js .m-foto img {
+    scale: 1.2;
+    transition: clip-path 1100ms var(--m-curva) var(--m-retraso, 0ms), scale 1500ms var(--m-curva) var(--m-retraso, 0ms);
+  }
+  .m-js .m-foto.m-visible img { scale: 1.1; }
+}
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .m-js .m-foto--zoom.m-visible:hover img { scale: 1.18; transition-duration: 700ms; transition-delay: 0ms; }
+}
+
+/* ---------- Marquesina ---------- */
+
+.m-marquesina {
+  display: grid;
+  gap: 0.25rem;
+  overflow: hidden;
+  padding-block: clamp(1.25rem, 3vw, 2.25rem);
+  background: var(--kuyen-tinta);
+  color: var(--kuyen-blanco);
+}
+.m-pista { display: flex; width: max-content; }
+.m-pista span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45em;
+  padding-right: 0.45em;
+  font-family: var(--fuente-titulo);
+  font-size: clamp(2.25rem, 1.4rem + 3.6vw, 4.5rem);
+  line-height: 1.1;
+  white-space: nowrap;
+}
+.m-pista--vuelta span { color: var(--kuyen-luna); }
+.m-estrella-chica {
+  display: inline-block;
+  width: 0.42em;
+  height: 0.42em;
+  background: var(--kuyen-luna);
+  -webkit-mask: var(--m-estrella) center / contain no-repeat;
+  mask: var(--m-estrella) center / contain no-repeat;
+}
+.m-pista--vuelta .m-estrella-chica { background: var(--kuyen-blanco); }
+@media (prefers-reduced-motion: no-preference) {
+  .m-pista { animation: m-correr 42s linear infinite; }
+  .m-pista--vuelta { animation-direction: reverse; animation-duration: 54s; }
+}
+@keyframes m-correr { to { transform: translateX(-50%); } }
+
+/* ---------- Cifras ---------- */
+
+.m-cifras { display: grid; gap: 1.5rem; margin: 0; }
+.m-cifra { display: flex; flex-direction: column-reverse; justify-content: flex-end; gap: 0.35rem; padding-top: 1.25rem; border-top: 1px solid var(--borde); }
+.m-cifra dt { color: var(--texto-suave); font-size: 0.9375rem; }
+.m-cifra dd {
+  margin: 0;
+  color: var(--acento);
+  font-family: var(--fuente-titulo);
+  font-size: clamp(3rem, 2rem + 4vw, 5.5rem);
+  font-variant-numeric: tabular-nums;
+  line-height: 0.95;
+}
+@media (min-width: 640px) {
+  .m-cifras { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
 
 /*
-  Variante Hirael. Mobile-first, con cortes en 640, 768, 1024 y 1280 px.
+  Variante Hirael, de noche. Mobile-first, con cortes en 640, 768, 1024 y 1280 px.
   Colores y tipografías salen de los tokens (src/css/tokens.css); cada bloque
-  aplica .tono-claro, .tono-oscuro o .tono-gradiente.
+  aplica .tono-oscuro, .tono-gradiente o .tono-claro. El movimiento compartido
+  está en src/compartido/movimiento.css.
 */
 
 *, *::before, *::after { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
 body {
   margin: 0;
-  background: var(--kuyen-blanco);
-  color: var(--kuyen-tinta);
+  background: var(--kuyen-tinta);
+  color: var(--kuyen-blanco);
   font-family: var(--fuente-texto);
   -webkit-font-smoothing: antialiased;
 }
@@ -230,8 +378,8 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
   z-index: 100;
   padding: 0.5rem 1rem;
   border-radius: 0.375rem;
-  background: var(--kuyen-tinta);
-  color: var(--kuyen-blanco);
+  background: var(--kuyen-luna);
+  color: var(--kuyen-tinta);
   font-size: 0.875rem;
   transform: translateY(-200%);
 }
@@ -247,10 +395,10 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .titulo-intro {
   font-family: var(--fuente-titulo);
   font-weight: 400;
-  letter-spacing: 0.005em;
+  letter-spacing: 0;
 }
-.titulo-grande { font-size: clamp(1.75rem, 7vw, 4.2rem); line-height: 1; }
-.titulo-intro { font-size: clamp(1.5rem, 4vw, 3.2rem); line-height: 1.04; }
+.titulo-grande { font-size: clamp(1.75rem, 7vw, 4.2rem); line-height: 1.04; }
+.titulo-intro { font-size: clamp(1.5rem, 4vw, 3.2rem); line-height: 1.08; }
 @media (min-width: 640px) {
   .titulo-grande { font-size: clamp(2.5rem, 5vw, 4.2rem); }
 }
@@ -267,7 +415,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
   font-weight: 500;
   line-height: 1.25rem;
   white-space: nowrap;
-  transition: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  transition: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1), opacity 800ms ease var(--m-retraso, 0ms), transform 900ms var(--m-curva) var(--m-retraso, 0ms);
 }
 .boton__texto { display: block; height: 20px; overflow: hidden; }
 .boton__rollo { display: flex; flex-direction: column; transition: transform 500ms cubic-bezier(0.25, 0.1, 0.25, 1); }
@@ -295,7 +443,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .boton--primario { background: var(--primario); color: var(--primario-texto); }
 .boton--primario .boton__circulo { color: var(--primario); }
 .tono-claro .boton--primario:hover { background: var(--kuyen-violeta); }
-/* Sobre fondo oscuro el botón es lila: la flecha va en tinta y el hover pasa a blanco. */
+/* Sobre la noche el botón es amarillo luna: la flecha va en tinta y el hover pasa a blanco. */
 .tono-oscuro .boton--primario .boton__circulo,
 .tono-gradiente .boton--primario .boton__circulo { color: var(--kuyen-tinta); }
 .tono-oscuro .boton--primario:hover,
@@ -318,8 +466,8 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
   width: 1.5rem;
   height: 1.5rem;
   border-radius: 9999px;
-  background: var(--kuyen-tinta);
-  color: var(--kuyen-blanco);
+  background: var(--primario);
+  color: var(--primario-texto);
   font-size: 0.6875rem;
   font-weight: 600;
 }
@@ -345,8 +493,8 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
   display: inline-block;
   padding: 0.0625rem 0.375rem;
   border-radius: 4px;
-  background: rgb(201 185 240 / 0.45);
-  color: var(--kuyen-tinta);
+  background: rgb(247 231 180 / 0.2);
+  color: var(--kuyen-luna);
   font-family: var(--fuente-texto);
   font-size: 0.75rem;
   font-weight: 600;
@@ -354,72 +502,81 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
   line-height: 1.4;
   white-space: nowrap;
 }
-.tono-oscuro .pendiente { background: rgb(201 185 240 / 0.2); color: var(--kuyen-blanco); }
+.tono-claro .pendiente { background: rgb(247 231 180 / 0.7); color: var(--kuyen-tinta); }
 
 .enlace { color: var(--acento); text-decoration: underline; text-underline-offset: 3px; }
 
-/* ---------- Hero ---------- */
+/* ---------- Hero con la escena del logo ---------- */
 
 .hero {
   position: relative;
   display: flex;
   flex-direction: column;
-  height: 100dvh;
-  min-height: 34rem;
+  min-height: 100dvh;
   overflow: hidden;
   isolation: isolate;
   background: var(--fondo);
   color: var(--texto);
 }
+.hero > .m-cielo { z-index: 1; }
 
-/* Fondo animado: remolino de luz, vidrio acanalado en diagonal, estela que
-   sigue al puntero y grano. No captura el puntero. */
-.hero__fondo { position: absolute; inset: 0; z-index: 10; overflow: hidden; pointer-events: none; }
-.hero__fondo > div { position: absolute; }
-.hero__remolino {
-  inset: -30%;
-  background:
-    radial-gradient(38% 32% at 28% 30%, rgb(201 185 240 / 0.26), transparent 70%),
-    radial-gradient(30% 28% at 72% 66%, rgb(255 255 255 / 0.12), transparent 70%),
-    radial-gradient(26% 24% at 60% 20%, rgb(103 31 55 / 0.35), transparent 70%);
-  animation: remolino 26s ease-in-out infinite alternate;
+/* Hasta 1023 px: la escena ocupa el espacio libre bajo la cabecera, con la luna
+   arriba a la izquierda y la cordillera con los gatos abajo; el texto va debajo,
+   sobre la tinta en la que termina la cordillera. */
+.hero__escena { position: relative; z-index: 5; flex: 1; min-height: 17rem; }
+.hero__luna { position: absolute; top: 4%; left: 8%; width: clamp(5.5rem, 26vw, 9rem); height: auto; }
+.hero__cordillera {
+  position: absolute;
+  right: 0;
+  bottom: -1px;
+  left: 0;
+  width: 100%;
+  height: 74%;
+  object-fit: cover;
+  object-position: 64% 0%;
 }
-.hero__acanalado {
-  inset: 0;
-  background-image: repeating-linear-gradient(121deg, rgb(255 255 255 / 0) 0, rgb(255 255 255 / 0.07) 6.25%, rgb(255 255 255 / 0) 12.5%);
-  background-size: 200% 200%;
-  animation: acanalado 40s linear infinite;
-}
-.hero__estela {
-  inset: 0;
-  background: radial-gradient(22rem 22rem at var(--px, 50%) var(--py, 50%), rgb(201 185 240 / 0.3), transparent 70%);
-  opacity: var(--estela, 0);
-  transition: opacity 800ms ease-out;
-}
-.hero__grano {
-  inset: 0;
-  opacity: 0.08;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
-}
-@keyframes remolino {
-  from { transform: translate3d(-4%, -3%, 0) rotate(0deg); }
-  to { transform: translate3d(4%, 3%, 0) rotate(10deg); }
-}
-@keyframes acanalado { to { background-position: 100% 100%; } }
-
-.hero__contenido { position: relative; z-index: 20; display: flex; flex: 1; flex-direction: column; justify-content: flex-end; }
+.hero__contenido { position: relative; z-index: 20; margin-top: -1px; background: var(--kuyen-tinta); }
 .hero__contenido:focus { outline: none; }
-.hero__interior { padding-bottom: 3.5rem; }
-.hero__antetitulo { display: block; margin-bottom: 1.25rem; font-size: 0.8125rem; letter-spacing: 0.025em; }
-.hero__salto { display: none; }
+.hero__interior { padding-top: 0.75rem; padding-bottom: 3.5rem; }
+.hero__antetitulo { display: block; margin-bottom: 1.25rem; color: var(--texto-suave); font-size: 0.8125rem; letter-spacing: 0.025em; }
 .hero__acciones { display: flex; flex-direction: column; align-items: flex-start; gap: 1rem; margin-top: 2rem; }
 @media (min-width: 640px) {
+  .hero__escena { min-height: 22rem; }
+  .hero__luna { width: clamp(6rem, 17vw, 9rem); }
   .hero__interior { padding-bottom: 4rem; }
   .hero__antetitulo { margin-bottom: 2rem; font-size: 0.875rem; }
-  .hero__salto { display: inline; }
   .hero__acciones { flex-direction: row; align-items: center; gap: 1.25rem; margin-top: 3rem; }
 }
-@media (min-width: 1024px) { .hero__interior { padding-bottom: 5rem; } }
+
+/* Desde 1024 px: la escena es el fondo del hero. Los gatos quedan a la derecha,
+   la cordillera se funde a la izquierda y el texto va abajo a la izquierda,
+   con una sombra de tinta detrás. */
+@media (min-width: 1024px) {
+  .hero__escena { position: absolute; inset: 0; min-height: 0; }
+  .hero__luna { top: 15%; left: 46%; width: clamp(7rem, 12vw, 11.5rem); }
+  .hero__cordillera {
+    right: auto;
+    left: 14%;
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    -webkit-mask-image: linear-gradient(to right, transparent 0, #000 24%);
+    mask-image: linear-gradient(to right, transparent 0, #000 24%);
+  }
+  .hero__contenido { margin-top: auto; background: none; }
+  .hero__contenido::before {
+    content: "";
+    position: absolute;
+    top: -45%;
+    bottom: 0;
+    left: 0;
+    z-index: -1;
+    width: min(72%, 62rem);
+    background: radial-gradient(85% 75% at 0% 100%, rgb(23 26 30 / 0.92), rgb(23 26 30 / 0.6) 50%, transparent 78%);
+    pointer-events: none;
+  }
+  .hero__interior { padding-bottom: 5rem; }
+}
 
 .chip {
   display: flex;
@@ -430,7 +587,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
   background: var(--kuyen-blanco);
   color: var(--kuyen-tinta);
   box-shadow: 0 2px 8px rgb(23 26 30 / 0.08);
-  transition: box-shadow 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  transition: box-shadow 150ms cubic-bezier(0.4, 0, 0.2, 1), opacity 800ms ease var(--m-retraso, 0ms), transform 900ms var(--m-curva) var(--m-retraso, 0ms);
 }
 .chip:hover { box-shadow: 0 4px 16px rgb(23 26 30 / 0.12); }
 .chip svg { width: 1.25rem; height: 1.25rem; color: var(--kuyen-indigo); }
@@ -451,7 +608,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 
 /* ---------- Cabecera en píldora ---------- */
 
-.cabecera { position: relative; z-index: 20; width: 100%; max-width: 1440px; margin-inline: auto; padding: 0.5rem; }
+.cabecera { position: relative; z-index: 30; width: 100%; max-width: 1440px; margin-inline: auto; padding: 0.5rem; }
 .cabecera__nav {
   display: flex;
   align-items: center;
@@ -464,7 +621,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .cabecera__izquierda { display: flex; align-items: center; gap: 1.5rem; }
 .marca { display: flex; align-items: center; gap: 0.5rem; }
 .marca__isotipo { width: 2.25rem; height: 2.25rem; border-radius: 9999px; }
-.marca__nombre { padding-top: 0.125rem; font-family: var(--fuente-titulo); font-size: 1.25rem; line-height: 1; letter-spacing: 0.02em; }
+.marca__nombre { padding-top: 0.125rem; font-family: var(--fuente-titulo); font-size: 1.0625rem; line-height: 1; }
 .cabecera__enlaces { display: none; align-items: center; gap: 1.5rem; }
 .cabecera__enlaces a { font-size: 0.875rem; transition: color 300ms; }
 .cabecera__enlaces a:hover { color: var(--texto-suave); }
@@ -484,7 +641,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 @media (min-width: 640px) {
   .cabecera { padding: 0.75rem; }
   .marca__isotipo { width: 2.5rem; height: 2.5rem; }
-  .marca__nombre { font-size: 1.375rem; }
+  .marca__nombre { font-size: 1.1875rem; }
 }
 @media (min-width: 768px) {
   .cabecera__enlaces, .cabecera__derecha { display: flex; }
@@ -512,13 +669,12 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 }
 .menu.abierto .menu__hoja { transform: none; }
 .menu__enlaces { display: flex; flex-direction: column; gap: 0.5rem; }
-.menu__enlaces a { font-size: 1.75rem; font-weight: 500; line-height: 2rem; }
+.menu__enlaces a { font-family: var(--fuente-titulo); font-size: 1.75rem; line-height: 2.25rem; }
 @media (min-width: 768px) { .menu { display: none; } }
 
 /* ---------- Secciones ---------- */
 
 .seccion { background: var(--fondo); color: var(--texto); }
-.seccion--tinte { background: var(--kuyen-tinte-indigo); }
 .seccion--intro { padding-block: 4rem 3rem; overflow: hidden; }
 .seccion--tarjetas { padding-block: 4rem; }
 @media (min-width: 640px) {
@@ -540,11 +696,13 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
   row-gap: 1rem;
 }
 .intro__texto { grid-area: texto; margin-bottom: 1rem; }
-.intro__parrafo { font-size: 0.9375rem; font-weight: 500; line-height: 1.6; }
+.intro__parrafo { color: var(--texto); font-size: 0.9375rem; font-weight: 400; line-height: 1.6; }
 .intro__boton { margin-top: 1.5rem; }
-.intro__foto { width: 100%; height: auto; border-radius: 0.75rem; object-fit: cover; }
+.intro__foto { --m-radio: 0.75rem; width: 100%; }
 .intro__foto--chica { grid-area: chica; aspect-ratio: 438 / 346; }
 .intro__foto--grande { grid-area: grande; aspect-ratio: 3 / 2; }
+.intro__foto--grande img { object-position: 50% 30%; }
+.intro__cifras { margin-top: 3rem; }
 @media (min-width: 640px) {
   .intro__titulo { margin-bottom: 4rem; }
   .intro__grilla {
@@ -556,7 +714,8 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
   }
   .intro__texto { margin-bottom: 0; }
   .intro__parrafo { font-size: 1.0625rem; }
-  .intro__foto { border-radius: 1rem; }
+  .intro__foto { --m-radio: 1rem; }
+  .intro__cifras { margin-top: 4rem; }
 }
 @media (min-width: 1024px) {
   .intro__titulo { margin-bottom: 7rem; }
@@ -568,6 +727,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
   }
   .intro__texto { padding-bottom: 0.25rem; }
   .intro__parrafo { font-size: 1rem; line-height: 1.65; }
+  .intro__cifras { margin-top: 5rem; }
 }
 @media (min-width: 1280px) {
   .intro__grilla { column-gap: 2rem; }
@@ -592,26 +752,27 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 }
 
 .tarjeta__medio {
+  --m-radio: 1rem;
   position: relative;
   aspect-ratio: 4 / 3;
   overflow: hidden;
   border-radius: 1rem;
   background: var(--kuyen-tinta);
 }
-.tarjeta__medio > img,
-.tarjeta__medio > iframe { width: 100%; height: 100%; border: 0; object-fit: cover; }
-.tarjeta__medio.tono-gradiente { background: var(--fondo); color: var(--texto); }
+.tarjeta__medio > iframe { width: 100%; height: 100%; border: 0; }
+.tarjeta__medio--mapa { border: 1px solid var(--borde); }
 .tarjeta__descripcion { margin-top: 1rem; color: var(--texto-suave); font-size: 0.8125rem; line-height: 1.625; }
-.tarjeta__titulo { margin-top: 0.25rem; font-family: var(--fuente-titulo); font-size: 1.25rem; font-weight: 400; line-height: 1.1; letter-spacing: 0.01em; }
+.tarjeta__titulo { margin-top: 0.25rem; font-family: var(--fuente-titulo); font-size: 1.375rem; font-weight: 400; line-height: 1.15; }
 @media (min-width: 640px) {
   .tarjeta__descripcion { font-size: 0.875rem; }
-  .tarjeta__titulo { font-size: 1.375rem; }
+  .tarjeta__titulo { font-size: 1.5rem; }
 }
 
 .pildora {
   position: absolute;
   bottom: 1rem;
   left: 1rem;
+  z-index: 2;
   display: flex;
   align-items: center;
   width: 2.25rem;
@@ -635,10 +796,10 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .tarjeta__medio:focus-within .pildora { width: var(--abierta); }
 .tarjeta__medio:focus-within .pildora__texto { opacity: 1; }
 
-/* Recuadro del mapa antes de cargarlo. */
+/* Recuadro del mapa antes de cargarlo: la luna del logo sobre la tinta. */
 .mapa { display: flex; height: 100%; flex-direction: column; align-items: center; justify-content: center; gap: 0.75rem; padding: 1.5rem; text-align: center; }
-.mapa svg { width: 2.5rem; height: 2.5rem; color: var(--kuyen-lila); }
-.mapa__direccion { font-family: var(--fuente-titulo); font-size: clamp(1.5rem, 4vw, 2.25rem); line-height: 1.05; letter-spacing: 0.01em; }
+.mapa__luna { width: 5rem; height: auto; }
+.mapa__direccion { font-family: var(--fuente-titulo); font-size: clamp(1.375rem, 3.6vw, 2rem); line-height: 1.1; }
 .mapa__nota { color: var(--texto-suave); font-size: 0.8125rem; }
 
 /* ---------- Columnas (patrón del pie) ---------- */
@@ -654,7 +815,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .columna__titulo { color: var(--texto-suave); font-family: var(--fuente-texto); font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; }
 .columna__lista { display: flex; flex-direction: column; gap: 0.625rem; font-size: 0.875rem; line-height: 1.5; }
 .columna__lista--numerada { padding-left: 1.5rem; list-style: decimal; }
-.columna__lista--numerada li::marker { color: var(--texto-suave); font-size: 0.8125rem; }
+.columna__lista--numerada li::marker { color: var(--acento); font-size: 0.8125rem; }
 @media (min-width: 640px) { .columnas { margin-top: 4rem; } }
 @media (min-width: 1024px) {
   .columnas { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2.5rem 2rem; }
@@ -672,10 +833,10 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .pie__acciones { display: flex; flex-direction: column; align-items: flex-start; gap: 1rem; }
 .pie__enlace { color: var(--texto-suave); font-size: 0.875rem; transition: color 300ms; }
 .pie__enlace:hover { color: var(--kuyen-blanco); }
-.pie__salto { display: none; }
 
 .pie__grilla { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2.5rem 1.5rem; padding-block: 3rem; }
 .pie__marca { grid-column: span 2; display: flex; flex-direction: column; gap: 1.25rem; }
+.pie__marca .marca__nombre { font-size: 1.1875rem; }
 .pie__bio { max-width: 20rem; color: var(--texto-suave); font-size: 0.875rem; line-height: 1.6; }
 .pie__estado {
   display: inline-flex;
@@ -688,22 +849,22 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
   color: var(--texto-suave);
   font-size: 0.8125rem;
 }
-.pie__punto { width: 0.5rem; height: 0.5rem; border-radius: 9999px; background: var(--kuyen-lila); }
+.pie__punto { width: 0.5rem; height: 0.5rem; border-radius: 9999px; background: var(--kuyen-luna); }
 .pie__columna { display: flex; flex-direction: column; gap: 0.875rem; }
 .pie__columna ul { display: flex; flex-direction: column; gap: 0.625rem; }
 .pie__columna li { color: var(--texto-suave); font-size: 0.875rem; }
 .pie__columna a { display: inline-flex; align-items: center; gap: 0.25rem; transition: color 300ms; }
 .pie__columna a svg { width: 13px; height: 13px; opacity: 0; transition: opacity 300ms cubic-bezier(0.25, 0.1, 0.25, 1); }
-.pie__columna a:hover { color: var(--kuyen-blanco); }
+.pie__columna a:hover { color: var(--kuyen-luna); }
 .pie__columna a:hover svg { opacity: 1; }
 
 .pie__gigante { overflow: hidden; padding-top: 2.5rem; border-top: 1px solid var(--borde); pointer-events: none; user-select: none; }
-.pie__gigante span { display: block; color: rgb(255 255 255 / 0.06); font-family: var(--fuente-titulo); font-size: 18vw; line-height: 0.85; }
+.pie__gigante span { display: block; color: rgb(247 231 180 / 0.07); font-family: var(--fuente-titulo); font-size: 18vw; line-height: 0.9; }
 
 .pie__legal { display: flex; flex-direction: column; gap: 1rem; padding-top: 2rem; color: var(--texto-suave); font-size: 0.8125rem; }
 .pie__legal-enlaces { display: flex; flex-wrap: wrap; gap: 0.5rem 1.25rem; }
 .pie__legal a { transition: color 300ms; }
-.pie__legal a:hover { color: var(--kuyen-blanco); }
+.pie__legal a:hover { color: var(--kuyen-luna); }
 
 @media (min-width: 640px) {
   .pie__interior { padding-block: 5rem; }
@@ -711,7 +872,6 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
   .etiqueta--pie { margin-bottom: 2rem; }
   .etiqueta__isotipo { width: 1.75rem; height: 1.75rem; }
   .pie__acciones { flex-direction: row; align-items: center; }
-  .pie__salto { display: inline; }
   .pie__grilla { padding-block: 4rem; }
   .pie__gigante { padding-top: 3rem; }
   .pie__legal { flex-direction: row; align-items: center; justify-content: space-between; }
@@ -726,23 +886,17 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
-  .hero__remolino, .hero__acanalado { animation: none; }
-  .hero__estela { display: none; }
   *, *::before, *::after { transition-duration: 0ms !important; }
 }
 
   </style>
 </head>
 <body>
+  <script>document.documentElement.classList.add('m-js')</script>
   <a class="saltar" href="#contenido">Saltar al contenido</a>
 
-  <section class="hero tono-gradiente" data-hero>
-    <div class="hero__fondo" aria-hidden="true">
-      <div class="hero__remolino"></div>
-      <div class="hero__acanalado"></div>
-      <div class="hero__estela"></div>
-      <div class="hero__grano"></div>
-    </div>
+  <section class="hero tono-gradiente" data-hero data-m-tiza="255,255,255|247,231,180|201,185,240">
+    <div class="m-cielo" aria-hidden="true"><span class="m-estrella" style="left:0.08%;top:47.07%;--t:8px;--d:3.96s;--r:-3.39s"></span><span class="m-estrella" style="left:23.90%;top:34.93%;--t:16px;--d:5.41s;--r:-3.33s"></span><span class="m-estrella" style="left:19.97%;top:23.77%;--t:12px;--d:3.47s;--r:-0.93s"></span><span class="m-estrella" style="left:38.09%;top:6.29%;--t:14px;--d:2.89s;--r:-2.42s"></span><span class="m-estrella" style="left:49.61%;top:38.25%;--t:6px;--d:3.11s;--r:-0.39s"></span><span class="m-estrella" style="left:11.21%;top:57.08%;--t:10px;--d:3.47s;--r:-0.08s"></span><span class="m-estrella" style="left:30.11%;top:57.86%;--t:10px;--d:4.37s;--r:-2.00s"></span><span class="m-estrella" style="left:83.87%;top:22.69%;--t:9px;--d:2.67s;--r:-2.19s"></span><span class="m-estrella" style="left:96.28%;top:19.06%;--t:5px;--d:2.47s;--r:-0.99s"></span><span class="m-estrella" style="left:5.05%;top:16.65%;--t:15px;--d:3.83s;--r:-1.66s"></span><span class="m-estrella" style="left:35.00%;top:21.08%;--t:5px;--d:4.60s;--r:-4.24s"></span><span class="m-estrella" style="left:15.12%;top:11.92%;--t:5px;--d:2.90s;--r:-4.37s"></span><span class="m-estrella" style="left:75.13%;top:58.20%;--t:5px;--d:5.61s;--r:-3.52s"></span><span class="m-estrella" style="left:91.57%;top:50.59%;--t:15px;--d:5.56s;--r:-0.77s"></span><span class="m-estrella" style="left:56.86%;top:16.23%;--t:16px;--d:4.51s;--r:-1.93s"></span><span class="m-estrella" style="left:5.12%;top:17.05%;--t:16px;--d:5.32s;--r:-3.55s"></span><span class="m-estrella" style="left:29.83%;top:9.95%;--t:12px;--d:5.01s;--r:-1.10s"></span><span class="m-estrella" style="left:6.57%;top:25.65%;--t:9px;--d:5.61s;--r:-0.96s"></span><span class="m-estrella" style="left:61.99%;top:44.22%;--t:5px;--d:5.04s;--r:-1.69s"></span><span class="m-estrella" style="left:6.02%;top:60.25%;--t:13px;--d:2.65s;--r:-1.47s"></span><span class="m-estrella" style="left:11.85%;top:24.06%;--t:16px;--d:3.27s;--r:-4.55s"></span><span class="m-estrella" style="left:45.05%;top:51.67%;--t:7px;--d:5.23s;--r:-1.76s"></span><span class="m-estrella" style="left:67.00%;top:36.23%;--t:15px;--d:3.65s;--r:-3.05s"></span><span class="m-estrella" style="left:67.78%;top:30.84%;--t:13px;--d:3.38s;--r:-3.26s"></span><span class="m-estrella" style="left:82.61%;top:39.37%;--t:8px;--d:2.87s;--r:-3.04s"></span><span class="m-estrella" style="left:85.25%;top:60.51%;--t:8px;--d:4.17s;--r:-4.01s"></span><span class="m-estrella" style="left:3.81%;top:15.48%;--t:12px;--d:2.53s;--r:-2.12s"></span><span class="m-estrella" style="left:60.94%;top:29.44%;--t:8px;--d:5.65s;--r:-0.10s"></span><span class="m-estrella" style="left:24.05%;top:41.83%;--t:17px;--d:3.53s;--r:-1.90s"></span><span class="m-estrella" style="left:65.04%;top:46.90%;--t:15px;--d:3.84s;--r:-1.93s"></span><span class="m-estrella" style="left:1.10%;top:14.03%;--t:7px;--d:3.56s;--r:-4.84s"></span><span class="m-estrella" style="left:3.91%;top:18.05%;--t:6px;--d:3.27s;--r:-4.49s"></span><span class="m-estrella" style="left:4.07%;top:13.26%;--t:15px;--d:4.78s;--r:-3.76s"></span><span class="m-estrella" style="left:46.23%;top:22.96%;--t:15px;--d:5.46s;--r:-4.00s"></span><span class="m-estrella" style="left:72.53%;top:56.29%;--t:17px;--d:4.84s;--r:-4.47s"></span><span class="m-estrella" style="left:43.79%;top:33.89%;--t:5px;--d:5.68s;--r:-0.82s"></span><span class="m-estrella" style="left:90.38%;top:54.13%;--t:11px;--d:3.54s;--r:-1.05s"></span><span class="m-estrella" style="left:87.91%;top:57.07%;--t:6px;--d:3.14s;--r:-2.52s"></span><span class="m-estrella" style="left:71.24%;top:4.82%;--t:7px;--d:3.29s;--r:-1.58s"></span><span class="m-estrella" style="left:83.78%;top:17.52%;--t:9px;--d:4.41s;--r:-4.98s"></span><span class="m-estrella" style="left:83.11%;top:7.07%;--t:15px;--d:4.28s;--r:-2.87s"></span><span class="m-estrella" style="left:6.37%;top:8.08%;--t:17px;--d:2.32s;--r:-0.80s"></span><span class="m-estrella" style="left:94.15%;top:1.67%;--t:14px;--d:5.03s;--r:-1.59s"></span><span class="m-estrella" style="left:41.73%;top:41.53%;--t:11px;--d:5.61s;--r:-4.26s"></span><span class="m-estrella" style="left:94.50%;top:57.27%;--t:17px;--d:3.37s;--r:-1.01s"></span><span class="m-estrella" style="left:42.75%;top:47.42%;--t:6px;--d:3.48s;--r:-4.57s"></span></div>
 
     <header class="cabecera">
       <nav class="cabecera__nav tono-claro" aria-label="Principal">
@@ -769,16 +923,21 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
       </nav>
     </header>
 
+    <div class="hero__escena" aria-hidden="true">
+      <img class="m-luna hero__luna" src="/img/escena/luna-600.webp" srcset="/img/escena/luna-300.webp 300w, /img/escena/luna-600.webp 600w" sizes="(min-width: 1024px) 12vw, 26vw" alt="" data-m-paralaje="-0.16">
+      <img class="m-cordillera hero__cordillera" src="/img/escena/cordillera-gatos-2000.webp" srcset="/img/escena/cordillera-gatos-1200.webp 1200w, /img/escena/cordillera-gatos-2000.webp 2000w" sizes="100vw" alt="" data-m-paralaje="-0.04">
+    </div>
+
     <div class="hero__contenido" id="contenido" tabindex="-1">
       <div class="contenedor hero__interior">
-        <span class="hero__antetitulo">Escalada en boulder · Padre Las Casas</span>
-        <h1 class="titulo-grande">Un proyecto hecho <br class="hero__salto">por escaladores <br class="hero__salto">para escaladores</h1>
+        <span class="hero__antetitulo" data-m-aparece>Escalada en boulder · Padre Las Casas</span>
+        <h1 class="titulo-grande" data-m-revelar style="--m-retraso: 150ms"><span class="m-linea"><span class="m-palabra"><span style="--m-i: 0">Un</span></span> <span class="m-palabra"><span style="--m-i: 1">proyecto</span></span> <span class="m-palabra"><span style="--m-i: 2">hecho</span></span></span> <span class="m-linea"><span class="m-palabra"><span style="--m-i: 3">por</span></span> <span class="m-palabra"><span style="--m-i: 4">escaladores</span></span></span> <span class="m-linea"><span class="m-palabra"><span style="--m-i: 5">para</span></span> <span class="m-palabra"><span style="--m-i: 6">escaladores</span></span></span></h1>
         <div class="hero__acciones">
-          <a class="boton boton--primario" href="https://docs.google.com/forms/d/e/1FAIpQLSfA0HoO-PmDaaSRjXqLt1VF37dFQKTdcsL2kD1co3wM-rGGIQ/viewform?usp=pp_url" target="_blank" rel="noopener">
+          <a class="boton boton--primario" href="https://docs.google.com/forms/d/e/1FAIpQLSfA0HoO-PmDaaSRjXqLt1VF37dFQKTdcsL2kD1co3wM-rGGIQ/viewform?usp=pp_url" target="_blank" rel="noopener" data-m-aparece style="--m-retraso: 700ms">
             <span class="boton__texto"><span class="boton__rollo"><span>Solicitud de ingreso</span><span aria-hidden="true">Solicitud de ingreso</span></span></span>
             <span class="boton__circulo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
           </a>
-          <div class="chip tono-claro">
+          <div class="chip tono-claro" data-m-aparece style="--m-retraso: 850ms">
             <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 1c.9 6.6 4.4 10.1 11 11-6.6.9-10.1 4.4-11 11-.9-6.6-4.4-10.1-11-11 6.6-.9 10.1-4.4 11-11z"/></svg>
             <span class="chip__texto">5,0 en Google</span>
             <span class="chip__insignia">14 reseñas</span>
@@ -804,100 +963,122 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
     </div>
   </div>
 
+  <div class="m-marquesina" aria-hidden="true"><div class="m-pista"><span>Pegue<i class="m-estrella-chica"></i></span><span>Bloque<i class="m-estrella-chica"></i></span><span>Desplome<i class="m-estrella-chica"></i></span><span>Hacer sombra<i class="m-estrella-chica"></i></span><span>Moonboard<i class="m-estrella-chica"></i></span><span>Rutas nuevas<i class="m-estrella-chica"></i></span><span>Pegue<i class="m-estrella-chica"></i></span><span>Bloque<i class="m-estrella-chica"></i></span><span>Desplome<i class="m-estrella-chica"></i></span><span>Hacer sombra<i class="m-estrella-chica"></i></span><span>Moonboard<i class="m-estrella-chica"></i></span><span>Rutas nuevas<i class="m-estrella-chica"></i></span></div><div class="m-pista m-pista--vuelta"><span>Kuyencit@s<i class="m-estrella-chica"></i></span><span>Proyecto<i class="m-estrella-chica"></i></span><span>Encadenar<i class="m-estrella-chica"></i></span><span>Seteo<i class="m-estrella-chica"></i></span><span>Comunidad<i class="m-estrella-chica"></i></span><span>Nos vemos en las presas<i class="m-estrella-chica"></i></span><span>Kuyencit@s<i class="m-estrella-chica"></i></span><span>Proyecto<i class="m-estrella-chica"></i></span><span>Encadenar<i class="m-estrella-chica"></i></span><span>Seteo<i class="m-estrella-chica"></i></span><span>Comunidad<i class="m-estrella-chica"></i></span><span>Nos vemos en las presas<i class="m-estrella-chica"></i></span></div></div>
+
   <main>
-    <section class="seccion seccion--intro tono-claro" id="kuyen">
+    <section class="seccion seccion--intro tono-oscuro" id="kuyen">
       <div class="contenedor">
-        <div class="etiqueta">
+        <div class="etiqueta" data-m-aparece>
           <span class="etiqueta__numero">1</span>
           <span class="insignia">Qué es Kuyen</span>
         </div>
-        <h2 class="titulo-intro intro__titulo">Centro de escalada técnica<br> en Padre Las Casas.</h2>
+        <h2 class="titulo-intro intro__titulo" data-m-revelar><span class="m-linea"><span class="m-palabra"><span style="--m-i: 0">Centro</span></span> <span class="m-palabra"><span style="--m-i: 1">de</span></span> <span class="m-palabra"><span style="--m-i: 2">escalada</span></span> <span class="m-palabra"><span style="--m-i: 3">técnica</span></span></span> <span class="m-linea"><span class="m-palabra"><span style="--m-i: 4">en</span></span> <span class="m-palabra"><span style="--m-i: 5">Padre</span></span> <span class="m-palabra"><span style="--m-i: 6">Las</span></span> <span class="m-palabra"><span style="--m-i: 7">Casas.</span></span></span></h2>
         <div class="intro__grilla">
           <div class="intro__texto">
-            <p class="intro__parrafo">Küyen significa luna en mapudungun. Desde 2023, un proyecto hecho por escaladores para escaladores.</p>
-            <a class="boton boton--primario intro__boton" href="#muro">
+            <p class="intro__parrafo" data-m-aparece>Küyen significa luna en mapudungun. Desde 2023, un proyecto hecho por escaladores para escaladores.</p>
+            <a class="boton boton--primario intro__boton" href="#muro" data-m-aparece style="--m-retraso: 150ms">
             <span class="boton__texto"><span class="boton__rollo"><span>Conoce el muro</span><span aria-hidden="true">Conoce el muro</span></span></span>
             <span class="boton__circulo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
           </a>
           </div>
-          <img src="/img/fotos/pancita-1200.webp" srcset="/img/fotos/pancita-800.webp 800w, /img/fotos/pancita-1200.webp 1200w, /img/fotos/pancita-1600.webp 1600w" sizes="(min-width: 1024px) 24vw, (min-width: 640px) 45vw, 100vw" width="1200" height="800" alt="Pancita, la gata de Kuyen, mirando a la cámara con el muro de fondo" class="intro__foto intro__foto--chica" loading="lazy" decoding="async">
-          <img src="/img/fotos/escalador-muro-blanco-1200.webp" srcset="/img/fotos/escalador-muro-blanco-800.webp 800w, /img/fotos/escalador-muro-blanco-1200.webp 1200w, /img/fotos/escalador-muro-blanco-1600.webp 1600w" sizes="(min-width: 1024px) 44vw, (min-width: 640px) 55vw, 100vw" width="1200" height="800" alt="Escalador en un muro blanco, amarillo, azul y gris" class="intro__foto intro__foto--grande" loading="lazy" decoding="async">
+          <div class="m-foto intro__foto intro__foto--chica">
+            <img src="/img/fotos/pancita-1200.webp" srcset="/img/fotos/pancita-800.webp 800w, /img/fotos/pancita-1200.webp 1200w, /img/fotos/pancita-1600.webp 1600w" sizes="(min-width: 1024px) 24vw, (min-width: 640px) 45vw, 100vw" width="1200" height="800" alt="Pancita, la gata de Kuyen, mirando a la cámara con el muro de fondo" loading="lazy" decoding="async">
+          </div>
+          <div class="m-foto intro__foto intro__foto--grande" style="--m-retraso: 180ms">
+            <img src="/img/fotos/escaladora-muro-azul-1200.webp" srcset="/img/fotos/escaladora-muro-azul-800.webp 536w, /img/fotos/escaladora-muro-azul-1200.webp 803w, /img/fotos/escaladora-muro-azul-1600.webp 1071w" sizes="(min-width: 1024px) 44vw, (min-width: 640px) 55vw, 100vw" width="803" height="1200" alt="Escaladora con polera naranja en un muro azul y amarillo, mientras otra persona la observa desde abajo" loading="lazy" decoding="async">
+          </div>
+        </div>
+        <div class="intro__cifras">
+          <dl class="m-cifras" data-m-cifras>
+          <div class="m-cifra" data-m-aparece style="--m-retraso: 0ms">
+            <dt>rutas creadas</dt>
+            <dd data-m-contar="500" data-m-decimales="0" data-m-sufijo="+">500+</dd>
+          </div>
+          <div class="m-cifra" data-m-aparece style="--m-retraso: 120ms">
+            <dt>de desplome continuo</dt>
+            <dd data-m-contar="25" data-m-decimales="0" data-m-sufijo="°">25°</dd>
+          </div>
+          <div class="m-cifra" data-m-aparece style="--m-retraso: 240ms">
+            <dt>en Google, con 14 reseñas</dt>
+            <dd data-m-contar="5" data-m-decimales="1" data-m-sufijo="">5,0</dd>
+          </div>
+        </dl>
         </div>
       </div>
     </section>
 
-    <section class="seccion seccion--tarjetas seccion--tinte tono-claro" id="muro">
+    <section class="seccion seccion--tarjetas tono-gradiente" id="muro">
       <div class="contenedor">
-        <div class="etiqueta">
+        <div class="etiqueta" data-m-aparece>
           <span class="etiqueta__numero">2</span>
           <span class="insignia">El muro y la comunidad</span>
         </div>
-        <h2 class="titulo-grande tarjetas__titulo">Escalar en Kuyen</h2>
+        <h2 class="titulo-grande tarjetas__titulo" data-m-revelar><span class="m-linea"><span class="m-palabra"><span style="--m-i: 0">Escalar</span></span> <span class="m-palabra"><span style="--m-i: 1">en</span></span> <span class="m-palabra"><span style="--m-i: 2">Kuyen</span></span></span></h2>
         <div class="tarjetas">
           <article class="tarjeta">
-            <div class="tarjeta__medio">
+            <div class="tarjeta__medio m-foto m-foto--zoom">
               <img src="/img/fotos/escalador-desplome-amarillo-1200.webp" srcset="/img/fotos/escalador-desplome-amarillo-800.webp 800w, /img/fotos/escalador-desplome-amarillo-1200.webp 1200w, /img/fotos/escalador-desplome-amarillo-1600.webp 1600w" sizes="(min-width: 768px) 50vw, 100vw" width="1200" height="803" alt="Escalador con polera verde colgado de un desplome amarillo y azul" loading="lazy" decoding="async">
               <a class="pildora" style="--abierta: 10.25rem" href="https://www.instagram.com/kuyen.climbing/" target="_blank" rel="noopener"><span class="pildora__icono"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></span><span class="pildora__texto">Ver en Instagram</span></a>
             </div>
-            <p class="tarjeta__descripcion">Desplomes continuos hasta 25°, moonboard y rutas nuevas de forma periódica.</p>
-            <h3 class="tarjeta__titulo">Escalada libre</h3>
+            <p class="tarjeta__descripcion" data-m-aparece style="--m-retraso: 250ms">Desplomes continuos hasta 25°, moonboard y rutas nuevas de forma periódica.</p>
+            <h3 class="tarjeta__titulo" data-m-aparece style="--m-retraso: 350ms">Escalada libre</h3>
           </article>
           <article class="tarjeta">
-            <div class="tarjeta__medio">
+            <div class="tarjeta__medio m-foto m-foto--zoom" style="--m-retraso: 160ms">
               <img src="/img/fotos/comunidad-evento-1200.webp" srcset="/img/fotos/comunidad-evento-800.webp 800w, /img/fotos/comunidad-evento-1200.webp 1200w, /img/fotos/comunidad-evento-1600.webp 1600w" sizes="(min-width: 768px) 50vw, 100vw" width="1200" height="803" alt="Mucha gente reunida dentro del gimnasio durante un evento, con los muros al fondo" loading="lazy" decoding="async">
               <a class="pildora pildora--oscura" style="--abierta: 8.5rem" href="https://www.instagram.com/kuyen.climbing/" target="_blank" rel="noopener"><span class="pildora__icono"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></span><span class="pildora__texto">Ver eventos</span></a>
             </div>
-            <p class="tarjeta__descripcion">La comunidad es el centro de Kuyen: competencias, encuentros, talleres, celebraciones y sorteos.</p>
-            <h3 class="tarjeta__titulo">Comunidad y eventos</h3>
+            <p class="tarjeta__descripcion" data-m-aparece style="--m-retraso: 410ms">La comunidad es el centro de Kuyen: competencias, encuentros, talleres, celebraciones y sorteos.</p>
+            <h3 class="tarjeta__titulo" data-m-aparece style="--m-retraso: 510ms">Comunidad y eventos</h3>
           </article>
         </div>
       </div>
     </section>
 
-    <section class="seccion seccion--tarjetas tono-claro" id="clases">
+    <section class="seccion seccion--tarjetas tono-oscuro" id="clases">
       <div class="contenedor">
-        <div class="etiqueta">
+        <div class="etiqueta" data-m-aparece>
           <span class="etiqueta__numero">3</span>
           <span class="insignia">Clases y Kuyencit@s</span>
         </div>
-        <h2 class="titulo-grande tarjetas__titulo">Aprende con nosotros</h2>
+        <h2 class="titulo-grande tarjetas__titulo" data-m-revelar><span class="m-linea"><span class="m-palabra"><span style="--m-i: 0">Aprende</span></span> <span class="m-palabra"><span style="--m-i: 1">con</span></span> <span class="m-palabra"><span style="--m-i: 2">nosotros</span></span></span></h2>
         <div class="tarjetas">
           <article class="tarjeta">
-            <div class="tarjeta__medio">
+            <div class="tarjeta__medio m-foto m-foto--zoom">
               <img src="/img/fotos/escaladora-desplome-1200.webp" srcset="/img/fotos/escaladora-desplome-800.webp 536w, /img/fotos/escaladora-desplome-1200.webp 803w, /img/fotos/escaladora-desplome-1600.webp 1071w" sizes="(min-width: 768px) 50vw, 100vw" width="803" height="1200" alt="Escaladora con polera negra y pantalón camuflado en un desplome amarillo y azul" loading="lazy" decoding="async">
               <a class="pildora" style="--abierta: 8.5rem" href="https://wa.me/56935028838" target="_blank" rel="noopener"><span class="pildora__icono"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></span><span class="pildora__texto">Escríbenos</span></a>
             </div>
-            <p class="tarjeta__descripcion">Desde marzo de 2026: un plan de 8 clases al mes, 2 veces por semana. Técnica, seguridad y lectura de rutas. Días y horarios: <!-- POR CONFIRMAR: días, horarios y cupos de las clases guiadas (pregunta 4) --><span class="pendiente">[POR CONFIRMAR]</span></p>
-            <h3 class="tarjeta__titulo">Clases guiadas</h3>
+            <p class="tarjeta__descripcion" data-m-aparece style="--m-retraso: 250ms">Desde marzo de 2026: un plan de 8 clases al mes, 2 veces por semana. Técnica, seguridad y lectura de rutas. Días y horarios: <!-- POR CONFIRMAR: días, horarios y cupos de las clases guiadas (pregunta 4) --><span class="pendiente">[POR CONFIRMAR]</span></p>
+            <h3 class="tarjeta__titulo" data-m-aparece style="--m-retraso: 350ms">Clases guiadas</h3>
           </article>
           <article class="tarjeta">
-            <div class="tarjeta__medio">
+            <div class="tarjeta__medio m-foto m-foto--zoom" style="--m-retraso: 160ms">
               <img src="/img/fotos/nino-escalando-1200.webp" srcset="/img/fotos/nino-escalando-800.webp 800w, /img/fotos/nino-escalando-1200.webp 1200w, /img/fotos/nino-escalando-1600.webp 1600w" sizes="(min-width: 768px) 50vw, 100vw" width="1200" height="800" alt="Niño escalando mientras el público lo mira desde abajo" loading="lazy" decoding="async">
               <a class="pildora pildora--oscura" style="--abierta: 8.5rem" href="https://wa.me/56935028838" target="_blank" rel="noopener"><span class="pildora__icono"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></span><span class="pildora__texto">Escríbenos</span></a>
             </div>
-            <p class="tarjeta__descripcion">El programa de escalada para niñas y niños. Edades y días: <!-- POR CONFIRMAR: edades, días, horario y valor de Kuyencit@s (pregunta 3) --><span class="pendiente">[POR CONFIRMAR]</span></p>
-            <h3 class="tarjeta__titulo">Kuyencit@s</h3>
+            <p class="tarjeta__descripcion" data-m-aparece style="--m-retraso: 410ms">El programa de escalada para niñas y niños. Edades y días: <!-- POR CONFIRMAR: edades, días, horario y valor de Kuyencit@s (pregunta 3) --><span class="pendiente">[POR CONFIRMAR]</span></p>
+            <h3 class="tarjeta__titulo" data-m-aparece style="--m-retraso: 510ms">Kuyencit@s</h3>
           </article>
         </div>
       </div>
     </section>
 
-    <section class="seccion seccion--intro seccion--tinte tono-claro" id="horarios">
+    <section class="seccion seccion--intro tono-gradiente" id="horarios">
       <div class="contenedor">
-        <div class="etiqueta">
+        <div class="etiqueta" data-m-aparece>
           <span class="etiqueta__numero">4</span>
           <span class="insignia">Horarios y valores</span>
         </div>
-        <h2 class="titulo-intro intro__titulo">Dos tramos para escalar:<br> horario bajo y horario normal.</h2>
+        <h2 class="titulo-intro intro__titulo" data-m-revelar><span class="m-linea"><span class="m-palabra"><span style="--m-i: 0">Dos</span></span> <span class="m-palabra"><span style="--m-i: 1">tramos</span></span> <span class="m-palabra"><span style="--m-i: 2">para</span></span> <span class="m-palabra"><span style="--m-i: 3">escalar:</span></span></span> <span class="m-linea"><span class="m-palabra"><span style="--m-i: 4">horario</span></span> <span class="m-palabra"><span style="--m-i: 5">bajo</span></span> <span class="m-palabra"><span style="--m-i: 6">y</span></span> <span class="m-palabra"><span style="--m-i: 7">horario</span></span> <span class="m-palabra"><span style="--m-i: 8">normal.</span></span></span></h2>
         <div class="bloque">
-          <p class="intro__parrafo">Se paga al ingresar. Horarios y valores vigentes: <!-- POR CONFIRMAR: horario por día con los dos tramos y precios vigentes (preguntas 1 y 2) --><span class="pendiente">[POR CONFIRMAR]</span></p>
-          <a class="boton boton--primario intro__boton" href="https://wa.me/56935028838" target="_blank" rel="noopener">
+          <p class="intro__parrafo" data-m-aparece>Se paga al ingresar. Horarios y valores vigentes: <!-- POR CONFIRMAR: horario por día con los dos tramos y precios vigentes (preguntas 1 y 2) --><span class="pendiente">[POR CONFIRMAR]</span></p>
+          <a class="boton boton--primario intro__boton" href="https://wa.me/56935028838" target="_blank" rel="noopener" data-m-aparece style="--m-retraso: 150ms">
             <span class="boton__texto"><span class="boton__rollo"><span>Consultar por WhatsApp</span><span aria-hidden="true">Consultar por WhatsApp</span></span></span>
             <span class="boton__circulo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
           </a>
         </div>
         <div class="columnas">
-          <div class="columna">
+          <div class="columna" data-m-aparece>
             <h3 class="columna__titulo">Horario bajo</h3>
             <ul class="columna__lista">
               <li>Menos frío, menos gente, más muro para ti.</li>
@@ -905,7 +1086,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
               <li>Horas: <!-- POR CONFIRMAR: horas del horario bajo (pregunta 1) --><span class="pendiente">[POR CONFIRMAR]</span></li>
             </ul>
           </div>
-          <div class="columna">
+          <div class="columna" data-m-aparece style="--m-retraso: 120ms">
             <h3 class="columna__titulo">Horario normal</h3>
             <ul class="columna__lista">
               <li>Tarde y noche.</li>
@@ -913,7 +1094,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
               <li>Horas: <!-- POR CONFIRMAR: horas del horario normal (pregunta 1) --><span class="pendiente">[POR CONFIRMAR]</span></li>
             </ul>
           </div>
-          <div class="columna columna--ancha">
+          <div class="columna columna--ancha" data-m-aparece style="--m-retraso: 240ms">
             <h3 class="columna__titulo">Valores</h3>
             <ul class="columna__lista">
               <li>Pase diario, horario bajo: <!-- POR CONFIRMAR: valor de pase diario, horario bajo (pregunta 2) --><span class="pendiente">[POR CONFIRMAR]</span></li>
@@ -927,22 +1108,22 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
       </div>
     </section>
 
-    <section class="seccion seccion--intro tono-claro" id="reglamento">
+    <section class="seccion seccion--intro tono-oscuro" id="reglamento">
       <div class="contenedor">
-        <div class="etiqueta">
+        <div class="etiqueta" data-m-aparece>
           <span class="etiqueta__numero">5</span>
           <span class="insignia">Reglamento</span>
         </div>
-        <h2 class="titulo-intro intro__titulo">Para cuidarnos<br> entre todos.</h2>
+        <h2 class="titulo-intro intro__titulo" data-m-revelar><span class="m-linea"><span class="m-palabra"><span style="--m-i: 0">Para</span></span> <span class="m-palabra"><span style="--m-i: 1">cuidarnos</span></span></span> <span class="m-linea"><span class="m-palabra"><span style="--m-i: 2">entre</span></span> <span class="m-palabra"><span style="--m-i: 3">todos.</span></span></span></h2>
         <div class="bloque">
-          <p class="intro__parrafo">Antes de tu primera visita, completa la solicitud de ingreso: confirmas que leíste el reglamento y dejas un contacto de emergencia.</p>
-          <a class="boton boton--primario intro__boton" href="https://docs.google.com/forms/d/e/1FAIpQLSfA0HoO-PmDaaSRjXqLt1VF37dFQKTdcsL2kD1co3wM-rGGIQ/viewform?usp=pp_url" target="_blank" rel="noopener">
+          <p class="intro__parrafo" data-m-aparece>Antes de tu primera visita, completa la solicitud de ingreso: confirmas que leíste el reglamento y dejas un contacto de emergencia.</p>
+          <a class="boton boton--primario intro__boton" href="https://docs.google.com/forms/d/e/1FAIpQLSfA0HoO-PmDaaSRjXqLt1VF37dFQKTdcsL2kD1co3wM-rGGIQ/viewform?usp=pp_url" target="_blank" rel="noopener" data-m-aparece style="--m-retraso: 150ms">
             <span class="boton__texto"><span class="boton__rollo"><span>Solicitud de ingreso</span><span aria-hidden="true">Solicitud de ingreso</span></span></span>
             <span class="boton__circulo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
           </a>
         </div>
         <div class="columnas">
-          <div class="columna">
+          <div class="columna" data-m-aparece>
             <h3 class="columna__titulo">Del 1 al 5</h3>
             <ol class="columna__lista columna__lista--numerada" start="1">
               <li>Saludar al ingresar</li>
@@ -952,7 +1133,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
               <li>No fumar ni beber alcohol</li>
             </ol>
           </div>
-          <div class="columna">
+          <div class="columna" data-m-aparece style="--m-retraso: 120ms">
             <h3 class="columna__titulo">Del 6 al 10</h3>
             <ol class="columna__lista columna__lista--numerada" start="6">
               <li>Ordenar sus pertenencias</li>
@@ -962,7 +1143,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
               <li>Cuidado con rutas expuestas</li>
             </ol>
           </div>
-          <div class="columna columna--ancha">
+          <div class="columna columna--ancha" data-m-aparece style="--m-retraso: 240ms">
             <h3 class="columna__titulo">Del 11 al 15</h3>
             <ol class="columna__lista columna__lista--numerada" start="11">
               <li>No sacarse la polera</li>
@@ -976,33 +1157,33 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
       </div>
     </section>
 
-    <section class="seccion seccion--tarjetas seccion--tinte tono-claro" id="visitanos">
+    <section class="seccion seccion--tarjetas tono-gradiente" id="visitanos">
       <div class="contenedor">
-        <div class="etiqueta">
+        <div class="etiqueta" data-m-aparece>
           <span class="etiqueta__numero">6</span>
           <span class="insignia">Visítanos</span>
         </div>
-        <h2 class="titulo-grande tarjetas__titulo">Los Patagones 375</h2>
+        <h2 class="titulo-grande tarjetas__titulo" data-m-revelar><span class="m-linea"><span class="m-palabra"><span style="--m-i: 0">Los</span></span> <span class="m-palabra"><span style="--m-i: 1">Patagones</span></span> <span class="m-palabra"><span style="--m-i: 2">375</span></span></span></h2>
         <div class="tarjetas">
           <article class="tarjeta">
-            <div class="tarjeta__medio tono-gradiente">
+            <div class="tarjeta__medio m-foto tarjeta__medio--mapa">
               <div class="mapa">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></svg>
+                <img class="m-luna mapa__luna" src="/img/escena/luna-600.webp" srcset="/img/escena/luna-300.webp 300w, /img/escena/luna-600.webp 600w" sizes="8rem" alt="" data-m-paralaje="-0.06">
                 <p class="mapa__direccion">Los Patagones 375<br>Padre Las Casas, La Araucanía</p>
                 <p class="mapa__nota">El mapa se carga desde Google Maps al hacer clic.</p>
               </div>
               <button type="button" class="pildora" style="--abierta: 7.5rem" data-mapa="https://www.google.com/maps?q=-38.7605438,-72.5918641&amp;z=16&amp;output=embed" data-titulo="Mapa de Kuyen Climbing en Los Patagones 375, Padre Las Casas"><span class="pildora__icono"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></svg></span><span class="pildora__texto">Ver mapa</span></button>
             </div>
-            <p class="tarjeta__descripcion">Plus code 6CQ5+Q7 Padre Las Casas. A un costado de Temuco. <a class="enlace" href="https://maps.app.goo.gl/v9F89L5peqFyxcJc9" target="_blank" rel="noopener">Abrir en Google Maps</a></p>
-            <h3 class="tarjeta__titulo">Cómo llegar</h3>
+            <p class="tarjeta__descripcion" data-m-aparece style="--m-retraso: 250ms">Plus code 6CQ5+Q7 Padre Las Casas. A un costado de Temuco. <a class="enlace" href="https://maps.app.goo.gl/v9F89L5peqFyxcJc9" target="_blank" rel="noopener">Abrir en Google Maps</a></p>
+            <h3 class="tarjeta__titulo" data-m-aparece style="--m-retraso: 350ms">Cómo llegar</h3>
           </article>
           <article class="tarjeta">
-            <div class="tarjeta__medio">
+            <div class="tarjeta__medio m-foto m-foto--zoom" style="--m-retraso: 160ms">
               <img src="/img/fotos/joven-escalando-1200.webp" srcset="/img/fotos/joven-escalando-800.webp 800w, /img/fotos/joven-escalando-1200.webp 1200w, /img/fotos/joven-escalando-1600.webp 1600w" sizes="(min-width: 768px) 50vw, 100vw" width="1200" height="800" alt="Joven escalando visto desde arriba, con público alrededor" loading="lazy" decoding="async">
               <a class="pildora pildora--oscura" style="--abierta: 8.5rem" href="https://wa.me/56935028838" target="_blank" rel="noopener"><span class="pildora__icono"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></span><span class="pildora__texto">Escríbenos</span></a>
             </div>
-            <p class="tarjeta__descripcion">WhatsApp +56 9 3502 8838 o mensaje directo en Instagram, @kuyen.climbing.</p>
-            <h3 class="tarjeta__titulo">Contacto</h3>
+            <p class="tarjeta__descripcion" data-m-aparece style="--m-retraso: 410ms">WhatsApp +56 9 3502 8838 o mensaje directo en Instagram, @kuyen.climbing.</p>
+            <h3 class="tarjeta__titulo" data-m-aparece style="--m-retraso: 510ms">Contacto</h3>
           </article>
         </div>
       </div>
@@ -1013,13 +1194,13 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
     <div class="contenedor pie__interior">
       <div class="pie__llamado">
         <div class="pie__llamado-texto">
-          <div class="etiqueta etiqueta--pie">
+          <div class="etiqueta etiqueta--pie" data-m-aparece>
             <img class="etiqueta__isotipo" src="/img/marca/isotipo-256.webp" width="256" height="256" alt="">
             <span class="insignia">¿Primera vez en Kuyen?</span>
           </div>
-          <h2 class="titulo-grande">Te esperamos <br class="pie__salto">en el muro.</h2>
+          <h2 class="titulo-grande" data-m-revelar><span class="m-linea"><span class="m-palabra"><span style="--m-i: 0">Te</span></span> <span class="m-palabra"><span style="--m-i: 1">esperamos</span></span></span> <span class="m-linea"><span class="m-palabra"><span style="--m-i: 2">en</span></span> <span class="m-palabra"><span style="--m-i: 3">el</span></span> <span class="m-palabra"><span style="--m-i: 4">muro.</span></span></span></h2>
         </div>
-        <div class="pie__acciones">
+        <div class="pie__acciones" data-m-aparece style="--m-retraso: 300ms">
           <a class="boton boton--primario" href="https://docs.google.com/forms/d/e/1FAIpQLSfA0HoO-PmDaaSRjXqLt1VF37dFQKTdcsL2kD1co3wM-rGGIQ/viewform?usp=pp_url" target="_blank" rel="noopener">
             <span class="boton__texto"><span class="boton__rollo"><span>Solicitud de ingreso</span><span aria-hidden="true">Solicitud de ingreso</span></span></span>
             <span class="boton__circulo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
@@ -1029,7 +1210,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
       </div>
 
       <div class="pie__grilla">
-        <div class="pie__marca">
+        <div class="pie__marca" data-m-aparece>
           <a class="marca" href="#contenido" aria-label="Kuyen Climbing, inicio">
             <img class="marca__isotipo" src="/img/marca/isotipo-256.webp" width="256" height="256" alt="">
             <span class="marca__nombre">KÜYEN CLIMBING</span>
@@ -1037,7 +1218,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
           <p class="pie__bio">Hola, somos Kuyen Climbing, un lugar donde puedes ir a entrenar y escalar.</p>
           <span class="pie__estado"><span class="pie__punto"></span>Los Patagones 375, Padre Las Casas</span>
         </div>
-        <nav class="pie__columna" aria-label="Kuyen">
+        <nav class="pie__columna" aria-label="Kuyen" data-m-aparece style="--m-retraso: 100ms">
           <h3 class="columna__titulo">Kuyen</h3>
           <ul>
             <li><a href="#kuyen">Qué es Kuyen<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a></li>
@@ -1046,7 +1227,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
             <li><a href="#reglamento">Reglamento<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a></li>
           </ul>
         </nav>
-        <nav class="pie__columna" aria-label="Visítanos">
+        <nav class="pie__columna" aria-label="Visítanos" data-m-aparece style="--m-retraso: 200ms">
           <h3 class="columna__titulo">Visítanos</h3>
           <ul>
             <li><a href="#horarios">Horarios y valores<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a></li>
@@ -1055,7 +1236,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
             <li><a href="https://docs.google.com/forms/d/e/1FAIpQLSfA0HoO-PmDaaSRjXqLt1VF37dFQKTdcsL2kD1co3wM-rGGIQ/viewform?usp=pp_url" target="_blank" rel="noopener">Solicitud de ingreso<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a></li>
           </ul>
         </nav>
-        <nav class="pie__columna" aria-label="Contacto">
+        <nav class="pie__columna" aria-label="Contacto" data-m-aparece style="--m-retraso: 300ms">
           <h3 class="columna__titulo">Contacto</h3>
           <ul>
             <li><a href="https://wa.me/56935028838" target="_blank" rel="noopener">WhatsApp<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a></li>
@@ -1079,6 +1260,130 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
   </footer>
 
   <script>
+(function () {
+  'use strict'
+
+  var calmo = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+  /* Paralaje: cada capa se desplaza según qué tan lejos está su contenedor del
+     centro de la pantalla. data-m-paralaje es el factor (negativo sube). */
+  var capas = [].slice.call(document.querySelectorAll('[data-m-paralaje]'))
+  function paralaje() {
+    var alto = window.innerHeight
+    capas.forEach(function (el) {
+      var caja = el.parentElement.getBoundingClientRect()
+      if (caja.bottom < -200 || caja.top > alto + 200) return
+      var distancia = caja.top + caja.height / 2 - alto / 2
+      el.style.setProperty('--m-y', (distancia * parseFloat(el.getAttribute('data-m-paralaje'))).toFixed(1) + 'px')
+    })
+  }
+  if (!calmo && capas.length) {
+    var pedido = false
+    window.addEventListener('scroll', function () {
+      if (pedido) return
+      pedido = true
+      requestAnimationFrame(function () { pedido = false; paralaje() })
+    }, { passive: true })
+    window.addEventListener('resize', paralaje)
+    paralaje()
+  }
+
+  /* Cifras que suben desde cero. */
+  function escribir(n, valor) {
+    var decimales = Number(n.getAttribute('data-m-decimales') || 0)
+    n.textContent = valor.toFixed(decimales).replace('.', ',') + (n.getAttribute('data-m-sufijo') || '')
+  }
+  function contar(grupo) {
+    grupo.querySelectorAll('[data-m-contar]').forEach(function (n) {
+      var fin = parseFloat(n.getAttribute('data-m-contar'))
+      var inicio = performance.now()
+      requestAnimationFrame(function paso(t) {
+        var p = Math.min(1, (t - inicio) / 1700)
+        escribir(n, fin * (1 - Math.pow(1 - p, 3)))
+        if (p < 1) requestAnimationFrame(paso)
+      })
+    })
+  }
+
+  /* Títulos, textos, fotos y cifras entran una sola vez, al aparecer. */
+  var elementos = document.querySelectorAll('[data-m-revelar], [data-m-aparece], .m-foto, [data-m-cifras]')
+  if (calmo || !('IntersectionObserver' in window)) {
+    elementos.forEach(function (el) { el.classList.add('m-visible') })
+  } else {
+    document.querySelectorAll('[data-m-cifras] [data-m-contar]').forEach(function (n) { escribir(n, 0) })
+    var observador = new IntersectionObserver(function (entradas) {
+      entradas.forEach(function (entrada) {
+        if (!entrada.isIntersecting) return
+        var el = entrada.target
+        el.classList.add('m-visible')
+        if (el.hasAttribute('data-m-cifras')) contar(el)
+        observador.unobserve(el)
+      })
+    }, { threshold: 0.15, rootMargin: '0px 0px -6% 0px' })
+    elementos.forEach(function (el) { observador.observe(el) })
+  }
+
+  /* Rastro de tiza: polvo de magnesio que sigue al puntero, cae y se apaga.
+     data-m-tiza lista los colores en r,g,b separados por |. */
+  if (!calmo) {
+    document.querySelectorAll('[data-m-tiza]').forEach(function (zona) {
+      var lienzo = document.createElement('canvas')
+      lienzo.className = 'm-tiza'
+      lienzo.setAttribute('aria-hidden', 'true')
+      zona.appendChild(lienzo)
+      var ctx = lienzo.getContext('2d')
+      var dpr = Math.min(window.devicePixelRatio || 1, 2)
+      var colores = zona.getAttribute('data-m-tiza').split('|')
+      var particulas = []
+      var andando = false
+
+      function medir() {
+        lienzo.width = zona.clientWidth * dpr
+        lienzo.height = zona.clientHeight * dpr
+      }
+      medir()
+      window.addEventListener('resize', medir)
+
+      function cuadro() {
+        ctx.clearRect(0, 0, lienzo.width, lienzo.height)
+        for (var i = particulas.length - 1; i >= 0; i--) {
+          var p = particulas[i]
+          p.x += p.vx
+          p.y += p.vy
+          p.vy += 0.012
+          p.a -= 0.011
+          if (p.a <= 0) { particulas.splice(i, 1); continue }
+          ctx.fillStyle = 'rgba(' + p.c + ',' + p.a.toFixed(3) + ')'
+          ctx.beginPath()
+          ctx.arc(p.x * dpr, p.y * dpr, p.r * dpr, 0, Math.PI * 2)
+          ctx.fill()
+        }
+        if (particulas.length) requestAnimationFrame(cuadro)
+        else andando = false
+      }
+
+      zona.addEventListener('pointermove', function (e) {
+        var caja = zona.getBoundingClientRect()
+        var x = e.clientX - caja.left
+        var y = e.clientY - caja.top
+        for (var i = 0; i < 5; i++) {
+          particulas.push({
+            x: x + (Math.random() - 0.5) * 12,
+            y: y + (Math.random() - 0.5) * 12,
+            vx: (Math.random() - 0.5) * 0.8,
+            vy: Math.random() * 0.8 + 0.1,
+            r: Math.random() * 2.2 + 0.6,
+            a: 0.7 + Math.random() * 0.3,
+            c: colores[Math.floor(Math.random() * colores.length)],
+          })
+        }
+        if (particulas.length > 700) particulas.splice(0, particulas.length - 700)
+        if (!andando) { andando = true; requestAnimationFrame(cuadro) }
+      })
+    })
+  }
+})()
+;
 (function () {
   'use strict'
 
@@ -1112,24 +1417,6 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
     })
   }
 
-  /* Estela del hero: sigue al puntero y se apaga cuando deja de moverse. Solo con
-     mouse y sin preferencia de movimiento reducido. */
-  var hero = document.querySelector('[data-hero]')
-  var calmo = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-  if (hero && !calmo && window.matchMedia('(hover: hover)').matches) {
-    var espera = null
-    hero.addEventListener('pointermove', function (e) {
-      var caja = hero.getBoundingClientRect()
-      hero.style.setProperty('--px', e.clientX - caja.left + 'px')
-      hero.style.setProperty('--py', e.clientY - caja.top + 'px')
-      hero.style.setProperty('--estela', '1')
-      clearTimeout(espera)
-      espera = setTimeout(function () {
-        hero.style.setProperty('--estela', '0')
-      }, 700)
-    })
-  }
-
   /* Mapa: el iframe de Google se crea recién al hacer clic. Hasta entonces la
      página no pide nada a Google. */
   document.querySelectorAll('[data-mapa]').forEach(function (boton) {
@@ -1143,7 +1430,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
     })
   })
 })()
-
+;
   </script>
 </body>
 </html>

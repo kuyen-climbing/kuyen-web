@@ -7,11 +7,17 @@ Sigue el flujo de sitios estáticos documentado en
 `C:\Proyectos\INCBA\docs\Flujo-Sitios-Web-GitHub-Pages.md`: generador propio, verificación
 funcional y CI que impide publicar HTML desincronizado.
 
-## Estado (15-09-2026): los tres templates, tal cual
+## Estado (15-09-2026): etapa de contenido
 
-Todavía no hay contenido de Kuyen. Lo que hay son los **tres templates candidatos servidos
-tal como los publican sus autores**, cada uno en su ruta, y un marco en la raíz que muestra el
-activo a pantalla completa con el **ToggleTheme** encima para pasar al siguiente.
+Cada template candidato pasa a tener una variante propia con el contenido, la tipografía y los
+colores de Kuyen. **Hirael ya es una variante propia**; Karate y NexStudio siguen sirviendo su
+captura tal cual hasta que les toque. El marco de la raíz muestra el activo a pantalla completa
+con el **ToggleTheme** encima para pasar al siguiente.
+
+El estilo de las variantes, elegido el 15-09-2026: títulos en Rubik Dirt y texto en Rubik, la
+página entera de noche (tinta y gradiente del logo 2.0) con acento amarillo luna, el hero con la
+escena del logo (estrellas que titilan, luna y cordillera con los dos gatos) y movimiento en
+títulos, textos, fotos y secciones.
 
 Hive salió de los candidatos el 14-09-2026. Su captura sigue en el historial de git:
 `git checkout 3ba77fb -- src/temas/hive temas/hive`.
@@ -117,12 +123,16 @@ página de 404. No saca capturas: todo se comprueba leyendo el DOM y el resultad
 En las variantes propias revisa además:
 
 - que haya un solo `<h1>`;
-- que Bebas Neue e Inter carguen desde el sitio y que no se pida nada a otros dominios al abrir
+- que Rubik Dirt y Rubik carguen desde el sitio y que no se pida nada a otros dominios al abrir
   la página;
 - el contraste AA de cada texto visible contra su fondo, gradientes incluidos;
 - que no haya desborde a lo ancho en 375, 640, 768, 1024 y 1440 px;
 - que el menú móvil abra y se cierre con Escape;
-- que el mapa de Google se cargue solo al hacer clic.
+- que el mapa de Google se cargue solo al hacer clic;
+- que no haya errores de JavaScript al cargar.
+
+Antes de medir el contraste recorre la página entera, porque los textos y las fotos que entran
+al hacer scroll están invisibles hasta aparecer.
 
 Desde WSL se corre con el Chrome de Linux: `CHROME=/usr/bin/google-chrome npm run test:ui`.
 
@@ -137,7 +147,8 @@ markup, el CSS y el JavaScript de cada variante son propios.
 | Página de la variante | `src/variantes/<id>/pagina.mjs`, con su CSS y su JS en la misma carpeta |
 | Textos y datos del negocio | `src/contenido.mjs`, sin HTML: lo leen todas las variantes |
 | Paleta del logo 2.0, acento y tokens semánticos | `src/css/tokens.css` |
-| Tipografías (Bebas Neue e Inter, licencia OFL) | `fonts/` y `src/css/fuentes.css` |
+| Tipografías (Rubik Dirt y Rubik, licencia OFL) | `fonts/` y `src/css/fuentes.css` |
+| Escena del logo y movimiento que comparten las variantes | `src/compartido/`: `escena.mjs` (cielo, luna, cordillera con los gatos, títulos que se arman, marquesina y cifras), `movimiento.css` y `movimiento.js` |
 | Fotos y derivados de marca | `img/fotos/` e `img/marca/`, generados con `tools/assets.mjs` |
 
 Mientras un template no tenga `pagina.mjs`, `/t/<id>` sigue sirviendo su captura. Con
@@ -162,7 +173,8 @@ Los originales no entran al repo. Con ImageMagick instalado:
 
 ```bash
 node tools/assets.mjs fotos --origen=<carpeta con los JPG>
-node tools/assets.mjs marca --origen=<carpeta con los PNG del logo> --titulo=<BebasNeue.ttf> --texto=<Inter.ttf>
+node tools/assets.mjs marca --origen=<carpeta con los PNG del logo> --titulo=<RubikDirt.ttf> --texto=<Rubik.ttf>
+node tools/assets.mjs escena --origen=<carpeta con el arte de 15 x 20>
 ```
 
 `fotos` genera cada foto de `FOTOS` en WebP de 1600, 1200 y 800 px, con la orientación de la
@@ -170,6 +182,11 @@ cámara aplicada y bajo 300 KB, más `img/fotos/fotos.json` con las medidas. `ma
 isotipo del logo 2.0 y genera los favicons, el logo completo y la imagen para redes
 (`og-kuyen.jpg`, de 1200 x 630). Los TTF son las versiones de escritorio de las mismas familias
 de `fonts/`, porque ImageMagick no lee woff2.
+
+`escena` saca del arte de 15 x 20 dos capas con el cielo transparente: la cordillera con los dos
+gatos y la luna con su goteo (`img/escena/`). Separa por saturación: el cielo del arte es un
+gradiente muy saturado y lo demás es tinta, blanco o gris. Deja fuera las estrellas, porque el
+sitio dibuja las suyas, que titilan.
 
 Para agregar una foto: se suma a `FOTOS` en `src/contenido.mjs`, con su `id`, el archivo original
 y el texto alternativo, y se vuelve a correr `fotos`.
