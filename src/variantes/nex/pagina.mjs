@@ -5,7 +5,7 @@
  * Sigue la ficha de estructura de la fase 0, sección por sección:
  *   0  Cabecera arriba que cambia al bajar, con menú Menú y Cerrar.
  *   1  Hero centrado: título con un tramo destacado, párrafo y dos botones.
- *   2  Marquesina y portada a lo ancho.
+ *   2  Portada a lo ancho y marquesina.
  *   3  Banda oscura: título, dos párrafos y dos cifras que suben.
  *   4  Por qué: cuatro características con ícono.
  *   5  Servicios: lista #1 a #4.
@@ -30,7 +30,9 @@
  *   asoma chica detrás de la portada, a la izquierda, y la portada se abre a lo
  *   ancho al bajar.
  * - La cabecera queda fija arriba (pedido del 15-09-2026).
- * - La marquesina lleva la jerga del muro en vez de logos de clientes.
+ * - La marquesina lleva la jerga del muro en vez de logos de clientes, y va
+ *   después de la portada: así la foto del muro asoma en la primera pantalla y
+ *   la jerga no pasa por encima de los gatos.
  * - Las reseñas quedan [POR CONFIRMAR] hasta tener textos y permisos.
  * - El blog pasa a próximos eventos, y en móvil la portada es más alta que en el
  *   template para que se vea el muro.
@@ -183,8 +185,6 @@ ${cabeza({ estilos: `${compartido('movimiento.css')}\n${leer('estilos.css')}` })
       ${presa({ forma: 'canto', color: 'var(--kuyen-luna)', clase: 'm-entra-escala hero__presa--movil', x: 77, y: 3, tam: 11, prof: 0, paralaje: 0.14, giro: 14, retraso: 1250, duracion: 9 })}
     </section>
 
-    ${marquesina([MARQUESINA.flat()], { clase: 'marquesina' })}
-
     <div class="portada">
       <div class="portada__interior">
         ${cordillera({ clase: 'portada__cordillera m-entra-sube', paralaje: -0.06, prof: 10, tamanos: '(min-width: 1024px) 24vw, 50vw' })}
@@ -193,6 +193,8 @@ ${cabeza({ estilos: `${compartido('movimiento.css')}\n${leer('estilos.css')}` })
         </div>
       </div>
     </div>
+
+    ${marquesina([MARQUESINA.flat()], { clase: 'marquesina' })}
   </div>
 
   <main>

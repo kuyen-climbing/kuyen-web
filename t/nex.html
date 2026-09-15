@@ -625,8 +625,9 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 @media (min-width: 1024px) { .marquesina { padding-block: 2rem; } }
 
 /* Portada: se abre a lo ancho al bajar (--m-p va de 0 a 1). La cordillera con
-   los gatos asoma chica por detrás, a la izquierda. */
-.portada { position: relative; z-index: 4; max-width: 90rem; margin-inline: auto; padding: 1rem; }
+   los gatos asoma chica por detrás, a la izquierda; el relleno de arriba, en
+   porcentaje del ancho, le deja lugar para que no roce los botones del hero. */
+.portada { position: relative; z-index: 4; max-width: 90rem; margin-inline: auto; padding: calc(22% - 0.5rem) 1rem 1rem; }
 .portada__interior { position: relative; }
 .portada__cordillera {
   position: absolute;
@@ -636,6 +637,9 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
   width: 50%;
   height: auto;
   margin-bottom: -1rem;
+  /* El pie oscuro del dibujo termina en cortes rectos: se funde hacia los lados. */
+  -webkit-mask-image: linear-gradient(to right, transparent 0, #000 20%, #000 80%, transparent);
+  mask-image: linear-gradient(to right, transparent 0, #000 20%, #000 80%, transparent);
 }
 .portada__foto {
   position: relative;
@@ -647,9 +651,13 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
   box-shadow: 0 -20px 60px rgb(23 26 30 / 0.35);
 }
 .portada__foto img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 45%; scale: calc(1.14 - var(--m-p, 1) * 0.14); }
-@media (min-width: 640px) { .portada { padding: 1.5rem; } }
+@media (min-width: 640px) {
+  .portada { padding: calc(14% - 0.5rem) 1.5rem 1.5rem; }
+  .portada__cordillera { width: 32%; }
+}
 @media (min-width: 768px) { .portada__foto { aspect-ratio: 2.69; } }
 @media (min-width: 1024px) {
+  .portada { padding-top: 1.5rem; }
   .portada__cordillera { width: 24%; margin-bottom: -1.5rem; }
 }
 
@@ -918,8 +926,6 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
       <span class="m-presa m-capa m-entra-escala hero__presa--movil" style="left: 77%; top: 3%; width: 11%; --m-prof: 0; --color: var(--kuyen-luna); --giro: 14deg; --m-retraso: 1250ms; --dur: 9s" data-m-paralaje="0.14" aria-hidden="true"><svg viewBox="0 0 100 100"><path d="M50 8c20 0 38 14 40 34 2 22-14 44-38 48-26 4-44-14-44-36C8 30 26 8 50 8z"/><circle cx="50" cy="50" r="7"/></svg></span>
     </section>
 
-    <div class="m-marquesina marquesina" aria-hidden="true"><div class="m-pista"><span>Pegue<i class="m-estrella-chica"></i></span><span>Bloque<i class="m-estrella-chica"></i></span><span>Desplome<i class="m-estrella-chica"></i></span><span>Hacer sombra<i class="m-estrella-chica"></i></span><span>Moonboard<i class="m-estrella-chica"></i></span><span>Rutas nuevas<i class="m-estrella-chica"></i></span><span>Kuyencit@s<i class="m-estrella-chica"></i></span><span>Proyecto<i class="m-estrella-chica"></i></span><span>Encadenar<i class="m-estrella-chica"></i></span><span>Seteo<i class="m-estrella-chica"></i></span><span>Comunidad<i class="m-estrella-chica"></i></span><span>Nos vemos en las presas<i class="m-estrella-chica"></i></span><span>Pegue<i class="m-estrella-chica"></i></span><span>Bloque<i class="m-estrella-chica"></i></span><span>Desplome<i class="m-estrella-chica"></i></span><span>Hacer sombra<i class="m-estrella-chica"></i></span><span>Moonboard<i class="m-estrella-chica"></i></span><span>Rutas nuevas<i class="m-estrella-chica"></i></span><span>Kuyencit@s<i class="m-estrella-chica"></i></span><span>Proyecto<i class="m-estrella-chica"></i></span><span>Encadenar<i class="m-estrella-chica"></i></span><span>Seteo<i class="m-estrella-chica"></i></span><span>Comunidad<i class="m-estrella-chica"></i></span><span>Nos vemos en las presas<i class="m-estrella-chica"></i></span></div></div>
-
     <div class="portada">
       <div class="portada__interior">
         <img class="m-cordillera m-capa portada__cordillera m-entra-sube" src="/img/escena/cordillera-gatos-2000.webp" srcset="/img/escena/cordillera-gatos-1200.webp 1200w, /img/escena/cordillera-gatos-2000.webp 2000w" sizes="(min-width: 1024px) 24vw, 50vw" alt="" style="--m-prof: 10" data-m-paralaje="-0.06">
@@ -928,6 +934,8 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
         </div>
       </div>
     </div>
+
+    <div class="m-marquesina marquesina" aria-hidden="true"><div class="m-pista"><span>Pegue<i class="m-estrella-chica"></i></span><span>Bloque<i class="m-estrella-chica"></i></span><span>Desplome<i class="m-estrella-chica"></i></span><span>Hacer sombra<i class="m-estrella-chica"></i></span><span>Moonboard<i class="m-estrella-chica"></i></span><span>Rutas nuevas<i class="m-estrella-chica"></i></span><span>Kuyencit@s<i class="m-estrella-chica"></i></span><span>Proyecto<i class="m-estrella-chica"></i></span><span>Encadenar<i class="m-estrella-chica"></i></span><span>Seteo<i class="m-estrella-chica"></i></span><span>Comunidad<i class="m-estrella-chica"></i></span><span>Nos vemos en las presas<i class="m-estrella-chica"></i></span><span>Pegue<i class="m-estrella-chica"></i></span><span>Bloque<i class="m-estrella-chica"></i></span><span>Desplome<i class="m-estrella-chica"></i></span><span>Hacer sombra<i class="m-estrella-chica"></i></span><span>Moonboard<i class="m-estrella-chica"></i></span><span>Rutas nuevas<i class="m-estrella-chica"></i></span><span>Kuyencit@s<i class="m-estrella-chica"></i></span><span>Proyecto<i class="m-estrella-chica"></i></span><span>Encadenar<i class="m-estrella-chica"></i></span><span>Seteo<i class="m-estrella-chica"></i></span><span>Comunidad<i class="m-estrella-chica"></i></span><span>Nos vemos en las presas<i class="m-estrella-chica"></i></span></div></div>
   </div>
 
   <main>

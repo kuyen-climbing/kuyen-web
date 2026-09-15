@@ -234,8 +234,9 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 @media (min-width: 1024px) { .marquesina { padding-block: 2rem; } }
 
 /* Portada: se abre a lo ancho al bajar (--m-p va de 0 a 1). La cordillera con
-   los gatos asoma chica por detrás, a la izquierda. */
-.portada { position: relative; z-index: 4; max-width: 90rem; margin-inline: auto; padding: 1rem; }
+   los gatos asoma chica por detrás, a la izquierda; el relleno de arriba, en
+   porcentaje del ancho, le deja lugar para que no roce los botones del hero. */
+.portada { position: relative; z-index: 4; max-width: 90rem; margin-inline: auto; padding: calc(22% - 0.5rem) 1rem 1rem; }
 .portada__interior { position: relative; }
 .portada__cordillera {
   position: absolute;
@@ -245,6 +246,9 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
   width: 50%;
   height: auto;
   margin-bottom: -1rem;
+  /* El pie oscuro del dibujo termina en cortes rectos: se funde hacia los lados. */
+  -webkit-mask-image: linear-gradient(to right, transparent 0, #000 20%, #000 80%, transparent);
+  mask-image: linear-gradient(to right, transparent 0, #000 20%, #000 80%, transparent);
 }
 .portada__foto {
   position: relative;
@@ -256,9 +260,13 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
   box-shadow: 0 -20px 60px rgb(23 26 30 / 0.35);
 }
 .portada__foto img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 45%; scale: calc(1.14 - var(--m-p, 1) * 0.14); }
-@media (min-width: 640px) { .portada { padding: 1.5rem; } }
+@media (min-width: 640px) {
+  .portada { padding: calc(14% - 0.5rem) 1.5rem 1.5rem; }
+  .portada__cordillera { width: 32%; }
+}
 @media (min-width: 768px) { .portada__foto { aspect-ratio: 2.69; } }
 @media (min-width: 1024px) {
+  .portada { padding-top: 1.5rem; }
   .portada__cordillera { width: 24%; margin-bottom: -1.5rem; }
 }
 

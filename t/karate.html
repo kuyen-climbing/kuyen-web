@@ -657,7 +657,13 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
   .hero__parrafo { display: block; }
   .pila { height: 24rem; }
   .hero__gatos { position: absolute; bottom: 0; left: 1.5%; z-index: 3; display: block; width: clamp(13rem, 24vw, 21rem); pointer-events: none; }
-  .hero__cordillera { width: 100%; height: auto; }
+  /* El pie oscuro del dibujo termina en cortes rectos: se funde hacia los lados. */
+  .hero__cordillera {
+    width: 100%;
+    height: auto;
+    -webkit-mask-image: linear-gradient(to right, transparent 0, #000 20%, #000 80%, transparent);
+    mask-image: linear-gradient(to right, transparent 0, #000 20%, #000 80%, transparent);
+  }
 }
 @media (min-width: 1024px) {
   .hero__tarjeta { grid-template-columns: 34rem minmax(0, 1fr); padding: 6rem 2.5rem 3rem; }
