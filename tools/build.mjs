@@ -188,8 +188,8 @@ function cabeza(site, { ruta, estilos = '', titulo = contenido.SEO.titulo, descr
   <meta name="twitter:description" content="${esc(descripcion)}">
   <meta name="twitter:image" content="${imagen}">
 
-  <link rel="preload" href="/fonts/bebas-neue-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="preload" href="/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/rubik-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/rubik-dirt-latin.woff2" as="font" type="font/woff2" crossorigin>
 
   <script type="application/ld+json">
 ${jsonld}
@@ -213,6 +213,8 @@ ${estilos}
  *   foto(id, opciones) <img> responsiva de una foto de FOTOS
  *   cabeza(opciones)   <head> completo; opciones: estilos, titulo, descripcion
  *   leer(nombre)       lee un archivo de la carpeta de la variante (su CSS o JS)
+ *   compartido(nombre) lee un archivo de src/compartido/ (escena y movimiento
+ *                      que usan todas las variantes)
  */
 async function buildVariante(site, tema) {
   const ruta = rutaTema(tema.id)
@@ -228,6 +230,7 @@ async function buildVariante(site, tema) {
     foto,
     cabeza: (opciones = {}) => cabeza(site, { ruta, ...opciones }),
     leer: (nombre) => readFileSync(join(carpeta, nombre), 'utf8'),
+    compartido: (nombre) => readFileSync(join(SRC, 'compartido', nombre), 'utf8'),
   })
   if (typeof html !== 'string') {
     throw new Error(`src/variantes/${tema.id}/pagina.mjs tiene que devolver el HTML de la página como texto`)

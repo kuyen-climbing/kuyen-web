@@ -53,8 +53,14 @@ const ws = new WebSocket(await wsUrl())
 await new Promise((r) => (ws.onopen = r))
 let id = 0
 const pending = new Map()
+// Errores de JavaScript de la página abierta (y de lo que cargue su iframe).
+const erroresJs = []
 ws.onmessage = (m) => {
   const d = JSON.parse(m.data)
+  if (d.method === 'Runtime.exceptionThrown') {
+    const e = d.params.exceptionDetails
+    erroresJs.push(e.exception?.description?.split('\n')[0] || e.text)
+  }
   if (d.id && pending.has(d.id)) { pending.get(d.id)(d); pending.delete(d.id) }
 }
 const send = (method, params = {}) =>
@@ -157,12 +163,30 @@ async function revisarVariante(doc, p) {
     }
   })`)
   const cargadas = [...new Set(fuentes.cargadas)]
-  check(`${p}: Bebas Neue e Inter cargan desde el sitio`,
-    fuentes.errores === 0 && cargadas.includes('Bebas Neue') && cargadas.includes('Inter'), cargadas.join(', '))
+  check(`${p}: Rubik Dirt y Rubik cargan desde el sitio`,
+    fuentes.errores === 0 && cargadas.includes('Rubik Dirt') && cargadas.includes('Rubik'), cargadas.join(', '))
   const ajenos = await en(doc, `d.defaultView.performance.getEntriesByType('resource')
     .map(function (e) { return new URL(e.name).host })
     .filter(function (h) { return h !== d.location.host })`)
   check(`${p}: no pide nada a otros dominios al cargar`, ajenos.length === 0, [...new Set(ajenos)].join(', '))
+  // Los textos y fotos que aparecen al entrar en pantalla están invisibles hasta
+  // entonces: se recorre la página entera antes de medir el contraste.
+  await en(doc, `(async function () {
+    var w = d.defaultView
+    var max = d.documentElement.scrollHeight - w.innerHeight
+    for (var y = 0; y <= max + 400; y += 400) {
+      w.scrollTo(0, Math.min(y, max))
+      await new Promise(function (r) { setTimeout(r, 110) })
+    }
+    return true
+  })()`)
+  await sleep(2000)
+  const sinAparecer = await en(doc, `[].slice.call(d.querySelectorAll('[data-m-revelar], [data-m-aparece], .m-foto'))
+    .filter(function (e) { return !e.classList.contains('m-visible') })
+    .map(function (e) { return e.className.split(' ')[0] })`)
+  check(`${p}: todo lo que entra al hacer scroll termina visible`, sinAparecer.length === 0,
+    sinAparecer.length ? `${sinAparecer.length} sin aparecer: ${[...new Set(sinAparecer)].join(', ')}` : '')
+  await en(doc, '(d.defaultView.scrollTo(0, 0), true)')
   const fallas = await en(doc, CONTRASTE)
   check(`${p}: contraste AA en todos los textos`, fallas.length === 0, fallas.slice(0, 4).join(' | '))
   check(`${p}: no se desborda a lo ancho`, await en(doc, DESBORDE), await en(doc, DETALLE_DESBORDE))
@@ -303,7 +327,9 @@ try {
     }
 
     await metrics(375, 812)
+    erroresJs.length = 0
     await goto(rutaTema(tema.id), 2000)
+    check(`${tema.id}: sin errores de JavaScript al cargar`, erroresJs.length === 0, erroresJs.slice(0, 3).join(' | '))
     if (await en(PAGINA, '!!d.querySelector("[data-menu-abrir]")')) {
       await en(PAGINA, '(d.querySelector("[data-menu-abrir]").click(), true)')
       await sleep(700)

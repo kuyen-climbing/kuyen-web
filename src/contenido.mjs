@@ -395,8 +395,11 @@ export const FOTOS_EXCLUIDAS = [
   { original: 'DSC_0330.JPG', motivo: 'Se ven Patagonia y la tarima de Red Bull' },
 ]
 
-/** Palabras de la marquesina, en lugar de logos de marcas. */
-export const MARQUESINA = ['Boulder', 'Moonboard', 'Comunidad', 'Hacer sombra', 'Rutas nuevas', 'Kuyencit@s']
+/** Jerga que Kuyen usa en sus publicaciones, para la marquesina: una lista por fila. */
+export const MARQUESINA = [
+  ['Pegue', 'Bloque', 'Desplome', 'Hacer sombra', 'Moonboard', 'Rutas nuevas'],
+  ['Kuyencit@s', 'Proyecto', 'Encadenar', 'Seteo', 'Comunidad', 'Nos vemos en las presas'],
+]
 
 /** Textos de interfaz compartidos por las variantes. */
 export const TEXTOS = {
