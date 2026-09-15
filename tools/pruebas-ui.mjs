@@ -186,6 +186,10 @@ async function revisarVariante(doc, p) {
     .map(function (e) { return e.className.split(' ')[0] })`)
   check(`${p}: todo lo que entra al hacer scroll termina visible`, sinAparecer.length === 0,
     sinAparecer.length ? `${sinAparecer.length} sin aparecer: ${[...new Set(sinAparecer)].join(', ')}` : '')
+  // La entrada del hero espera la foto principal o 1,2 s: pasado eso, tiene que haber terminado.
+  const entradasPendientes = await en(doc, `[].slice.call(d.querySelectorAll('[data-m-entrada]'))
+    .filter(function (e) { return !e.classList.contains('m-listo') }).length`)
+  check(`${p}: la entrada del hero termina`, entradasPendientes === 0, entradasPendientes ? `${entradasPendientes} sin terminar` : '')
   await en(doc, '(d.defaultView.scrollTo(0, 0), true)')
   const fallas = await en(doc, CONTRASTE)
   check(`${p}: contraste AA en todos los textos`, fallas.length === 0, fallas.slice(0, 4).join(' | '))

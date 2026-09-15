@@ -156,7 +156,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 
 .enlace { color: var(--acento); text-decoration: underline; text-underline-offset: 3px; }
 
-/* ---------- Hero con la escena del logo ---------- */
+/* ---------- Hero ---------- */
 
 .hero {
   position: relative;
@@ -170,62 +170,91 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 }
 .hero > .m-cielo { z-index: 1; }
 
-/* Hasta 1023 px: la escena ocupa el espacio libre bajo la cabecera, con la luna
-   arriba a la izquierda y la cordillera con los gatos abajo; el texto va debajo,
-   sobre la tinta en la que termina la cordillera. */
-.hero__escena { position: relative; z-index: 5; flex: 1; min-height: 17rem; }
-.hero__luna { position: absolute; top: 4%; left: 8%; width: clamp(5.5rem, 26vw, 9rem); height: auto; }
-.hero__cordillera {
-  position: absolute;
-  right: 0;
-  bottom: -1px;
-  left: 0;
-  width: 100%;
-  height: 74%;
-  object-fit: cover;
-  object-position: 64% 0%;
+/* Composición de escalada: la escaladora en un arco, una foto redonda que lo
+   cruza con un anillo amarillo luna, la luna del logo detrás y presas que flotan
+   a distintas profundidades. Hasta 1023 px va en el flujo, centrada bajo la
+   cabecera. */
+.hero__visual {
+  position: relative;
+  z-index: 6;
+  display: grid;
+  flex: 1;
+  place-items: center;
+  min-height: 16rem;
+  padding-block: 1.25rem 0.75rem;
+  pointer-events: none;
 }
-.hero__contenido { position: relative; z-index: 20; margin-top: -1px; background: var(--kuyen-tinta); }
-.hero__contenido:focus { outline: none; }
-.hero__interior { padding-top: 0.75rem; padding-bottom: 3.5rem; }
-.hero__antetitulo { display: block; margin-bottom: 1.25rem; color: var(--texto-suave); font-size: 0.8125rem; letter-spacing: 0.025em; }
-.hero__acciones { display: flex; flex-direction: column; align-items: flex-start; gap: 1rem; margin-top: 2rem; }
-@media (min-width: 640px) {
-  .hero__escena { min-height: 22rem; }
-  .hero__luna { width: clamp(6rem, 17vw, 9rem); }
-  .hero__interior { padding-bottom: 4rem; }
-  .hero__antetitulo { margin-bottom: 2rem; font-size: 0.875rem; }
-  .hero__acciones { flex-direction: row; align-items: center; gap: 1.25rem; margin-top: 3rem; }
+.hero__composicion { position: relative; height: min(40vh, 26rem); aspect-ratio: 0.64; }
+.hero__arco {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  overflow: hidden;
+  border-radius: 999px 999px 1.25rem 1.25rem;
+  box-shadow: 0 30px 60px rgb(23 26 30 / 0.45);
+}
+.hero__arco img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 35%; }
+.hero__circulo {
+  position: absolute;
+  bottom: 5%;
+  left: -18%;
+  z-index: 2;
+  width: 44%;
+  aspect-ratio: 1;
+  margin: 0;
+  overflow: hidden;
+  border-radius: 50%;
+  outline: 3px solid var(--kuyen-luna);
+  outline-offset: 5px;
+  box-shadow: 0 20px 40px rgb(23 26 30 / 0.5);
+}
+.hero__circulo img { width: 100%; height: 100%; object-fit: cover; }
+.hero__luna { position: absolute; top: 0; right: -22%; z-index: -1; width: 48%; height: auto; }
+.hero__presa--ancha { display: none; }
+@media (prefers-reduced-motion: no-preference) {
+  .hero__arco img { animation: hero-acercar 24s ease-in-out infinite alternate; }
+}
+@keyframes hero-acercar {
+  from { scale: 1.04; }
+  to { scale: 1.16; }
 }
 
-/* Desde 1024 px: la escena es el fondo del hero. Los gatos quedan a la derecha,
-   la cordillera se funde a la izquierda y el texto va abajo a la izquierda,
-   con una sombra de tinta detrás. */
-@media (min-width: 1024px) {
-  .hero__escena { position: absolute; inset: 0; min-height: 0; }
-  .hero__luna { top: 15%; left: 46%; width: clamp(7rem, 12vw, 11.5rem); }
+/* Cordillera con los gatos: una franja chica al pie del hero, a la izquierda,
+   que se funde hacia la derecha cuando no ocupa todo el ancho. */
+.hero__franja { position: relative; z-index: 7; width: min(100%, 34rem); aspect-ratio: 2000 / 890; pointer-events: none; }
+.hero__cordillera { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; object-position: left bottom; }
+
+.hero__contenido { position: relative; z-index: 20; }
+.hero__contenido:focus { outline: none; }
+.hero__interior { padding-top: 0.5rem; padding-bottom: 1.5rem; }
+.hero__antetitulo { display: block; margin-bottom: 1rem; color: var(--texto-suave); font-size: 0.8125rem; letter-spacing: 0.025em; }
+.hero__acciones { display: flex; flex-direction: column; align-items: flex-start; gap: 1rem; margin-top: 1.5rem; }
+@media (min-width: 640px) {
+  .hero__composicion { height: min(46vh, 30rem); }
   .hero__cordillera {
-    right: auto;
-    left: 14%;
-    width: 100%;
-    height: auto;
-    object-fit: contain;
-    -webkit-mask-image: linear-gradient(to right, transparent 0, #000 24%);
-    mask-image: linear-gradient(to right, transparent 0, #000 24%);
+    -webkit-mask-image: linear-gradient(to right, #000 74%, transparent);
+    mask-image: linear-gradient(to right, #000 74%, transparent);
   }
-  .hero__contenido { margin-top: auto; background: none; }
-  .hero__contenido::before {
-    content: "";
-    position: absolute;
-    top: -45%;
-    bottom: 0;
-    left: 0;
-    z-index: -1;
-    width: min(72%, 62rem);
-    background: radial-gradient(85% 75% at 0% 100%, rgb(23 26 30 / 0.92), rgb(23 26 30 / 0.6) 50%, transparent 78%);
-    pointer-events: none;
-  }
-  .hero__interior { padding-bottom: 5rem; }
+  .hero__antetitulo { margin-bottom: 1.5rem; font-size: 0.875rem; }
+  .hero__acciones { flex-direction: row; align-items: center; gap: 1.25rem; margin-top: 2.5rem; }
+}
+
+/* Desde 1024 px: la composición va a la derecha y crece; el texto, a la
+   izquierda y abajo, sobre la franja chica con la cordillera y los gatos. */
+@media (min-width: 1024px) {
+  .hero__visual { position: absolute; inset: 0; display: block; min-height: 0; padding: 0; }
+  .hero__composicion { position: absolute; top: 15%; left: 57%; height: min(70%, 40rem); }
+  .hero__circulo { left: -24%; width: 46%; }
+  .hero__presa--ancha { display: block; }
+  .hero__franja { position: absolute; bottom: 0; left: 0; width: auto; height: min(34vh, 18rem); }
+  .hero__contenido { margin-top: auto; max-width: 56%; }
+  .hero .titulo-grande { font-size: clamp(2.5rem, 4.3vw, 4.75rem); }
+  .hero__luna { top: 3%; }
+  .hero__interior { padding-bottom: calc(min(34vh, 18rem) + 1.5rem); }
+}
+@media (min-width: 1024px) and (max-width: 1279px) {
+  .hero__composicion { left: 61%; height: min(60%, 34rem); }
+  .hero__circulo { left: -18%; width: 40%; }
 }
 
 .chip {

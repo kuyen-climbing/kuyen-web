@@ -22,9 +22,13 @@
  *
  * Diferencias con el template:
  * - Toda la página va sobre la noche del logo (el template es blanco y gris).
- * - El fondo animado del hero pasa a ser la escena del logo: estrellas que
- *   titilan, la luna y la cordillera con los dos gatos, con paralaje y rastro de
- *   tiza. Hasta 1023 px la escena va arriba y el texto abajo, sobre la tinta.
+ * - El fondo animado del hero pasa a ser la noche del logo con una composición
+ *   de escalada (revisión del 15-09-2026: "lo primero que ve el usuario tiene que
+ *   ser increíble"): la escaladora en un arco, una foto redonda que lo cruza, la
+ *   luna detrás y presas que flotan, con entrada orquestada, profundidad que sigue
+ *   al puntero y rastro de tiza. La cordillera con los gatos queda chica, abajo a
+ *   la izquierda. Hasta 1023 px la composición va arriba, el texto al medio y los
+ *   gatos en una franja al pie.
  * - Marquesina con la jerga del muro entre el hero y la sección 1, y cifras en
  *   la sección 1.
  * - Títulos que se arman palabra por palabra, textos que entran y fotos que se
@@ -35,7 +39,7 @@
  * - El menú móvil también se cierra con Escape y queda inerte mientras está
  *   cerrado.
  */
-import { cielo, luna, cordillera, titulo, marquesina, cifras } from '../../compartido/escena.mjs'
+import { cielo, luna, cordillera, presa, titulo, marquesina, cifras } from '../../compartido/escena.mjs'
 
 const ICONOS = {
   flecha:
@@ -77,7 +81,7 @@ export default function pagina({ site, contenido, esc, foto, cabeza, leer, compa
   const pendiente = (falta) => `<!-- POR CONFIRMAR: ${falta} --><span class="pendiente">${POR_CONFIRMAR}</span>`
 
   /** Botón píldora con texto que rueda y círculo con flecha. */
-  const boton = ({ texto, href, variante = 'primario', afuera = false, clase = '', aparece = null }) => `<a class="boton boton--${variante}${clase ? ` ${clase}` : ''}" href="${esc(href)}"${afuera ? externo : ''}${aparece === null ? '' : ` data-m-aparece${retraso(aparece)}`}>
+  const boton = ({ texto, href, variante = 'primario', afuera = false, clase = '', aparece = null, iman = false }) => `<a class="boton boton--${variante}${clase ? ` ${clase}` : ''}" href="${esc(href)}"${afuera ? externo : ''}${aparece === null ? '' : ` data-m-aparece${retraso(aparece)}`}${iman ? ' data-m-iman' : ''}>
             <span class="boton__texto"><span class="boton__rollo"><span>${esc(texto)}</span><span aria-hidden="true">${esc(texto)}</span></span></span>
             <span class="boton__circulo">${ICONOS.flecha}</span>
           </a>`
@@ -132,8 +136,8 @@ ${cabeza({ estilos: `${compartido('movimiento.css')}\n${leer('estilos.css')}` })
   <script>document.documentElement.classList.add('m-js')</script>
   <a class="saltar" href="#contenido">Saltar al contenido</a>
 
-  <section class="hero tono-gradiente" data-hero data-m-tiza="255,255,255|247,231,180|201,185,240">
-    ${cielo({ estrellas: 46, semilla: 97, alto: 62 })}
+  <section class="hero tono-gradiente" data-hero data-m-tiza="255,255,255|247,231,180|201,185,240" data-m-puntero data-m-entrada>
+    ${cielo({ estrellas: 52, semilla: 97, alto: 72 })}
 
     <header class="cabecera">
       <nav class="cabecera__nav tono-claro" aria-label="Principal">
@@ -154,9 +158,21 @@ ${cabeza({ estilos: `${compartido('movimiento.css')}\n${leer('estilos.css')}` })
       </nav>
     </header>
 
-    <div class="hero__escena" aria-hidden="true">
-      ${luna({ clase: 'hero__luna', paralaje: -0.16, tamanos: '(min-width: 1024px) 12vw, 26vw' })}
-      ${cordillera({ clase: 'hero__cordillera', paralaje: -0.04 })}
+    <div class="hero__visual">
+      <div class="hero__composicion">
+        ${luna({ clase: 'hero__luna m-entra-sube', paralaje: -0.22, prof: 8, tamanos: '(min-width: 1024px) 14vw, 30vw' })}
+        <figure class="hero__arco m-capa m-entra-recorte" style="--m-prof: 14; --m-retraso: 150ms" data-m-paralaje="-0.08">
+          ${foto('escaladora-muro-azul', { tamanos: '(min-width: 1024px) 28vw, 62vw', prioridad: true })}
+        </figure>
+        <figure class="hero__circulo m-capa m-entra-escala" style="--m-prof: 32; --m-retraso: 850ms" data-m-paralaje="0.08">
+          ${foto('escalador-desplome-gris', { tamanos: '(min-width: 1024px) 13vw, 28vw', prioridad: true })}
+        </figure>
+        ${presa({ forma: 'canto', color: 'var(--kuyen-luna)', clase: 'm-entra-escala', x: 100, y: 18, tam: 17, prof: 38, paralaje: 0.18, giro: 12, retraso: 1050, duracion: 9 })}
+        ${presa({ forma: 'roma', color: 'var(--kuyen-lila)', clase: 'm-entra-escala', x: 88, y: 66, tam: 23, prof: 24, paralaje: 0.1, giro: -20, retraso: 1200, duracion: 11 })}
+        ${presa({ forma: 'pinza', color: 'var(--kuyen-blanco)', clase: 'm-entra-escala', x: -12, y: 2, tam: 12, prof: 52, paralaje: 0.3, giro: -8, retraso: 1300, duracion: 7 })}
+        ${presa({ forma: 'regleta', color: 'var(--kuyen-luna)', clase: 'm-entra-escala', x: 60, y: 84, tam: 16, prof: 60, paralaje: 0.36, giro: 18, retraso: 1400, duracion: 8 })}
+        ${presa({ forma: 'volumen', color: 'var(--kuyen-lila)', clase: 'm-entra-escala hero__presa--ancha', x: 44, y: -3, tam: 10, prof: 44, paralaje: 0.24, giro: 30, retraso: 1150, duracion: 10 })}
+      </div>
     </div>
 
     <div class="hero__contenido" id="contenido" tabindex="-1">
@@ -164,7 +180,7 @@ ${cabeza({ estilos: `${compartido('movimiento.css')}\n${leer('estilos.css')}` })
         <span class="hero__antetitulo" data-m-aparece>Escalada en boulder · ${esc(UBICACION.comuna)}</span>
         <h1 class="titulo-grande" data-m-revelar style="--m-retraso: 150ms">${titulo(lineasLema)}</h1>
         <div class="hero__acciones">
-          ${boton({ texto: TEXTOS.acciones.solicitud, href: LINKS.solicitudIngreso, afuera: true, aparece: 700 })}
+          ${boton({ texto: TEXTOS.acciones.solicitud, href: LINKS.solicitudIngreso, afuera: true, aparece: 700, iman: true })}
           <div class="chip tono-claro" data-m-aparece style="--m-retraso: 850ms">
             ${ICONOS.estrella}
             <span class="chip__texto">${esc(google.valor)} en Google</span>
@@ -172,6 +188,10 @@ ${cabeza({ estilos: `${compartido('movimiento.css')}\n${leer('estilos.css')}` })
           </div>
         </div>
       </div>
+    </div>
+
+    <div class="hero__franja" aria-hidden="true">
+      ${cordillera({ clase: 'hero__cordillera m-entra-sube', paralaje: 0, prof: 6, tamanos: '(min-width: 1024px) 48vw, 100vw' })}
     </div>
   </section>
 
@@ -201,7 +221,7 @@ ${cabeza({ estilos: `${compartido('movimiento.css')}\n${leer('estilos.css')}` })
             ${foto('pancita', { tamanos: '(min-width: 1024px) 24vw, (min-width: 640px) 45vw, 100vw' })}
           </div>
           <div class="m-foto intro__foto intro__foto--grande" style="--m-retraso: 180ms">
-            ${foto('escaladora-muro-azul', { tamanos: '(min-width: 1024px) 44vw, (min-width: 640px) 55vw, 100vw' })}
+            ${foto('escalador-muro-blanco', { tamanos: '(min-width: 1024px) 44vw, (min-width: 640px) 55vw, 100vw' })}
           </div>
         </div>
         <div class="intro__cifras">

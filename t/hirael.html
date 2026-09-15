@@ -207,6 +207,8 @@
   Movimiento compartido por las variantes de Kuyen:
   - Escena nocturna: estrellas de cuatro puntas que titilan, y la luna y la
     cordillera con los gatos del logo, con paralaje.
+  - Entrada orquestada del hero, capas con profundidad que siguen al puntero,
+    presas que flotan y botón que se deja atraer.
   - Rastro de tiza que sigue al puntero.
   - Títulos que se arman palabra por palabra, textos que entran y fotos que se
     revelan, al entrar en pantalla y una sola vez.
@@ -232,13 +234,52 @@
   mask: var(--m-estrella) center / contain no-repeat;
   opacity: 0.55;
 }
+/* Capa con profundidad: se mueve con el scroll (--m-y) y sigue al puntero
+   (--m-mx y --m-my, de -1 a 1) según su --m-prof. */
+.m-capa {
+  translate:
+    calc(var(--m-mx, 0) * var(--m-prof, 0) * 1px)
+    calc(var(--m-y, 0px) + var(--m-my, 0) * var(--m-prof, 0) * 1px);
+}
 .m-luna,
-.m-cordillera { translate: 0 var(--m-y, 0px); pointer-events: none; user-select: none; }
+.m-cordillera { pointer-events: none; user-select: none; }
 .m-luna { filter: drop-shadow(0 0 34px rgb(247 231 180 / 0.45)); }
+
+/* Presas que flotan. */
+.m-presa { position: absolute; display: block; color: var(--color); filter: drop-shadow(0 12px 18px rgb(23 26 30 / 0.4)); pointer-events: none; }
+.m-presa svg { display: block; width: 100%; height: auto; overflow: visible; rotate: var(--giro, 0deg); }
+.m-presa path { fill: currentColor; }
+.m-presa circle { fill: rgb(23 26 30 / 0.45); }
+
+/* Botón que se deja atraer por el puntero. */
+.m-iman { translate: var(--m-ix, 0px) var(--m-iy, 0px); }
 
 @media (prefers-reduced-motion: no-preference) {
   .m-estrella { animation: m-titilar var(--d) ease-in-out var(--r) infinite; }
   .m-luna { animation: m-mecer 9s ease-in-out infinite alternate; }
+  .m-presa svg { animation: m-flotar var(--dur, 8s) ease-in-out infinite alternate; }
+
+  /* Entrada del hero: con [data-m-entrada], las piezas esperan a .m-listo, que
+     llega cuando cargó la foto principal. Las estrellas se encienden, sube lo
+     marcado con .m-entra-sube, crece lo marcado con .m-entra-escala y se
+     descubre de abajo hacia arriba lo marcado con .m-entra-recorte. */
+  .m-js [data-m-entrada] .m-cielo { transition: opacity 1800ms ease; }
+  .m-js [data-m-entrada]:not(.m-listo) .m-cielo { opacity: 0; }
+  .m-js [data-m-entrada] :is(.m-entra-sube, .m-entra-escala) {
+    transition: opacity 1000ms ease var(--m-retraso, 0ms), transform 1300ms var(--m-curva) var(--m-retraso, 0ms);
+  }
+  .m-js [data-m-entrada] .m-entra-escala { transition-timing-function: ease, cubic-bezier(0.34, 1.56, 0.64, 1); }
+  .m-js [data-m-entrada]:not(.m-listo) .m-entra-sube { opacity: 0; transform: translateY(3rem); }
+  .m-js [data-m-entrada]:not(.m-listo) .m-entra-escala { opacity: 0; transform: scale(0.4) rotate(-12deg); }
+  .m-js [data-m-entrada] .m-entra-recorte > * { transition: clip-path 1500ms var(--m-curva) var(--m-retraso, 0ms); }
+  .m-js [data-m-entrada]:not(.m-listo) .m-entra-recorte > * { clip-path: inset(100% 0 0 0); }
+  .m-js [data-m-entrada] .m-entra-recorte { transition: box-shadow 1500ms ease var(--m-retraso, 0ms); }
+  .m-js [data-m-entrada]:not(.m-listo) .m-entra-recorte { box-shadow: none; }
+
+}
+@keyframes m-flotar {
+  from { transform: translateY(-9px) rotate(-7deg); }
+  to { transform: translateY(9px) rotate(7deg); }
 }
 @keyframes m-titilar {
   0%, 100% { opacity: 0.12; transform: scale(0.6) rotate(0deg); }
@@ -506,7 +547,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 
 .enlace { color: var(--acento); text-decoration: underline; text-underline-offset: 3px; }
 
-/* ---------- Hero con la escena del logo ---------- */
+/* ---------- Hero ---------- */
 
 .hero {
   position: relative;
@@ -520,62 +561,91 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 }
 .hero > .m-cielo { z-index: 1; }
 
-/* Hasta 1023 px: la escena ocupa el espacio libre bajo la cabecera, con la luna
-   arriba a la izquierda y la cordillera con los gatos abajo; el texto va debajo,
-   sobre la tinta en la que termina la cordillera. */
-.hero__escena { position: relative; z-index: 5; flex: 1; min-height: 17rem; }
-.hero__luna { position: absolute; top: 4%; left: 8%; width: clamp(5.5rem, 26vw, 9rem); height: auto; }
-.hero__cordillera {
-  position: absolute;
-  right: 0;
-  bottom: -1px;
-  left: 0;
-  width: 100%;
-  height: 74%;
-  object-fit: cover;
-  object-position: 64% 0%;
+/* Composición de escalada: la escaladora en un arco, una foto redonda que lo
+   cruza con un anillo amarillo luna, la luna del logo detrás y presas que flotan
+   a distintas profundidades. Hasta 1023 px va en el flujo, centrada bajo la
+   cabecera. */
+.hero__visual {
+  position: relative;
+  z-index: 6;
+  display: grid;
+  flex: 1;
+  place-items: center;
+  min-height: 16rem;
+  padding-block: 1.25rem 0.75rem;
+  pointer-events: none;
 }
-.hero__contenido { position: relative; z-index: 20; margin-top: -1px; background: var(--kuyen-tinta); }
-.hero__contenido:focus { outline: none; }
-.hero__interior { padding-top: 0.75rem; padding-bottom: 3.5rem; }
-.hero__antetitulo { display: block; margin-bottom: 1.25rem; color: var(--texto-suave); font-size: 0.8125rem; letter-spacing: 0.025em; }
-.hero__acciones { display: flex; flex-direction: column; align-items: flex-start; gap: 1rem; margin-top: 2rem; }
-@media (min-width: 640px) {
-  .hero__escena { min-height: 22rem; }
-  .hero__luna { width: clamp(6rem, 17vw, 9rem); }
-  .hero__interior { padding-bottom: 4rem; }
-  .hero__antetitulo { margin-bottom: 2rem; font-size: 0.875rem; }
-  .hero__acciones { flex-direction: row; align-items: center; gap: 1.25rem; margin-top: 3rem; }
+.hero__composicion { position: relative; height: min(40vh, 26rem); aspect-ratio: 0.64; }
+.hero__arco {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  overflow: hidden;
+  border-radius: 999px 999px 1.25rem 1.25rem;
+  box-shadow: 0 30px 60px rgb(23 26 30 / 0.45);
+}
+.hero__arco img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 35%; }
+.hero__circulo {
+  position: absolute;
+  bottom: 5%;
+  left: -18%;
+  z-index: 2;
+  width: 44%;
+  aspect-ratio: 1;
+  margin: 0;
+  overflow: hidden;
+  border-radius: 50%;
+  outline: 3px solid var(--kuyen-luna);
+  outline-offset: 5px;
+  box-shadow: 0 20px 40px rgb(23 26 30 / 0.5);
+}
+.hero__circulo img { width: 100%; height: 100%; object-fit: cover; }
+.hero__luna { position: absolute; top: 0; right: -22%; z-index: -1; width: 48%; height: auto; }
+.hero__presa--ancha { display: none; }
+@media (prefers-reduced-motion: no-preference) {
+  .hero__arco img { animation: hero-acercar 24s ease-in-out infinite alternate; }
+}
+@keyframes hero-acercar {
+  from { scale: 1.04; }
+  to { scale: 1.16; }
 }
 
-/* Desde 1024 px: la escena es el fondo del hero. Los gatos quedan a la derecha,
-   la cordillera se funde a la izquierda y el texto va abajo a la izquierda,
-   con una sombra de tinta detrás. */
-@media (min-width: 1024px) {
-  .hero__escena { position: absolute; inset: 0; min-height: 0; }
-  .hero__luna { top: 15%; left: 46%; width: clamp(7rem, 12vw, 11.5rem); }
+/* Cordillera con los gatos: una franja chica al pie del hero, a la izquierda,
+   que se funde hacia la derecha cuando no ocupa todo el ancho. */
+.hero__franja { position: relative; z-index: 7; width: min(100%, 34rem); aspect-ratio: 2000 / 890; pointer-events: none; }
+.hero__cordillera { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; object-position: left bottom; }
+
+.hero__contenido { position: relative; z-index: 20; }
+.hero__contenido:focus { outline: none; }
+.hero__interior { padding-top: 0.5rem; padding-bottom: 1.5rem; }
+.hero__antetitulo { display: block; margin-bottom: 1rem; color: var(--texto-suave); font-size: 0.8125rem; letter-spacing: 0.025em; }
+.hero__acciones { display: flex; flex-direction: column; align-items: flex-start; gap: 1rem; margin-top: 1.5rem; }
+@media (min-width: 640px) {
+  .hero__composicion { height: min(46vh, 30rem); }
   .hero__cordillera {
-    right: auto;
-    left: 14%;
-    width: 100%;
-    height: auto;
-    object-fit: contain;
-    -webkit-mask-image: linear-gradient(to right, transparent 0, #000 24%);
-    mask-image: linear-gradient(to right, transparent 0, #000 24%);
+    -webkit-mask-image: linear-gradient(to right, #000 74%, transparent);
+    mask-image: linear-gradient(to right, #000 74%, transparent);
   }
-  .hero__contenido { margin-top: auto; background: none; }
-  .hero__contenido::before {
-    content: "";
-    position: absolute;
-    top: -45%;
-    bottom: 0;
-    left: 0;
-    z-index: -1;
-    width: min(72%, 62rem);
-    background: radial-gradient(85% 75% at 0% 100%, rgb(23 26 30 / 0.92), rgb(23 26 30 / 0.6) 50%, transparent 78%);
-    pointer-events: none;
-  }
-  .hero__interior { padding-bottom: 5rem; }
+  .hero__antetitulo { margin-bottom: 1.5rem; font-size: 0.875rem; }
+  .hero__acciones { flex-direction: row; align-items: center; gap: 1.25rem; margin-top: 2.5rem; }
+}
+
+/* Desde 1024 px: la composición va a la derecha y crece; el texto, a la
+   izquierda y abajo, sobre la franja chica con la cordillera y los gatos. */
+@media (min-width: 1024px) {
+  .hero__visual { position: absolute; inset: 0; display: block; min-height: 0; padding: 0; }
+  .hero__composicion { position: absolute; top: 15%; left: 57%; height: min(70%, 40rem); }
+  .hero__circulo { left: -24%; width: 46%; }
+  .hero__presa--ancha { display: block; }
+  .hero__franja { position: absolute; bottom: 0; left: 0; width: auto; height: min(34vh, 18rem); }
+  .hero__contenido { margin-top: auto; max-width: 56%; }
+  .hero .titulo-grande { font-size: clamp(2.5rem, 4.3vw, 4.75rem); }
+  .hero__luna { top: 3%; }
+  .hero__interior { padding-bottom: calc(min(34vh, 18rem) + 1.5rem); }
+}
+@media (min-width: 1024px) and (max-width: 1279px) {
+  .hero__composicion { left: 61%; height: min(60%, 34rem); }
+  .hero__circulo { left: -18%; width: 40%; }
 }
 
 .chip {
@@ -895,8 +965,8 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
   <script>document.documentElement.classList.add('m-js')</script>
   <a class="saltar" href="#contenido">Saltar al contenido</a>
 
-  <section class="hero tono-gradiente" data-hero data-m-tiza="255,255,255|247,231,180|201,185,240">
-    <div class="m-cielo" aria-hidden="true"><span class="m-estrella" style="left:0.08%;top:47.07%;--t:8px;--d:3.96s;--r:-3.39s"></span><span class="m-estrella" style="left:23.90%;top:34.93%;--t:16px;--d:5.41s;--r:-3.33s"></span><span class="m-estrella" style="left:19.97%;top:23.77%;--t:12px;--d:3.47s;--r:-0.93s"></span><span class="m-estrella" style="left:38.09%;top:6.29%;--t:14px;--d:2.89s;--r:-2.42s"></span><span class="m-estrella" style="left:49.61%;top:38.25%;--t:6px;--d:3.11s;--r:-0.39s"></span><span class="m-estrella" style="left:11.21%;top:57.08%;--t:10px;--d:3.47s;--r:-0.08s"></span><span class="m-estrella" style="left:30.11%;top:57.86%;--t:10px;--d:4.37s;--r:-2.00s"></span><span class="m-estrella" style="left:83.87%;top:22.69%;--t:9px;--d:2.67s;--r:-2.19s"></span><span class="m-estrella" style="left:96.28%;top:19.06%;--t:5px;--d:2.47s;--r:-0.99s"></span><span class="m-estrella" style="left:5.05%;top:16.65%;--t:15px;--d:3.83s;--r:-1.66s"></span><span class="m-estrella" style="left:35.00%;top:21.08%;--t:5px;--d:4.60s;--r:-4.24s"></span><span class="m-estrella" style="left:15.12%;top:11.92%;--t:5px;--d:2.90s;--r:-4.37s"></span><span class="m-estrella" style="left:75.13%;top:58.20%;--t:5px;--d:5.61s;--r:-3.52s"></span><span class="m-estrella" style="left:91.57%;top:50.59%;--t:15px;--d:5.56s;--r:-0.77s"></span><span class="m-estrella" style="left:56.86%;top:16.23%;--t:16px;--d:4.51s;--r:-1.93s"></span><span class="m-estrella" style="left:5.12%;top:17.05%;--t:16px;--d:5.32s;--r:-3.55s"></span><span class="m-estrella" style="left:29.83%;top:9.95%;--t:12px;--d:5.01s;--r:-1.10s"></span><span class="m-estrella" style="left:6.57%;top:25.65%;--t:9px;--d:5.61s;--r:-0.96s"></span><span class="m-estrella" style="left:61.99%;top:44.22%;--t:5px;--d:5.04s;--r:-1.69s"></span><span class="m-estrella" style="left:6.02%;top:60.25%;--t:13px;--d:2.65s;--r:-1.47s"></span><span class="m-estrella" style="left:11.85%;top:24.06%;--t:16px;--d:3.27s;--r:-4.55s"></span><span class="m-estrella" style="left:45.05%;top:51.67%;--t:7px;--d:5.23s;--r:-1.76s"></span><span class="m-estrella" style="left:67.00%;top:36.23%;--t:15px;--d:3.65s;--r:-3.05s"></span><span class="m-estrella" style="left:67.78%;top:30.84%;--t:13px;--d:3.38s;--r:-3.26s"></span><span class="m-estrella" style="left:82.61%;top:39.37%;--t:8px;--d:2.87s;--r:-3.04s"></span><span class="m-estrella" style="left:85.25%;top:60.51%;--t:8px;--d:4.17s;--r:-4.01s"></span><span class="m-estrella" style="left:3.81%;top:15.48%;--t:12px;--d:2.53s;--r:-2.12s"></span><span class="m-estrella" style="left:60.94%;top:29.44%;--t:8px;--d:5.65s;--r:-0.10s"></span><span class="m-estrella" style="left:24.05%;top:41.83%;--t:17px;--d:3.53s;--r:-1.90s"></span><span class="m-estrella" style="left:65.04%;top:46.90%;--t:15px;--d:3.84s;--r:-1.93s"></span><span class="m-estrella" style="left:1.10%;top:14.03%;--t:7px;--d:3.56s;--r:-4.84s"></span><span class="m-estrella" style="left:3.91%;top:18.05%;--t:6px;--d:3.27s;--r:-4.49s"></span><span class="m-estrella" style="left:4.07%;top:13.26%;--t:15px;--d:4.78s;--r:-3.76s"></span><span class="m-estrella" style="left:46.23%;top:22.96%;--t:15px;--d:5.46s;--r:-4.00s"></span><span class="m-estrella" style="left:72.53%;top:56.29%;--t:17px;--d:4.84s;--r:-4.47s"></span><span class="m-estrella" style="left:43.79%;top:33.89%;--t:5px;--d:5.68s;--r:-0.82s"></span><span class="m-estrella" style="left:90.38%;top:54.13%;--t:11px;--d:3.54s;--r:-1.05s"></span><span class="m-estrella" style="left:87.91%;top:57.07%;--t:6px;--d:3.14s;--r:-2.52s"></span><span class="m-estrella" style="left:71.24%;top:4.82%;--t:7px;--d:3.29s;--r:-1.58s"></span><span class="m-estrella" style="left:83.78%;top:17.52%;--t:9px;--d:4.41s;--r:-4.98s"></span><span class="m-estrella" style="left:83.11%;top:7.07%;--t:15px;--d:4.28s;--r:-2.87s"></span><span class="m-estrella" style="left:6.37%;top:8.08%;--t:17px;--d:2.32s;--r:-0.80s"></span><span class="m-estrella" style="left:94.15%;top:1.67%;--t:14px;--d:5.03s;--r:-1.59s"></span><span class="m-estrella" style="left:41.73%;top:41.53%;--t:11px;--d:5.61s;--r:-4.26s"></span><span class="m-estrella" style="left:94.50%;top:57.27%;--t:17px;--d:3.37s;--r:-1.01s"></span><span class="m-estrella" style="left:42.75%;top:47.42%;--t:6px;--d:3.48s;--r:-4.57s"></span></div>
+  <section class="hero tono-gradiente" data-hero data-m-tiza="255,255,255|247,231,180|201,185,240" data-m-puntero data-m-entrada>
+    <div class="m-cielo" aria-hidden="true"><span class="m-estrella" style="left:0.08%;top:54.66%;--t:8px;--d:3.96s;--r:-3.39s"></span><span class="m-estrella" style="left:23.90%;top:40.56%;--t:16px;--d:5.41s;--r:-3.33s"></span><span class="m-estrella" style="left:19.97%;top:27.60%;--t:12px;--d:3.47s;--r:-0.93s"></span><span class="m-estrella" style="left:38.09%;top:7.31%;--t:14px;--d:2.89s;--r:-2.42s"></span><span class="m-estrella" style="left:49.61%;top:44.42%;--t:6px;--d:3.11s;--r:-0.39s"></span><span class="m-estrella" style="left:11.21%;top:66.28%;--t:10px;--d:3.47s;--r:-0.08s"></span><span class="m-estrella" style="left:30.11%;top:67.19%;--t:10px;--d:4.37s;--r:-2.00s"></span><span class="m-estrella" style="left:83.87%;top:26.35%;--t:9px;--d:2.67s;--r:-2.19s"></span><span class="m-estrella" style="left:96.28%;top:22.13%;--t:5px;--d:2.47s;--r:-0.99s"></span><span class="m-estrella" style="left:5.05%;top:19.34%;--t:15px;--d:3.83s;--r:-1.66s"></span><span class="m-estrella" style="left:35.00%;top:24.48%;--t:5px;--d:4.60s;--r:-4.24s"></span><span class="m-estrella" style="left:15.12%;top:13.84%;--t:5px;--d:2.90s;--r:-4.37s"></span><span class="m-estrella" style="left:75.13%;top:67.59%;--t:5px;--d:5.61s;--r:-3.52s"></span><span class="m-estrella" style="left:91.57%;top:58.75%;--t:15px;--d:5.56s;--r:-0.77s"></span><span class="m-estrella" style="left:56.86%;top:18.85%;--t:16px;--d:4.51s;--r:-1.93s"></span><span class="m-estrella" style="left:5.12%;top:19.80%;--t:16px;--d:5.32s;--r:-3.55s"></span><span class="m-estrella" style="left:29.83%;top:11.55%;--t:12px;--d:5.01s;--r:-1.10s"></span><span class="m-estrella" style="left:6.57%;top:29.79%;--t:9px;--d:5.61s;--r:-0.96s"></span><span class="m-estrella" style="left:61.99%;top:51.35%;--t:5px;--d:5.04s;--r:-1.69s"></span><span class="m-estrella" style="left:6.02%;top:69.97%;--t:13px;--d:2.65s;--r:-1.47s"></span><span class="m-estrella" style="left:11.85%;top:27.93%;--t:16px;--d:3.27s;--r:-4.55s"></span><span class="m-estrella" style="left:45.05%;top:60.00%;--t:7px;--d:5.23s;--r:-1.76s"></span><span class="m-estrella" style="left:67.00%;top:42.08%;--t:15px;--d:3.65s;--r:-3.05s"></span><span class="m-estrella" style="left:67.78%;top:35.82%;--t:13px;--d:3.38s;--r:-3.26s"></span><span class="m-estrella" style="left:82.61%;top:45.72%;--t:8px;--d:2.87s;--r:-3.04s"></span><span class="m-estrella" style="left:85.25%;top:70.27%;--t:8px;--d:4.17s;--r:-4.01s"></span><span class="m-estrella" style="left:3.81%;top:17.98%;--t:12px;--d:2.53s;--r:-2.12s"></span><span class="m-estrella" style="left:60.94%;top:34.19%;--t:8px;--d:5.65s;--r:-0.10s"></span><span class="m-estrella" style="left:24.05%;top:48.58%;--t:17px;--d:3.53s;--r:-1.90s"></span><span class="m-estrella" style="left:65.04%;top:54.47%;--t:15px;--d:3.84s;--r:-1.93s"></span><span class="m-estrella" style="left:1.10%;top:16.29%;--t:7px;--d:3.56s;--r:-4.84s"></span><span class="m-estrella" style="left:3.91%;top:20.96%;--t:6px;--d:3.27s;--r:-4.49s"></span><span class="m-estrella" style="left:4.07%;top:15.40%;--t:15px;--d:4.78s;--r:-3.76s"></span><span class="m-estrella" style="left:46.23%;top:26.66%;--t:15px;--d:5.46s;--r:-4.00s"></span><span class="m-estrella" style="left:72.53%;top:65.37%;--t:17px;--d:4.84s;--r:-4.47s"></span><span class="m-estrella" style="left:43.79%;top:39.35%;--t:5px;--d:5.68s;--r:-0.82s"></span><span class="m-estrella" style="left:90.38%;top:62.86%;--t:11px;--d:3.54s;--r:-1.05s"></span><span class="m-estrella" style="left:87.91%;top:66.27%;--t:6px;--d:3.14s;--r:-2.52s"></span><span class="m-estrella" style="left:71.24%;top:5.60%;--t:7px;--d:3.29s;--r:-1.58s"></span><span class="m-estrella" style="left:83.78%;top:20.35%;--t:9px;--d:4.41s;--r:-4.98s"></span><span class="m-estrella" style="left:83.11%;top:8.21%;--t:15px;--d:4.28s;--r:-2.87s"></span><span class="m-estrella" style="left:6.37%;top:9.38%;--t:17px;--d:2.32s;--r:-0.80s"></span><span class="m-estrella" style="left:94.15%;top:1.93%;--t:14px;--d:5.03s;--r:-1.59s"></span><span class="m-estrella" style="left:41.73%;top:48.23%;--t:11px;--d:5.61s;--r:-4.26s"></span><span class="m-estrella" style="left:94.50%;top:66.51%;--t:17px;--d:3.37s;--r:-1.01s"></span><span class="m-estrella" style="left:42.75%;top:55.07%;--t:6px;--d:3.48s;--r:-4.57s"></span><span class="m-estrella" style="left:99.06%;top:23.89%;--t:15px;--d:4.01s;--r:-3.42s"></span><span class="m-estrella" style="left:96.82%;top:65.28%;--t:8px;--d:4.45s;--r:-4.61s"></span><span class="m-estrella" style="left:50.59%;top:47.04%;--t:9px;--d:3.08s;--r:-2.10s"></span><span class="m-estrella" style="left:51.73%;top:65.83%;--t:17px;--d:2.77s;--r:-3.93s"></span><span class="m-estrella" style="left:5.77%;top:6.14%;--t:4px;--d:4.19s;--r:-4.80s"></span><span class="m-estrella" style="left:51.92%;top:14.54%;--t:4px;--d:5.48s;--r:-0.66s"></span></div>
 
     <header class="cabecera">
       <nav class="cabecera__nav tono-claro" aria-label="Principal">
@@ -923,9 +993,21 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
       </nav>
     </header>
 
-    <div class="hero__escena" aria-hidden="true">
-      <img class="m-luna hero__luna" src="/img/escena/luna-600.webp" srcset="/img/escena/luna-300.webp 300w, /img/escena/luna-600.webp 600w" sizes="(min-width: 1024px) 12vw, 26vw" alt="" data-m-paralaje="-0.16">
-      <img class="m-cordillera hero__cordillera" src="/img/escena/cordillera-gatos-2000.webp" srcset="/img/escena/cordillera-gatos-1200.webp 1200w, /img/escena/cordillera-gatos-2000.webp 2000w" sizes="100vw" alt="" data-m-paralaje="-0.04">
+    <div class="hero__visual">
+      <div class="hero__composicion">
+        <img class="m-luna m-capa hero__luna m-entra-sube" src="/img/escena/luna-600.webp" srcset="/img/escena/luna-300.webp 300w, /img/escena/luna-600.webp 600w" sizes="(min-width: 1024px) 14vw, 30vw" alt="" style="--m-prof: 8" data-m-paralaje="-0.22">
+        <figure class="hero__arco m-capa m-entra-recorte" style="--m-prof: 14; --m-retraso: 150ms" data-m-paralaje="-0.08">
+          <img src="/img/fotos/escaladora-muro-azul-1200.webp" srcset="/img/fotos/escaladora-muro-azul-800.webp 536w, /img/fotos/escaladora-muro-azul-1200.webp 803w, /img/fotos/escaladora-muro-azul-1600.webp 1071w" sizes="(min-width: 1024px) 28vw, 62vw" width="803" height="1200" alt="Escaladora con polera naranja en un muro azul y amarillo, mientras otra persona la observa desde abajo" loading="eager" fetchpriority="high" decoding="async">
+        </figure>
+        <figure class="hero__circulo m-capa m-entra-escala" style="--m-prof: 32; --m-retraso: 850ms" data-m-paralaje="0.08">
+          <img src="/img/fotos/escalador-desplome-gris-1200.webp" srcset="/img/fotos/escalador-desplome-gris-800.webp 536w, /img/fotos/escalador-desplome-gris-1200.webp 803w, /img/fotos/escalador-desplome-gris-1600.webp 1071w" sizes="(min-width: 1024px) 13vw, 28vw" width="803" height="1200" alt="Escalador con polerón morado en un desplome gris y azul, bajo el techo de zinc del gimnasio" loading="eager" fetchpriority="high" decoding="async">
+        </figure>
+        <span class="m-presa m-capa m-entra-escala" style="left: 100%; top: 18%; width: 17%; --m-prof: 38; --color: var(--kuyen-luna); --giro: 12deg; --m-retraso: 1050ms; --dur: 9s" data-m-paralaje="0.18" aria-hidden="true"><svg viewBox="0 0 100 100"><path d="M50 8c20 0 38 14 40 34 2 22-14 44-38 48-26 4-44-14-44-36C8 30 26 8 50 8z"/><circle cx="50" cy="50" r="7"/></svg></span>
+        <span class="m-presa m-capa m-entra-escala" style="left: 88%; top: 66%; width: 23%; --m-prof: 24; --color: var(--kuyen-lila); --giro: -20deg; --m-retraso: 1200ms; --dur: 11s" data-m-paralaje="0.1" aria-hidden="true"><svg viewBox="0 0 100 100"><path d="M10 66C10 38 30 14 56 14c20 0 34 14 34 32 0 26-24 44-52 44-16 0-28-8-28-24z"/><circle cx="50" cy="50" r="7"/></svg></span>
+        <span class="m-presa m-capa m-entra-escala" style="left: -12%; top: 2%; width: 12%; --m-prof: 52; --color: var(--kuyen-blanco); --giro: -8deg; --m-retraso: 1300ms; --dur: 7s" data-m-paralaje="0.3" aria-hidden="true"><svg viewBox="0 0 100 100"><path d="M50 8l38 58c7 11-1 26-14 26H26c-13 0-21-15-14-26z"/><circle cx="50" cy="50" r="7"/></svg></span>
+        <span class="m-presa m-capa m-entra-escala" style="left: 60%; top: 84%; width: 16%; --m-prof: 60; --color: var(--kuyen-luna); --giro: 18deg; --m-retraso: 1400ms; --dur: 8s" data-m-paralaje="0.36" aria-hidden="true"><svg viewBox="0 0 100 100"><path d="M8 56c2-16 20-28 44-30 20-2 38 6 40 18 2 14-16 26-40 30C28 78 6 72 8 56z"/><circle cx="50" cy="50" r="7"/></svg></span>
+        <span class="m-presa m-capa m-entra-escala hero__presa--ancha" style="left: 44%; top: -3%; width: 10%; --m-prof: 44; --color: var(--kuyen-lila); --giro: 30deg; --m-retraso: 1150ms; --dur: 10s" data-m-paralaje="0.24" aria-hidden="true"><svg viewBox="0 0 100 100"><path d="M30 10h40l24 40-24 40H30L6 50z"/><circle cx="50" cy="50" r="7"/></svg></span>
+      </div>
     </div>
 
     <div class="hero__contenido" id="contenido" tabindex="-1">
@@ -933,7 +1015,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
         <span class="hero__antetitulo" data-m-aparece>Escalada en boulder · Padre Las Casas</span>
         <h1 class="titulo-grande" data-m-revelar style="--m-retraso: 150ms"><span class="m-linea"><span class="m-palabra"><span style="--m-i: 0">Un</span></span> <span class="m-palabra"><span style="--m-i: 1">proyecto</span></span> <span class="m-palabra"><span style="--m-i: 2">hecho</span></span></span> <span class="m-linea"><span class="m-palabra"><span style="--m-i: 3">por</span></span> <span class="m-palabra"><span style="--m-i: 4">escaladores</span></span></span> <span class="m-linea"><span class="m-palabra"><span style="--m-i: 5">para</span></span> <span class="m-palabra"><span style="--m-i: 6">escaladores</span></span></span></h1>
         <div class="hero__acciones">
-          <a class="boton boton--primario" href="https://docs.google.com/forms/d/e/1FAIpQLSfA0HoO-PmDaaSRjXqLt1VF37dFQKTdcsL2kD1co3wM-rGGIQ/viewform?usp=pp_url" target="_blank" rel="noopener" data-m-aparece style="--m-retraso: 700ms">
+          <a class="boton boton--primario" href="https://docs.google.com/forms/d/e/1FAIpQLSfA0HoO-PmDaaSRjXqLt1VF37dFQKTdcsL2kD1co3wM-rGGIQ/viewform?usp=pp_url" target="_blank" rel="noopener" data-m-aparece style="--m-retraso: 700ms" data-m-iman>
             <span class="boton__texto"><span class="boton__rollo"><span>Solicitud de ingreso</span><span aria-hidden="true">Solicitud de ingreso</span></span></span>
             <span class="boton__circulo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
           </a>
@@ -944,6 +1026,10 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
           </div>
         </div>
       </div>
+    </div>
+
+    <div class="hero__franja" aria-hidden="true">
+      <img class="m-cordillera m-capa hero__cordillera m-entra-sube" src="/img/escena/cordillera-gatos-2000.webp" srcset="/img/escena/cordillera-gatos-1200.webp 1200w, /img/escena/cordillera-gatos-2000.webp 2000w" sizes="(min-width: 1024px) 48vw, 100vw" alt="" style="--m-prof: 6" data-m-paralaje="0">
     </div>
   </section>
 
@@ -985,7 +1071,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
             <img src="/img/fotos/pancita-1200.webp" srcset="/img/fotos/pancita-800.webp 800w, /img/fotos/pancita-1200.webp 1200w, /img/fotos/pancita-1600.webp 1600w" sizes="(min-width: 1024px) 24vw, (min-width: 640px) 45vw, 100vw" width="1200" height="800" alt="Pancita, la gata de Kuyen, mirando a la cámara con el muro de fondo" loading="lazy" decoding="async">
           </div>
           <div class="m-foto intro__foto intro__foto--grande" style="--m-retraso: 180ms">
-            <img src="/img/fotos/escaladora-muro-azul-1200.webp" srcset="/img/fotos/escaladora-muro-azul-800.webp 536w, /img/fotos/escaladora-muro-azul-1200.webp 803w, /img/fotos/escaladora-muro-azul-1600.webp 1071w" sizes="(min-width: 1024px) 44vw, (min-width: 640px) 55vw, 100vw" width="803" height="1200" alt="Escaladora con polera naranja en un muro azul y amarillo, mientras otra persona la observa desde abajo" loading="lazy" decoding="async">
+            <img src="/img/fotos/escalador-muro-blanco-1200.webp" srcset="/img/fotos/escalador-muro-blanco-800.webp 800w, /img/fotos/escalador-muro-blanco-1200.webp 1200w, /img/fotos/escalador-muro-blanco-1600.webp 1600w" sizes="(min-width: 1024px) 44vw, (min-width: 640px) 55vw, 100vw" width="1200" height="800" alt="Escalador en un muro blanco, amarillo, azul y gris" loading="lazy" decoding="async">
           </div>
         </div>
         <div class="intro__cifras">
@@ -1168,7 +1254,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
           <article class="tarjeta">
             <div class="tarjeta__medio m-foto tarjeta__medio--mapa">
               <div class="mapa">
-                <img class="m-luna mapa__luna" src="/img/escena/luna-600.webp" srcset="/img/escena/luna-300.webp 300w, /img/escena/luna-600.webp 600w" sizes="8rem" alt="" data-m-paralaje="-0.06">
+                <img class="m-luna m-capa mapa__luna" src="/img/escena/luna-600.webp" srcset="/img/escena/luna-300.webp 300w, /img/escena/luna-600.webp 600w" sizes="8rem" alt="" style="--m-prof: 0" data-m-paralaje="-0.06">
                 <p class="mapa__direccion">Los Patagones 375<br>Padre Las Casas, La Araucanía</p>
                 <p class="mapa__nota">El mapa se carga desde Google Maps al hacer clic.</p>
               </div>
@@ -1266,14 +1352,16 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
   var calmo = window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
   /* Paralaje: cada capa se desplaza según qué tan lejos está su contenedor del
-     centro de la pantalla. data-m-paralaje es el factor (negativo sube). */
+     centro de la pantalla. data-m-paralaje es el factor: negativo va más lento
+     que la página, como un fondo, y positivo, más rápido. Lo que empieza en la
+     primera pantalla parte en su lugar y se desplaza solo con el scroll. */
   var capas = [].slice.call(document.querySelectorAll('[data-m-paralaje]'))
   function paralaje() {
     var alto = window.innerHeight
     capas.forEach(function (el) {
       var caja = el.parentElement.getBoundingClientRect()
       if (caja.bottom < -200 || caja.top > alto + 200) return
-      var distancia = caja.top + caja.height / 2 - alto / 2
+      var distancia = caja.top + window.scrollY < alto ? -window.scrollY : caja.top + caja.height / 2 - alto / 2
       el.style.setProperty('--m-y', (distancia * parseFloat(el.getAttribute('data-m-paralaje'))).toFixed(1) + 'px')
     })
   }
@@ -1321,6 +1409,72 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
       })
     }, { threshold: 0.15, rootMargin: '0px 0px -6% 0px' })
     elementos.forEach(function (el) { observador.observe(el) })
+  }
+
+  /* Entrada del hero: .m-listo cuando la foto principal está lista para
+     pintarse, o a los 1,2 s si tarda. */
+  document.querySelectorAll('[data-m-entrada]').forEach(function (zona) {
+    var listo = function () {
+      requestAnimationFrame(function () { requestAnimationFrame(function () { zona.classList.add('m-listo') }) })
+    }
+    if (calmo) { zona.classList.add('m-listo'); return }
+    var fotos = [].slice.call(zona.querySelectorAll('img[fetchpriority="high"]'))
+    var decodificadas = Promise.all(fotos.map(function (f) { return f.decode ? f.decode().catch(function () {}) : null }))
+    Promise.race([decodificadas, new Promise(function (r) { setTimeout(r, 1200) })]).then(listo)
+  })
+
+  var conMouse = window.matchMedia('(hover: hover)').matches
+
+  /* Profundidad con el puntero: [data-m-puntero] publica --m-mx y --m-my (de -1
+     a 1) con un seguimiento suave; las .m-capa de adentro se mueven según su
+     --m-prof. */
+  if (!calmo && conMouse) {
+    document.querySelectorAll('[data-m-puntero]').forEach(function (zona) {
+      var objetivo = { x: 0, y: 0 }
+      var actual = { x: 0, y: 0 }
+      var andando = false
+      function paso() {
+        actual.x += (objetivo.x - actual.x) * 0.07
+        actual.y += (objetivo.y - actual.y) * 0.07
+        zona.style.setProperty('--m-mx', actual.x.toFixed(4))
+        zona.style.setProperty('--m-my', actual.y.toFixed(4))
+        if (Math.abs(objetivo.x - actual.x) > 0.001 || Math.abs(objetivo.y - actual.y) > 0.001) requestAnimationFrame(paso)
+        else andando = false
+      }
+      function mover() { if (!andando) { andando = true; requestAnimationFrame(paso) } }
+      zona.addEventListener('pointermove', function (e) {
+        var caja = zona.getBoundingClientRect()
+        objetivo.x = ((e.clientX - caja.left) / caja.width - 0.5) * 2
+        objetivo.y = ((e.clientY - caja.top) / caja.height - 0.5) * 2
+        mover()
+      })
+      zona.addEventListener('pointerleave', function () { objetivo.x = 0; objetivo.y = 0; mover() })
+    })
+
+    /* Imán: el botón se corre un poco hacia el puntero y vuelve al salir, con
+       el mismo seguimiento suave. */
+    document.querySelectorAll('[data-m-iman]').forEach(function (el) {
+      el.classList.add('m-iman')
+      var objetivo = { x: 0, y: 0 }
+      var actual = { x: 0, y: 0 }
+      var andando = false
+      function paso() {
+        actual.x += (objetivo.x - actual.x) * 0.18
+        actual.y += (objetivo.y - actual.y) * 0.18
+        el.style.setProperty('--m-ix', actual.x.toFixed(2) + 'px')
+        el.style.setProperty('--m-iy', actual.y.toFixed(2) + 'px')
+        if (Math.abs(objetivo.x - actual.x) > 0.05 || Math.abs(objetivo.y - actual.y) > 0.05) requestAnimationFrame(paso)
+        else andando = false
+      }
+      function mover() { if (!andando) { andando = true; requestAnimationFrame(paso) } }
+      el.addEventListener('pointermove', function (e) {
+        var caja = el.getBoundingClientRect()
+        objetivo.x = (e.clientX - caja.left - caja.width / 2) * 0.25
+        objetivo.y = (e.clientY - caja.top - caja.height / 2) * 0.35
+        mover()
+      })
+      el.addEventListener('pointerleave', function () { objetivo.x = 0; objetivo.y = 0; mover() })
+    })
   }
 
   /* Rastro de tiza: polvo de magnesio que sigue al puntero, cae y se apaga.
