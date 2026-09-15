@@ -13,9 +13,9 @@
        (pedido de Camilo, 10-09-2026; en el Login de PP va arriba a la derecha),
        con el mismo margen de 1rem que usa PP.
 
-       Dos diferencias, las dos por el contenido: tiene cuatro posiciones en vez
-       de tres, y en vez de poner una clase en <html> cambia la fuente del
-       marco, porque cada template vive en su propio documento. -->
+       Una diferencia, por el contenido: en vez de poner una clase en <html>
+       cambia la fuente del marco, porque cada template vive en su propio
+       documento. -->
   <div class="kt-posicion">
     <button type="button" class="kt-toggle" aria-label="Cambiar de template" title="Template {{temaNombreInicial}}" data-tema-boton>
       <span class="kt-knob" data-tema-knob>{{temaIconoInicial}}</span>
@@ -39,14 +39,14 @@
 
   /* relative inline-flex items-center rounded-full transition-colors duration-200
      h-7 w-[4.5rem] bg-muted-foreground/40, con los tokens del tema dark de PP
-     (--muted-foreground: 0 0% 63.9%). El ancho suma un paso de 1.375rem al de
-     PP para la cuarta posición: 4.5rem + 1.375rem = 5.875rem. */
+     (--muted-foreground: 0 0% 63.9%). Con tres templates, el ancho y las tres
+     posiciones del pulsador son las mismas de PP. */
   .kt-toggle {
     position: relative;
     display: inline-flex;
     align-items: center;
     height: 1.75rem;
-    width: 5.875rem;
+    width: 4.5rem;
     padding: 0;
     border: 0;
     border-radius: 9999px;
@@ -90,8 +90,7 @@
     var CLAVE = 'kuyen-tema'
 
     // POSITIONS del toggle sm de PP: translate-x-1, translate-x-[1.625rem],
-    // translate-x-[3rem]. Pasos de 1.375rem; la cuarta posición sigue el mismo
-    // paso.
+    // translate-x-[3rem]. Pasos de 1.375rem, una posición por template.
     var POSICIONES = TEMAS.map(function (_, i) { return 0.25 + 1.375 * i })
 
     // iconClass de PP: la primera opción (dark) en text-muted-foreground y las
@@ -132,7 +131,7 @@
     // recarga el marco si lo guardado es otro.
     aplicar(indice, indice !== 0)
 
-    // Ciclo: Hive -> Karate -> Hirael -> NexStudio -> Hive
+    // Ciclo: Karate -> Hirael -> NexStudio -> Karate
     boton.addEventListener('click', function () {
       indice = (indice + 1) % TEMAS.length
       aplicar(indice, true)
