@@ -3,7 +3,7 @@
  *
  *   node tools/build.mjs [--site=cl|preview] [--out DIR]
  *
- * Etapa actual: los cuatro templates candidatos servidos tal cual, uno por
+ * Etapa actual: los tres templates candidatos servidos tal cual, uno por
  * ruta (/t/<id>), y un marco en la raíz que muestra el activo a pantalla
  * completa con el ToggleTheme encima para pasar al siguiente.
  *

@@ -7,23 +7,25 @@ Sigue el flujo de sitios estáticos documentado en
 `C:\Proyectos\INCBA\docs\Flujo-Sitios-Web-GitHub-Pages.md`: generador propio, verificación
 funcional y CI que impide publicar HTML desincronizado.
 
-## Estado (09-09-2026): los cuatro templates, tal cual
+## Estado (15-09-2026): los tres templates, tal cual
 
-Todavía no hay contenido de Kuyen. Lo que hay son los **cuatro templates candidatos servidos
+Todavía no hay contenido de Kuyen. Lo que hay son los **tres templates candidatos servidos
 tal como los publican sus autores**, cada uno en su ruta, y un marco en la raíz que muestra el
 activo a pantalla completa con el **ToggleTheme** encima para pasar al siguiente.
+
+Hive salió de los candidatos el 14-09-2026. Su captura sigue en el historial de git:
+`git checkout 3ba77fb -- src/temas/hive temas/hive`.
 
 | Ruta | Template |
 |---|---|
 | `/` | El marco: el template activo más el toggle |
-| `/t/hive` | [Hive](https://21st.dev/@shadcnblockscom/templates/hive) |
 | `/t/karate` | [Karate](https://21st.dev/@dhileepkumargm/templates/karate) |
 | `/t/hirael` | [Hirael Agency Landing](https://21st.dev/@mohammadshehadeh/templates/hirael-agency-landing) |
 | `/t/nex` | [NexStudio](https://21st.dev/@tailgrids/templates/tailgrids-nexstudio) |
 
 Cada template se sirve entero dentro de su propio documento: su HTML, sus estilos, sus
 scripts y sus assets, sin compartir nada con el marco ni con los otros. Esa es la razón de que
-el marco use un `iframe`: es lo que permite tenerlos a los cuatro sin que se pisen entre sí y
+el marco use un `iframe`: es lo que permite tenerlos a los tres sin que se pisen entre sí y
 sin tocarles una línea.
 
 El marco pinta blanco detrás del `iframe`, que es el fondo que pone el navegador cuando una
@@ -39,7 +41,6 @@ imágenes. Medición del 10-09-2026 a
 
 | Template | Píxeles distintos |
 |---|---|
-| Hive | 0,14% |
 | Karate | 0,03% |
 | Hirael | 0,10% |
 | NexStudio | 0,01% |
@@ -56,10 +57,10 @@ los dos repos), en su tamaño `sm`, a la izquierda y centrado verticalmente (ped
 con un icono por opción, ciclo al siguiente en cada clic, `title` con la opción activa y
 `aria-label` con la siguiente.
 
-Dos diferencias, las dos por el contenido: tiene cuatro posiciones en vez de tres (la píldora
-suma un paso de 1,375 rem y queda en 5,875 rem), y en vez de poner una clase en `<html>`
-cambia la fuente del marco, porque cada template vive en su propio documento. La elección se
-guarda en `localStorage` y la página de arriba no se recarga.
+Con tres templates, la píldora mide 4,5 rem y el pulsador usa las mismas tres posiciones de PP.
+Una diferencia, por el contenido: en vez de poner una clase en `<html>` cambia la fuente del
+marco, porque cada template vive en su propio documento. La elección se guarda en
+`localStorage` y la página de arriba no se recarga.
 
 ### Los templates son de terceros
 
@@ -126,7 +127,7 @@ un prefijo literal (`/_next/static/chunks/` y similares) con el nombre del chunk
 estructura intacta alcanza con reescribir ese prefijo dentro del JavaScript. Con nombres
 planos esos pedidos daban 404 y el template quedaba a medias.
 
-Lee el DOM ya renderizado con el Chrome instalado en headless, porque los cuatro arman su HTML
+Lee el DOM ya renderizado con el Chrome instalado en headless, porque los tres arman su HTML
 en el navegador: bajándolos con HTTP a secas, Framer deja secciones invisibles y React
 devuelve un cascarón vacío.
 
@@ -144,11 +145,6 @@ sirviéndose desde otra ruta (ver `arranque()` en `tools/build.mjs`):
 Además, los **ajustes pedidos** para un template puntual, declarados en `ajustes` de su
 entrada en `TEMAS`:
 
-- **Hive sin la franja "Purchase this theme on shadcnblocks.com"** (10-09-2026). Se cierra con
-  el mismo mecanismo que usa el botón de cerrar del template, la cookie `banner-dismissed`: la
-  cabecera lee ese estado y quita su margen de 3,5 rem, así que no queda hueco arriba. Un CSS
-  corto evita que la franja se vea un instante antes de hidratar. `comparar-tema.mjs` mira el
-  original con esa misma cookie, para seguir midiendo fidelidad y no el ajuste.
 - **Karate sin la sección "Built different. Training different."** (10-09-2026). Karate es
   Framer y se hidrata con React, así que el bloque se oculta con CSS en vez de borrarlo del
   HTML: borrarlo dejaría a React sin el nodo que espera. Se oculta el bloque entero, que Framer
@@ -189,7 +185,7 @@ ni `tools/`.
 ## Pendientes
 
 - **Elegir template**: es la decisión que desbloquea todo lo demás. Elegido uno, se sacan los
-  otros tres de `TEMAS` y se borran sus capturas de `temas/`.
+  otros dos de `TEMAS` y se borran sus capturas de `temas/`.
 - **Adaptar el elegido**: reemplazar textos, fotos y marca por los de Kuyen. Recién ahí entra
   el contenido real.
 - **Dominio**: `kuyenclimbing.cl` está puesto en `SITES.cl` y en `CNAME` como valor
@@ -199,10 +195,8 @@ ni `tools/`.
   de renovar el certificado HTTPS.
 - **Marca**: no hay archivos de logo. El isotipo `img/marca-luna.svg` es un placeholder propio
   (luna creciente, por "küyen", luna en mapudungun), y solo se usa como favicon del marco.
-- **Peso del repo**: las capturas ocupan cerca de 45 MB en `temas/`. Se van con los templates
+- **Peso del repo**: las capturas ocupan cerca de 24 MB en `temas/`. Se van con los templates
   descartados.
-- **Escenas 3D de Hive**: el hero y el pie montan escenas que necesitan GPU. En Chrome
-  headless fallan igual en el original que en la copia; en un navegador normal se ven.
 
 ## Datos del negocio
 

@@ -1,7 +1,7 @@
 /**
  * Fuente única de la configuración del sitio de Kuyen Climbing.
  *
- * Etapa actual: los cuatro templates candidatos servidos tal cual, cada uno en
+ * Etapa actual: los tres templates candidatos servidos tal cual, cada uno en
  * /t/<id>, y un marco en la raíz que muestra el activo a pantalla completa con
  * el ToggleTheme encima. Los templates no se adaptan todavía: eso viene
  * después, cuando se elija uno.
@@ -65,7 +65,10 @@ export const NEGOCIO = {
 }
 
 /**
- * Los cuatro templates candidatos, en el orden en que los cicla el ToggleTheme.
+ * Los tres templates candidatos, en el orden en que los cicla el ToggleTheme.
+ *
+ * Hive salió de los candidatos el 14-09-2026 (pedido de Benjamín). Su captura
+ * y su ajuste siguen en el historial: git checkout 3ba77fb -- src/temas/hive temas/hive
  *
  * Cada uno se sirve tal cual: el HTML capturado en src/temas/<id>/pagina.html
  * con sus propios estilos, scripts y assets bajo temas/<id>/. Se capturan con
@@ -76,25 +79,6 @@ export const NEGOCIO = {
  * markup y assets propios de Kuyen cuando se elija uno.
  */
 export const TEMAS = [
-  {
-    id: 'hive',
-    nombre: 'Hive',
-    resumen: 'Estudio editorial: tipografía serif enorme, monocromo y mucho aire.',
-    fuente: 'https://hive-nextjs-template.vercel.app/',
-    credito: 'https://21st.dev/@shadcnblockscom/templates/hive',
-    icono: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z"/></svg>',
-    // Sin la franja "Purchase this theme on shadcnblocks.com" (pedido de
-    // Camilo, 10-09-2026). Se cierra con el mismo mecanismo que usa el botón de
-    // cerrar del template, la cookie banner-dismissed: la cabecera lee ese
-    // estado y quita su margen de 3,5 rem, así que no queda hueco arriba. El
-    // CSS solo evita que la franja se vea un instante antes de hidratar.
-    ajustes: {
-      cookie: 'banner-dismissed=true',
-      css: 'div.bg-primary:has(a[href*="shadcnblocks.com"]){display:none!important}.fixed.mt-14{margin-top:0!important}',
-      ocultar: 'Purchase this theme on',
-      sinMargen: '.fixed',
-    },
-  },
   {
     id: 'karate',
     nombre: 'Karate',
@@ -132,7 +116,7 @@ export const TEMAS = [
 ]
 
 /** El template que se muestra a quien entra por primera vez. */
-export const TEMA_POR_DEFECTO = 'hive'
+export const TEMA_POR_DEFECTO = 'karate'
 
 /** Ruta pública de un template. */
 export const rutaTema = (id) => `/t/${id}`
@@ -146,5 +130,5 @@ export const LIMITES = { title: 60, description: 158 }
 export const PAGINA = {
   title: 'Kuyen Climbing | Templates candidatos',
   description:
-    'Los cuatro templates candidatos para el sitio de Kuyen Climbing, servidos tal cual, con un selector para pasar de uno al siguiente.',
+    'Los tres templates candidatos para el sitio de Kuyen Climbing, servidos tal cual, con un selector para pasar de uno al siguiente.',
 }

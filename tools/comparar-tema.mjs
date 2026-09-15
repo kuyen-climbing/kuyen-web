@@ -119,9 +119,9 @@ async function diferencia(a, b) {
 const resultados = []
 try {
   for (const tema of TEMAS) {
-    // Si al template se le pidieron ajustes (Hive sin su franja de compra, Karate
-    // sin la sección "Built Steps"), el original se mira con los mismos: la misma
-    // cookie y el mismo CSS. Así la comparación sigue midiendo fidelidad y no los
+    // Si al template se le pidieron ajustes (por ejemplo Karate sin la sección
+    // "Built Steps"), el original se mira con los mismos: la misma cookie y el
+    // mismo CSS. Así la comparación sigue midiendo fidelidad y no los
     // ajustes pedidos.
     if (tema.ajustes?.cookie) {
       const [name, ...resto] = tema.ajustes.cookie.split('=')
