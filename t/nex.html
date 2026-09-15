@@ -862,6 +862,20 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 }
 @media (min-width: 768px) { .pie__grilla { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
 
+/* ---------- Publicaciones de Instagram ---------- */
+
+.entrada__texto { margin-top: 0.75rem; color: var(--texto-suave); line-height: 1.55; }
+.entrada__acciones { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem; margin-top: 1.25rem; }
+.entradas__nota { margin-top: 2rem; color: var(--texto-suave); font-size: 0.9375rem; }
+/* Con la publicación cargada, el recuadro deja de tener proporción fija. */
+.m-foto.con-publicacion { aspect-ratio: auto; }
+/* El alto lo avisa Instagram, con un tope para que la fila de tarjetas no crezca
+   de más: pasado ese tope, la publicación se desplaza por dentro. */
+.instagram__marco { display: block; width: 100%; min-height: 26rem; max-height: min(72vh, 38rem); border: 0; background: var(--kuyen-blanco); }
+@media (min-width: 1024px) {
+  .entradas--tres { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html, .resenas__pista { scroll-behavior: auto; }
   *, *::before, *::after { transition-duration: 0ms !important; }
@@ -1150,6 +1164,51 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
       </div>
     </section>
 
+    <section class="seccion tono-oscuro" id="instagram">
+      <div class="contenedor">
+        <h2 class="titulo-seccion entradas__titulo" data-m-revelar><span class="m-linea"><span class="m-palabra"><span style="--m-i: 0">En</span></span> <span class="m-palabra m-acento"><span style="--m-i: 1">Instagram</span></span></span></h2>
+        <div class="entradas entradas--tres">
+          <article class="entrada" data-instagram-tarjeta>
+            <div class="entrada__foto m-foto" data-instagram-medio>
+              <img src="/img/fotos/escalador-desplome-amarillo-1200.webp" srcset="/img/fotos/escalador-desplome-amarillo-800.webp 800w, /img/fotos/escalador-desplome-amarillo-1200.webp 1200w, /img/fotos/escalador-desplome-amarillo-1600.webp 1600w" sizes="(min-width: 1024px) 30vw, (min-width: 640px) 45vw, 100vw" width="1200" height="803" alt="Escalador con polera verde colgado de un desplome amarillo y azul" loading="lazy" decoding="async">
+            </div>
+            <div class="entrada__meta" data-m-aparece style="--m-retraso: 150ms"><span>Publicación</span><span>2 de octubre de 2026</span></div>
+            <h3 class="entrada__titulo" data-m-aparece style="--m-retraso: 200ms">Taller de routesetting</h3>
+            <p class="entrada__texto" data-m-aparece style="--m-retraso: 240ms">Creación, diseño y armado de rutas, para mujeres escaladoras.</p>
+            <div class="entrada__acciones" data-m-aparece style="--m-retraso: 280ms">
+              <button type="button" class="boton boton--borde" data-instagram="p/DdG5vAJSeuA" data-titulo="Publicación de Kuyen Climbing en Instagram: Taller de routesetting"><span class="rueda"><span>Ver publicación</span><span aria-hidden="true">Ver publicación</span></span></button>
+              <a class="enlace" href="https://www.instagram.com/p/DdG5vAJSeuA/" target="_blank" rel="noopener">Abrir en Instagram</a>
+            </div>
+          </article>
+          <article class="entrada" data-instagram-tarjeta>
+            <div class="entrada__foto m-foto" style="--m-retraso: 120ms" data-instagram-medio>
+              <img src="/img/fotos/escaladora-muro-azul-1200.webp" srcset="/img/fotos/escaladora-muro-azul-800.webp 536w, /img/fotos/escaladora-muro-azul-1200.webp 803w, /img/fotos/escaladora-muro-azul-1600.webp 1071w" sizes="(min-width: 1024px) 30vw, (min-width: 640px) 45vw, 100vw" width="803" height="1200" alt="Escaladora con polera naranja en un muro azul y amarillo, mientras otra persona la observa desde abajo" loading="lazy" decoding="async">
+            </div>
+            <div class="entrada__meta" data-m-aparece style="--m-retraso: 270ms"><span>Publicación</span><span>Abril de 2026</span></div>
+            <h3 class="entrada__titulo" data-m-aparece style="--m-retraso: 320ms">Hacer sombra</h3>
+            <p class="entrada__texto" data-m-aparece style="--m-retraso: 360ms">Cuidar al compañero es la ley primera en Kuyen.</p>
+            <div class="entrada__acciones" data-m-aparece style="--m-retraso: 400ms">
+              <button type="button" class="boton boton--borde" data-instagram="p/DXGCPpyjKfi" data-titulo="Publicación de Kuyen Climbing en Instagram: Hacer sombra"><span class="rueda"><span>Ver publicación</span><span aria-hidden="true">Ver publicación</span></span></button>
+              <a class="enlace" href="https://www.instagram.com/p/DXGCPpyjKfi/" target="_blank" rel="noopener">Abrir en Instagram</a>
+            </div>
+          </article>
+          <article class="entrada" data-instagram-tarjeta>
+            <div class="entrada__foto m-foto" style="--m-retraso: 240ms" data-instagram-medio>
+              <img src="/img/fotos/escalador-muro-blanco-1200.webp" srcset="/img/fotos/escalador-muro-blanco-800.webp 800w, /img/fotos/escalador-muro-blanco-1200.webp 1200w, /img/fotos/escalador-muro-blanco-1600.webp 1600w" sizes="(min-width: 1024px) 30vw, (min-width: 640px) 45vw, 100vw" width="1200" height="800" alt="Escalador en un muro blanco, amarillo, azul y gris" loading="lazy" decoding="async">
+            </div>
+            <div class="entrada__meta" data-m-aparece style="--m-retraso: 390ms"><span>Video</span><span>Septiembre de 2025</span></div>
+            <h3 class="entrada__titulo" data-m-aparece style="--m-retraso: 440ms">Rutas nuevas</h3>
+            <p class="entrada__texto" data-m-aparece style="--m-retraso: 480ms">Sacamos las presas, las lavamos, instalamos volúmenes y armamos rutas nuevas.</p>
+            <div class="entrada__acciones" data-m-aparece style="--m-retraso: 520ms">
+              <button type="button" class="boton boton--borde" data-instagram="reel/DOenM9lElP2" data-titulo="Publicación de Kuyen Climbing en Instagram: Rutas nuevas"><span class="rueda"><span>Ver publicación</span><span aria-hidden="true">Ver publicación</span></span></button>
+              <a class="enlace" href="https://www.instagram.com/reel/DOenM9lElP2/" target="_blank" rel="noopener">Abrir en Instagram</a>
+            </div>
+          </article>
+        </div>
+        <p class="entradas__nota" data-m-aparece>La publicación se carga desde Instagram al hacer clic.</p>
+      </div>
+    </section>
+
     <section class="seccion tono-oscuro" id="reglamento">
       <div class="contenedor">
         <div class="lista__cabeza">
@@ -1273,6 +1332,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
             <li><a href="#horarios">Horarios y valores</a></li>
             <li><a href="#reglamento">Reglamento</a></li>
             <li><a href="#visitanos">Visítanos</a></li>
+            <li><a href="#instagram">En Instagram</a></li>
           </ul>
         </nav>
         <nav class="pie__columna" aria-label="Servicios" data-m-aparece style="--m-retraso: 100ms">
@@ -1534,6 +1594,47 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
       })
     })
   }
+})()
+;
+(function () {
+  'use strict'
+
+  /* Publicaciones de Instagram: el iframe se crea recién al hacer clic, así que
+     hasta entonces la página no le pide nada a Instagram. Cada tarjeta lleva
+     data-instagram-tarjeta y, adentro, el recuadro con data-instagram-medio.
+     Instagram avisa el alto de la publicación con un mensaje MEASURE; si ese
+     mensaje no llega, queda el alto mínimo del CSS. */
+  var ORIGEN = 'https://www.instagram.com'
+  var marcos = []
+
+  window.addEventListener('message', function (e) {
+    if (e.origin !== ORIGEN || marcos.length === 0) return
+    var datos = e.data
+    if (typeof datos === 'string') {
+      try { datos = JSON.parse(datos) } catch (error) { return }
+    }
+    if (!datos || datos.type !== 'MEASURE' || !datos.details || !datos.details.height) return
+    marcos.forEach(function (marco) {
+      if (marco.contentWindow === e.source) marco.style.height = datos.details.height + 'px'
+    })
+  })
+
+  document.querySelectorAll('[data-instagram]').forEach(function (boton) {
+    boton.addEventListener('click', function () {
+      var tarjeta = boton.closest('[data-instagram-tarjeta]')
+      var medio = tarjeta && tarjeta.querySelector('[data-instagram-medio]')
+      if (!medio) return
+      var marco = document.createElement('iframe')
+      marco.className = 'instagram__marco'
+      marco.src = ORIGEN + '/' + boton.getAttribute('data-instagram') + '/embed/captioned/'
+      marco.title = boton.getAttribute('data-titulo')
+      marco.allowFullscreen = true
+      medio.classList.add('con-publicacion')
+      medio.replaceChildren(marco)
+      marcos.push(marco)
+      marco.focus()
+    })
+  })
 })()
 ;
 (function () {

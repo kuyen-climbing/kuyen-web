@@ -15,6 +15,8 @@
  *   "3 · Clases y Kuyencit@s" y "6 · Visítanos": tarjetas de la sección 2.
  *   "4 · Horarios y valores" y "5 · Reglamento": intro de la sección 1 con las
  *   columnas del pie.
+ *   "7 · En Instagram": tarjetas de la sección 2, con la publicación que se carga
+ *   al hacer clic.
  *
  * Revisión visual de Benjamín (15-09-2026): la página se veía plana. Se aplican
  * la tipografía (Rubik Dirt y Rubik), la noche completa con acento amarillo luna
@@ -53,6 +55,8 @@ const ICONOS = {
   // Estrella de cuatro puntas, como las del cielo del logo.
   estrella:
     '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 1c.9 6.6 4.4 10.1 11 11-6.6.9-10.1 4.4-11 11-.9-6.6-4.4-10.1-11-11 6.6-.9 10.1-4.4 11-11z"/></svg>',
+  instagram:
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg>',
   pin: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></svg>',
 }
 
@@ -65,6 +69,7 @@ export default function pagina({ site, contenido, esc, foto, cabeza, leer, compa
     LINKS,
     HISTORIA,
     CIFRAS,
+    INSTAGRAM,
     SERVICIOS,
     HORARIOS,
     PRECIOS,
@@ -96,9 +101,13 @@ export default function pagina({ site, contenido, esc, foto, cabeza, leer, compa
         </div>`
 
   /** Píldora de 36 px que se estira en hover y muestra su texto. */
-  const pildora = ({ texto, href, oscura = false, abierta, mapa }) => {
+  const pildora = ({ texto, href, oscura = false, abierta, mapa, publicacion }) => {
     const clases = `pildora${oscura ? ' pildora--oscura' : ''}`
-    const interior = `<span class="pildora__icono">${mapa ? ICONOS.pin : ICONOS.diagonal}</span><span class="pildora__texto">${esc(texto)}</span>`
+    const icono = mapa ? ICONOS.pin : publicacion ? ICONOS.instagram : ICONOS.diagonal
+    const interior = `<span class="pildora__icono">${icono}</span><span class="pildora__texto">${esc(texto)}</span>`
+    if (publicacion) {
+      return `<button type="button" class="${clases}" style="--abierta: ${abierta}" data-instagram="${esc(publicacion.ruta)}" data-titulo="${esc(`Publicación de ${MARCA.nombre} en Instagram: ${publicacion.titulo}`)}">${interior}</button>`
+    }
     if (mapa) {
       return `<button type="button" class="${clases}" style="--abierta: ${abierta}" data-mapa="${esc(mapa.url)}" data-titulo="${esc(mapa.titulo)}">${interior}</button>`
     }
@@ -106,8 +115,8 @@ export default function pagina({ site, contenido, esc, foto, cabeza, leer, compa
   }
 
   /** Tarjeta de la sección 2: medio 4:3 que se revela, con píldora, descripción y título. */
-  const tarjeta = ({ medio, pildoraHtml, descripcion, titulo: nombre, claseMedio = 'm-foto--zoom', desde = 0 }) => `<article class="tarjeta">
-            <div class="tarjeta__medio m-foto ${claseMedio}"${retraso(desde)}>
+  const tarjeta = ({ medio, pildoraHtml, descripcion, titulo: nombre, claseMedio = 'm-foto--zoom', desde = 0, atributos = '', atributosMedio = '' }) => `<article class="tarjeta"${atributos}>
+            <div class="tarjeta__medio m-foto ${claseMedio}"${retraso(desde)}${atributosMedio}>
               ${medio}
               ${pildoraHtml}
             </div>
@@ -361,6 +370,29 @@ ${cabeza({ estilos: `${compartido('movimiento.css')}\n${leer('estilos.css')}` })
         </div>
       </div>
     </section>
+    <section class="seccion seccion--tarjetas tono-oscuro" id="instagram">
+      <div class="contenedor">
+        ${etiqueta(7, 'En Instagram')}
+        <h2 class="titulo-grande tarjetas__titulo" data-m-revelar>${titulo('Lo que publicamos')}</h2>
+        <div class="tarjetas tarjetas--tres">
+          ${INSTAGRAM.publicaciones
+            .map((pub, n) =>
+              tarjeta({
+                claseMedio: 'tarjeta__medio--instagram',
+                atributos: ' data-instagram-tarjeta',
+                atributosMedio: ' data-instagram-medio',
+                medio: foto(pub.foto, { tamanos: '(min-width: 1024px) 30vw, (min-width: 768px) 45vw, 100vw' }),
+                pildoraHtml: pildora({ texto: TEXTOS.acciones.verPublicacion, abierta: '10.5rem', publicacion: pub }),
+                descripcion: `${esc(pub.detalle)} <a class="enlace" href="${esc(`${INSTAGRAM.base}${pub.ruta}/`)}"${externo}>${esc(TEXTOS.acciones.abrirInstagram)}</a>`,
+                titulo: esc(pub.titulo),
+                desde: n * 140,
+              })
+            )
+            .join('\n          ')}
+        </div>
+        <p class="tarjetas__nota" data-m-aparece>${esc(TEXTOS.instagram)}</p>
+      </div>
+    </section>
   </main>
 
   <footer class="pie tono-oscuro">
@@ -395,6 +427,7 @@ ${cabeza({ estilos: `${compartido('movimiento.css')}\n${leer('estilos.css')}` })
             ${enlacePie('#muro', 'El muro')}
             ${enlacePie('#clases', 'Clases')}
             ${enlacePie('#reglamento', 'Reglamento')}
+            ${enlacePie('#instagram', 'En Instagram')}
           </ul>
         </nav>
         <nav class="pie__columna" aria-label="Visítanos" data-m-aparece style="--m-retraso: 200ms">
@@ -431,6 +464,7 @@ ${cabeza({ estilos: `${compartido('movimiento.css')}\n${leer('estilos.css')}` })
 
   <script>
 ${compartido('movimiento.js')};
+${compartido('instagram.js')};
 ${leer('script.js')};
   </script>
 </body>

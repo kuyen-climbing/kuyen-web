@@ -12,8 +12,8 @@
  * Si /t/<id> es una variante propia, además: un solo <h1>, Rubik Dirt y Rubik
  * cargadas desde el sitio, ningún pedido a otros dominios al cargar, contraste AA
  * en todos los textos, sin desborde de 375 a 1440 px, ningún texto encima de los
- * gatos del logo, y el menú móvil y el mapa funcionando. Si es una captura, sus
- * ajustes.
+ * gatos del logo, y el menú móvil, el mapa y las publicaciones de Instagram
+ * funcionando. Si es una captura, sus ajustes.
  *
  * No saca capturas: todo se comprueba leyendo el DOM y el resultado es solo
  * texto. La verificación visual la hace una persona en su Chrome.
@@ -377,6 +377,13 @@ try {
       check(`${tema.id}: el mapa no se carga antes del clic`, await en(PAGINA, '!d.querySelector("iframe")'))
       await en(PAGINA, '(d.querySelector("[data-mapa]").click(), true)')
       check(`${tema.id}: el mapa se carga al hacer clic`, await en(PAGINA, '!!d.querySelector("iframe[src*=\\"google.com/maps\\"]")'))
+    }
+    if (await en(PAGINA, '!!d.querySelector("[data-instagram]")')) {
+      check(`${tema.id}: la publicación de Instagram no se carga antes del clic`,
+        await en(PAGINA, '!d.querySelector("iframe[src*=\\"instagram.com\\"]")'))
+      await en(PAGINA, '(d.querySelector("[data-instagram]").click(), true)')
+      check(`${tema.id}: la publicación de Instagram se carga al hacer clic`,
+        await en(PAGINA, '!!d.querySelector("iframe[src*=\\"instagram.com/\\"]")'))
     }
   }
 } finally {

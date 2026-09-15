@@ -18,6 +18,9 @@
  *   10 Pie: marca con íconos, navegación, contacto y mapa.
  * La sección 5 (Built Steps) queda fuera, como en la captura.
  *
+ * Sección agregada con componentes del mismo template: "En Instagram", con las
+ * tarjetas de Programas, donde la publicación se carga al hacer clic.
+ *
  * Diferencias con el template:
  * - Toda la página va de noche, con títulos en Rubik Dirt y acento amarillo luna.
  * - El fondo del hero pasa a ser el cielo del logo con estrellas que titilan, la
@@ -65,6 +68,7 @@ export default function pagina({ site, contenido, esc, foto, cabeza, leer, compa
     LINKS,
     HISTORIA,
     CIFRAS,
+    INSTAGRAM,
     SERVICIOS,
     HORARIOS,
     COMUNIDAD,
@@ -384,6 +388,41 @@ ${cabeza({ estilos: `${compartido('movimiento.css')}\n${leer('estilos.css')}` })
       </div>
     </section>
 
+    <section class="seccion" id="instagram">
+      <div class="contenedor">
+        <div class="cabeza-seccion">
+          <div>
+            ${antetitulo('En Instagram')}
+            <h2 class="titulo-seccion" data-m-revelar>${titulo([['Lo último que', acento('publicamos.')]])}</h2>
+          </div>
+          <a class="enlace-flecha" href="${esc(INSTAGRAM.perfil)}"${externo} data-m-aparece><span>${esc(CONTACTO.instagramUsuario)}</span>${ICONOS.flecha}</a>
+        </div>
+        <div class="programas">
+          ${INSTAGRAM.publicaciones
+            .map(
+              (pub, n) => `<div class="programa" data-instagram-tarjeta>
+            <div class="programa__medio m-foto"${retraso(n * 120)} data-instagram-medio>
+              ${foto(pub.foto, { tamanos: '(min-width: 1024px) 22rem, (min-width: 768px) 45vw, 100vw' })}
+              <span class="programa__numero">${esc(pub.tipo)}</span>
+            </div>
+            <div class="programa__cabeza" data-m-aparece${retraso(n * 120 + 150)}>
+              <h3 class="programa__nombre">${esc(pub.titulo)}</h3>
+              <span class="programa__flecha">${ICONOS.instagram}</span>
+            </div>
+            <p class="programa__texto" data-m-aparece${retraso(n * 120 + 220)}>${esc(pub.detalle)}</p>
+            <div class="programa__acciones" data-m-aparece${retraso(n * 120 + 260)}>
+              <button type="button" class="boton boton--primario boton--chico" data-instagram="${esc(pub.ruta)}" data-titulo="${esc(`Publicación de ${MARCA.nombre} en Instagram: ${pub.titulo}`)}"><span>${esc(TEXTOS.acciones.verPublicacion)}</span>${ICONOS.instagram}</button>
+              <a class="enlace" href="${esc(`${INSTAGRAM.base}${pub.ruta}/`)}"${externo}>${esc(TEXTOS.acciones.abrirInstagram)}</a>
+            </div>
+            <span class="programa__linea" aria-hidden="true"></span>
+          </div>`
+            )
+            .join('\n          ')}
+        </div>
+        <p class="seccion__nota" data-m-aparece>${esc(TEXTOS.instagram)}</p>
+      </div>
+    </section>
+
     <section class="seccion faq-seccion" id="preguntas">
       <div class="contenedor">
         <div class="faq__cabeza">
@@ -433,6 +472,7 @@ ${cabeza({ estilos: `${compartido('movimiento.css')}\n${leer('estilos.css')}` })
             <li><a href="#programas">Programas</a></li>
             <li><a href="#horarios">Horarios</a></li>
             <li><a href="#comunidad">Comunidad</a></li>
+            <li><a href="#instagram">En Instagram</a></li>
             <li><a href="#preguntas">Preguntas</a></li>
           </ul>
         </nav>
@@ -464,6 +504,7 @@ ${cabeza({ estilos: `${compartido('movimiento.css')}\n${leer('estilos.css')}` })
 
   <script>
 ${compartido('movimiento.js')};
+${compartido('instagram.js')};
 ${leer('script.js')};
   </script>
 </body>

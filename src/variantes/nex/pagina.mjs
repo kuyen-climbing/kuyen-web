@@ -16,8 +16,9 @@
  *   10 Pie con cuatro columnas, marca en contorno y enlaces al pie.
  *
  * Secciones agregadas con componentes del mismo template (decisión del
- * 15-09-2026): "Horarios y valores" y "Reglamento" con la lista de Servicios, y
- * "Visítanos" con el llamado y la portada.
+ * 15-09-2026): "Horarios y valores" y "Reglamento" con la lista de Servicios,
+ * "Visítanos" con el llamado y la portada, y "En Instagram" con las entradas del
+ * blog, donde la publicación se carga al hacer clic.
  *
  * Diferencias con el template:
  * - Toda la página va de noche, con títulos en Rubik Dirt y acento amarillo luna.
@@ -75,6 +76,7 @@ export default function pagina({ site, contenido, esc, foto, cabeza, leer, compa
     LINKS,
     HISTORIA,
     CIFRAS,
+    INSTAGRAM,
     MURO,
     SERVICIOS,
     HORARIOS,
@@ -348,6 +350,31 @@ ${cabeza({ estilos: `${compartido('movimiento.css')}\n${leer('estilos.css')}` })
       </div>
     </section>
 
+    <section class="seccion tono-oscuro" id="instagram">
+      <div class="contenedor">
+        <h2 class="titulo-seccion entradas__titulo" data-m-revelar>${titulo([['En', acento('Instagram')]])}</h2>
+        <div class="entradas entradas--tres">
+          ${INSTAGRAM.publicaciones
+            .map(
+              (pub, n) => `<article class="entrada" data-instagram-tarjeta>
+            <div class="entrada__foto m-foto"${retraso(n * 120)} data-instagram-medio>
+              ${foto(pub.foto, { tamanos: '(min-width: 1024px) 30vw, (min-width: 640px) 45vw, 100vw' })}
+            </div>
+            <div class="entrada__meta" data-m-aparece${retraso(n * 120 + 150)}><span>${esc(pub.tipo)}</span><span>${esc(pub.fechaTexto)}</span></div>
+            <h3 class="entrada__titulo" data-m-aparece${retraso(n * 120 + 200)}>${esc(pub.titulo)}</h3>
+            <p class="entrada__texto" data-m-aparece${retraso(n * 120 + 240)}>${esc(pub.detalle)}</p>
+            <div class="entrada__acciones" data-m-aparece${retraso(n * 120 + 280)}>
+              <button type="button" class="boton boton--borde" data-instagram="${esc(pub.ruta)}" data-titulo="${esc(`Publicación de ${MARCA.nombre} en Instagram: ${pub.titulo}`)}">${rueda(TEXTOS.acciones.verPublicacion)}</button>
+              <a class="enlace" href="${esc(`${INSTAGRAM.base}${pub.ruta}/`)}"${externo}>${esc(TEXTOS.acciones.abrirInstagram)}</a>
+            </div>
+          </article>`
+            )
+            .join('\n          ')}
+        </div>
+        <p class="entradas__nota" data-m-aparece>${esc(TEXTOS.instagram)}</p>
+      </div>
+    </section>
+
     <section class="seccion tono-oscuro" id="reglamento">
       <div class="contenedor">
         <div class="lista__cabeza">
@@ -417,6 +444,7 @@ ${cabeza({ estilos: `${compartido('movimiento.css')}\n${leer('estilos.css')}` })
             ${enlacePie('#horarios', 'Horarios y valores')}
             ${enlacePie('#reglamento', 'Reglamento')}
             ${enlacePie('#visitanos', 'Visítanos')}
+            ${enlacePie('#instagram', 'En Instagram')}
           </ul>
         </nav>
         <nav class="pie__columna" aria-label="Servicios" data-m-aparece style="--m-retraso: 100ms">
@@ -458,6 +486,7 @@ ${cabeza({ estilos: `${compartido('movimiento.css')}\n${leer('estilos.css')}` })
 
   <script>
 ${compartido('movimiento.js')};
+${compartido('instagram.js')};
 ${leer('script.js')};
   </script>
 </body>

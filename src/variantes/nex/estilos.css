@@ -471,6 +471,20 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 }
 @media (min-width: 768px) { .pie__grilla { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
 
+/* ---------- Publicaciones de Instagram ---------- */
+
+.entrada__texto { margin-top: 0.75rem; color: var(--texto-suave); line-height: 1.55; }
+.entrada__acciones { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem; margin-top: 1.25rem; }
+.entradas__nota { margin-top: 2rem; color: var(--texto-suave); font-size: 0.9375rem; }
+/* Con la publicación cargada, el recuadro deja de tener proporción fija. */
+.m-foto.con-publicacion { aspect-ratio: auto; }
+/* El alto lo avisa Instagram, con un tope para que la fila de tarjetas no crezca
+   de más: pasado ese tope, la publicación se desplaza por dentro. */
+.instagram__marco { display: block; width: 100%; min-height: 26rem; max-height: min(72vh, 38rem); border: 0; background: var(--kuyen-blanco); }
+@media (min-width: 1024px) {
+  .entradas--tres { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html, .resenas__pista { scroll-behavior: auto; }
   *, *::before, *::after { transition-duration: 0ms !important; }
