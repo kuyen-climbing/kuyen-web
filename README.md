@@ -10,16 +10,22 @@ funcional y CI que impide publicar HTML desincronizado.
 ## Estado (15-09-2026): etapa de contenido
 
 Cada template candidato pasa a tener una variante propia con el contenido, la tipografía y los
-colores de Kuyen. **Hirael y NexStudio ya son variantes propias**; Karate sigue sirviendo su
-captura tal cual hasta que le toque. El marco de la raíz muestra el activo a pantalla completa
-con el **ToggleTheme** encima para pasar al siguiente.
+colores de Kuyen. **Karate, Hirael y NexStudio ya son variantes propias**: el sitio generado no
+publica nada de las capturas, que quedan en el repo y se ven solo en local, en `/ref/<id>`. El
+marco de la raíz muestra el activo a pantalla completa con el **ToggleTheme** encima para pasar
+al siguiente.
 
 El estilo de las variantes, elegido el 15-09-2026: títulos en Rubik Dirt y texto en Rubik, la
 página entera de noche (tinta y gradiente del logo 2.0) con acento amarillo luna y movimiento en
-títulos, textos, fotos y secciones. El hero abre con una composición de escalada (la escaladora
-en un arco, una foto redonda y presas que flotan) sobre el cielo de estrellas que titilan, con la
-luna en el medio, entre el texto y la escalada, entrada orquestada y profundidad que sigue al
-puntero; la cordillera con los dos gatos queda chica, al pie. La cabecera queda fija arriba.
+títulos, textos, fotos y secciones. En las tres, el hero abre sobre el cielo de estrellas que
+titilan, con la luna en el medio y a la vista, entrada orquestada, rastro de tiza y la cordillera
+con los dos gatos chica, a un costado; la cabecera queda fija arriba. Cada una suma lo suyo:
+
+- **Hirael**: la escaladora en un arco, una foto redonda y presas que flotan con profundidad.
+- **NexStudio**: los pernos del muro que se iluminan donde apunta el mouse y la portada que se
+  abre al bajar, con los gatos asomando detrás.
+- **Karate**: una pila de tres fotos que se inclina con el mouse y se abre en abanico, dentro de
+  una tarjeta de vidrio; desde 768 px, los gatos asoman debajo de la tarjeta.
 
 Hive salió de los candidatos el 14-09-2026. Su captura sigue en el historial de git:
 `git checkout 3ba77fb -- src/temas/hive temas/hive`.
