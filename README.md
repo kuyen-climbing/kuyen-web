@@ -10,8 +10,8 @@ funcional y CI que impide publicar HTML desincronizado.
 ## Estado (15-09-2026): etapa de contenido
 
 Cada template candidato pasa a tener una variante propia con el contenido, la tipografía y los
-colores de Kuyen. **Hirael ya es una variante propia**; Karate y NexStudio siguen sirviendo su
-captura tal cual hasta que les toque. El marco de la raíz muestra el activo a pantalla completa
+colores de Kuyen. **Hirael y NexStudio ya son variantes propias**; Karate sigue sirviendo su
+captura tal cual hasta que le toque. El marco de la raíz muestra el activo a pantalla completa
 con el **ToggleTheme** encima para pasar al siguiente.
 
 El estilo de las variantes, elegido el 15-09-2026: títulos en Rubik Dirt y texto en Rubik, la
