@@ -139,6 +139,7 @@ En las variantes propias revisa además:
 - que el mapa de Google se cargue solo al hacer clic;
 - que la entrada del hero termine;
 - que la cabecera quede a la vista al bajar por la página;
+- que ningún texto ni la marquesina tapen a los gatos del logo, en todos los anchos;
 - que no haya errores de JavaScript al cargar.
 
 Antes de medir el contraste recorre la página entera, porque los textos y las fotos que entran

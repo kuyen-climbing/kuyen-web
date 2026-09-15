@@ -9,10 +9,11 @@
  * que la elección se guarde y sobreviva a una recarga, y que cada /t/<id> cargue
  * de verdad su contenido y sus assets.
  *
- * Si /t/<id> es una variante propia, además: un solo <h1>, Bebas Neue e Inter
+ * Si /t/<id> es una variante propia, además: un solo <h1>, Rubik Dirt y Rubik
  * cargadas desde el sitio, ningún pedido a otros dominios al cargar, contraste AA
- * en todos los textos, sin desborde de 375 a 1440 px, y el menú móvil y el mapa
- * funcionando. Si es una captura, sus ajustes.
+ * en todos los textos, sin desborde de 375 a 1440 px, ningún texto encima de los
+ * gatos del logo, y el menú móvil y el mapa funcionando. Si es una captura, sus
+ * ajustes.
  *
  * No saca capturas: todo se comprueba leyendo el DOM y el resultado es solo
  * texto. La verificación visual la hace una persona en su Chrome.
@@ -152,9 +153,27 @@ const CONTRASTE = `(function () {
   return fallas
 })()`
 
+// Textos o marquesina encima de la cordillera con los gatos del logo. Solo cuenta
+// lo que se ve: los elementos ocultos o inertes no tapan nada.
+const SOBRE_GATOS = `(function () {
+  var cruza = function (a, b) { return Math.min(a.right, b.right) - Math.max(a.left, b.left) > 2 && Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top) > 2 }
+  var textos = [].slice.call(d.querySelectorAll('h1, h2, h3, p, a, button, .m-marquesina')).filter(function (e) {
+    var r = e.getBoundingClientRect()
+    return r.width > 0 && r.height > 0 && !e.closest('[inert]') && d.defaultView.getComputedStyle(e).visibility !== 'hidden'
+  })
+  var encima = []
+  d.querySelectorAll('.m-cordillera').forEach(function (g) {
+    var rg = g.getBoundingClientRect()
+    textos.forEach(function (t) { if (cruza(rg, t.getBoundingClientRect())) encima.push(String(t.className || t.tagName).split(' ')[0]) })
+  })
+  return encima
+})()`
+
 /** Lo que tiene que cumplir cualquier variante propia. */
 async function revisarVariante(doc, p) {
   check(`${p}: un solo h1`, (await en(doc, 'd.querySelectorAll("h1").length')) === 1)
+  const sobreGatos = await en(doc, SOBRE_GATOS)
+  check(`${p}: ningún texto ni la marquesina tapan a los gatos`, sobreGatos.length === 0, sobreGatos.slice(0, 4).join(', '))
   const fuentes = await en(doc, `d.fonts.ready.then(function () {
     var f = Array.from(d.fonts)
     return {
@@ -336,6 +355,8 @@ try {
       await metrics(ancho, 900)
       await goto(rutaTema(tema.id), 2000)
       check(`${tema.id} a ${ancho} px: no se desborda a lo ancho`, await en(PAGINA, DESBORDE), await en(PAGINA, DETALLE_DESBORDE))
+      const encima = await en(PAGINA, SOBRE_GATOS)
+      check(`${tema.id} a ${ancho} px: ningún texto ni la marquesina tapan a los gatos`, encima.length === 0, encima.slice(0, 4).join(', '))
     }
 
     await metrics(375, 812)
