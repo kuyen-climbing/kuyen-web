@@ -3,7 +3,7 @@
  * contenido, la tipografía y los colores de Kuyen.
  *
  * Sigue la ficha de estructura de la fase 0, sección por sección:
- *   1  Hero de alto de pantalla, con la cabecera en píldora adentro y el
+ *   1  Hero de alto de pantalla, con la cabecera en píldora arriba y el
  *      contenido anclado abajo a la izquierda.
  *   1b Menú móvil en hoja que sube desde abajo.
  *   2  "1 · Qué es Kuyen": título, párrafo, botón y dos fotos asimétricas.
@@ -24,11 +24,14 @@
  * - Toda la página va sobre la noche del logo (el template es blanco y gris).
  * - El fondo animado del hero pasa a ser la noche del logo con una composición
  *   de escalada (revisión del 15-09-2026: "lo primero que ve el usuario tiene que
- *   ser increíble"): la escaladora en un arco, una foto redonda que lo cruza, la
- *   luna detrás y presas que flotan, con entrada orquestada, profundidad que sigue
- *   al puntero y rastro de tiza. La cordillera con los gatos queda chica, abajo a
+ *   ser increíble"): la escaladora en un arco, una foto redonda que lo cruza y
+ *   presas que flotan, con entrada orquestada, profundidad que sigue al puntero y
+ *   rastro de tiza. La luna va a la vista, en el medio, entre el texto y la
+ *   escalada. La cordillera con los gatos queda chica, abajo a
  *   la izquierda. Hasta 1023 px la composición va arriba, el texto al medio y los
  *   gatos en una franja al pie.
+ * - La cabecera queda fija arriba al bajar por la página y suma una sombra
+ *   (pedido del 15-09-2026); en el template se va con el scroll.
  * - Marquesina con la jerga del muro entre el hero y la sección 1, y cifras en
  *   la sección 1.
  * - Títulos que se arman palabra por palabra, textos que entran y fotos que se
@@ -136,31 +139,31 @@ ${cabeza({ estilos: `${compartido('movimiento.css')}\n${leer('estilos.css')}` })
   <script>document.documentElement.classList.add('m-js')</script>
   <a class="saltar" href="#contenido">Saltar al contenido</a>
 
+  <header class="cabecera" data-cabecera>
+    <nav class="cabecera__nav tono-claro" aria-label="Principal">
+      <div class="cabecera__izquierda">
+        <a class="marca" href="#contenido" aria-label="${esc(MARCA.nombre)}, inicio">
+          <img class="marca__isotipo" src="/img/marca/isotipo-256.webp" width="256" height="256" alt="">
+          <span class="marca__nombre">${esc(MARCA.nombreLogo)}</span>
+        </a>
+        <div class="cabecera__enlaces">
+          ${enlacesMenu.map(([href, texto]) => `<a href="${href}">${esc(texto)}</a>`).join('\n            ')}
+        </div>
+      </div>
+      <div class="cabecera__derecha">
+        <span class="cabecera__estado">Renovamos rutas de forma periódica</span>
+        ${boton({ texto: TEXTOS.acciones.escribenos, href: CONTACTO.whatsapp, variante: 'oscuro', afuera: true })}
+      </div>
+      <button type="button" class="cabecera__menu" aria-label="Abrir el menú" aria-expanded="false" aria-controls="menu-movil" data-menu-abrir>${ICONOS.menu}</button>
+    </nav>
+  </header>
+
   <section class="hero tono-gradiente" data-hero data-m-tiza="255,255,255|247,231,180|201,185,240" data-m-puntero data-m-entrada>
     ${cielo({ estrellas: 52, semilla: 97, alto: 72 })}
 
-    <header class="cabecera">
-      <nav class="cabecera__nav tono-claro" aria-label="Principal">
-        <div class="cabecera__izquierda">
-          <a class="marca" href="#contenido" aria-label="${esc(MARCA.nombre)}, inicio">
-            <img class="marca__isotipo" src="/img/marca/isotipo-256.webp" width="256" height="256" alt="">
-            <span class="marca__nombre">${esc(MARCA.nombreLogo)}</span>
-          </a>
-          <div class="cabecera__enlaces">
-            ${enlacesMenu.map(([href, texto]) => `<a href="${href}">${esc(texto)}</a>`).join('\n            ')}
-          </div>
-        </div>
-        <div class="cabecera__derecha">
-          <span class="cabecera__estado">Renovamos rutas de forma periódica</span>
-          ${boton({ texto: TEXTOS.acciones.escribenos, href: CONTACTO.whatsapp, variante: 'oscuro', afuera: true })}
-        </div>
-        <button type="button" class="cabecera__menu" aria-label="Abrir el menú" aria-expanded="false" aria-controls="menu-movil" data-menu-abrir>${ICONOS.menu}</button>
-      </nav>
-    </header>
-
     <div class="hero__visual">
+      ${luna({ clase: 'hero__luna m-entra-sube', paralaje: -0.22, prof: 18, tamanos: '(min-width: 1024px) 11vw, 16vh' })}
       <div class="hero__composicion">
-        ${luna({ clase: 'hero__luna m-entra-sube', paralaje: -0.22, prof: 8, tamanos: '(min-width: 1024px) 14vw, 30vw' })}
         <figure class="hero__arco m-capa m-entra-recorte" style="--m-prof: 14; --m-retraso: 150ms" data-m-paralaje="-0.08">
           ${foto('escaladora-muro-azul', { tamanos: '(min-width: 1024px) 28vw, 62vw', prioridad: true })}
         </figure>
@@ -169,7 +172,7 @@ ${cabeza({ estilos: `${compartido('movimiento.css')}\n${leer('estilos.css')}` })
         </figure>
         ${presa({ forma: 'canto', color: 'var(--kuyen-luna)', clase: 'm-entra-escala', x: 100, y: 18, tam: 17, prof: 38, paralaje: 0.18, giro: 12, retraso: 1050, duracion: 9 })}
         ${presa({ forma: 'roma', color: 'var(--kuyen-lila)', clase: 'm-entra-escala', x: 88, y: 66, tam: 23, prof: 24, paralaje: 0.1, giro: -20, retraso: 1200, duracion: 11 })}
-        ${presa({ forma: 'pinza', color: 'var(--kuyen-blanco)', clase: 'm-entra-escala', x: -12, y: 2, tam: 12, prof: 52, paralaje: 0.3, giro: -8, retraso: 1300, duracion: 7 })}
+        ${presa({ forma: 'pinza', color: 'var(--kuyen-blanco)', clase: 'm-entra-escala', x: 90, y: -6, tam: 12, prof: 52, paralaje: 0.3, giro: -8, retraso: 1300, duracion: 7 })}
         ${presa({ forma: 'regleta', color: 'var(--kuyen-luna)', clase: 'm-entra-escala', x: 60, y: 84, tam: 16, prof: 60, paralaje: 0.36, giro: 18, retraso: 1400, duracion: 8 })}
         ${presa({ forma: 'volumen', color: 'var(--kuyen-lila)', clase: 'm-entra-escala hero__presa--ancha', x: 44, y: -3, tam: 10, prof: 44, paralaje: 0.24, giro: 30, retraso: 1150, duracion: 10 })}
       </div>

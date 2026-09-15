@@ -190,6 +190,14 @@ async function revisarVariante(doc, p) {
   const entradasPendientes = await en(doc, `[].slice.call(d.querySelectorAll('[data-m-entrada]'))
     .filter(function (e) { return !e.classList.contains('m-listo') }).length`)
   check(`${p}: la entrada del hero termina`, entradasPendientes === 0, entradasPendientes ? `${entradasPendientes} sin terminar` : '')
+  // Con la página bajada hasta el final, la cabecera sigue arriba y a la vista.
+  const cabecera = await en(doc, `(function () {
+    var c = d.querySelector('[data-cabecera]')
+    if (!c) return 'la página no marca su cabecera con data-cabecera'
+    var b = c.getBoundingClientRect()
+    return d.defaultView.scrollY > 0 && b.top >= 0 && b.top < 20 && b.height > 0 ? '' : 'queda en y=' + Math.round(b.top)
+  })()`)
+  check(`${p}: la cabecera queda a la vista al hacer scroll`, cabecera === '', cabecera)
   await en(doc, '(d.defaultView.scrollTo(0, 0), true)')
   const fallas = await en(doc, CONTRASTE)
   check(`${p}: contraste AA en todos los textos`, fallas.length === 0, fallas.slice(0, 4).join(' | '))

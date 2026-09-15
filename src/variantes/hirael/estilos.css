@@ -6,7 +6,7 @@
 */
 
 *, *::before, *::after { box-sizing: border-box; }
-html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; scroll-padding-top: calc(var(--alto-cabecera) + 1rem); }
 body {
   margin: 0;
   background: var(--kuyen-tinta);
@@ -165,16 +165,19 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
   min-height: 100dvh;
   overflow: hidden;
   isolation: isolate;
+  padding-top: var(--alto-cabecera);
   background: var(--fondo);
   color: var(--texto);
 }
 .hero > .m-cielo { z-index: 1; }
 
 /* Composición de escalada: la escaladora en un arco, una foto redonda que lo
-   cruza con un anillo amarillo luna, la luna del logo detrás y presas que flotan
-   a distintas profundidades. Hasta 1023 px va en el flujo, centrada bajo la
-   cabecera. */
+   cruza con un anillo amarillo luna y presas que flotan a distintas
+   profundidades. Hasta 1023 px va en el flujo, centrada bajo la cabecera; --alto
+   es la altura del arco, que en teléfonos angostos se limita para que la luna
+   quepa a su izquierda. */
 .hero__visual {
+  --alto: min(40vh, 26rem, calc(83vw - 1.75rem));
   position: relative;
   z-index: 6;
   display: grid;
@@ -184,7 +187,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
   padding-block: 1.25rem 0.75rem;
   pointer-events: none;
 }
-.hero__composicion { position: relative; height: min(40vh, 26rem); aspect-ratio: 0.64; }
+.hero__composicion { position: relative; height: var(--alto); aspect-ratio: 0.64; }
 .hero__arco {
   position: absolute;
   inset: 0;
@@ -209,7 +212,19 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
   box-shadow: 0 20px 40px rgb(23 26 30 / 0.5);
 }
 .hero__circulo img { width: 100%; height: 100%; object-fit: cover; }
-.hero__luna { position: absolute; top: 0; right: -22%; z-index: -1; width: 48%; height: auto; }
+/* La luna va a la vista, entre el texto y la escalada: hasta 1023 px asoma por
+   el hombro izquierdo del arco y desde 1024 px queda en el medio del hero. */
+.hero__composicion,
+.hero__luna { grid-area: 1 / 1; }
+.hero__luna {
+  position: relative;
+  top: calc(var(--alto) * -0.3);
+  /* A la izquierda del arco, sin pasar del margen lateral de la página. */
+  left: max(calc(var(--alto) * -0.46), calc(1.5rem + var(--alto) * 0.14 - 50vw));
+  z-index: 3;
+  width: calc(var(--alto) * 0.28);
+  height: auto;
+}
 .hero__presa--ancha { display: none; }
 @media (prefers-reduced-motion: no-preference) {
   .hero__arco img { animation: hero-acercar 24s ease-in-out infinite alternate; }
@@ -230,7 +245,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .hero__antetitulo { display: block; margin-bottom: 1rem; color: var(--texto-suave); font-size: 0.8125rem; letter-spacing: 0.025em; }
 .hero__acciones { display: flex; flex-direction: column; align-items: flex-start; gap: 1rem; margin-top: 1.5rem; }
 @media (min-width: 640px) {
-  .hero__composicion { height: min(46vh, 30rem); }
+  .hero__visual { --alto: min(46vh, 30rem); }
   .hero__cordillera {
     -webkit-mask-image: linear-gradient(to right, #000 74%, transparent);
     mask-image: linear-gradient(to right, #000 74%, transparent);
@@ -243,17 +258,24 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
    izquierda y abajo, sobre la franja chica con la cordillera y los gatos. */
 @media (min-width: 1024px) {
   .hero__visual { position: absolute; inset: 0; display: block; min-height: 0; padding: 0; }
-  .hero__composicion { position: absolute; top: 15%; left: 57%; height: min(70%, 40rem); }
+  .hero__composicion { position: absolute; top: 15%; left: 60%; height: min(70%, 40rem); }
+  .hero__luna {
+    --luna: clamp(6.5rem, 10.5vw, 13rem);
+    position: absolute;
+    top: 22%;
+    left: calc(51.2% + 1.5rem - var(--luna) / 2);
+    width: var(--luna);
+  }
   .hero__circulo { left: -24%; width: 46%; }
   .hero__presa--ancha { display: block; }
   .hero__franja { position: absolute; bottom: 0; left: 0; width: auto; height: min(34vh, 18rem); }
   .hero__contenido { margin-top: auto; max-width: 56%; }
   .hero .titulo-grande { font-size: clamp(2.5rem, 4.3vw, 4.75rem); }
-  .hero__luna { top: 3%; }
   .hero__interior { padding-bottom: calc(min(34vh, 18rem) + 1.5rem); }
 }
 @media (min-width: 1024px) and (max-width: 1279px) {
-  .hero__composicion { left: 61%; height: min(60%, 34rem); }
+  .hero__composicion { left: 62%; height: min(60%, 34rem); }
+  .hero__luna { --luna: 9vw; left: calc(53% + 1.5rem - var(--luna) / 2); }
   .hero__circulo { left: -18%; width: 40%; }
 }
 
@@ -285,9 +307,22 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
   .chip__insignia { padding-inline: 0.5rem; font-size: 0.6875rem; }
 }
 
-/* ---------- Cabecera en píldora ---------- */
+/* ---------- Cabecera en píldora, fija arriba ---------- */
 
-.cabecera { position: relative; z-index: 30; width: 100%; max-width: 1440px; margin-inline: auto; padding: 0.5rem; }
+/* Alto de la cabecera: el hero lo deja libre arriba y las anclas lo respetan. */
+:root { --alto-cabecera: 4.125rem; }
+.cabecera {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: 30;
+  width: 100%;
+  max-width: 1440px;
+  margin-inline: auto;
+  padding: 0.5rem;
+  pointer-events: none;
+}
 .cabecera__nav {
   display: flex;
   align-items: center;
@@ -296,7 +331,11 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
   border-radius: 9999px;
   background: var(--kuyen-blanco);
   color: var(--kuyen-tinta);
+  pointer-events: auto;
+  transition: box-shadow 300ms ease;
 }
+/* Con la página ya bajada, una sombra la separa de lo que pasa por debajo. */
+.cabecera--movida .cabecera__nav { box-shadow: 0 12px 32px rgb(23 26 30 / 0.5); }
 .cabecera__izquierda { display: flex; align-items: center; gap: 1.5rem; }
 .marca { display: flex; align-items: center; gap: 0.5rem; }
 .marca__isotipo { width: 2.25rem; height: 2.25rem; border-radius: 9999px; }
@@ -318,6 +357,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 }
 .cabecera__menu svg { width: 18px; height: 18px; }
 @media (min-width: 640px) {
+  :root { --alto-cabecera: 4.625rem; }
   .cabecera { padding: 0.75rem; }
   .marca__isotipo { width: 2.5rem; height: 2.5rem; }
   .marca__nombre { font-size: 1.1875rem; }
