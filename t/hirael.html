@@ -397,7 +397,7 @@
 */
 
 *, *::before, *::after { box-sizing: border-box; }
-html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; scroll-padding-top: calc(var(--alto-cabecera) + 1rem); }
 body {
   margin: 0;
   background: var(--kuyen-tinta);
@@ -556,16 +556,19 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
   min-height: 100dvh;
   overflow: hidden;
   isolation: isolate;
+  padding-top: var(--alto-cabecera);
   background: var(--fondo);
   color: var(--texto);
 }
 .hero > .m-cielo { z-index: 1; }
 
 /* Composición de escalada: la escaladora en un arco, una foto redonda que lo
-   cruza con un anillo amarillo luna, la luna del logo detrás y presas que flotan
-   a distintas profundidades. Hasta 1023 px va en el flujo, centrada bajo la
-   cabecera. */
+   cruza con un anillo amarillo luna y presas que flotan a distintas
+   profundidades. Hasta 1023 px va en el flujo, centrada bajo la cabecera; --alto
+   es la altura del arco, que en teléfonos angostos se limita para que la luna
+   quepa a su izquierda. */
 .hero__visual {
+  --alto: min(40vh, 26rem, calc(83vw - 1.75rem));
   position: relative;
   z-index: 6;
   display: grid;
@@ -575,7 +578,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
   padding-block: 1.25rem 0.75rem;
   pointer-events: none;
 }
-.hero__composicion { position: relative; height: min(40vh, 26rem); aspect-ratio: 0.64; }
+.hero__composicion { position: relative; height: var(--alto); aspect-ratio: 0.64; }
 .hero__arco {
   position: absolute;
   inset: 0;
@@ -600,7 +603,19 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
   box-shadow: 0 20px 40px rgb(23 26 30 / 0.5);
 }
 .hero__circulo img { width: 100%; height: 100%; object-fit: cover; }
-.hero__luna { position: absolute; top: 0; right: -22%; z-index: -1; width: 48%; height: auto; }
+/* La luna va a la vista, entre el texto y la escalada: hasta 1023 px asoma por
+   el hombro izquierdo del arco y desde 1024 px queda en el medio del hero. */
+.hero__composicion,
+.hero__luna { grid-area: 1 / 1; }
+.hero__luna {
+  position: relative;
+  top: calc(var(--alto) * -0.3);
+  /* A la izquierda del arco, sin pasar del margen lateral de la página. */
+  left: max(calc(var(--alto) * -0.46), calc(1.5rem + var(--alto) * 0.14 - 50vw));
+  z-index: 3;
+  width: calc(var(--alto) * 0.28);
+  height: auto;
+}
 .hero__presa--ancha { display: none; }
 @media (prefers-reduced-motion: no-preference) {
   .hero__arco img { animation: hero-acercar 24s ease-in-out infinite alternate; }
@@ -621,7 +636,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .hero__antetitulo { display: block; margin-bottom: 1rem; color: var(--texto-suave); font-size: 0.8125rem; letter-spacing: 0.025em; }
 .hero__acciones { display: flex; flex-direction: column; align-items: flex-start; gap: 1rem; margin-top: 1.5rem; }
 @media (min-width: 640px) {
-  .hero__composicion { height: min(46vh, 30rem); }
+  .hero__visual { --alto: min(46vh, 30rem); }
   .hero__cordillera {
     -webkit-mask-image: linear-gradient(to right, #000 74%, transparent);
     mask-image: linear-gradient(to right, #000 74%, transparent);
@@ -634,17 +649,24 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
    izquierda y abajo, sobre la franja chica con la cordillera y los gatos. */
 @media (min-width: 1024px) {
   .hero__visual { position: absolute; inset: 0; display: block; min-height: 0; padding: 0; }
-  .hero__composicion { position: absolute; top: 15%; left: 57%; height: min(70%, 40rem); }
+  .hero__composicion { position: absolute; top: 15%; left: 60%; height: min(70%, 40rem); }
+  .hero__luna {
+    --luna: clamp(6.5rem, 10.5vw, 13rem);
+    position: absolute;
+    top: 22%;
+    left: calc(51.2% + 1.5rem - var(--luna) / 2);
+    width: var(--luna);
+  }
   .hero__circulo { left: -24%; width: 46%; }
   .hero__presa--ancha { display: block; }
   .hero__franja { position: absolute; bottom: 0; left: 0; width: auto; height: min(34vh, 18rem); }
   .hero__contenido { margin-top: auto; max-width: 56%; }
   .hero .titulo-grande { font-size: clamp(2.5rem, 4.3vw, 4.75rem); }
-  .hero__luna { top: 3%; }
   .hero__interior { padding-bottom: calc(min(34vh, 18rem) + 1.5rem); }
 }
 @media (min-width: 1024px) and (max-width: 1279px) {
-  .hero__composicion { left: 61%; height: min(60%, 34rem); }
+  .hero__composicion { left: 62%; height: min(60%, 34rem); }
+  .hero__luna { --luna: 9vw; left: calc(53% + 1.5rem - var(--luna) / 2); }
   .hero__circulo { left: -18%; width: 40%; }
 }
 
@@ -676,9 +698,22 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
   .chip__insignia { padding-inline: 0.5rem; font-size: 0.6875rem; }
 }
 
-/* ---------- Cabecera en píldora ---------- */
+/* ---------- Cabecera en píldora, fija arriba ---------- */
 
-.cabecera { position: relative; z-index: 30; width: 100%; max-width: 1440px; margin-inline: auto; padding: 0.5rem; }
+/* Alto de la cabecera: el hero lo deja libre arriba y las anclas lo respetan. */
+:root { --alto-cabecera: 4.125rem; }
+.cabecera {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: 30;
+  width: 100%;
+  max-width: 1440px;
+  margin-inline: auto;
+  padding: 0.5rem;
+  pointer-events: none;
+}
 .cabecera__nav {
   display: flex;
   align-items: center;
@@ -687,7 +722,11 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
   border-radius: 9999px;
   background: var(--kuyen-blanco);
   color: var(--kuyen-tinta);
+  pointer-events: auto;
+  transition: box-shadow 300ms ease;
 }
+/* Con la página ya bajada, una sombra la separa de lo que pasa por debajo. */
+.cabecera--movida .cabecera__nav { box-shadow: 0 12px 32px rgb(23 26 30 / 0.5); }
 .cabecera__izquierda { display: flex; align-items: center; gap: 1.5rem; }
 .marca { display: flex; align-items: center; gap: 0.5rem; }
 .marca__isotipo { width: 2.25rem; height: 2.25rem; border-radius: 9999px; }
@@ -709,6 +748,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 }
 .cabecera__menu svg { width: 18px; height: 18px; }
 @media (min-width: 640px) {
+  :root { --alto-cabecera: 4.625rem; }
   .cabecera { padding: 0.75rem; }
   .marca__isotipo { width: 2.5rem; height: 2.5rem; }
   .marca__nombre { font-size: 1.1875rem; }
@@ -965,37 +1005,37 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
   <script>document.documentElement.classList.add('m-js')</script>
   <a class="saltar" href="#contenido">Saltar al contenido</a>
 
-  <section class="hero tono-gradiente" data-hero data-m-tiza="255,255,255|247,231,180|201,185,240" data-m-puntero data-m-entrada>
-    <div class="m-cielo" aria-hidden="true"><span class="m-estrella" style="left:0.08%;top:54.66%;--t:8px;--d:3.96s;--r:-3.39s"></span><span class="m-estrella" style="left:23.90%;top:40.56%;--t:16px;--d:5.41s;--r:-3.33s"></span><span class="m-estrella" style="left:19.97%;top:27.60%;--t:12px;--d:3.47s;--r:-0.93s"></span><span class="m-estrella" style="left:38.09%;top:7.31%;--t:14px;--d:2.89s;--r:-2.42s"></span><span class="m-estrella" style="left:49.61%;top:44.42%;--t:6px;--d:3.11s;--r:-0.39s"></span><span class="m-estrella" style="left:11.21%;top:66.28%;--t:10px;--d:3.47s;--r:-0.08s"></span><span class="m-estrella" style="left:30.11%;top:67.19%;--t:10px;--d:4.37s;--r:-2.00s"></span><span class="m-estrella" style="left:83.87%;top:26.35%;--t:9px;--d:2.67s;--r:-2.19s"></span><span class="m-estrella" style="left:96.28%;top:22.13%;--t:5px;--d:2.47s;--r:-0.99s"></span><span class="m-estrella" style="left:5.05%;top:19.34%;--t:15px;--d:3.83s;--r:-1.66s"></span><span class="m-estrella" style="left:35.00%;top:24.48%;--t:5px;--d:4.60s;--r:-4.24s"></span><span class="m-estrella" style="left:15.12%;top:13.84%;--t:5px;--d:2.90s;--r:-4.37s"></span><span class="m-estrella" style="left:75.13%;top:67.59%;--t:5px;--d:5.61s;--r:-3.52s"></span><span class="m-estrella" style="left:91.57%;top:58.75%;--t:15px;--d:5.56s;--r:-0.77s"></span><span class="m-estrella" style="left:56.86%;top:18.85%;--t:16px;--d:4.51s;--r:-1.93s"></span><span class="m-estrella" style="left:5.12%;top:19.80%;--t:16px;--d:5.32s;--r:-3.55s"></span><span class="m-estrella" style="left:29.83%;top:11.55%;--t:12px;--d:5.01s;--r:-1.10s"></span><span class="m-estrella" style="left:6.57%;top:29.79%;--t:9px;--d:5.61s;--r:-0.96s"></span><span class="m-estrella" style="left:61.99%;top:51.35%;--t:5px;--d:5.04s;--r:-1.69s"></span><span class="m-estrella" style="left:6.02%;top:69.97%;--t:13px;--d:2.65s;--r:-1.47s"></span><span class="m-estrella" style="left:11.85%;top:27.93%;--t:16px;--d:3.27s;--r:-4.55s"></span><span class="m-estrella" style="left:45.05%;top:60.00%;--t:7px;--d:5.23s;--r:-1.76s"></span><span class="m-estrella" style="left:67.00%;top:42.08%;--t:15px;--d:3.65s;--r:-3.05s"></span><span class="m-estrella" style="left:67.78%;top:35.82%;--t:13px;--d:3.38s;--r:-3.26s"></span><span class="m-estrella" style="left:82.61%;top:45.72%;--t:8px;--d:2.87s;--r:-3.04s"></span><span class="m-estrella" style="left:85.25%;top:70.27%;--t:8px;--d:4.17s;--r:-4.01s"></span><span class="m-estrella" style="left:3.81%;top:17.98%;--t:12px;--d:2.53s;--r:-2.12s"></span><span class="m-estrella" style="left:60.94%;top:34.19%;--t:8px;--d:5.65s;--r:-0.10s"></span><span class="m-estrella" style="left:24.05%;top:48.58%;--t:17px;--d:3.53s;--r:-1.90s"></span><span class="m-estrella" style="left:65.04%;top:54.47%;--t:15px;--d:3.84s;--r:-1.93s"></span><span class="m-estrella" style="left:1.10%;top:16.29%;--t:7px;--d:3.56s;--r:-4.84s"></span><span class="m-estrella" style="left:3.91%;top:20.96%;--t:6px;--d:3.27s;--r:-4.49s"></span><span class="m-estrella" style="left:4.07%;top:15.40%;--t:15px;--d:4.78s;--r:-3.76s"></span><span class="m-estrella" style="left:46.23%;top:26.66%;--t:15px;--d:5.46s;--r:-4.00s"></span><span class="m-estrella" style="left:72.53%;top:65.37%;--t:17px;--d:4.84s;--r:-4.47s"></span><span class="m-estrella" style="left:43.79%;top:39.35%;--t:5px;--d:5.68s;--r:-0.82s"></span><span class="m-estrella" style="left:90.38%;top:62.86%;--t:11px;--d:3.54s;--r:-1.05s"></span><span class="m-estrella" style="left:87.91%;top:66.27%;--t:6px;--d:3.14s;--r:-2.52s"></span><span class="m-estrella" style="left:71.24%;top:5.60%;--t:7px;--d:3.29s;--r:-1.58s"></span><span class="m-estrella" style="left:83.78%;top:20.35%;--t:9px;--d:4.41s;--r:-4.98s"></span><span class="m-estrella" style="left:83.11%;top:8.21%;--t:15px;--d:4.28s;--r:-2.87s"></span><span class="m-estrella" style="left:6.37%;top:9.38%;--t:17px;--d:2.32s;--r:-0.80s"></span><span class="m-estrella" style="left:94.15%;top:1.93%;--t:14px;--d:5.03s;--r:-1.59s"></span><span class="m-estrella" style="left:41.73%;top:48.23%;--t:11px;--d:5.61s;--r:-4.26s"></span><span class="m-estrella" style="left:94.50%;top:66.51%;--t:17px;--d:3.37s;--r:-1.01s"></span><span class="m-estrella" style="left:42.75%;top:55.07%;--t:6px;--d:3.48s;--r:-4.57s"></span><span class="m-estrella" style="left:99.06%;top:23.89%;--t:15px;--d:4.01s;--r:-3.42s"></span><span class="m-estrella" style="left:96.82%;top:65.28%;--t:8px;--d:4.45s;--r:-4.61s"></span><span class="m-estrella" style="left:50.59%;top:47.04%;--t:9px;--d:3.08s;--r:-2.10s"></span><span class="m-estrella" style="left:51.73%;top:65.83%;--t:17px;--d:2.77s;--r:-3.93s"></span><span class="m-estrella" style="left:5.77%;top:6.14%;--t:4px;--d:4.19s;--r:-4.80s"></span><span class="m-estrella" style="left:51.92%;top:14.54%;--t:4px;--d:5.48s;--r:-0.66s"></span></div>
-
-    <header class="cabecera">
-      <nav class="cabecera__nav tono-claro" aria-label="Principal">
-        <div class="cabecera__izquierda">
-          <a class="marca" href="#contenido" aria-label="Kuyen Climbing, inicio">
-            <img class="marca__isotipo" src="/img/marca/isotipo-256.webp" width="256" height="256" alt="">
-            <span class="marca__nombre">KÜYEN CLIMBING</span>
-          </a>
-          <div class="cabecera__enlaces">
-            <a href="#kuyen">Kuyen</a>
+  <header class="cabecera" data-cabecera>
+    <nav class="cabecera__nav tono-claro" aria-label="Principal">
+      <div class="cabecera__izquierda">
+        <a class="marca" href="#contenido" aria-label="Kuyen Climbing, inicio">
+          <img class="marca__isotipo" src="/img/marca/isotipo-256.webp" width="256" height="256" alt="">
+          <span class="marca__nombre">KÜYEN CLIMBING</span>
+        </a>
+        <div class="cabecera__enlaces">
+          <a href="#kuyen">Kuyen</a>
             <a href="#muro">El muro</a>
             <a href="#clases">Clases</a>
             <a href="#visitanos">Visítanos</a>
-          </div>
         </div>
-        <div class="cabecera__derecha">
-          <span class="cabecera__estado">Renovamos rutas de forma periódica</span>
-          <a class="boton boton--oscuro" href="https://wa.me/56935028838" target="_blank" rel="noopener">
+      </div>
+      <div class="cabecera__derecha">
+        <span class="cabecera__estado">Renovamos rutas de forma periódica</span>
+        <a class="boton boton--oscuro" href="https://wa.me/56935028838" target="_blank" rel="noopener">
             <span class="boton__texto"><span class="boton__rollo"><span>Escríbenos</span><span aria-hidden="true">Escríbenos</span></span></span>
             <span class="boton__circulo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
           </a>
-        </div>
-        <button type="button" class="cabecera__menu" aria-label="Abrir el menú" aria-expanded="false" aria-controls="menu-movil" data-menu-abrir><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
-      </nav>
-    </header>
+      </div>
+      <button type="button" class="cabecera__menu" aria-label="Abrir el menú" aria-expanded="false" aria-controls="menu-movil" data-menu-abrir><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+    </nav>
+  </header>
+
+  <section class="hero tono-gradiente" data-hero data-m-tiza="255,255,255|247,231,180|201,185,240" data-m-puntero data-m-entrada>
+    <div class="m-cielo" aria-hidden="true"><span class="m-estrella" style="left:0.08%;top:54.66%;--t:8px;--d:3.96s;--r:-3.39s"></span><span class="m-estrella" style="left:23.90%;top:40.56%;--t:16px;--d:5.41s;--r:-3.33s"></span><span class="m-estrella" style="left:19.97%;top:27.60%;--t:12px;--d:3.47s;--r:-0.93s"></span><span class="m-estrella" style="left:38.09%;top:7.31%;--t:14px;--d:2.89s;--r:-2.42s"></span><span class="m-estrella" style="left:49.61%;top:44.42%;--t:6px;--d:3.11s;--r:-0.39s"></span><span class="m-estrella" style="left:11.21%;top:66.28%;--t:10px;--d:3.47s;--r:-0.08s"></span><span class="m-estrella" style="left:30.11%;top:67.19%;--t:10px;--d:4.37s;--r:-2.00s"></span><span class="m-estrella" style="left:83.87%;top:26.35%;--t:9px;--d:2.67s;--r:-2.19s"></span><span class="m-estrella" style="left:96.28%;top:22.13%;--t:5px;--d:2.47s;--r:-0.99s"></span><span class="m-estrella" style="left:5.05%;top:19.34%;--t:15px;--d:3.83s;--r:-1.66s"></span><span class="m-estrella" style="left:35.00%;top:24.48%;--t:5px;--d:4.60s;--r:-4.24s"></span><span class="m-estrella" style="left:15.12%;top:13.84%;--t:5px;--d:2.90s;--r:-4.37s"></span><span class="m-estrella" style="left:75.13%;top:67.59%;--t:5px;--d:5.61s;--r:-3.52s"></span><span class="m-estrella" style="left:91.57%;top:58.75%;--t:15px;--d:5.56s;--r:-0.77s"></span><span class="m-estrella" style="left:56.86%;top:18.85%;--t:16px;--d:4.51s;--r:-1.93s"></span><span class="m-estrella" style="left:5.12%;top:19.80%;--t:16px;--d:5.32s;--r:-3.55s"></span><span class="m-estrella" style="left:29.83%;top:11.55%;--t:12px;--d:5.01s;--r:-1.10s"></span><span class="m-estrella" style="left:6.57%;top:29.79%;--t:9px;--d:5.61s;--r:-0.96s"></span><span class="m-estrella" style="left:61.99%;top:51.35%;--t:5px;--d:5.04s;--r:-1.69s"></span><span class="m-estrella" style="left:6.02%;top:69.97%;--t:13px;--d:2.65s;--r:-1.47s"></span><span class="m-estrella" style="left:11.85%;top:27.93%;--t:16px;--d:3.27s;--r:-4.55s"></span><span class="m-estrella" style="left:45.05%;top:60.00%;--t:7px;--d:5.23s;--r:-1.76s"></span><span class="m-estrella" style="left:67.00%;top:42.08%;--t:15px;--d:3.65s;--r:-3.05s"></span><span class="m-estrella" style="left:67.78%;top:35.82%;--t:13px;--d:3.38s;--r:-3.26s"></span><span class="m-estrella" style="left:82.61%;top:45.72%;--t:8px;--d:2.87s;--r:-3.04s"></span><span class="m-estrella" style="left:85.25%;top:70.27%;--t:8px;--d:4.17s;--r:-4.01s"></span><span class="m-estrella" style="left:3.81%;top:17.98%;--t:12px;--d:2.53s;--r:-2.12s"></span><span class="m-estrella" style="left:60.94%;top:34.19%;--t:8px;--d:5.65s;--r:-0.10s"></span><span class="m-estrella" style="left:24.05%;top:48.58%;--t:17px;--d:3.53s;--r:-1.90s"></span><span class="m-estrella" style="left:65.04%;top:54.47%;--t:15px;--d:3.84s;--r:-1.93s"></span><span class="m-estrella" style="left:1.10%;top:16.29%;--t:7px;--d:3.56s;--r:-4.84s"></span><span class="m-estrella" style="left:3.91%;top:20.96%;--t:6px;--d:3.27s;--r:-4.49s"></span><span class="m-estrella" style="left:4.07%;top:15.40%;--t:15px;--d:4.78s;--r:-3.76s"></span><span class="m-estrella" style="left:46.23%;top:26.66%;--t:15px;--d:5.46s;--r:-4.00s"></span><span class="m-estrella" style="left:72.53%;top:65.37%;--t:17px;--d:4.84s;--r:-4.47s"></span><span class="m-estrella" style="left:43.79%;top:39.35%;--t:5px;--d:5.68s;--r:-0.82s"></span><span class="m-estrella" style="left:90.38%;top:62.86%;--t:11px;--d:3.54s;--r:-1.05s"></span><span class="m-estrella" style="left:87.91%;top:66.27%;--t:6px;--d:3.14s;--r:-2.52s"></span><span class="m-estrella" style="left:71.24%;top:5.60%;--t:7px;--d:3.29s;--r:-1.58s"></span><span class="m-estrella" style="left:83.78%;top:20.35%;--t:9px;--d:4.41s;--r:-4.98s"></span><span class="m-estrella" style="left:83.11%;top:8.21%;--t:15px;--d:4.28s;--r:-2.87s"></span><span class="m-estrella" style="left:6.37%;top:9.38%;--t:17px;--d:2.32s;--r:-0.80s"></span><span class="m-estrella" style="left:94.15%;top:1.93%;--t:14px;--d:5.03s;--r:-1.59s"></span><span class="m-estrella" style="left:41.73%;top:48.23%;--t:11px;--d:5.61s;--r:-4.26s"></span><span class="m-estrella" style="left:94.50%;top:66.51%;--t:17px;--d:3.37s;--r:-1.01s"></span><span class="m-estrella" style="left:42.75%;top:55.07%;--t:6px;--d:3.48s;--r:-4.57s"></span><span class="m-estrella" style="left:99.06%;top:23.89%;--t:15px;--d:4.01s;--r:-3.42s"></span><span class="m-estrella" style="left:96.82%;top:65.28%;--t:8px;--d:4.45s;--r:-4.61s"></span><span class="m-estrella" style="left:50.59%;top:47.04%;--t:9px;--d:3.08s;--r:-2.10s"></span><span class="m-estrella" style="left:51.73%;top:65.83%;--t:17px;--d:2.77s;--r:-3.93s"></span><span class="m-estrella" style="left:5.77%;top:6.14%;--t:4px;--d:4.19s;--r:-4.80s"></span><span class="m-estrella" style="left:51.92%;top:14.54%;--t:4px;--d:5.48s;--r:-0.66s"></span></div>
 
     <div class="hero__visual">
+      <img class="m-luna m-capa hero__luna m-entra-sube" src="/img/escena/luna-600.webp" srcset="/img/escena/luna-300.webp 300w, /img/escena/luna-600.webp 600w" sizes="(min-width: 1024px) 11vw, 16vh" alt="" style="--m-prof: 18" data-m-paralaje="-0.22">
       <div class="hero__composicion">
-        <img class="m-luna m-capa hero__luna m-entra-sube" src="/img/escena/luna-600.webp" srcset="/img/escena/luna-300.webp 300w, /img/escena/luna-600.webp 600w" sizes="(min-width: 1024px) 14vw, 30vw" alt="" style="--m-prof: 8" data-m-paralaje="-0.22">
         <figure class="hero__arco m-capa m-entra-recorte" style="--m-prof: 14; --m-retraso: 150ms" data-m-paralaje="-0.08">
           <img src="/img/fotos/escaladora-muro-azul-1200.webp" srcset="/img/fotos/escaladora-muro-azul-800.webp 536w, /img/fotos/escaladora-muro-azul-1200.webp 803w, /img/fotos/escaladora-muro-azul-1600.webp 1071w" sizes="(min-width: 1024px) 28vw, 62vw" width="803" height="1200" alt="Escaladora con polera naranja en un muro azul y amarillo, mientras otra persona la observa desde abajo" loading="eager" fetchpriority="high" decoding="async">
         </figure>
@@ -1004,7 +1044,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
         </figure>
         <span class="m-presa m-capa m-entra-escala" style="left: 100%; top: 18%; width: 17%; --m-prof: 38; --color: var(--kuyen-luna); --giro: 12deg; --m-retraso: 1050ms; --dur: 9s" data-m-paralaje="0.18" aria-hidden="true"><svg viewBox="0 0 100 100"><path d="M50 8c20 0 38 14 40 34 2 22-14 44-38 48-26 4-44-14-44-36C8 30 26 8 50 8z"/><circle cx="50" cy="50" r="7"/></svg></span>
         <span class="m-presa m-capa m-entra-escala" style="left: 88%; top: 66%; width: 23%; --m-prof: 24; --color: var(--kuyen-lila); --giro: -20deg; --m-retraso: 1200ms; --dur: 11s" data-m-paralaje="0.1" aria-hidden="true"><svg viewBox="0 0 100 100"><path d="M10 66C10 38 30 14 56 14c20 0 34 14 34 32 0 26-24 44-52 44-16 0-28-8-28-24z"/><circle cx="50" cy="50" r="7"/></svg></span>
-        <span class="m-presa m-capa m-entra-escala" style="left: -12%; top: 2%; width: 12%; --m-prof: 52; --color: var(--kuyen-blanco); --giro: -8deg; --m-retraso: 1300ms; --dur: 7s" data-m-paralaje="0.3" aria-hidden="true"><svg viewBox="0 0 100 100"><path d="M50 8l38 58c7 11-1 26-14 26H26c-13 0-21-15-14-26z"/><circle cx="50" cy="50" r="7"/></svg></span>
+        <span class="m-presa m-capa m-entra-escala" style="left: 90%; top: -6%; width: 12%; --m-prof: 52; --color: var(--kuyen-blanco); --giro: -8deg; --m-retraso: 1300ms; --dur: 7s" data-m-paralaje="0.3" aria-hidden="true"><svg viewBox="0 0 100 100"><path d="M50 8l38 58c7 11-1 26-14 26H26c-13 0-21-15-14-26z"/><circle cx="50" cy="50" r="7"/></svg></span>
         <span class="m-presa m-capa m-entra-escala" style="left: 60%; top: 84%; width: 16%; --m-prof: 60; --color: var(--kuyen-luna); --giro: 18deg; --m-retraso: 1400ms; --dur: 8s" data-m-paralaje="0.36" aria-hidden="true"><svg viewBox="0 0 100 100"><path d="M8 56c2-16 20-28 44-30 20-2 38 6 40 18 2 14-16 26-40 30C28 78 6 72 8 56z"/><circle cx="50" cy="50" r="7"/></svg></span>
         <span class="m-presa m-capa m-entra-escala hero__presa--ancha" style="left: 44%; top: -3%; width: 10%; --m-prof: 44; --color: var(--kuyen-lila); --giro: 30deg; --m-retraso: 1150ms; --dur: 10s" data-m-paralaje="0.24" aria-hidden="true"><svg viewBox="0 0 100 100"><path d="M30 10h40l24 40-24 40H30L6 50z"/><circle cx="50" cy="50" r="7"/></svg></span>
       </div>
@@ -1569,6 +1609,14 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
         abrir.focus()
       }
     })
+  }
+
+  /* Cabecera fija: suma su sombra cuando la página ya no está arriba de todo. */
+  var cabecera = document.querySelector('[data-cabecera]')
+  if (cabecera) {
+    var marcar = function () { cabecera.classList.toggle('cabecera--movida', window.scrollY > 8) }
+    window.addEventListener('scroll', marcar, { passive: true })
+    marcar()
   }
 
   /* Mapa: el iframe de Google se crea recién al hacer clic. Hasta entonces la

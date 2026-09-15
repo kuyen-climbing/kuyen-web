@@ -17,9 +17,9 @@ con el **ToggleTheme** encima para pasar al siguiente.
 El estilo de las variantes, elegido el 15-09-2026: títulos en Rubik Dirt y texto en Rubik, la
 página entera de noche (tinta y gradiente del logo 2.0) con acento amarillo luna y movimiento en
 títulos, textos, fotos y secciones. El hero abre con una composición de escalada (la escaladora
-en un arco, una foto redonda, la luna detrás y presas que flotan) sobre el cielo de estrellas que
-titilan, con entrada orquestada y profundidad que sigue al puntero; la cordillera con los dos
-gatos queda chica, al pie.
+en un arco, una foto redonda y presas que flotan) sobre el cielo de estrellas que titilan, con la
+luna en el medio, entre el texto y la escalada, entrada orquestada y profundidad que sigue al
+puntero; la cordillera con los dos gatos queda chica, al pie. La cabecera queda fija arriba.
 
 Hive salió de los candidatos el 14-09-2026. Su captura sigue en el historial de git:
 `git checkout 3ba77fb -- src/temas/hive temas/hive`.
@@ -132,6 +132,7 @@ En las variantes propias revisa además:
 - que el menú móvil abra y se cierre con Escape;
 - que el mapa de Google se cargue solo al hacer clic;
 - que la entrada del hero termine;
+- que la cabecera quede a la vista al bajar por la página;
 - que no haya errores de JavaScript al cargar.
 
 Antes de medir el contraste recorre la página entera, porque los textos y las fotos que entran

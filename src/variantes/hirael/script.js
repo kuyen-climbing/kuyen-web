@@ -31,6 +31,14 @@
     })
   }
 
+  /* Cabecera fija: suma su sombra cuando la página ya no está arriba de todo. */
+  var cabecera = document.querySelector('[data-cabecera]')
+  if (cabecera) {
+    var marcar = function () { cabecera.classList.toggle('cabecera--movida', window.scrollY > 8) }
+    window.addEventListener('scroll', marcar, { passive: true })
+    marcar()
+  }
+
   /* Mapa: el iframe de Google se crea recién al hacer clic. Hasta entonces la
      página no pide nada a Google. */
   document.querySelectorAll('[data-mapa]').forEach(function (boton) {
