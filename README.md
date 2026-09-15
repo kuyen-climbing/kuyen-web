@@ -137,6 +137,7 @@ En las variantes propias revisa además:
 - que no haya desborde a lo ancho en 375, 640, 768, 1024 y 1440 px;
 - que el menú móvil abra y se cierre con Escape;
 - que el mapa de Google se cargue solo al hacer clic;
+- que la publicación de Instagram se cargue solo al hacer clic;
 - que la entrada del hero termine;
 - que la cabecera quede a la vista al bajar por la página;
 - que ningún texto ni la marquesina tapen a los gatos del logo, en todos los anchos;
@@ -157,6 +158,7 @@ markup, el CSS y el JavaScript de cada variante son propios.
 |---|---|
 | Página de la variante | `src/variantes/<id>/pagina.mjs`, con su CSS y su JS en la misma carpeta |
 | Textos y datos del negocio | `src/contenido.mjs`, sin HTML: lo leen todas las variantes |
+| Qué publicaciones de Instagram se muestran | `INSTAGRAM` en `src/contenido.mjs`: solo públicas, sin precios ni horarios sin confirmar y sin marcas de terceros sin permiso. La publicación se carga al hacer clic, con `src/compartido/instagram.js` |
 | Paleta del logo 2.0, acento y tokens semánticos | `src/css/tokens.css` |
 | Tipografías (Rubik Dirt y Rubik, licencia OFL) | `fonts/` y `src/css/fuentes.css` |
 | Escena del logo y movimiento que comparten las variantes | `src/compartido/`: `escena.mjs` (cielo, luna, cordillera con los gatos, presas que flotan, títulos que se arman, marquesina y cifras), `movimiento.css` y `movimiento.js` (entrada del hero, profundidad con el puntero, paralaje, rastro de tiza y apariciones) |

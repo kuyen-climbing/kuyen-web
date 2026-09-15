@@ -603,6 +603,21 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
   .pie__marca { grid-column: auto; }
 }
 
+/* ---------- Publicaciones de Instagram ---------- */
+
+.tarjetas--tres { gap: 1.25rem; }
+.tarjeta__medio--instagram { background: var(--superficie); }
+.pildora[data-instagram] .pildora__icono svg { transform: none; }
+.tarjetas__nota { margin-top: 1.5rem; color: var(--texto-suave); font-size: 0.8125rem; }
+/* Con la publicación cargada, el recuadro deja de tener proporción fija. */
+.m-foto.con-publicacion { aspect-ratio: auto; }
+/* El alto lo avisa Instagram, con un tope para que la fila de tarjetas no crezca
+   de más: pasado ese tope, la publicación se desplaza por dentro. */
+.instagram__marco { display: block; width: 100%; min-height: 26rem; max-height: min(72vh, 38rem); border: 0; background: var(--kuyen-blanco); }
+@media (min-width: 1024px) {
+  .tarjetas--tres { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.5rem; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after { transition-duration: 0ms !important; }

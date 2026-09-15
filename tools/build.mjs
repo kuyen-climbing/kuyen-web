@@ -373,7 +373,7 @@ function validar(marco, capturas) {
  * valores que circulan en publicaciones viejas.
  */
 function validarContenido() {
-  const { POR_CONFIRMAR, HORARIOS, PRECIOS, DATOS_SIN_CONFIRMAR, SEO } = contenido
+  const { POR_CONFIRMAR, HORARIOS, PRECIOS, DATOS_SIN_CONFIRMAR, SEO, INSTAGRAM, FOTOS } = contenido
   const problemas = []
   const pendiente = (donde) =>
     problemas.push(`contenido: ${donde} tiene que decir ${POR_CONFIRMAR} mientras Kuyen no confirme el valor`)
@@ -390,6 +390,16 @@ function validarContenido() {
   const texto = JSON.stringify(resto)
   for (const dato of DATOS_SIN_CONFIRMAR) {
     if (texto.includes(dato)) problemas.push(`contenido: aparece "${dato}", un dato que Kuyen no confirmó`)
+  }
+
+  // Cada publicación de Instagram: la ruta con la forma que usa el sitio y una foto de Kuyen.
+  for (const pub of INSTAGRAM.publicaciones) {
+    if (!/^(p|reel)\/[A-Za-z0-9_-]+$/.test(pub.ruta)) {
+      problemas.push(`contenido: INSTAGRAM, "${pub.id}", la ruta "${pub.ruta}" tiene que ser p/<código> o reel/<código>`)
+    }
+    if (!FOTOS.some((f) => f.id === pub.foto)) {
+      problemas.push(`contenido: INSTAGRAM, "${pub.id}", la foto "${pub.foto}" no está en FOTOS`)
+    }
   }
 
   if (SEO.titulo.length > LIMITES.title) problemas.push(`contenido: SEO.titulo de ${SEO.titulo.length} caracteres (máximo ${LIMITES.title})`)

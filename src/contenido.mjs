@@ -278,6 +278,54 @@ export const EVENTOS = [
   },
 ]
 
+/**
+ * Publicaciones de Instagram que muestra el sitio. La página no copia su texto
+ * ni su foto: cada tarjeta lleva una foto de Kuyen y un texto de este módulo, y
+ * la publicación se carga desde Instagram recién al hacer clic.
+ *
+ * Para elegir una publicación: que sea pública, que no muestre precios ni
+ * horarios sin confirmar, y que no se vean marcas sin permiso (pregunta 9). Por
+ * eso quedan fuera el Encuentro Femenino, que muestra el valor de la entrada, y
+ * el agradecimiento del aniversario, que nombra a los auspiciadores.
+ * Revisar después del 02-10-2026: el taller de routesetting queda viejo.
+ * De reserva, sin precios: p/DXGDRheDIDI (Pancita) y p/DMZTDsfsk2u (competencia
+ * escolar).
+ */
+export const INSTAGRAM = {
+  perfil: CONTACTO.instagram,
+  // El enlace de cada publicación es base + ruta, y la página lo abre en Instagram.
+  base: 'https://www.instagram.com/',
+  publicaciones: [
+    {
+      id: 'taller',
+      ruta: 'p/DdG5vAJSeuA',
+      tipo: 'Publicación',
+      titulo: 'Taller de routesetting',
+      fechaTexto: EVENTOS.find((e) => e.id === 'taller-routesetting').fechaTexto,
+      detalle: 'Creación, diseño y armado de rutas, para mujeres escaladoras.',
+      foto: 'escalador-desplome-amarillo',
+    },
+    {
+      id: 'sombra',
+      ruta: 'p/DXGCPpyjKfi',
+      tipo: 'Publicación',
+      titulo: 'Hacer sombra',
+      fechaTexto: 'Abril de 2026',
+      detalle: MARCA.frases.cuidado + '.',
+      foto: 'escaladora-muro-azul',
+    },
+    {
+      id: 'rutas',
+      ruta: 'reel/DOenM9lElP2',
+      tipo: 'Video',
+      titulo: 'Rutas nuevas',
+      fechaTexto: 'Septiembre de 2025',
+      detalle: MURO.renovacion,
+      foto: 'escalador-muro-blanco',
+    },
+  ],
+}
+
 /** Reglamento de Kuyen Climbing, tal cual lo publica en su solicitud de ingreso. */
 export const REGLAMENTO = [
   'Saludar al ingresar',
@@ -410,8 +458,11 @@ export const TEXTOS = {
     instagram: 'Síguenos en Instagram',
     verMapa: 'Ver mapa',
     abrirMaps: 'Abrir en Google Maps',
+    verPublicacion: 'Ver publicación',
+    abrirInstagram: 'Abrir en Instagram',
   },
   mapa: 'El mapa se carga desde Google Maps al hacer clic.',
+  instagram: 'La publicación se carga desde Instagram al hacer clic.',
 }
 
 /**
