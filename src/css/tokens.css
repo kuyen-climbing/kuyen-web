@@ -1,0 +1,110 @@
+/*
+  Tokens de Kuyen Climbing.
+
+  Dos capas:
+  1. Marca: la paleta del logo 2.0, el acento y la tipografía. No cambian.
+  2. Semánticos: lo que usan las variantes (--fondo, --texto, --superficie,
+     --primario, --acento, --borde). Cada variante los mapea a la marca según
+     sea clara u oscura, con las clases .tono-claro, .tono-oscuro y
+     .tono-gradiente o con su propio mapa.
+
+  Contraste verificado (WCAG):
+  - Texto #171A1E sobre blanco 17,46; #2E2A2A al 75% sobre blanco 6,32 y sobre
+    las superficies claras 5,96 como mínimo.
+  - Índigo #2B2E83 sobre blanco 11,53 (botones y enlaces en fondos claros).
+  - Blanco sobre los tonos 11,39 como mínimo; blanco al 72% sobre los tonos
+    6,65 y sobre la tinta 9,48.
+  - Lila #C9B9F0 sobre los tonos 6,34 como mínimo y sobre la tinta 9,71. Sobre
+    blanco da 1,80: no se usa en fondos claros.
+*/
+
+:root {
+  /* ---------- Marca: paleta del logo 2.0 ---------- */
+  --kuyen-indigo: #2b2e83;
+  --kuyen-violeta: #3c2d78;
+  --kuyen-purpura: #4e2a65;
+  --kuyen-ciruela: #5b2652;
+  --kuyen-vino: #671f37;
+
+  --kuyen-tinta: #171a1e;
+  --kuyen-texto-logo: #2e2a2a;
+  --kuyen-gris: #989fa5;
+  --kuyen-blanco: #ffffff;
+
+  /* Acento para botones y enlaces sobre fondos oscuros. */
+  --kuyen-lila: #c9b9f0;
+
+  --kuyen-gradiente: linear-gradient(180deg, #2b2e83 0%, #3c2d78 25%, #4e2a65 50%, #5b2652 75%, #671f37 100%);
+
+  /* Tintes: colores de la paleta con opacidad, para superficies y bordes. */
+  --kuyen-tinte-indigo: rgb(43 46 131 / 0.04);
+  --kuyen-tinte-gris: rgb(152 159 165 / 0.12);
+  --kuyen-borde-claro: rgb(152 159 165 / 0.35);
+  --kuyen-texto-suave: rgb(46 42 42 / 0.75);
+  --kuyen-blanco-suave: rgb(255 255 255 / 0.72);
+  --kuyen-blanco-tinte: rgb(255 255 255 / 0.06);
+  --kuyen-blanco-borde: rgb(255 255 255 / 0.14);
+
+  /* ---------- Marca: tipografía ---------- */
+  --fuente-titulo: "Bebas Neue", "Arial Narrow", "Roboto Condensed", ui-sans-serif, system-ui, sans-serif;
+  --fuente-texto: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+
+  /* Escala base. Bebas Neue tiene un solo peso y va siempre en mayúsculas: la
+     jerarquía sale del tamaño y el tracking. Cada variante ajusta sus tamaños a
+     los de su template. */
+  --tipo-h1: clamp(2.75rem, 1.6rem + 5.6vw, 6rem);
+  --tipo-h2: clamp(2.25rem, 1.6rem + 3.2vw, 4rem);
+  --tipo-h3: clamp(1.5rem, 1.25rem + 1.2vw, 2.25rem);
+  --tipo-cuerpo: 1rem;
+  --tipo-grande: 1.125rem;
+  --tipo-chico: 0.875rem;
+  --tipo-etiqueta: 0.75rem;
+  --tracking-titulo: 0.01em;
+  --tracking-etiqueta: 0.12em;
+  --interlineado-titulo: 0.95;
+
+  /* ---------- Semánticos (por defecto, tono claro) ---------- */
+  --fondo: var(--kuyen-blanco);
+  --texto: var(--kuyen-tinta);
+  --texto-suave: var(--kuyen-texto-suave);
+  --superficie: var(--kuyen-tinte-indigo);
+  --borde: var(--kuyen-borde-claro);
+  --primario: var(--kuyen-indigo);
+  --primario-texto: var(--kuyen-blanco);
+  --acento: var(--kuyen-indigo);
+}
+
+.tono-claro {
+  --fondo: var(--kuyen-blanco);
+  --texto: var(--kuyen-tinta);
+  --texto-suave: var(--kuyen-texto-suave);
+  --superficie: var(--kuyen-tinte-indigo);
+  --borde: var(--kuyen-borde-claro);
+  --primario: var(--kuyen-indigo);
+  --primario-texto: var(--kuyen-blanco);
+  --acento: var(--kuyen-indigo);
+}
+
+.tono-oscuro {
+  --fondo: var(--kuyen-tinta);
+  --texto: var(--kuyen-blanco);
+  --texto-suave: var(--kuyen-blanco-suave);
+  --superficie: var(--kuyen-blanco-tinte);
+  --borde: var(--kuyen-blanco-borde);
+  --primario: var(--kuyen-lila);
+  --primario-texto: var(--kuyen-tinta);
+  --acento: var(--kuyen-lila);
+}
+
+/* Igual que .tono-oscuro, con el gradiente del logo de fondo. --fondo es una
+   imagen: se usa en background, nunca en color. */
+.tono-gradiente {
+  --fondo: var(--kuyen-gradiente);
+  --texto: var(--kuyen-blanco);
+  --texto-suave: var(--kuyen-blanco-suave);
+  --superficie: var(--kuyen-blanco-tinte);
+  --borde: var(--kuyen-blanco-borde);
+  --primario: var(--kuyen-lila);
+  --primario-texto: var(--kuyen-tinta);
+  --acento: var(--kuyen-lila);
+}
