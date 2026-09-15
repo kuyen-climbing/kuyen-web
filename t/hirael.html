@@ -1,59 +1,1149 @@
 <!DOCTYPE html>
-<html lang="en" data-scroll-behavior="smooth" class="scroll-smooth dark" dir="ltr" style="color-scheme: dark;"><head>
+<html lang="es-CL">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kuyen Climbing | Escalada en boulder en Padre Las Casas</title>
+  <meta name="description" content="Centro de escalada técnica en boulder en Padre Las Casas, La Araucanía: desplomes hasta 25°, moonboard, clases guiadas y comunidad.">
+  <!-- Variante en comparación: fuera del índice hasta que se elija una. -->
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="canonical" href="https://kuyenclimbing.cl/t/hirael">
+  <meta name="theme-color" content="#2b2e83">
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/img/marca/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="/img/marca/favicon-192.png">
+  <link rel="apple-touch-icon" href="/img/marca/apple-touch-icon.png">
+
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Kuyen Climbing">
+  <meta property="og:locale" content="es_CL">
+  <meta property="og:url" content="https://kuyenclimbing.cl/t/hirael">
+  <meta property="og:title" content="Kuyen Climbing | Escalada en boulder en Padre Las Casas">
+  <meta property="og:description" content="Centro de escalada técnica en boulder en Padre Las Casas, La Araucanía: desplomes hasta 25°, moonboard, clases guiadas y comunidad.">
+  <meta property="og:image" content="https://kuyenclimbing.cl/img/marca/og-kuyen.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="KÜYEN CLIMBING, escalada en boulder en Padre Las Casas">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Kuyen Climbing | Escalada en boulder en Padre Las Casas">
+  <meta name="twitter:description" content="Centro de escalada técnica en boulder en Padre Las Casas, La Araucanía: desplomes hasta 25°, moonboard, clases guiadas y comunidad.">
+  <meta name="twitter:image" content="https://kuyenclimbing.cl/img/marca/og-kuyen.jpg">
+
+  <link rel="preload" href="/fonts/bebas-neue-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
+
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SportsActivityLocation",
+  "name": "Kuyen Climbing",
+  "description": "Centro de escalada técnica en boulder en Padre Las Casas, La Araucanía: desplomes hasta 25°, moonboard, clases guiadas y comunidad.",
+  "url": "https://kuyenclimbing.cl/",
+  "image": "https://kuyenclimbing.cl/img/marca/og-kuyen.jpg",
+  "logo": "https://kuyenclimbing.cl/img/marca/isotipo-512.png",
+  "telephone": "+56935028838",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "Los Patagones 375",
+    "addressLocality": "Padre Las Casas",
+    "addressRegion": "La Araucanía",
+    "postalCode": "4850000",
+    "addressCountry": "CL"
+  },
+  "geo": {
+    "@type": "GeoCoordinates",
+    "latitude": -38.7605438,
+    "longitude": -72.5918641
+  },
+  "hasMap": "https://maps.app.goo.gl/v9F89L5peqFyxcJc9",
+  "sameAs": [
+    "https://www.instagram.com/kuyen.climbing/",
+    "https://linktr.ee/kuyen.climbing"
+  ]
+}
+  </script>
+
+  <style>
+/*
+  Tipografías del sitio, autoalojadas en fonts/ (licencia SIL Open Font License,
+  textos en fonts/OFL-*.txt). No se pide nada a Google en producción.
+
+  Subset latino de Google Fonts: cubre el español completo (tildes, Ñ, Ü, ¿, ¡, °).
+  Inter es la versión variable, con todos los pesos en un archivo.
+*/
+
+@font-face {
+  font-family: "Bebas Neue";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/bebas-neue-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("/fonts/inter-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/*
+  Tokens de Kuyen Climbing.
+
+  Dos capas:
+  1. Marca: la paleta del logo 2.0, el acento y la tipografía. No cambian.
+  2. Semánticos: lo que usan las variantes (--fondo, --texto, --superficie,
+     --primario, --acento, --borde). Cada variante los mapea a la marca según
+     sea clara u oscura, con las clases .tono-claro, .tono-oscuro y
+     .tono-gradiente o con su propio mapa.
+
+  Contraste verificado (WCAG):
+  - Texto #171A1E sobre blanco 17,46; #2E2A2A al 75% sobre blanco 6,32 y sobre
+    las superficies claras 5,96 como mínimo.
+  - Índigo #2B2E83 sobre blanco 11,53 (botones y enlaces en fondos claros).
+  - Blanco sobre los tonos 11,39 como mínimo; blanco al 72% sobre los tonos
+    6,65 y sobre la tinta 9,48.
+  - Lila #C9B9F0 sobre los tonos 6,34 como mínimo y sobre la tinta 9,71. Sobre
+    blanco da 1,80: no se usa en fondos claros.
+*/
+
+:root {
+  /* ---------- Marca: paleta del logo 2.0 ---------- */
+  --kuyen-indigo: #2b2e83;
+  --kuyen-violeta: #3c2d78;
+  --kuyen-purpura: #4e2a65;
+  --kuyen-ciruela: #5b2652;
+  --kuyen-vino: #671f37;
+
+  --kuyen-tinta: #171a1e;
+  --kuyen-texto-logo: #2e2a2a;
+  --kuyen-gris: #989fa5;
+  --kuyen-blanco: #ffffff;
+
+  /* Acento para botones y enlaces sobre fondos oscuros. */
+  --kuyen-lila: #c9b9f0;
+
+  --kuyen-gradiente: linear-gradient(180deg, #2b2e83 0%, #3c2d78 25%, #4e2a65 50%, #5b2652 75%, #671f37 100%);
+
+  /* Tintes: colores de la paleta con opacidad, para superficies y bordes. */
+  --kuyen-tinte-indigo: rgb(43 46 131 / 0.04);
+  --kuyen-tinte-gris: rgb(152 159 165 / 0.12);
+  --kuyen-borde-claro: rgb(152 159 165 / 0.35);
+  --kuyen-texto-suave: rgb(46 42 42 / 0.75);
+  --kuyen-blanco-suave: rgb(255 255 255 / 0.72);
+  --kuyen-blanco-tinte: rgb(255 255 255 / 0.06);
+  --kuyen-blanco-borde: rgb(255 255 255 / 0.14);
+
+  /* ---------- Marca: tipografía ---------- */
+  --fuente-titulo: "Bebas Neue", "Arial Narrow", "Roboto Condensed", ui-sans-serif, system-ui, sans-serif;
+  --fuente-texto: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+
+  /* Escala base. Bebas Neue tiene un solo peso y va siempre en mayúsculas: la
+     jerarquía sale del tamaño y el tracking. Cada variante ajusta sus tamaños a
+     los de su template. */
+  --tipo-h1: clamp(2.75rem, 1.6rem + 5.6vw, 6rem);
+  --tipo-h2: clamp(2.25rem, 1.6rem + 3.2vw, 4rem);
+  --tipo-h3: clamp(1.5rem, 1.25rem + 1.2vw, 2.25rem);
+  --tipo-cuerpo: 1rem;
+  --tipo-grande: 1.125rem;
+  --tipo-chico: 0.875rem;
+  --tipo-etiqueta: 0.75rem;
+  --tracking-titulo: 0.01em;
+  --tracking-etiqueta: 0.12em;
+  --interlineado-titulo: 0.95;
+
+  /* ---------- Semánticos (por defecto, tono claro) ---------- */
+  --fondo: var(--kuyen-blanco);
+  --texto: var(--kuyen-tinta);
+  --texto-suave: var(--kuyen-texto-suave);
+  --superficie: var(--kuyen-tinte-indigo);
+  --borde: var(--kuyen-borde-claro);
+  --primario: var(--kuyen-indigo);
+  --primario-texto: var(--kuyen-blanco);
+  --acento: var(--kuyen-indigo);
+}
+
+.tono-claro {
+  --fondo: var(--kuyen-blanco);
+  --texto: var(--kuyen-tinta);
+  --texto-suave: var(--kuyen-texto-suave);
+  --superficie: var(--kuyen-tinte-indigo);
+  --borde: var(--kuyen-borde-claro);
+  --primario: var(--kuyen-indigo);
+  --primario-texto: var(--kuyen-blanco);
+  --acento: var(--kuyen-indigo);
+}
+
+.tono-oscuro {
+  --fondo: var(--kuyen-tinta);
+  --texto: var(--kuyen-blanco);
+  --texto-suave: var(--kuyen-blanco-suave);
+  --superficie: var(--kuyen-blanco-tinte);
+  --borde: var(--kuyen-blanco-borde);
+  --primario: var(--kuyen-lila);
+  --primario-texto: var(--kuyen-tinta);
+  --acento: var(--kuyen-lila);
+}
+
+/* Igual que .tono-oscuro, con el gradiente del logo de fondo. --fondo es una
+   imagen: se usa en background, nunca en color. */
+.tono-gradiente {
+  --fondo: var(--kuyen-gradiente);
+  --texto: var(--kuyen-blanco);
+  --texto-suave: var(--kuyen-blanco-suave);
+  --superficie: var(--kuyen-blanco-tinte);
+  --borde: var(--kuyen-blanco-borde);
+  --primario: var(--kuyen-lila);
+  --primario-texto: var(--kuyen-tinta);
+  --acento: var(--kuyen-lila);
+}
+
+/*
+  Variante Hirael. Mobile-first, con cortes en 640, 768, 1024 y 1280 px.
+  Colores y tipografías salen de los tokens (src/css/tokens.css); cada bloque
+  aplica .tono-claro, .tono-oscuro o .tono-gradiente.
+*/
+
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--kuyen-blanco);
+  color: var(--kuyen-tinta);
+  font-family: var(--fuente-texto);
+  -webkit-font-smoothing: antialiased;
+}
+img, iframe { display: block; max-width: 100%; }
+h1, h2, h3, p, ul, ol { margin: 0; }
+ul, ol { padding: 0; list-style: none; }
+a { color: inherit; text-decoration: none; }
+button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
+:focus-visible { outline: 2px solid var(--acento); outline-offset: 3px; }
+
+.saltar {
+  position: fixed;
+  top: 1rem;
+  left: 1rem;
+  z-index: 100;
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
+  background: var(--kuyen-tinta);
+  color: var(--kuyen-blanco);
+  font-size: 0.875rem;
+  transform: translateY(-200%);
+}
+.saltar:focus { transform: none; }
+
+.contenedor { width: 100%; max-width: 1440px; margin-inline: auto; padding-inline: 1.25rem; }
+@media (min-width: 640px) { .contenedor { padding-inline: 2rem; } }
+@media (min-width: 1024px) { .contenedor { padding-inline: 3rem; } }
+
+/* ---------- Títulos ---------- */
+
+.titulo-grande,
+.titulo-intro {
+  font-family: var(--fuente-titulo);
+  font-weight: 400;
+  letter-spacing: 0.005em;
+}
+.titulo-grande { font-size: clamp(1.75rem, 7vw, 4.2rem); line-height: 1; }
+.titulo-intro { font-size: clamp(1.5rem, 4vw, 3.2rem); line-height: 1.04; }
+@media (min-width: 640px) {
+  .titulo-grande { font-size: clamp(2.5rem, 5vw, 4.2rem); }
+}
+
+/* ---------- Botón píldora con texto que rueda ---------- */
+
+.boton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.5rem 0.5rem 1.25rem;
+  border-radius: 9999px;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  line-height: 1.25rem;
+  white-space: nowrap;
+  transition: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.boton__texto { display: block; height: 20px; overflow: hidden; }
+.boton__rollo { display: flex; flex-direction: column; transition: transform 500ms cubic-bezier(0.25, 0.1, 0.25, 1); }
+.boton__rollo > span { display: block; height: 20px; line-height: 20px; }
+.boton__circulo {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 9999px;
+  background: var(--kuyen-blanco);
+}
+.boton__circulo svg { width: 1rem; height: 1rem; transition: transform 500ms cubic-bezier(0.25, 0.1, 0.25, 1); }
+@media (min-width: 640px) {
+  .boton { padding-left: 1.5rem; font-size: 0.875rem; }
+  .boton__circulo { width: 2rem; height: 2rem; }
+}
+@media (hover: hover) {
+  .boton:hover .boton__rollo { transform: translateY(-50%); }
+  .boton:hover .boton__circulo svg { transform: rotate(-45deg); }
+}
+
+.boton--primario { background: var(--primario); color: var(--primario-texto); }
+.boton--primario .boton__circulo { color: var(--primario); }
+.tono-claro .boton--primario:hover { background: var(--kuyen-violeta); }
+/* Sobre fondo oscuro el botón es lila: la flecha va en tinta y el hover pasa a blanco. */
+.tono-oscuro .boton--primario .boton__circulo,
+.tono-gradiente .boton--primario .boton__circulo { color: var(--kuyen-tinta); }
+.tono-oscuro .boton--primario:hover,
+.tono-gradiente .boton--primario:hover { background: var(--kuyen-blanco); }
+
+.boton--oscuro { background: var(--kuyen-tinta); color: var(--kuyen-blanco); font-size: 0.8125rem; }
+.boton--oscuro .boton__circulo { width: 1.5rem; height: 1.5rem; color: var(--kuyen-tinta); }
+.boton--oscuro .boton__circulo svg { width: 0.875rem; height: 0.875rem; }
+@media (min-width: 640px) { .boton--oscuro { padding-left: 1.25rem; font-size: 0.8125rem; } }
+
+.boton--ancho { width: 100%; justify-content: space-between; margin-top: 1.5rem; }
+
+/* ---------- Círculo numerado e insignia ---------- */
+
+.etiqueta { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.5rem; }
+.etiqueta__numero {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 9999px;
+  background: var(--kuyen-tinta);
+  color: var(--kuyen-blanco);
+  font-size: 0.6875rem;
+  font-weight: 600;
+}
+.insignia {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.75rem;
+  border: 1px solid var(--borde);
+  border-radius: 9999px;
+  color: var(--texto);
+  font-size: 0.75rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+@media (min-width: 640px) {
+  .etiqueta { margin-bottom: 2rem; }
+  .etiqueta__numero { width: 1.75rem; height: 1.75rem; font-size: 0.75rem; }
+  .insignia { padding: 0.375rem 1rem; font-size: 0.8125rem; }
+}
+
+/* Dato sin confirmar: resaltado para ubicarlo fácil. */
+.pendiente {
+  display: inline-block;
+  padding: 0.0625rem 0.375rem;
+  border-radius: 4px;
+  background: rgb(201 185 240 / 0.45);
+  color: var(--kuyen-tinta);
+  font-family: var(--fuente-texto);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+.tono-oscuro .pendiente { background: rgb(201 185 240 / 0.2); color: var(--kuyen-blanco); }
+
+.enlace { color: var(--acento); text-decoration: underline; text-underline-offset: 3px; }
+
+/* ---------- Hero ---------- */
+
+.hero {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  min-height: 34rem;
+  overflow: hidden;
+  isolation: isolate;
+  background: var(--fondo);
+  color: var(--texto);
+}
+
+/* Fondo animado: remolino de luz, vidrio acanalado en diagonal, estela que
+   sigue al puntero y grano. No captura el puntero. */
+.hero__fondo { position: absolute; inset: 0; z-index: 10; overflow: hidden; pointer-events: none; }
+.hero__fondo > div { position: absolute; }
+.hero__remolino {
+  inset: -30%;
+  background:
+    radial-gradient(38% 32% at 28% 30%, rgb(201 185 240 / 0.26), transparent 70%),
+    radial-gradient(30% 28% at 72% 66%, rgb(255 255 255 / 0.12), transparent 70%),
+    radial-gradient(26% 24% at 60% 20%, rgb(103 31 55 / 0.35), transparent 70%);
+  animation: remolino 26s ease-in-out infinite alternate;
+}
+.hero__acanalado {
+  inset: 0;
+  background-image: repeating-linear-gradient(121deg, rgb(255 255 255 / 0) 0, rgb(255 255 255 / 0.07) 6.25%, rgb(255 255 255 / 0) 12.5%);
+  background-size: 200% 200%;
+  animation: acanalado 40s linear infinite;
+}
+.hero__estela {
+  inset: 0;
+  background: radial-gradient(22rem 22rem at var(--px, 50%) var(--py, 50%), rgb(201 185 240 / 0.3), transparent 70%);
+  opacity: var(--estela, 0);
+  transition: opacity 800ms ease-out;
+}
+.hero__grano {
+  inset: 0;
+  opacity: 0.08;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+}
+@keyframes remolino {
+  from { transform: translate3d(-4%, -3%, 0) rotate(0deg); }
+  to { transform: translate3d(4%, 3%, 0) rotate(10deg); }
+}
+@keyframes acanalado { to { background-position: 100% 100%; } }
+
+.hero__contenido { position: relative; z-index: 20; display: flex; flex: 1; flex-direction: column; justify-content: flex-end; }
+.hero__contenido:focus { outline: none; }
+.hero__interior { padding-bottom: 3.5rem; }
+.hero__antetitulo { display: block; margin-bottom: 1.25rem; font-size: 0.8125rem; letter-spacing: 0.025em; }
+.hero__salto { display: none; }
+.hero__acciones { display: flex; flex-direction: column; align-items: flex-start; gap: 1rem; margin-top: 2rem; }
+@media (min-width: 640px) {
+  .hero__interior { padding-bottom: 4rem; }
+  .hero__antetitulo { margin-bottom: 2rem; font-size: 0.875rem; }
+  .hero__salto { display: inline; }
+  .hero__acciones { flex-direction: row; align-items: center; gap: 1.25rem; margin-top: 3rem; }
+}
+@media (min-width: 1024px) { .hero__interior { padding-bottom: 5rem; } }
+
+.chip {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.625rem;
+  border-radius: 4px;
+  background: var(--kuyen-blanco);
+  color: var(--kuyen-tinta);
+  box-shadow: 0 2px 8px rgb(23 26 30 / 0.08);
+  transition: box-shadow 150ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.chip:hover { box-shadow: 0 4px 16px rgb(23 26 30 / 0.12); }
+.chip svg { width: 1.25rem; height: 1.25rem; color: var(--kuyen-indigo); }
+.chip__texto { font-size: 0.8125rem; font-weight: 500; }
+.chip__insignia {
+  padding: 0.125rem 0.375rem;
+  border-radius: 4px;
+  background: var(--kuyen-tinta);
+  color: var(--kuyen-blanco);
+  font-size: 0.625rem;
+  white-space: nowrap;
+}
+@media (min-width: 640px) {
+  .chip svg { width: 1.5rem; height: 1.5rem; }
+  .chip__texto { font-size: 0.875rem; }
+  .chip__insignia { padding-inline: 0.5rem; font-size: 0.6875rem; }
+}
+
+/* ---------- Cabecera en píldora ---------- */
+
+.cabecera { position: relative; z-index: 20; width: 100%; max-width: 1440px; margin-inline: auto; padding: 0.5rem; }
+.cabecera__nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 5px;
+  border-radius: 9999px;
+  background: var(--kuyen-blanco);
+  color: var(--kuyen-tinta);
+}
+.cabecera__izquierda { display: flex; align-items: center; gap: 1.5rem; }
+.marca { display: flex; align-items: center; gap: 0.5rem; }
+.marca__isotipo { width: 2.25rem; height: 2.25rem; border-radius: 9999px; }
+.marca__nombre { padding-top: 0.125rem; font-family: var(--fuente-titulo); font-size: 1.25rem; line-height: 1; letter-spacing: 0.02em; }
+.cabecera__enlaces { display: none; align-items: center; gap: 1.5rem; }
+.cabecera__enlaces a { font-size: 0.875rem; transition: color 300ms; }
+.cabecera__enlaces a:hover { color: var(--texto-suave); }
+.cabecera__derecha { display: none; align-items: center; gap: 1rem; }
+.cabecera__estado { display: none; color: var(--texto-suave); font-size: 0.8125rem; }
+.cabecera__menu {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 9999px;
+  background: var(--kuyen-tinta);
+  color: var(--kuyen-blanco);
+}
+.cabecera__menu svg { width: 18px; height: 18px; }
+@media (min-width: 640px) {
+  .cabecera { padding: 0.75rem; }
+  .marca__isotipo { width: 2.5rem; height: 2.5rem; }
+  .marca__nombre { font-size: 1.375rem; }
+}
+@media (min-width: 768px) {
+  .cabecera__enlaces, .cabecera__derecha { display: flex; }
+  .cabecera__menu { display: none; }
+}
+@media (min-width: 1024px) { .cabecera__estado { display: block; } }
+
+/* ---------- Menú móvil: hoja que sube desde abajo ---------- */
+
+.menu { position: fixed; inset: 0; z-index: 50; opacity: 0; pointer-events: none; transition: opacity 500ms; }
+.menu.abierto { opacity: 1; pointer-events: auto; }
+.menu__capa { position: absolute; inset: 0; background: rgb(23 26 30 / 0.6); }
+.menu__hoja {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  margin: 0 0.75rem 0.75rem;
+  padding: 1.5rem;
+  border-radius: 1rem;
+  background: var(--kuyen-blanco);
+  color: var(--kuyen-tinta);
+  transform: translateY(100%);
+  transition: transform 500ms cubic-bezier(0.32, 0.72, 0, 1);
+}
+.menu.abierto .menu__hoja { transform: none; }
+.menu__enlaces { display: flex; flex-direction: column; gap: 0.5rem; }
+.menu__enlaces a { font-size: 1.75rem; font-weight: 500; line-height: 2rem; }
+@media (min-width: 768px) { .menu { display: none; } }
+
+/* ---------- Secciones ---------- */
+
+.seccion { background: var(--fondo); color: var(--texto); }
+.seccion--tinte { background: var(--kuyen-tinte-indigo); }
+.seccion--intro { padding-block: 4rem 3rem; overflow: hidden; }
+.seccion--tarjetas { padding-block: 4rem; }
+@media (min-width: 640px) {
+  .seccion--intro { padding-block: 5rem 4rem; }
+  .seccion--tarjetas { padding-block: 5rem; }
+}
+@media (min-width: 1024px) {
+  .seccion--intro { padding-block: 8rem 6rem; }
+  .seccion--tarjetas { padding-block: 7rem; }
+}
+
+/* Intro: texto y dos fotos. En móvil, apilado; desde 640, fotos en fila al
+   45 y 55 %; desde 1024, foto chica, texto y foto grande alineados abajo. */
+.intro__titulo { margin-bottom: 3rem; }
+.intro__grilla {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas: "texto" "chica" "grande";
+  row-gap: 1rem;
+}
+.intro__texto { grid-area: texto; margin-bottom: 1rem; }
+.intro__parrafo { font-size: 0.9375rem; font-weight: 500; line-height: 1.6; }
+.intro__boton { margin-top: 1.5rem; }
+.intro__foto { width: 100%; height: auto; border-radius: 0.75rem; object-fit: cover; }
+.intro__foto--chica { grid-area: chica; aspect-ratio: 438 / 346; }
+.intro__foto--grande { grid-area: grande; aspect-ratio: 3 / 2; }
+@media (min-width: 640px) {
+  .intro__titulo { margin-bottom: 4rem; }
+  .intro__grilla {
+    grid-template-columns: minmax(0, 45fr) minmax(0, 55fr);
+    grid-template-areas: "texto texto" "chica grande";
+    align-items: end;
+    column-gap: 1.25rem;
+    row-gap: 2.5rem;
+  }
+  .intro__texto { margin-bottom: 0; }
+  .intro__parrafo { font-size: 1.0625rem; }
+  .intro__foto { border-radius: 1rem; }
+}
+@media (min-width: 1024px) {
+  .intro__titulo { margin-bottom: 7rem; }
+  .intro__grilla {
+    grid-template-columns: 24% minmax(0, 1fr) 44%;
+    grid-template-areas: "chica texto grande";
+    column-gap: 1.5rem;
+    row-gap: 0;
+  }
+  .intro__texto { padding-bottom: 0.25rem; }
+  .intro__parrafo { font-size: 1rem; line-height: 1.65; }
+}
+@media (min-width: 1280px) {
+  .intro__grilla { column-gap: 2rem; }
+  .intro__parrafo { font-size: 1.125rem; }
+}
+
+/* Bloque de texto de las secciones agregadas con el patrón de la intro. */
+.bloque { max-width: 42rem; }
+
+/* ---------- Tarjetas 4:3 con píldora ---------- */
+
+.tarjetas__titulo { margin-bottom: 2.5rem; }
+.tarjetas { display: grid; grid-template-columns: minmax(0, 1fr); gap: 1.25rem; }
+@media (min-width: 640px) {
+  .tarjetas__titulo { margin-bottom: 3.5rem; }
+  .tarjetas { gap: 1.5rem; }
+}
+@media (min-width: 768px) { .tarjetas { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 1024px) {
+  .tarjetas__titulo { margin-bottom: 4rem; }
+  .tarjetas { gap: 1.75rem; }
+}
+
+.tarjeta__medio {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-radius: 1rem;
+  background: var(--kuyen-tinta);
+}
+.tarjeta__medio > img,
+.tarjeta__medio > iframe { width: 100%; height: 100%; border: 0; object-fit: cover; }
+.tarjeta__medio.tono-gradiente { background: var(--fondo); color: var(--texto); }
+.tarjeta__descripcion { margin-top: 1rem; color: var(--texto-suave); font-size: 0.8125rem; line-height: 1.625; }
+.tarjeta__titulo { margin-top: 0.25rem; font-family: var(--fuente-titulo); font-size: 1.25rem; font-weight: 400; line-height: 1.1; letter-spacing: 0.01em; }
+@media (min-width: 640px) {
+  .tarjeta__descripcion { font-size: 0.875rem; }
+  .tarjeta__titulo { font-size: 1.375rem; }
+}
+
+.pildora {
+  position: absolute;
+  bottom: 1rem;
+  left: 1rem;
+  display: flex;
+  align-items: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  overflow: hidden;
+  border-radius: 9999px;
+  background: var(--kuyen-blanco);
+  color: var(--kuyen-tinta);
+  transition: width 300ms ease-in-out;
+}
+.pildora--oscura { background: var(--kuyen-tinta); color: var(--kuyen-blanco); }
+.pildora__icono { display: flex; flex: none; align-items: center; justify-content: center; width: 2.25rem; height: 2.25rem; }
+.pildora__icono svg { width: 14px; height: 14px; transform: rotate(-45deg); transition: transform 300ms; }
+.pildora__texto { padding-right: 0.875rem; font-size: 0.8125rem; font-weight: 500; white-space: nowrap; opacity: 0; transition: opacity 300ms 100ms; }
+.pildora[data-mapa] .pildora__icono svg { transform: none; }
+@media (hover: hover) {
+  .tarjeta__medio:hover .pildora { width: var(--abierta); }
+  .tarjeta__medio:hover .pildora__icono svg { transform: rotate(0deg); }
+  .tarjeta__medio:hover .pildora__texto { opacity: 1; }
+}
+.tarjeta__medio:focus-within .pildora { width: var(--abierta); }
+.tarjeta__medio:focus-within .pildora__texto { opacity: 1; }
+
+/* Recuadro del mapa antes de cargarlo. */
+.mapa { display: flex; height: 100%; flex-direction: column; align-items: center; justify-content: center; gap: 0.75rem; padding: 1.5rem; text-align: center; }
+.mapa svg { width: 2.5rem; height: 2.5rem; color: var(--kuyen-lila); }
+.mapa__direccion { font-family: var(--fuente-titulo); font-size: clamp(1.5rem, 4vw, 2.25rem); line-height: 1.05; letter-spacing: 0.01em; }
+.mapa__nota { color: var(--texto-suave); font-size: 0.8125rem; }
+
+/* ---------- Columnas (patrón del pie) ---------- */
+
+.columnas {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 2.5rem 1.5rem;
+  margin-top: 3rem;
+}
+.columna { display: flex; flex-direction: column; gap: 0.875rem; }
+.columna--ancha { grid-column: span 2; }
+.columna__titulo { color: var(--texto-suave); font-family: var(--fuente-texto); font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; }
+.columna__lista { display: flex; flex-direction: column; gap: 0.625rem; font-size: 0.875rem; line-height: 1.5; }
+.columna__lista--numerada { padding-left: 1.5rem; list-style: decimal; }
+.columna__lista--numerada li::marker { color: var(--texto-suave); font-size: 0.8125rem; }
+@media (min-width: 640px) { .columnas { margin-top: 4rem; } }
+@media (min-width: 1024px) {
+  .columnas { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2.5rem 2rem; }
+  .columna--ancha { grid-column: auto; }
+}
+
+/* ---------- Pie ---------- */
+
+.pie { background: var(--fondo); color: var(--texto); }
+.pie__interior { padding-block: 4rem; }
+.pie__llamado { display: flex; flex-direction: column; gap: 2rem; padding-bottom: 3rem; border-bottom: 1px solid var(--borde); }
+.pie__llamado-texto { max-width: 42rem; }
+.etiqueta--pie { margin-bottom: 1.25rem; }
+.etiqueta__isotipo { width: 1.5rem; height: 1.5rem; border-radius: 9999px; }
+.pie__acciones { display: flex; flex-direction: column; align-items: flex-start; gap: 1rem; }
+.pie__enlace { color: var(--texto-suave); font-size: 0.875rem; transition: color 300ms; }
+.pie__enlace:hover { color: var(--kuyen-blanco); }
+.pie__salto { display: none; }
+
+.pie__grilla { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2.5rem 1.5rem; padding-block: 3rem; }
+.pie__marca { grid-column: span 2; display: flex; flex-direction: column; gap: 1.25rem; }
+.pie__bio { max-width: 20rem; color: var(--texto-suave); font-size: 0.875rem; line-height: 1.6; }
+.pie__estado {
+  display: inline-flex;
+  width: fit-content;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.375rem 0.75rem;
+  border: 1px solid var(--borde);
+  border-radius: 9999px;
+  color: var(--texto-suave);
+  font-size: 0.8125rem;
+}
+.pie__punto { width: 0.5rem; height: 0.5rem; border-radius: 9999px; background: var(--kuyen-lila); }
+.pie__columna { display: flex; flex-direction: column; gap: 0.875rem; }
+.pie__columna ul { display: flex; flex-direction: column; gap: 0.625rem; }
+.pie__columna li { color: var(--texto-suave); font-size: 0.875rem; }
+.pie__columna a { display: inline-flex; align-items: center; gap: 0.25rem; transition: color 300ms; }
+.pie__columna a svg { width: 13px; height: 13px; opacity: 0; transition: opacity 300ms cubic-bezier(0.25, 0.1, 0.25, 1); }
+.pie__columna a:hover { color: var(--kuyen-blanco); }
+.pie__columna a:hover svg { opacity: 1; }
+
+.pie__gigante { overflow: hidden; padding-top: 2.5rem; border-top: 1px solid var(--borde); pointer-events: none; user-select: none; }
+.pie__gigante span { display: block; color: rgb(255 255 255 / 0.06); font-family: var(--fuente-titulo); font-size: 18vw; line-height: 0.85; }
+
+.pie__legal { display: flex; flex-direction: column; gap: 1rem; padding-top: 2rem; color: var(--texto-suave); font-size: 0.8125rem; }
+.pie__legal-enlaces { display: flex; flex-wrap: wrap; gap: 0.5rem 1.25rem; }
+.pie__legal a { transition: color 300ms; }
+.pie__legal a:hover { color: var(--kuyen-blanco); }
+
+@media (min-width: 640px) {
+  .pie__interior { padding-block: 5rem; }
+  .pie__llamado { padding-bottom: 4rem; }
+  .etiqueta--pie { margin-bottom: 2rem; }
+  .etiqueta__isotipo { width: 1.75rem; height: 1.75rem; }
+  .pie__acciones { flex-direction: row; align-items: center; }
+  .pie__salto { display: inline; }
+  .pie__grilla { padding-block: 4rem; }
+  .pie__gigante { padding-top: 3rem; }
+  .pie__legal { flex-direction: row; align-items: center; justify-content: space-between; }
+}
+@media (min-width: 1024px) {
+  .pie__interior { padding-block: 6rem; }
+  .pie__llamado { flex-direction: row; align-items: flex-end; justify-content: space-between; padding-bottom: 5rem; }
+  .pie__acciones { flex-direction: column; align-items: flex-end; }
+  .pie__grilla { grid-template-columns: 1.5fr 1fr 1fr 1fr; padding-block: 5rem; }
+  .pie__marca { grid-column: auto; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .hero__remolino, .hero__acanalado { animation: none; }
+  .hero__estela { display: none; }
+  *, *::before, *::after { transition-duration: 0ms !important; }
+}
+
+  </style>
+</head>
+<body>
+  <a class="saltar" href="#contenido">Saltar al contenido</a>
+
+  <section class="hero tono-gradiente" data-hero>
+    <div class="hero__fondo" aria-hidden="true">
+      <div class="hero__remolino"></div>
+      <div class="hero__acanalado"></div>
+      <div class="hero__estela"></div>
+      <div class="hero__grano"></div>
+    </div>
+
+    <header class="cabecera">
+      <nav class="cabecera__nav tono-claro" aria-label="Principal">
+        <div class="cabecera__izquierda">
+          <a class="marca" href="#contenido" aria-label="Kuyen Climbing, inicio">
+            <img class="marca__isotipo" src="/img/marca/isotipo-256.webp" width="256" height="256" alt="">
+            <span class="marca__nombre">KÜYEN CLIMBING</span>
+          </a>
+          <div class="cabecera__enlaces">
+            <a href="#kuyen">Kuyen</a>
+            <a href="#muro">El muro</a>
+            <a href="#clases">Clases</a>
+            <a href="#visitanos">Visítanos</a>
+          </div>
+        </div>
+        <div class="cabecera__derecha">
+          <span class="cabecera__estado">Renovamos rutas de forma periódica</span>
+          <a class="boton boton--oscuro" href="https://wa.me/56935028838" target="_blank" rel="noopener">
+            <span class="boton__texto"><span class="boton__rollo"><span>Escríbenos</span><span aria-hidden="true">Escríbenos</span></span></span>
+            <span class="boton__circulo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+          </a>
+        </div>
+        <button type="button" class="cabecera__menu" aria-label="Abrir el menú" aria-expanded="false" aria-controls="menu-movil" data-menu-abrir><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+      </nav>
+    </header>
+
+    <div class="hero__contenido" id="contenido" tabindex="-1">
+      <div class="contenedor hero__interior">
+        <span class="hero__antetitulo">Escalada en boulder · Padre Las Casas</span>
+        <h1 class="titulo-grande">Un proyecto hecho <br class="hero__salto">por escaladores <br class="hero__salto">para escaladores</h1>
+        <div class="hero__acciones">
+          <a class="boton boton--primario" href="https://docs.google.com/forms/d/e/1FAIpQLSfA0HoO-PmDaaSRjXqLt1VF37dFQKTdcsL2kD1co3wM-rGGIQ/viewform?usp=pp_url" target="_blank" rel="noopener">
+            <span class="boton__texto"><span class="boton__rollo"><span>Solicitud de ingreso</span><span aria-hidden="true">Solicitud de ingreso</span></span></span>
+            <span class="boton__circulo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+          </a>
+          <div class="chip tono-claro">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 1c.9 6.6 4.4 10.1 11 11-6.6.9-10.1 4.4-11 11-.9-6.6-4.4-10.1-11-11 6.6-.9 10.1-4.4 11-11z"/></svg>
+            <span class="chip__texto">5,0 en Google</span>
+            <span class="chip__insignia">14 reseñas</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="menu" id="menu-movil" data-menu inert>
+    <div class="menu__capa" data-menu-capa></div>
+    <div class="menu__hoja tono-claro">
+      <nav class="menu__enlaces" aria-label="Menú">
+        <a href="#kuyen">Kuyen</a>
+        <a href="#muro">El muro</a>
+        <a href="#clases">Clases</a>
+        <a href="#visitanos">Visítanos</a>
+      </nav>
+      <a class="boton boton--primario boton--ancho" href="https://docs.google.com/forms/d/e/1FAIpQLSfA0HoO-PmDaaSRjXqLt1VF37dFQKTdcsL2kD1co3wM-rGGIQ/viewform?usp=pp_url" target="_blank" rel="noopener">
+            <span class="boton__texto"><span class="boton__rollo"><span>Solicitud de ingreso</span><span aria-hidden="true">Solicitud de ingreso</span></span></span>
+            <span class="boton__circulo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+          </a>
+    </div>
+  </div>
+
+  <main>
+    <section class="seccion seccion--intro tono-claro" id="kuyen">
+      <div class="contenedor">
+        <div class="etiqueta">
+          <span class="etiqueta__numero">1</span>
+          <span class="insignia">Qué es Kuyen</span>
+        </div>
+        <h2 class="titulo-intro intro__titulo">Centro de escalada técnica<br> en Padre Las Casas.</h2>
+        <div class="intro__grilla">
+          <div class="intro__texto">
+            <p class="intro__parrafo">Küyen significa luna en mapudungun. Desde 2023, un proyecto hecho por escaladores para escaladores.</p>
+            <a class="boton boton--primario intro__boton" href="#muro">
+            <span class="boton__texto"><span class="boton__rollo"><span>Conoce el muro</span><span aria-hidden="true">Conoce el muro</span></span></span>
+            <span class="boton__circulo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+          </a>
+          </div>
+          <img src="/img/fotos/pancita-1200.webp" srcset="/img/fotos/pancita-800.webp 800w, /img/fotos/pancita-1200.webp 1200w, /img/fotos/pancita-1600.webp 1600w" sizes="(min-width: 1024px) 24vw, (min-width: 640px) 45vw, 100vw" width="1200" height="800" alt="Pancita, la gata de Kuyen, mirando a la cámara con el muro de fondo" class="intro__foto intro__foto--chica" loading="lazy" decoding="async">
+          <img src="/img/fotos/escalador-muro-blanco-1200.webp" srcset="/img/fotos/escalador-muro-blanco-800.webp 800w, /img/fotos/escalador-muro-blanco-1200.webp 1200w, /img/fotos/escalador-muro-blanco-1600.webp 1600w" sizes="(min-width: 1024px) 44vw, (min-width: 640px) 55vw, 100vw" width="1200" height="800" alt="Escalador en un muro blanco, amarillo, azul y gris" class="intro__foto intro__foto--grande" loading="lazy" decoding="async">
+        </div>
+      </div>
+    </section>
+
+    <section class="seccion seccion--tarjetas seccion--tinte tono-claro" id="muro">
+      <div class="contenedor">
+        <div class="etiqueta">
+          <span class="etiqueta__numero">2</span>
+          <span class="insignia">El muro y la comunidad</span>
+        </div>
+        <h2 class="titulo-grande tarjetas__titulo">Escalar en Kuyen</h2>
+        <div class="tarjetas">
+          <article class="tarjeta">
+            <div class="tarjeta__medio">
+              <img src="/img/fotos/escalador-desplome-amarillo-1200.webp" srcset="/img/fotos/escalador-desplome-amarillo-800.webp 800w, /img/fotos/escalador-desplome-amarillo-1200.webp 1200w, /img/fotos/escalador-desplome-amarillo-1600.webp 1600w" sizes="(min-width: 768px) 50vw, 100vw" width="1200" height="803" alt="Escalador con polera verde colgado de un desplome amarillo y azul" loading="lazy" decoding="async">
+              <a class="pildora" style="--abierta: 10.25rem" href="https://www.instagram.com/kuyen.climbing/" target="_blank" rel="noopener"><span class="pildora__icono"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></span><span class="pildora__texto">Ver en Instagram</span></a>
+            </div>
+            <p class="tarjeta__descripcion">Desplomes continuos hasta 25°, moonboard y rutas nuevas de forma periódica.</p>
+            <h3 class="tarjeta__titulo">Escalada libre</h3>
+          </article>
+          <article class="tarjeta">
+            <div class="tarjeta__medio">
+              <img src="/img/fotos/comunidad-evento-1200.webp" srcset="/img/fotos/comunidad-evento-800.webp 800w, /img/fotos/comunidad-evento-1200.webp 1200w, /img/fotos/comunidad-evento-1600.webp 1600w" sizes="(min-width: 768px) 50vw, 100vw" width="1200" height="803" alt="Mucha gente reunida dentro del gimnasio durante un evento, con los muros al fondo" loading="lazy" decoding="async">
+              <a class="pildora pildora--oscura" style="--abierta: 8.5rem" href="https://www.instagram.com/kuyen.climbing/" target="_blank" rel="noopener"><span class="pildora__icono"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></span><span class="pildora__texto">Ver eventos</span></a>
+            </div>
+            <p class="tarjeta__descripcion">La comunidad es el centro de Kuyen: competencias, encuentros, talleres, celebraciones y sorteos.</p>
+            <h3 class="tarjeta__titulo">Comunidad y eventos</h3>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="seccion seccion--tarjetas tono-claro" id="clases">
+      <div class="contenedor">
+        <div class="etiqueta">
+          <span class="etiqueta__numero">3</span>
+          <span class="insignia">Clases y Kuyencit@s</span>
+        </div>
+        <h2 class="titulo-grande tarjetas__titulo">Aprende con nosotros</h2>
+        <div class="tarjetas">
+          <article class="tarjeta">
+            <div class="tarjeta__medio">
+              <img src="/img/fotos/escaladora-desplome-1200.webp" srcset="/img/fotos/escaladora-desplome-800.webp 536w, /img/fotos/escaladora-desplome-1200.webp 803w, /img/fotos/escaladora-desplome-1600.webp 1071w" sizes="(min-width: 768px) 50vw, 100vw" width="803" height="1200" alt="Escaladora con polera negra y pantalón camuflado en un desplome amarillo y azul" loading="lazy" decoding="async">
+              <a class="pildora" style="--abierta: 8.5rem" href="https://wa.me/56935028838" target="_blank" rel="noopener"><span class="pildora__icono"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></span><span class="pildora__texto">Escríbenos</span></a>
+            </div>
+            <p class="tarjeta__descripcion">Desde marzo de 2026: un plan de 8 clases al mes, 2 veces por semana. Técnica, seguridad y lectura de rutas. Días y horarios: <!-- POR CONFIRMAR: días, horarios y cupos de las clases guiadas (pregunta 4) --><span class="pendiente">[POR CONFIRMAR]</span></p>
+            <h3 class="tarjeta__titulo">Clases guiadas</h3>
+          </article>
+          <article class="tarjeta">
+            <div class="tarjeta__medio">
+              <img src="/img/fotos/nino-escalando-1200.webp" srcset="/img/fotos/nino-escalando-800.webp 800w, /img/fotos/nino-escalando-1200.webp 1200w, /img/fotos/nino-escalando-1600.webp 1600w" sizes="(min-width: 768px) 50vw, 100vw" width="1200" height="800" alt="Niño escalando mientras el público lo mira desde abajo" loading="lazy" decoding="async">
+              <a class="pildora pildora--oscura" style="--abierta: 8.5rem" href="https://wa.me/56935028838" target="_blank" rel="noopener"><span class="pildora__icono"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></span><span class="pildora__texto">Escríbenos</span></a>
+            </div>
+            <p class="tarjeta__descripcion">El programa de escalada para niñas y niños. Edades y días: <!-- POR CONFIRMAR: edades, días, horario y valor de Kuyencit@s (pregunta 3) --><span class="pendiente">[POR CONFIRMAR]</span></p>
+            <h3 class="tarjeta__titulo">Kuyencit@s</h3>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="seccion seccion--intro seccion--tinte tono-claro" id="horarios">
+      <div class="contenedor">
+        <div class="etiqueta">
+          <span class="etiqueta__numero">4</span>
+          <span class="insignia">Horarios y valores</span>
+        </div>
+        <h2 class="titulo-intro intro__titulo">Dos tramos para escalar:<br> horario bajo y horario normal.</h2>
+        <div class="bloque">
+          <p class="intro__parrafo">Se paga al ingresar. Horarios y valores vigentes: <!-- POR CONFIRMAR: horario por día con los dos tramos y precios vigentes (preguntas 1 y 2) --><span class="pendiente">[POR CONFIRMAR]</span></p>
+          <a class="boton boton--primario intro__boton" href="https://wa.me/56935028838" target="_blank" rel="noopener">
+            <span class="boton__texto"><span class="boton__rollo"><span>Consultar por WhatsApp</span><span aria-hidden="true">Consultar por WhatsApp</span></span></span>
+            <span class="boton__circulo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+          </a>
+        </div>
+        <div class="columnas">
+          <div class="columna">
+            <h3 class="columna__titulo">Horario bajo</h3>
+            <ul class="columna__lista">
+              <li>Menos frío, menos gente, más muro para ti.</li>
+              <li>Días: <!-- POR CONFIRMAR: días del horario bajo (pregunta 1) --><span class="pendiente">[POR CONFIRMAR]</span></li>
+              <li>Horas: <!-- POR CONFIRMAR: horas del horario bajo (pregunta 1) --><span class="pendiente">[POR CONFIRMAR]</span></li>
+            </ul>
+          </div>
+          <div class="columna">
+            <h3 class="columna__titulo">Horario normal</h3>
+            <ul class="columna__lista">
+              <li>Tarde y noche.</li>
+              <li>Días: <!-- POR CONFIRMAR: días del horario normal (pregunta 1) --><span class="pendiente">[POR CONFIRMAR]</span></li>
+              <li>Horas: <!-- POR CONFIRMAR: horas del horario normal (pregunta 1) --><span class="pendiente">[POR CONFIRMAR]</span></li>
+            </ul>
+          </div>
+          <div class="columna columna--ancha">
+            <h3 class="columna__titulo">Valores</h3>
+            <ul class="columna__lista">
+              <li>Pase diario, horario bajo: <!-- POR CONFIRMAR: valor de pase diario, horario bajo (pregunta 2) --><span class="pendiente">[POR CONFIRMAR]</span></li>
+              <li>Pase diario, horario normal: <!-- POR CONFIRMAR: valor de pase diario, horario normal (pregunta 2) --><span class="pendiente">[POR CONFIRMAR]</span></li>
+              <li>Mensualidad de escalada libre: <!-- POR CONFIRMAR: valor de mensualidad de escalada libre (pregunta 2) --><span class="pendiente">[POR CONFIRMAR]</span></li>
+              <li>Plan de clases guiadas: <!-- POR CONFIRMAR: valor de plan de clases guiadas (pregunta 2) --><span class="pendiente">[POR CONFIRMAR]</span></li>
+              <li>Kuyencit@s: <!-- POR CONFIRMAR: valor de kuyencit@s (pregunta 2) --><span class="pendiente">[POR CONFIRMAR]</span></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="seccion seccion--intro tono-claro" id="reglamento">
+      <div class="contenedor">
+        <div class="etiqueta">
+          <span class="etiqueta__numero">5</span>
+          <span class="insignia">Reglamento</span>
+        </div>
+        <h2 class="titulo-intro intro__titulo">Para cuidarnos<br> entre todos.</h2>
+        <div class="bloque">
+          <p class="intro__parrafo">Antes de tu primera visita, completa la solicitud de ingreso: confirmas que leíste el reglamento y dejas un contacto de emergencia.</p>
+          <a class="boton boton--primario intro__boton" href="https://docs.google.com/forms/d/e/1FAIpQLSfA0HoO-PmDaaSRjXqLt1VF37dFQKTdcsL2kD1co3wM-rGGIQ/viewform?usp=pp_url" target="_blank" rel="noopener">
+            <span class="boton__texto"><span class="boton__rollo"><span>Solicitud de ingreso</span><span aria-hidden="true">Solicitud de ingreso</span></span></span>
+            <span class="boton__circulo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+          </a>
+        </div>
+        <div class="columnas">
+          <div class="columna">
+            <h3 class="columna__titulo">Del 1 al 5</h3>
+            <ol class="columna__lista columna__lista--numerada" start="1">
+              <li>Saludar al ingresar</li>
+              <li>Cancelar al momento de ingresar</li>
+              <li>No traer animales</li>
+              <li>No ingresar a la casa</li>
+              <li>No fumar ni beber alcohol</li>
+            </ol>
+          </div>
+          <div class="columna">
+            <h3 class="columna__titulo">Del 6 al 10</h3>
+            <ol class="columna__lista columna__lista--numerada" start="6">
+              <li>Ordenar sus pertenencias</li>
+              <li>Ordenar el material de entrenamiento</li>
+              <li>Escalar con calzado</li>
+              <li>Hacer sombra a toda persona</li>
+              <li>Cuidado con rutas expuestas</li>
+            </ol>
+          </div>
+          <div class="columna columna--ancha">
+            <h3 class="columna__titulo">Del 11 al 15</h3>
+            <ol class="columna__lista columna__lista--numerada" start="11">
+              <li>No sacarse la polera</li>
+              <li>No gritar intencionalmente</li>
+              <li>No manipular las presas del muro</li>
+              <li>No ingresar a la recepción</li>
+              <li>Al retirarse despídase</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="seccion seccion--tarjetas seccion--tinte tono-claro" id="visitanos">
+      <div class="contenedor">
+        <div class="etiqueta">
+          <span class="etiqueta__numero">6</span>
+          <span class="insignia">Visítanos</span>
+        </div>
+        <h2 class="titulo-grande tarjetas__titulo">Los Patagones 375</h2>
+        <div class="tarjetas">
+          <article class="tarjeta">
+            <div class="tarjeta__medio tono-gradiente">
+              <div class="mapa">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></svg>
+                <p class="mapa__direccion">Los Patagones 375<br>Padre Las Casas, La Araucanía</p>
+                <p class="mapa__nota">El mapa se carga desde Google Maps al hacer clic.</p>
+              </div>
+              <button type="button" class="pildora" style="--abierta: 7.5rem" data-mapa="https://www.google.com/maps?q=-38.7605438,-72.5918641&amp;z=16&amp;output=embed" data-titulo="Mapa de Kuyen Climbing en Los Patagones 375, Padre Las Casas"><span class="pildora__icono"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></svg></span><span class="pildora__texto">Ver mapa</span></button>
+            </div>
+            <p class="tarjeta__descripcion">Plus code 6CQ5+Q7 Padre Las Casas. A un costado de Temuco. <a class="enlace" href="https://maps.app.goo.gl/v9F89L5peqFyxcJc9" target="_blank" rel="noopener">Abrir en Google Maps</a></p>
+            <h3 class="tarjeta__titulo">Cómo llegar</h3>
+          </article>
+          <article class="tarjeta">
+            <div class="tarjeta__medio">
+              <img src="/img/fotos/joven-escalando-1200.webp" srcset="/img/fotos/joven-escalando-800.webp 800w, /img/fotos/joven-escalando-1200.webp 1200w, /img/fotos/joven-escalando-1600.webp 1600w" sizes="(min-width: 768px) 50vw, 100vw" width="1200" height="800" alt="Joven escalando visto desde arriba, con público alrededor" loading="lazy" decoding="async">
+              <a class="pildora pildora--oscura" style="--abierta: 8.5rem" href="https://wa.me/56935028838" target="_blank" rel="noopener"><span class="pildora__icono"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></span><span class="pildora__texto">Escríbenos</span></a>
+            </div>
+            <p class="tarjeta__descripcion">WhatsApp +56 9 3502 8838 o mensaje directo en Instagram, @kuyen.climbing.</p>
+            <h3 class="tarjeta__titulo">Contacto</h3>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="pie tono-oscuro">
+    <div class="contenedor pie__interior">
+      <div class="pie__llamado">
+        <div class="pie__llamado-texto">
+          <div class="etiqueta etiqueta--pie">
+            <img class="etiqueta__isotipo" src="/img/marca/isotipo-256.webp" width="256" height="256" alt="">
+            <span class="insignia">¿Primera vez en Kuyen?</span>
+          </div>
+          <h2 class="titulo-grande">Te esperamos <br class="pie__salto">en el muro.</h2>
+        </div>
+        <div class="pie__acciones">
+          <a class="boton boton--primario" href="https://docs.google.com/forms/d/e/1FAIpQLSfA0HoO-PmDaaSRjXqLt1VF37dFQKTdcsL2kD1co3wM-rGGIQ/viewform?usp=pp_url" target="_blank" rel="noopener">
+            <span class="boton__texto"><span class="boton__rollo"><span>Solicitud de ingreso</span><span aria-hidden="true">Solicitud de ingreso</span></span></span>
+            <span class="boton__circulo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+          </a>
+          <a class="pie__enlace" href="https://wa.me/56935028838" target="_blank" rel="noopener">Escríbenos por WhatsApp</a>
+        </div>
+      </div>
+
+      <div class="pie__grilla">
+        <div class="pie__marca">
+          <a class="marca" href="#contenido" aria-label="Kuyen Climbing, inicio">
+            <img class="marca__isotipo" src="/img/marca/isotipo-256.webp" width="256" height="256" alt="">
+            <span class="marca__nombre">KÜYEN CLIMBING</span>
+          </a>
+          <p class="pie__bio">Hola, somos Kuyen Climbing, un lugar donde puedes ir a entrenar y escalar.</p>
+          <span class="pie__estado"><span class="pie__punto"></span>Los Patagones 375, Padre Las Casas</span>
+        </div>
+        <nav class="pie__columna" aria-label="Kuyen">
+          <h3 class="columna__titulo">Kuyen</h3>
+          <ul>
+            <li><a href="#kuyen">Qué es Kuyen<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a></li>
+            <li><a href="#muro">El muro<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a></li>
+            <li><a href="#clases">Clases<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a></li>
+            <li><a href="#reglamento">Reglamento<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a></li>
+          </ul>
+        </nav>
+        <nav class="pie__columna" aria-label="Visítanos">
+          <h3 class="columna__titulo">Visítanos</h3>
+          <ul>
+            <li><a href="#horarios">Horarios y valores<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a></li>
+            <li><a href="#visitanos">Cómo llegar<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a></li>
+            <li><a href="https://maps.app.goo.gl/v9F89L5peqFyxcJc9" target="_blank" rel="noopener">Google Maps<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a></li>
+            <li><a href="https://docs.google.com/forms/d/e/1FAIpQLSfA0HoO-PmDaaSRjXqLt1VF37dFQKTdcsL2kD1co3wM-rGGIQ/viewform?usp=pp_url" target="_blank" rel="noopener">Solicitud de ingreso<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a></li>
+          </ul>
+        </nav>
+        <nav class="pie__columna" aria-label="Contacto">
+          <h3 class="columna__titulo">Contacto</h3>
+          <ul>
+            <li><a href="https://wa.me/56935028838" target="_blank" rel="noopener">WhatsApp<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a></li>
+            <li><a href="https://www.instagram.com/kuyen.climbing/" target="_blank" rel="noopener">Instagram<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a></li>
+            <li><a href="https://linktr.ee/kuyen.climbing" target="_blank" rel="noopener">Linktree<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a></li>
+            <li><span>Correo: <!-- POR CONFIRMAR: correo de contacto (pregunta 6) --><span class="pendiente">[POR CONFIRMAR]</span></span></li>
+          </ul>
+        </nav>
+      </div>
+
+      <div class="pie__gigante" aria-hidden="true"><span>KÜYEN</span></div>
+
+      <div class="pie__legal">
+        <p>© 2026 Kuyen Climbing.</p>
+        <div class="pie__legal-enlaces">
+          <a href="https://www.instagram.com/kuyen.climbing/" target="_blank" rel="noopener">Instagram</a>
+          <a href="https://wa.me/56935028838" target="_blank" rel="noopener">WhatsApp</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
   <script>
-  (function () {
-    try { history.replaceState(null, '', "/embed/templates/agency-landing") } catch (e) {}
+(function () {
+  'use strict'
 
-    var PREFIJO = "/temas/hirael"
-    var OPTIMIZADOR = /(?:\/temas\/[\w-]+)?\/_next\/image\?[^"'\s,]*url=([^&"'\s,]+)[^"'\s,]*/g
-
-    function reapuntar(valor) {
-      return valor.replace(OPTIMIZADOR, function (todo, codificada) {
-        try { return PREFIJO + decodeURIComponent(codificada) } catch (e) { return todo }
-      })
-    }
-    function arreglar(el) {
-      if (!el || !el.getAttribute) return
-      for (var i = 0; i < 2; i++) {
-        var attr = i ? 'srcset' : 'src'
-        var v = el.getAttribute(attr)
-        if (!v || v.indexOf('/_next/image') === -1) continue
-        var n = reapuntar(v)
-        if (n !== v) el.setAttribute(attr, n)
+  /* Menú móvil: la hoja sube desde abajo sobre una capa oscura. Se cierra con
+     la capa, con un enlace o con Escape, y queda inerte mientras está cerrado. */
+  var menu = document.querySelector('[data-menu]')
+  var abrir = document.querySelector('[data-menu-abrir]')
+  if (menu && abrir) {
+    var poner = function (abierto) {
+      menu.classList.toggle('abierto', abierto)
+      menu.inert = !abierto
+      abrir.setAttribute('aria-expanded', String(abierto))
+      abrir.setAttribute('aria-label', abierto ? 'Cerrar el menú' : 'Abrir el menú')
+      document.body.style.overflow = abierto ? 'hidden' : ''
+      if (abierto) {
+        var primero = menu.querySelector('a')
+        if (primero) primero.focus()
       }
     }
-    function barrer(raiz) {
-      if (!raiz || !raiz.querySelectorAll) return
-      var imgs = raiz.querySelectorAll('img, source')
-      for (var i = 0; i < imgs.length; i++) arreglar(imgs[i])
-    }
-
-    new MutationObserver(function (cambios) {
-      for (var i = 0; i < cambios.length; i++) {
-        var c = cambios[i]
-        if (c.type === 'attributes') arreglar(c.target)
-        for (var j = 0; j < c.addedNodes.length; j++) {
-          arreglar(c.addedNodes[j])
-          barrer(c.addedNodes[j])
-        }
-      }
-    }).observe(document.documentElement, {
-      childList: true, subtree: true, attributes: true, attributeFilter: ['src', 'srcset'],
+    abrir.addEventListener('click', function () {
+      poner(!menu.classList.contains('abierto'))
     })
+    menu.addEventListener('click', function (e) {
+      if (e.target.closest('a') || e.target.hasAttribute('data-menu-capa')) poner(false)
+    })
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && menu.classList.contains('abierto')) {
+        poner(false)
+        abrir.focus()
+      }
+    })
+  }
 
-    document.addEventListener('DOMContentLoaded', function () { barrer(document) })
-    window.addEventListener('load', function () { barrer(document) })
-  })()
-  </script><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="preload" href="/temas/hirael/_next/static/media/01e4147cff8141ee-s.p.3huc2loe0ie8a.woff2" as="font" crossorigin="" type="font/woff2"><link rel="preload" href="/temas/hirael/_next/static/media/051742360c26797e-s.p.1bkzbscqrt8rl.woff2" as="font" crossorigin="" type="font/woff2"><link rel="preload" href="/temas/hirael/_next/static/media/22fa55bc1dba6839-s.p.0d9vtzwl8fd0i.woff2" as="font" crossorigin="" type="font/woff2"><link rel="preload" href="/temas/hirael/_next/static/media/2cc64289d47b4837-s.p.3gyhordp6ke8y.woff2" as="font" crossorigin="" type="font/woff2"><link rel="preload" href="/temas/hirael/_next/static/media/434f71d810631da4-s.p.3ea9128zkldg5.woff2" as="font" crossorigin="" type="font/woff2"><link rel="preload" href="/temas/hirael/_next/static/media/7ebf22b5a21034f8-s.p.3j3877k49yy0l.woff2" as="font" crossorigin="" type="font/woff2"><link rel="preload" href="/temas/hirael/_next/static/media/83afe278b6a6bb3c-s.p.2bn3s6zvc0dyp.woff2" as="font" crossorigin="" type="font/woff2"><link rel="preload" href="/temas/hirael/_next/static/media/8bd76523131fa0fc-s.p.1pvupmngxrt5z.woff2" as="font" crossorigin="" type="font/woff2"><link rel="preload" href="/temas/hirael/_next/static/media/92965d68c2e7dc96-s.p.1tn4ua9rqzvtc.woff2" as="font" crossorigin="" type="font/woff2"><link rel="preload" href="/temas/hirael/_next/static/media/9ff27b8a0a8f3dc0-s.p.40_3w74kn95bo.woff2" as="font" crossorigin="" type="font/woff2"><link rel="preload" href="/temas/hirael/_next/static/media/a343f882a40d2cc9-s.p.1sj6eobyi31rd.woff2" as="font" crossorigin="" type="font/woff2"><link rel="preload" href="/temas/hirael/_next/static/media/ccf27e5a7366fb23-s.p.1icgra-w5i50b.woff2" as="font" crossorigin="" type="font/woff2"><link rel="preload" href="/temas/hirael/_next/static/media/d41831e24743a3c1-s.p.08tn9snzkmifr.woff2" as="font" crossorigin="" type="font/woff2"><link rel="preload" href="/temas/hirael/_next/static/media/e41d5df559864f9e-s.p.1g73gv09-xcb6.woff2" as="font" crossorigin="" type="font/woff2"><link rel="preload" href="/temas/hirael/_next/static/media/fba5a26ea33df6a3-s.p.18rizl4rsrl42.woff2" as="font" crossorigin="" type="font/woff2"><link rel="preload" href="/temas/hirael/_next/static/media/fc0a7394b875fa43-s.p.2ytmazkdrg7t9.woff2" as="font" crossorigin="" type="font/woff2"><link rel="preload" as="image" href="/temas/hirael/media/templates/agency-landing/about-small.jpg"><link rel="preload" as="image" href="/temas/hirael/media/templates/agency-landing/about-large.jpg"><link rel="stylesheet" href="/temas/hirael/_next/static/chunks/28-_i3rx9npox.css" data-precedence="next"><link rel="stylesheet" href="/temas/hirael/_next/static/chunks/2b3s6jivk2nnu.css" data-precedence="next"><link rel="stylesheet" href="/temas/hirael/_next/static/chunks/1ff2n3jy6d9n_.css" data-precedence="next"><link rel="preload" as="script" fetchpriority="low" href="/temas/hirael/_next/static/chunks/3lui113fc-fd8.js"><script src="/temas/hirael/_next/static/chunks/1h2dpxys2er_8.js" async=""></script><script src="/temas/hirael/_next/static/chunks/3cy3bewz8lgzr.js" async=""></script><script src="/temas/hirael/_next/static/chunks/2rlk1er01-5ik.js" async=""></script><script src="/temas/hirael/_next/static/chunks/turbopack-2ta024im9pstb.js" async=""></script><script src="/temas/hirael/_next/static/chunks/3-6dxrkvm-cbx.js" async="" crossorigin=""></script><script src="/temas/hirael/_next/static/chunks/0a_wj91ae_fw_.js" async="" crossorigin=""></script><script src="/temas/hirael/_next/static/chunks/37pi4kcan3lay.js" async="" crossorigin=""></script><script src="/temas/hirael/_next/static/chunks/42-9av97l-s67.js" async="" crossorigin=""></script><script src="/temas/hirael/_next/static/chunks/3p6qey0e8feqk.js" async="" crossorigin=""></script><script src="/temas/hirael/_next/static/chunks/0qj7ed5xxjcrt.js" async="" crossorigin=""></script><script src="/temas/hirael/_next/static/chunks/060qgfzv98756.js" async="" crossorigin=""></script><script src="/temas/hirael/_next/static/chunks/0kbxdb8hbqksr.js" async="" crossorigin=""></script><script src="/temas/hirael/_next/static/chunks/3tby25hivp-zr.js" async="" crossorigin=""></script><script src="/temas/hirael/_next/static/chunks/244_5k8_oblvd.js" async="" crossorigin=""></script><script src="/temas/hirael/_next/static/chunks/1h1v1xankugsi.js" async="" crossorigin=""></script><script src="/temas/hirael/_next/static/chunks/0hde38qgh9v96.js" async="" crossorigin=""></script><script src="/temas/hirael/_next/static/chunks/2tw_hi6_pbfec.js" async="" crossorigin=""></script><script src="/temas/hirael/_next/static/chunks/2rw9ff634c2eo.js" async="" crossorigin=""></script><script src="/temas/hirael/_next/static/chunks/07k4ptwh0ud17.js" async="" crossorigin=""></script><link rel="preload" href="/temas/hirael/_next/static/chunks/1g-gwbme509kv.css" as="style"><meta name="theme-color" content="#F4F2EC" media="(prefers-color-scheme: light)"><meta name="theme-color" content="#0D1117" media="(prefers-color-scheme: dark)"><meta name="color-scheme" content="light dark"><title>Agency Landing preview - Hirael</title><meta name="description" content="A shadcn-compatible registry of React components, section blocks, and full-page templates most products end up building anyway. The shadcn CLI copies the source into your repo, so there's no package to depend on."><meta name="application-name" content="Hirael"><link rel="author" href="https://mohammadshehadeh.com"><meta name="author" content="Mohammad Shehadeh"><link rel="manifest" href="/manifest.webmanifest"><meta name="keywords" content="shadcn,shadcn ui,shadcn registry,react components,ui library,tailwind css,multi-select,combobox,tag input,currency input,file dropzone,next.js components,hirael,react 19"><meta name="creator" content="Mohammad Shehadeh"><meta name="publisher" content="Mohammad Shehadeh"><meta name="robots" content="noindex, nofollow"><meta name="category" content="technology"><meta property="og:title" content="Components, blocks and templates shadcn/ui doesn't ship - Hirael"><meta property="og:description" content="A shadcn-compatible registry of React components, section blocks, and full-page templates most products end up building anyway. The shadcn CLI copies the source into your repo, so there's no package to depend on."><meta property="og:url" content="https://hirael.com"><meta property="og:site_name" content="Hirael"><meta property="og:locale" content="en_US"><meta property="og:image" content="https://hirael.com/opengraph-image"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="Components, blocks and templates shadcn/ui doesn't ship - Hirael"><meta property="og:type" content="website"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Components, blocks and templates shadcn/ui doesn't ship - Hirael"><meta name="twitter:description" content="A shadcn-compatible registry of React components, section blocks, and full-page templates most products end up building anyway. The shadcn CLI copies the source into your repo, so there's no package to depend on."><meta name="twitter:image" content="https://hirael.com/opengraph-image"><link rel="icon" href="/icon?547d71e1422d66a0" type="image/png" sizes="64x64"><link rel="apple-touch-icon" href="/apple-icon?073bb306c9178443" type="image/png" sizes="180x180"><meta name="next-size-adjust" content=""><link rel="alternate" type="text/plain" title="llms.txt" href="/llms.txt"><link rel="alternate" type="application/json" title="Registry catalog" href="/temas/hirael/r/registry.json"><script>(()=>{try{
-    var raw=localStorage.getItem("hirael.customizer.css.v1");
-    if(!raw)return;
-    var s=JSON.parse(raw);
-    var css=location.pathname.indexOf('/embed/')===0?s.embed:s.main;
-    if(!css)return;
-    var el=document.createElement('style');
-    el.id="hirael-customizer";
-    el.textContent=css;
-    document.head.appendChild(el);
-  }catch(e){}})();</script><script id="hirael-jsonld" type="application/ld+json">[{"@context":"https://schema.org","@type":"WebSite","@id":"https://hirael.com/#website","url":"https://hirael.com","name":"Hirael","description":"A shadcn-compatible registry of React components, section blocks, and full-page templates most products end up building anyway. The shadcn CLI copies the source into your repo, so there's no package to depend on.","inLanguage":"en","publisher":{"@id":"https://hirael.com/#person"}},{"@context":"https://schema.org","@type":"Person","@id":"https://hirael.com/#person","name":"Mohammad Shehadeh","url":"https://mohammadshehadeh.com","sameAs":["https://github.com/mohammadshehadeh/"]},{"@context":"https://schema.org","@type":"SoftwareApplication","@id":"https://hirael.com/#app","name":"Hirael","alternateName":"Hirael registry","description":"A shadcn-compatible registry of React components, section blocks, and full-page templates most products end up building anyway. The shadcn CLI copies the source into your repo, so there's no package to depend on.","url":"https://hirael.com","applicationCategory":"DeveloperApplication","operatingSystem":"Any","softwareVersion":"0.1","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"author":{"@type":"Person","@id":"https://hirael.com/#person","name":"Mohammad Shehadeh","url":"https://mohammadshehadeh.com","sameAs":["https://github.com/mohammadshehadeh/"]},"publisher":{"@id":"https://hirael.com/#person"}}]</script><script src="/temas/hirael/_next/static/chunks/0cz1d0mv5g_q7.js" nomodule=""></script><script src="/temas/hirael/_next/static/chunks/38zq-1xuq0j4x.js"></script><script src="/temas/hirael/_next/static/chunks/3gyrdmvw4pz77.js"></script><script src="/temas/hirael/_next/static/chunks/15o25l521ry2x.js"></script><script src="/temas/hirael/_next/static/chunks/307gts0xq-ui6.js"></script></head><body class="inter_2602f946-module__2PEFoa__variable jetbrains_mono_40f9379a-module__i8Zd-q__variable cormorant_garamond_ebce9caf-module__RtsoOa__variable font-sans antialiased"><div hidden=""><!--$--><!--/$--></div><a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:start-4 focus:top-4 focus:z-100 focus:inline-flex focus:items-center focus:rounded-md focus:border focus:border-border focus:bg-popover focus:px-4 focus:py-2 focus:text-sm focus:font-medium focus:text-popover-foreground focus:shadow-elevated focus:outline-none">Skip to content</a><script>((a,b,c,d,e,f,g,h)=>{let i=document.documentElement,j=["light","dark"];function k(b){var c;(Array.isArray(a)?a:[a]).forEach(a=>{let c="class"===a,d=c&&f?e.map(a=>f[a]||a):e;c?(i.classList.remove(...d),i.classList.add(f&&f[b]?f[b]:b)):i.setAttribute(a,b)}),c=b,h&&j.includes(c)&&(i.style.colorScheme=c)}if(d)k(d);else try{let a=localStorage.getItem(b)||c,d=g&&"system"===a?window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light":a;k(d)}catch(a){}})("class","hirael.theme.mode.v1","dark",null,["light","dark"],null,false,true)</script><script>(()=>{try{var p=new URLSearchParams(location.search);var d=p.get('dir');document.documentElement.dir=d==='rtl'?'rtl':'ltr';if(window.self!==window.top)document.documentElement.setAttribute('data-framed','');if(p.get('static')==='1')document.documentElement.setAttribute('data-static','');if(p.get('fit')==='1')document.documentElement.setAttribute('data-fit','');}catch(e){}})();</script><div data-embed-shell="true" class="min-h-svh bg-black"><!--$--><div class="bg-white text-gray-900 antialiased" style="font-family:ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, Roboto, &quot;Helvetica Neue&quot;, Arial, &quot;Noto Sans&quot;, sans-serif, &quot;Apple Color Emoji&quot;, &quot;Segoe UI Emoji&quot;, &quot;Segoe UI Symbol&quot;, &quot;Noto Color Emoji&quot;"><section class="relative flex h-dvh flex-col overflow-hidden bg-[#EFEFEF]"><div class="pointer-events-none absolute inset-0 z-10"><div class="shader" style="width: 100%; height: 100%;"><canvas data-renderer="shaders" style="width: 100%; height: 100%; display: block;"></canvas><span data-shader-id="_r_1_" style="display: contents;"></span><span data-shader-id="_r_2_" style="display: contents;"></span><span data-shader-id="_r_3_" style="display: contents;"></span><span data-shader-id="_r_4_" style="display: contents;"></span></div></div><header class="relative z-20 mx-auto w-full max-w-[1440px] p-2 sm:p-3"><nav class="flex items-center justify-between rounded-full bg-white p-[5px]"><div class="flex items-center gap-6"><a href="#" aria-label="Hirael home" class="flex items-center gap-2"><span class="flex h-9 w-9 items-center justify-center rounded-full bg-gray-900 text-white sm:h-10 sm:w-10"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 100" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="h-5 w-4 sm:h-6 sm:w-5"><path d="M16 78 V40 a24 24 0 0 1 48 0 V78"></path><path d="M40 44 L43.2 52 L51 55 L43.2 58 L40 66 L36.8 58 L29 55 L36.8 52 Z"></path><path d="M22 86 H58" opacity="0.7"></path><path d="M28 92 H52" opacity="0.45"></path><path d="M34 96 H46" opacity="0.25"></path></svg></span><span class="text-[15px] font-semibold tracking-tight text-gray-900 sm:text-[16px]">Hirael</span></a><div class="hidden items-center gap-6 md:flex"><a href="#" class="text-[14px] text-gray-900 transition-colors duration-300 hover:text-gray-500">Projects</a><a href="#" class="text-[14px] text-gray-900 transition-colors duration-300 hover:text-gray-500">Studio</a><a href="#" class="text-[14px] text-gray-900 transition-colors duration-300 hover:text-gray-500">Journal</a><a href="#" class="text-[14px] text-gray-900 transition-colors duration-300 hover:text-gray-500">Connect</a></div></div><div class="hidden items-center gap-4 md:flex"><span class="hidden text-[13px] text-gray-600 lg:block">Taking on projects for Q1 2026</span><button data-slot="button" data-variant="default" data-size="default" class="inline-flex shrink-0 items-center justify-center gap-2 font-medium whitespace-nowrap transition-all outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&amp;_svg]:pointer-events-none [&amp;_svg]:shrink-0 [&amp;_svg:not([class*='size-'])]:size-4 disabled:bg-muted disabled:text-muted-foreground disabled:opacity-100 px-4 has-[&gt;svg]:px-3 group h-auto rounded-full bg-gray-900 py-2 ps-5 pe-2 text-[13px] text-white hover:bg-gray-900" type="button"><span class="block h-[20px] overflow-hidden"><span class="flex flex-col transition-transform duration-500 group-hover:-translate-y-1/2 ease-[cubic-bezier(0.25,0.1,0.25,1)]"><span class="block h-[20px] leading-[20px]">Book a strategy call</span><span class="block h-[20px] leading-[20px]" aria-hidden="true">Book a strategy call</span></span></span><span class="flex h-6 w-6 items-center justify-center rounded-full bg-white"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right size-3.5 text-gray-900 transition-transform duration-500 group-hover:-rotate-45 ease-[cubic-bezier(0.25,0.1,0.25,1)]" aria-hidden="true"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg></span></button></div><button data-slot="button" data-variant="default" data-size="icon-lg" class="inline-flex shrink-0 items-center justify-center gap-2 text-sm font-medium whitespace-nowrap transition-all outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&amp;_svg]:pointer-events-none [&amp;_svg]:shrink-0 [&amp;_svg:not([class*='size-'])]:size-4 disabled:bg-muted disabled:text-muted-foreground disabled:opacity-100 size-10 rounded-full bg-gray-900 text-white hover:bg-gray-900 md:hidden" type="button" aria-label="Open menu"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-menu size-[18px]" aria-hidden="true"><path d="M4 5h16"></path><path d="M4 12h16"></path><path d="M4 19h16"></path></svg></button></nav></header><div class="relative z-20 flex flex-1 flex-col justify-end"><div class="mx-auto w-full max-w-[1440px] px-5 pb-14 sm:px-8 sm:pb-16 lg:px-12 lg:pb-20"><span class="mb-5 block text-[13px] tracking-wide text-gray-900 sm:mb-8 sm:text-[14px]">Hirael Studio</span><h1 class="text-[clamp(1.75rem,7vw,4.2rem)] font-medium leading-[1.08] tracking-[-0.03em] text-gray-900 sm:text-[clamp(2.5rem,5vw,4.2rem)]">We craft digital experiences<br class="hidden sm:block"><span class="sm:hidden"> </span>for brands ready to dominate<br class="hidden sm:block"><span class="sm:hidden"> </span>their category online.</h1><div class="mt-8 flex flex-col items-start gap-4 sm:mt-12 sm:flex-row sm:items-center sm:gap-5"><button data-slot="button" data-variant="default" data-size="default" class="inline-flex shrink-0 items-center justify-center gap-2 font-medium whitespace-nowrap transition-all outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&amp;_svg]:pointer-events-none [&amp;_svg]:shrink-0 [&amp;_svg:not([class*='size-'])]:size-4 disabled:bg-muted disabled:text-muted-foreground disabled:opacity-100 px-4 has-[&gt;svg]:px-3 group h-auto rounded-full bg-[#F26522] py-2 ps-5 pe-2 text-[13px] text-white hover:bg-[#e05a1a] sm:ps-6 sm:text-[14px]" type="button"><span class="block h-[20px] overflow-hidden"><span class="flex flex-col transition-transform duration-500 group-hover:-translate-y-1/2 ease-[cubic-bezier(0.25,0.1,0.25,1)]"><span class="block h-[20px] leading-[20px]">Start a project</span><span class="block h-[20px] leading-[20px]" aria-hidden="true">Start a project</span></span></span><span class="flex h-7 w-7 items-center justify-center rounded-full bg-white sm:h-8 sm:w-8"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right size-4 text-[#F26522] transition-transform duration-500 group-hover:-rotate-45 ease-[cubic-bezier(0.25,0.1,0.25,1)]" aria-hidden="true"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg></span></button><div class="flex items-center gap-2 rounded-[4px] bg-white px-2.5 py-2 shadow-[0_2px_8px_rgba(0,0,0,0.08)] transition-shadow hover:shadow-[0_4px_16px_rgba(0,0,0,0.12)]"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" class="h-5 w-5 fill-current text-[#E8704E] sm:h-6 sm:w-6" aria-hidden="true"><path d="m19.6 66.5 19.7-11 .3-1-.3-.5h-1l-3.3-.2-11.2-.3L14 53l-9.5-.5-2.4-.5L0 49l.2-1.5 2-1.3 2.9.2 6.3.5 9.5.6 6.9.4L38 49.1h1.6l.2-.7-.5-.4-.4-.4L29 41l-10.6-7-5.6-4.1-3-2-1.5-2-.6-4.2 2.7-3 3.7.3.9.2 3.7 2.9 8 6.1L37 36l1.5 1.2.6-.4.1-.3-.7-1.1L33 25l-6-10.4-2.7-4.3-.7-2.6c-.3-1-.4-2-.4-3l3-4.2L28 0l4.2.6L33.8 2l2.6 6 4.1 9.3L47 29.9l2 3.8 1 3.4.3 1h.7v-.5l.5-7.2 1-8.7 1-11.2.3-3.2 1.6-3.8 3-2L61 2.6l2 2.9-.3 1.8-1.1 7.7L59 27.1l-1.5 8.2h.9l1-1.1 4.1-5.4 6.9-8.6 3-3.5L77 13l2.3-1.8h4.3l3.1 4.7-1.4 4.9-4.4 5.6-3.7 4.7-5.3 7.1-3.2 5.7.3.4h.7l12-2.6 6.4-1.1 7.6-1.3 3.5 1.6.4 1.6-1.4 3.4-8.2 2-9.6 2-14.3 3.3-.2.1.2.3 6.4.6 2.8.2h6.8l12.6 1 3.3 2 1.9 2.7-.3 2-5.1 2.6-6.8-1.6-16-3.8-5.4-1.3h-.8v.4l4.6 4.5 8.3 7.5L89 80.1l.5 2.4-1.3 2-1.4-.2-9.2-7-3.6-3-8-6.8h-.5v.7l1.8 2.7 9.8 14.7.5 4.5-.7 1.4-2.6 1-2.7-.6-5.8-8-6-9-4.7-8.2-.5.4-2.9 30.2-1.3 1.5-3 1.2-2.5-2-1.4-3 1.4-6.2 1.6-8 1.3-6.4 1.2-7.9.7-2.6v-.2H49L43 72l-9 12.3-7.2 7.6-1.7.7-3-1.5.3-2.8L24 86l10-12.8 6-7.9 4-4.6-.1-.5h-.3L17.2 77.4l-4.7.6-2-2 .2-3 1-1 8-5.5Z"></path></svg><span class="text-[13px] font-medium text-gray-900 sm:text-[14px]">Certified Partner</span><span data-slot="badge" data-variant="default" class="inline-flex w-fit shrink-0 items-center justify-center gap-1 overflow-hidden border border-transparent py-0.5 whitespace-nowrap transition-[color,box-shadow] focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&amp;&gt;svg]:pointer-events-none [&amp;&gt;svg]:size-3 [a&amp;]:hover:bg-primary/90 rounded bg-gray-900 px-1.5 text-[10px] font-normal text-white sm:px-2 sm:text-[11px]">Featured</span></div></div></div></div></section><div class="fixed inset-0 z-50 transition-opacity duration-500 md:hidden pointer-events-none opacity-0"><div class="absolute inset-0 bg-black/60"></div><div class="absolute inset-x-0 bottom-0 mx-3 mb-3 rounded-2xl bg-white p-6 transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] translate-y-full"><div class="flex flex-col gap-2"><a href="#" class="text-[28px] font-medium leading-[32px] text-gray-900">Projects</a><a href="#" class="text-[28px] font-medium leading-[32px] text-gray-900">Studio</a><a href="#" class="text-[28px] font-medium leading-[32px] text-gray-900">Journal</a><a href="#" class="text-[28px] font-medium leading-[32px] text-gray-900">Connect</a></div><button data-slot="button" data-variant="default" data-size="default" class="inline-flex shrink-0 items-center gap-2 font-medium whitespace-nowrap transition-all outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&amp;_svg]:pointer-events-none [&amp;_svg]:shrink-0 [&amp;_svg:not([class*='size-'])]:size-4 disabled:bg-muted disabled:text-muted-foreground disabled:opacity-100 px-4 has-[&gt;svg]:px-3 group h-auto rounded-full bg-[#F26522] py-2 ps-5 pe-2 text-[13px] text-white hover:bg-[#e05a1a] sm:ps-6 sm:text-[14px] mt-6 w-full justify-between" type="button"><span class="block h-[20px] overflow-hidden"><span class="flex flex-col transition-transform duration-500 group-hover:-translate-y-1/2 ease-[cubic-bezier(0.25,0.1,0.25,1)]"><span class="block h-[20px] leading-[20px]">Start a project</span><span class="block h-[20px] leading-[20px]" aria-hidden="true">Start a project</span></span></span><span class="flex h-7 w-7 items-center justify-center rounded-full bg-white sm:h-8 sm:w-8"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right size-4 text-[#F26522] transition-transform duration-500 group-hover:-rotate-45 ease-[cubic-bezier(0.25,0.1,0.25,1)]" aria-hidden="true"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg></span></button></div></div><section class="overflow-hidden bg-white pb-12 pt-16 sm:pb-16 sm:pt-20 lg:pb-24 lg:pt-32"><div class="mx-auto w-full max-w-[1440px]"><div class="mb-6 flex items-center gap-3 px-5 sm:mb-8 sm:px-8 lg:px-12"><span class="flex h-6 w-6 items-center justify-center rounded-full bg-gray-900 text-[11px] font-semibold text-white sm:h-7 sm:w-7 sm:text-[12px]">1</span><span data-slot="badge" data-variant="outline" class="inline-flex w-fit shrink-0 items-center justify-center gap-1 overflow-hidden rounded-full border font-medium whitespace-nowrap transition-[color,box-shadow] focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&amp;&gt;svg]:pointer-events-none [&amp;&gt;svg]:size-3 [a&amp;]:hover:bg-accent [a&amp;]:hover:text-accent-foreground border-gray-200 px-3 py-1 text-[12px] text-gray-900 sm:px-4 sm:py-1.5 sm:text-[13px]">Introducing Hirael</span></div><h2 class="mb-12 px-5 text-[clamp(1.5rem,4vw,3.2rem)] font-medium leading-[1.12] tracking-[-0.02em] text-gray-900 sm:mb-16 sm:px-8 lg:mb-28 lg:px-12">Strategy-led creatives, delivering<br>results in digital and beyond.</h2><div class="px-5 sm:px-8 lg:px-12"><div class="lg:hidden"><p class="text-[15px] font-medium leading-[1.6] text-gray-900 sm:text-[17px]">Through research, creative thinking and iteration we help growing brands realize their digital full potential.</p><button data-slot="button" data-variant="default" data-size="default" class="inline-flex shrink-0 items-center justify-center gap-2 font-medium whitespace-nowrap transition-all outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&amp;_svg]:pointer-events-none [&amp;_svg]:shrink-0 [&amp;_svg:not([class*='size-'])]:size-4 disabled:bg-muted disabled:text-muted-foreground disabled:opacity-100 px-4 has-[&gt;svg]:px-3 group h-auto rounded-full bg-[#F26522] py-2 ps-5 pe-2 text-[13px] text-white hover:bg-[#e05a1a] sm:ps-6 sm:text-[14px] mt-6" type="button"><span class="block h-[20px] overflow-hidden"><span class="flex flex-col transition-transform duration-500 group-hover:-translate-y-1/2 ease-[cubic-bezier(0.25,0.1,0.25,1)]"><span class="block h-[20px] leading-[20px]">About our studio</span><span class="block h-[20px] leading-[20px]" aria-hidden="true">About our studio</span></span></span><span class="flex h-7 w-7 items-center justify-center rounded-full bg-white sm:h-8 sm:w-8"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right size-4 text-[#F26522] transition-transform duration-500 group-hover:-rotate-45 ease-[cubic-bezier(0.25,0.1,0.25,1)]" aria-hidden="true"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg></span></button><div class="mt-8 flex flex-col gap-4 sm:mt-10 sm:flex-row sm:items-end sm:gap-5"><img src="/temas/hirael/media/templates/agency-landing/about-small.jpg" alt="" class="aspect-[438/346] w-full rounded-[0.75rem] object-cover sm:w-[45%] sm:rounded-2xl"><img src="/temas/hirael/media/templates/agency-landing/about-large.jpg" alt="" class="aspect-[3/2] w-full rounded-[0.75rem] object-cover sm:w-[55%] sm:rounded-2xl"></div></div><div class="hidden lg:grid lg:grid-cols-[24%_minmax(0,1fr)_44%] lg:items-end lg:gap-6 xl:gap-8"><img src="/temas/hirael/media/templates/agency-landing/about-small.jpg" alt="" class="aspect-[438/346] w-full rounded-2xl object-cover"><div class="pb-1"><p class="text-[16px] font-medium leading-[1.65] text-gray-900 xl:text-[18px]">Through research, creative thinking and iteration we help growing brands realize their digital full potential.</p><button data-slot="button" data-variant="default" data-size="default" class="inline-flex shrink-0 items-center justify-center gap-2 font-medium whitespace-nowrap transition-all outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&amp;_svg]:pointer-events-none [&amp;_svg]:shrink-0 [&amp;_svg:not([class*='size-'])]:size-4 disabled:bg-muted disabled:text-muted-foreground disabled:opacity-100 px-4 has-[&gt;svg]:px-3 group h-auto rounded-full bg-[#F26522] py-2 ps-5 pe-2 text-[13px] text-white hover:bg-[#e05a1a] sm:ps-6 sm:text-[14px] mt-6" type="button"><span class="block h-[20px] overflow-hidden"><span class="flex flex-col transition-transform duration-500 group-hover:-translate-y-1/2 ease-[cubic-bezier(0.25,0.1,0.25,1)]"><span class="block h-[20px] leading-[20px]">About our studio</span><span class="block h-[20px] leading-[20px]" aria-hidden="true">About our studio</span></span></span><span class="flex h-7 w-7 items-center justify-center rounded-full bg-white sm:h-8 sm:w-8"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right size-4 text-[#F26522] transition-transform duration-500 group-hover:-rotate-45 ease-[cubic-bezier(0.25,0.1,0.25,1)]" aria-hidden="true"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg></span></button></div><img src="/temas/hirael/media/templates/agency-landing/about-large.jpg" alt="" class="aspect-[3/2] w-full rounded-2xl object-cover"></div></div></div></section><section class="bg-[#F5F5F5] pb-16 pt-16 sm:pb-20 sm:pt-20 lg:pb-28 lg:pt-28"><div class="mx-auto w-full max-w-[1440px]"><div class="mb-6 flex items-center gap-3 px-5 sm:mb-8 sm:px-8 lg:px-12"><span class="flex h-6 w-6 items-center justify-center rounded-full bg-gray-900 text-[11px] font-semibold text-white sm:h-7 sm:w-7 sm:text-[12px]">2</span><span data-slot="badge" data-variant="outline" class="inline-flex w-fit shrink-0 items-center justify-center gap-1 overflow-hidden rounded-full border font-medium whitespace-nowrap transition-[color,box-shadow] focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&amp;&gt;svg]:pointer-events-none [&amp;&gt;svg]:size-3 [a&amp;]:hover:bg-accent [a&amp;]:hover:text-accent-foreground border-gray-300 px-3 py-1 text-[12px] text-gray-900 sm:px-4 sm:py-1.5 sm:text-[13px]">Featured client work</span></div><h2 class="mb-10 px-5 text-[clamp(1.75rem,7vw,4.2rem)] font-medium leading-[1.08] tracking-[-0.03em] text-gray-900 sm:mb-14 sm:px-8 sm:text-[clamp(2.5rem,5vw,4.2rem)] lg:mb-16 lg:px-12">Our projects</h2><div class="grid grid-cols-1 gap-5 px-5 sm:gap-6 sm:px-8 md:grid-cols-2 lg:gap-7 lg:px-12"><div><div class="group relative aspect-[4/3] cursor-pointer overflow-hidden rounded-2xl bg-[#1a1d2e]"><video src="/temas/hirael/media/templates/agency-landing/case-study-narrativ.mp4" autoplay="" muted="" loop="" playsinline="" class="h-full w-full object-cover"></video><div class="absolute bottom-4 start-4"><div class="flex h-9 w-9 items-center overflow-hidden rounded-full bg-white transition-all duration-300 ease-in-out group-hover:w-[148px]"><span class="flex h-9 w-9 flex-shrink-0 items-center justify-center"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-[14px] w-[14px] -rotate-45 text-gray-900 transition-transform duration-300 group-hover:rotate-0" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></span><span class="whitespace-nowrap text-[13px] font-medium text-gray-900 opacity-0 transition-opacity delay-100 duration-300 group-hover:opacity-100">Learn more</span></div></div></div><p class="mt-4 text-[13px] leading-relaxed text-gray-600 sm:text-[14px]">Winner of Site of the Month 2025 - an interactive 3D showcase driving record engagement</p><h3 class="mt-1 text-[14px] font-semibold text-gray-900 sm:text-[15px]">Narrativ</h3></div><div><div class="group relative aspect-[4/3] cursor-pointer overflow-hidden rounded-2xl bg-[#6b6b6b]"><video src="/temas/hirael/media/templates/agency-landing/case-study-luminar.mp4" autoplay="" muted="" loop="" playsinline="" class="h-full w-full object-cover"></video><div class="absolute bottom-4 start-4"><div class="flex h-9 w-9 items-center overflow-hidden rounded-full bg-gray-900 transition-all duration-300 ease-in-out group-hover:w-[168px]"><span class="flex h-9 w-9 flex-shrink-0 items-center justify-center"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right -rotate-45 text-white transition-transform duration-300 group-hover:rotate-0" aria-hidden="true"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg></span><span class="whitespace-nowrap text-[13px] font-medium text-white opacity-0 transition-opacity delay-100 duration-300 group-hover:opacity-100">View case study</span></div></div></div><p class="mt-4 text-[13px] leading-relaxed text-gray-600 sm:text-[14px]">Transforming a dated platform into a conversion-focused brand experience</p><h3 class="mt-1 text-[14px] font-semibold text-gray-900 sm:text-[15px]">Luminar</h3></div></div></div></section><footer class="bg-gray-900 text-white"><div class="mx-auto w-full max-w-[1440px] px-5 py-16 sm:px-8 sm:py-20 lg:px-12 lg:py-24"><div class="flex flex-col gap-8 border-b border-white/10 pb-12 sm:pb-16 lg:flex-row lg:items-end lg:justify-between lg:pb-20"><div class="max-w-2xl"><div class="mb-5 flex items-center gap-3 sm:mb-8"><span class="flex h-6 w-6 items-center justify-center rounded-full bg-white text-gray-900 sm:h-7 sm:w-7"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 100" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="h-3.5 w-3 sm:h-4 sm:w-3.5"><path d="M16 78 V40 a24 24 0 0 1 48 0 V78"></path><path d="M40 44 L43.2 52 L51 55 L43.2 58 L40 66 L36.8 58 L29 55 L36.8 52 Z"></path><path d="M22 86 H58" opacity="0.7"></path><path d="M28 92 H52" opacity="0.45"></path><path d="M34 96 H46" opacity="0.25"></path></svg></span><span data-slot="badge" data-variant="outline" class="inline-flex w-fit shrink-0 items-center justify-center gap-1 overflow-hidden rounded-full border font-medium whitespace-nowrap transition-[color,box-shadow] focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&amp;&gt;svg]:pointer-events-none [&amp;&gt;svg]:size-3 [a&amp;]:hover:bg-accent [a&amp;]:hover:text-accent-foreground border-white/15 px-3 py-1 text-[12px] text-white sm:px-4 sm:py-1.5 sm:text-[13px]">Work with us</span></div><h2 class="text-[clamp(1.75rem,7vw,4.2rem)] font-medium leading-[1.08] tracking-[-0.03em] sm:text-[clamp(2.5rem,5vw,4.2rem)]">Ready to dominate<br class="hidden sm:block">your category?</h2></div><div class="flex flex-col items-start gap-4 sm:flex-row sm:items-center lg:flex-col lg:items-end"><button data-slot="button" data-variant="default" data-size="default" class="inline-flex shrink-0 items-center justify-center gap-2 font-medium whitespace-nowrap transition-all outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&amp;_svg]:pointer-events-none [&amp;_svg]:shrink-0 [&amp;_svg:not([class*='size-'])]:size-4 disabled:bg-muted disabled:text-muted-foreground disabled:opacity-100 px-4 has-[&gt;svg]:px-3 group h-auto rounded-full bg-[#F26522] py-2 ps-5 pe-2 text-[13px] text-white hover:bg-[#e05a1a] sm:ps-6 sm:text-[14px]" type="button"><span class="block h-[20px] overflow-hidden"><span class="flex flex-col transition-transform duration-500 group-hover:-translate-y-1/2 ease-[cubic-bezier(0.25,0.1,0.25,1)]"><span class="block h-[20px] leading-[20px]">Start a project</span><span class="block h-[20px] leading-[20px]" aria-hidden="true">Start a project</span></span></span><span class="flex h-7 w-7 items-center justify-center rounded-full bg-white sm:h-8 sm:w-8"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right size-4 text-[#F26522] transition-transform duration-500 group-hover:-rotate-45 ease-[cubic-bezier(0.25,0.1,0.25,1)]" aria-hidden="true"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg></span></button><a href="mailto:hello@hirael.studio" class="text-[14px] text-gray-400 transition-colors duration-300 hover:text-white">hello@hirael.studio</a></div></div><div class="grid grid-cols-2 gap-x-6 gap-y-10 py-12 sm:py-16 lg:grid-cols-[1.5fr_1fr_1fr_1fr] lg:py-20"><div class="col-span-2 flex flex-col gap-5 lg:col-span-1"><a href="#" aria-label="Hirael home" class="flex items-center gap-2"><span class="flex h-9 w-9 items-center justify-center rounded-full bg-white text-gray-900 sm:h-10 sm:w-10"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 100" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="h-5 w-4 sm:h-6 sm:w-5"><path d="M16 78 V40 a24 24 0 0 1 48 0 V78"></path><path d="M40 44 L43.2 52 L51 55 L43.2 58 L40 66 L36.8 58 L29 55 L36.8 52 Z"></path><path d="M22 86 H58" opacity="0.7"></path><path d="M28 92 H52" opacity="0.45"></path><path d="M34 96 H46" opacity="0.25"></path></svg></span><span class="text-[15px] font-semibold tracking-tight sm:text-[16px]">Hirael</span></a><p class="max-w-xs text-[14px] leading-[1.6] text-gray-400">A strategy-led studio crafting digital experiences for growing brands.</p><span data-slot="badge" data-variant="outline" class="inline-flex w-fit shrink-0 items-center justify-center overflow-hidden rounded-full border whitespace-nowrap transition-[color,box-shadow] focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&amp;&gt;svg]:pointer-events-none [&amp;&gt;svg]:size-3 [a&amp;]:hover:bg-accent [a&amp;]:hover:text-accent-foreground gap-2 border-white/15 px-3 py-1.5 text-[13px] font-normal text-gray-300"><span class="flex h-2 w-2 rounded-full bg-[#F26522]"></span>Taking on projects for Q1 2026</span></div><nav class="flex flex-col gap-3.5"><h3 class="text-[11px] font-semibold uppercase tracking-[0.16em] text-gray-500">Studio</h3><ul class="flex flex-col gap-2.5"><li><a href="#" class="group inline-flex items-center gap-1 text-[14px] text-gray-400 transition-colors duration-300 hover:text-white">About<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-up-right opacity-0 transition-opacity duration-300 group-hover:opacity-100 rtl:-scale-x-100 ease-[cubic-bezier(0.25,0.1,0.25,1)]" aria-hidden="true"><path d="M7 7h10v10"></path><path d="M7 17 17 7"></path></svg></a></li><li><a href="#" class="group inline-flex items-center gap-1 text-[14px] text-gray-400 transition-colors duration-300 hover:text-white">Team<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-up-right opacity-0 transition-opacity duration-300 group-hover:opacity-100 rtl:-scale-x-100 ease-[cubic-bezier(0.25,0.1,0.25,1)]" aria-hidden="true"><path d="M7 7h10v10"></path><path d="M7 17 17 7"></path></svg></a></li><li><a href="#" class="group inline-flex items-center gap-1 text-[14px] text-gray-400 transition-colors duration-300 hover:text-white">Careers<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-up-right opacity-0 transition-opacity duration-300 group-hover:opacity-100 rtl:-scale-x-100 ease-[cubic-bezier(0.25,0.1,0.25,1)]" aria-hidden="true"><path d="M7 7h10v10"></path><path d="M7 17 17 7"></path></svg></a></li><li><a href="#" class="group inline-flex items-center gap-1 text-[14px] text-gray-400 transition-colors duration-300 hover:text-white">Journal<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-up-right opacity-0 transition-opacity duration-300 group-hover:opacity-100 rtl:-scale-x-100 ease-[cubic-bezier(0.25,0.1,0.25,1)]" aria-hidden="true"><path d="M7 7h10v10"></path><path d="M7 17 17 7"></path></svg></a></li></ul></nav><nav class="flex flex-col gap-3.5"><h3 class="text-[11px] font-semibold uppercase tracking-[0.16em] text-gray-500">Work</h3><ul class="flex flex-col gap-2.5"><li><a href="#" class="group inline-flex items-center gap-1 text-[14px] text-gray-400 transition-colors duration-300 hover:text-white">Projects<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-up-right opacity-0 transition-opacity duration-300 group-hover:opacity-100 rtl:-scale-x-100 ease-[cubic-bezier(0.25,0.1,0.25,1)]" aria-hidden="true"><path d="M7 7h10v10"></path><path d="M7 17 17 7"></path></svg></a></li><li><a href="#" class="group inline-flex items-center gap-1 text-[14px] text-gray-400 transition-colors duration-300 hover:text-white">Case studies<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-up-right opacity-0 transition-opacity duration-300 group-hover:opacity-100 rtl:-scale-x-100 ease-[cubic-bezier(0.25,0.1,0.25,1)]" aria-hidden="true"><path d="M7 7h10v10"></path><path d="M7 17 17 7"></path></svg></a></li><li><a href="#" class="group inline-flex items-center gap-1 text-[14px] text-gray-400 transition-colors duration-300 hover:text-white">Services<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-up-right opacity-0 transition-opacity duration-300 group-hover:opacity-100 rtl:-scale-x-100 ease-[cubic-bezier(0.25,0.1,0.25,1)]" aria-hidden="true"><path d="M7 7h10v10"></path><path d="M7 17 17 7"></path></svg></a></li><li><a href="#" class="group inline-flex items-center gap-1 text-[14px] text-gray-400 transition-colors duration-300 hover:text-white">Process<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-up-right opacity-0 transition-opacity duration-300 group-hover:opacity-100 rtl:-scale-x-100 ease-[cubic-bezier(0.25,0.1,0.25,1)]" aria-hidden="true"><path d="M7 7h10v10"></path><path d="M7 17 17 7"></path></svg></a></li></ul></nav><nav class="flex flex-col gap-3.5"><h3 class="text-[11px] font-semibold uppercase tracking-[0.16em] text-gray-500">Connect</h3><ul class="flex flex-col gap-2.5"><li><a href="#" class="group inline-flex items-center gap-1 text-[14px] text-gray-400 transition-colors duration-300 hover:text-white">Start a project<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-up-right opacity-0 transition-opacity duration-300 group-hover:opacity-100 rtl:-scale-x-100 ease-[cubic-bezier(0.25,0.1,0.25,1)]" aria-hidden="true"><path d="M7 7h10v10"></path><path d="M7 17 17 7"></path></svg></a></li><li><a href="#" class="group inline-flex items-center gap-1 text-[14px] text-gray-400 transition-colors duration-300 hover:text-white">Book a call<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-up-right opacity-0 transition-opacity duration-300 group-hover:opacity-100 rtl:-scale-x-100 ease-[cubic-bezier(0.25,0.1,0.25,1)]" aria-hidden="true"><path d="M7 7h10v10"></path><path d="M7 17 17 7"></path></svg></a></li><li><a href="#" class="group inline-flex items-center gap-1 text-[14px] text-gray-400 transition-colors duration-300 hover:text-white">Instagram<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-up-right opacity-0 transition-opacity duration-300 group-hover:opacity-100 rtl:-scale-x-100 ease-[cubic-bezier(0.25,0.1,0.25,1)]" aria-hidden="true"><path d="M7 7h10v10"></path><path d="M7 17 17 7"></path></svg></a></li><li><a href="#" class="group inline-flex items-center gap-1 text-[14px] text-gray-400 transition-colors duration-300 hover:text-white">LinkedIn<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-up-right opacity-0 transition-opacity duration-300 group-hover:opacity-100 rtl:-scale-x-100 ease-[cubic-bezier(0.25,0.1,0.25,1)]" aria-hidden="true"><path d="M7 7h10v10"></path><path d="M7 17 17 7"></path></svg></a></li></ul></nav></div><div aria-hidden="true" class="pointer-events-none select-none overflow-hidden border-t border-white/10 pt-10 sm:pt-12"><span class="block text-[18vw] font-medium leading-[0.8] tracking-[-0.05em] text-white/[0.06]">Hirael</span></div><div class="flex flex-col gap-4 pt-8 sm:flex-row sm:items-center sm:justify-between"><p class="text-[13px] text-gray-500">© 2026 Hirael Studio. All rights reserved.</p><div class="flex flex-wrap items-center gap-x-5 gap-y-2"><a href="#" class="text-[13px] text-gray-500 transition-colors duration-300 hover:text-white">Privacy</a><a href="#" class="text-[13px] text-gray-500 transition-colors duration-300 hover:text-white">Terms</a></div></div></div></footer></div><!--/$--></div><!--$--><!--/$--><script>requestAnimationFrame(function(){$RT=performance.now()});</script><script src="/temas/hirael/_next/static/chunks/3lui113fc-fd8.js" id="_R_" async=""></script><script>$RB=[];$RV=function(a){$RT=performance.now();for(var b=0;b<a.length;b+=2){var c=a[b],e=a[b+1];null!==e.parentNode&&e.parentNode.removeChild(e);var f=c.parentNode;if(f){var g=c.previousSibling,h=0;do{if(c&&8===c.nodeType){var d=c.data;if("/$"===d||"/&"===d)if(0===h)break;else h--;else"$"!==d&&"$?"!==d&&"$~"!==d&&"$!"!==d&&"&"!==d||h++}d=c.nextSibling;f.removeChild(c);c=d}while(c);for(;e.firstChild;)f.insertBefore(e.firstChild,c);g.data="$";g._reactRetry&&requestAnimationFrame(g._reactRetry)}}a.length=0};
-$RC=function(a,b){if(b=document.getElementById(b))(a=document.getElementById(a))?(a.previousSibling.data="$~",$RB.push(a,b),2===$RB.length&&("number"!==typeof $RT?requestAnimationFrame($RV.bind(null,$RB)):(a=performance.now(),setTimeout($RV.bind(null,$RB),2300>a&&2E3<a?2300-a:$RT+300-a)))):b.parentNode.removeChild(b)};$RC("B:0","S:0")</script><script>(self.__next_f=self.__next_f||[]).push([0])</script><script>self.__next_f.push([1,"1:\"$Sreact.fragment\"\na:I[253348,[\"/temas/hirael/_next/static/chunks/3-6dxrkvm-cbx.js\",\"/temas/hirael/_next/static/chunks/0a_wj91ae_fw_.js\",\"/temas/hirael/_next/static/chunks/37pi4kcan3lay.js\",\"/temas/hirael/_next/static/chunks/42-9av97l-s67.js\",\"/temas/hirael/_next/static/chunks/3p6qey0e8feqk.js\",\"/temas/hirael/_next/static/chunks/0qj7ed5xxjcrt.js\"],\"default\"]\n:HL[\"/temas/hirael/_next/static/chunks/28-_i3rx9npox.css\",\"style\"]\n:HL[\"/temas/hirael/_next/static/chunks/2b3s6jivk2nnu.css\",\"style\"]\n:HL[\"/temas/hirael/_next/static/chunks/1ff2n3jy6d9n_.css\",\"style\"]\n:HL[\"/temas/hirael/_next/static/media/01e4147cff8141ee-s.p.3huc2loe0ie8a.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/temas/hirael/_next/static/media/051742360c26797e-s.p.1bkzbscqrt8rl.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/temas/hirael/_next/static/media/22fa55bc1dba6839-s.p.0d9vtzwl8fd0i.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/temas/hirael/_next/static/media/2cc64289d47b4837-s.p.3gyhordp6ke8y.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/temas/hirael/_next/static/media/434f71d810631da4-s.p.3ea9128zkldg5.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/temas/hirael/_next/static/media/7ebf22b5a21034f8-s.p.3j3877k49yy0l.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/temas/hirael/_next/static/media/83afe278b6a6bb3c-s.p.2bn3s6zvc0dyp.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/temas/hirael/_next/static/media/8bd76523131fa0fc-s.p.1pvupmngxrt5z.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/temas/hirael/_next/static/media/92965d68c2e7dc96-s.p.1tn4ua9rqzvtc.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/temas/hirael/_next/static/media/9ff27b8a0a8f3dc0-s.p.40_3w74kn95bo.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/temas/hirael/_next/static/media/a343f882a40d2cc9-s.p.1sj6eobyi31rd.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/temas/hirael/_next/static/media/ccf27e5a7366fb23-s.p.1icgra-w5i50b.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/temas/hirael/_next/static/media/d41831e24743a3c1-s.p.08tn9snzkmifr.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/temas/hirael/_next/static/media/e41d5df559864f9e-s.p.1g73gv09-xcb6.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/temas/hirael/_next/static/media/fba5a26ea33df6a3-s.p.18rizl4rsrl42.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/temas/hirael/_next/static/media/fc0a7394b875fa43-s.p.2ytmazkdrg7t9.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n2:T59d,[{\"@context\":\"https://schema.org\",\"@type\":\"WebSite\",\"@id\":\"https://hirael.com/#website\",\"url\":\"https://hirael.com\",\"name\":\"Hirael\",\"description\":\"A shadcn-compatible registry of React components, section blocks, and full-page templates most products end up building anyway. The shadcn CLI copies the source into your repo, so there's no package to depend on.\",\"inLanguage\":\"en\",\"publisher\":{\"@id\":\"https://hirael.com/#person\"}},{\"@context\":\"https://schema.org\",\"@type\":\"Person\",\"@id\":\"https://hirael.com/#person\",\"name\":\"Mohammad Shehadeh\",\"url\":\"https://mohammadshehadeh.com\",\"sameAs\":[\"https://github.com/mohammadshehadeh/\"]},{\"@context\":\"https://schema.org\",\"@type\":\"SoftwareApplication\",\"@id\":\"https://hirael.com/#app\",\"name\":\"Hirael\",\"alternateName\":\"Hirael registry\",\"description\":\"A shadcn-compatible registry of React components, section blocks, and full-page templates most products end up building anyway. The shadcn CLI copies the source into your repo, so there's no package to depend on.\",\"url\":\"https://hirael.com\",\"applicationCategory\":\"DeveloperApplication\",\"operatingSystem\":\"Any\",\"softwareVersion\":\"0.1\",\"isAccessibleForFree\":true,\"offers\":{\"@type\":\"Offer\",\"price\":\"0\",\"priceCurrency\":\"USD\"},\"author\":{\"@type\":\"Person\",\"@id\":\"https://hirael.com/#person\",\"name\":\"Mohammad Shehadeh\",\"url\":\"https://mohammadshehadeh.com\",\"sameAs\":[\"https://github.com/mohammadshehadeh/\"]},\"publisher\":{\"@id\":\"https://hirael.com/#person\"}}]8:X\n0:{\"P\":null,\"c\":[\"\",\"embed\",\"templates\",\"agency-landing\"],\"q\":\"\",\"i\":false,\"f\":[[[\"\",{\"children\":[\"embed\",{\"children\":[\"templates\",{\"children\":[[\"template\",\"agency-landing\",\"d\",[]],{\"children\":[\"__PAGE__\",{},\"$undefined\",\"$undefined\",4608]},\"$undefined\",\"$undefined\",4608]},\"$undefined\",\"$undefined\",4608]},\"$undefined\",\"$undefined\",4608]},\"$undefined\",\"$undefined\",4624],[[\"$\",\"$1\",\"c\",{\"children\":[[[\"$\",\"link\",\"0\",{\"rel\":\"stylesheet\",\"href\":\"/temas/hirael/_next/static/chunks/28-_i3rx9npox.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}],[\"$\",\"link\",\"1\",{\"rel\":\"stylesheet\",\"href\":\"/temas/hirael/_next/static/chunks/2b3s6jivk2nnu.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}],[\"$\",\"link\",\"2\",{\"rel\":\"stylesheet\",\"href\":\"/temas/hirael/_next/static/chunks/1ff2n3jy6d9n_.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-0\",{\"src\":\"/temas/hirael/_next/static/chunks/3-6dxrkvm-cbx.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-1\",{\"src\":\"/temas/hirael/_next/static/chunks/0a_wj91ae_fw_.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-2\",{\"src\":\"/temas/hirael/_next/static/chunks/37pi4kcan3lay.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-3\",{\"src\":\"/temas/hirael/_next/static/chunks/42-9av97l-s67.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-4\",{\"src\":\"/temas/hirael/_next/static/chunks/3p6qey0e8feqk.js\",\"async\":true,\"nonce\":\"$undefined\"}]],[\"$\",\"html\",null,{\"lang\":\"en\",\"data-scroll-behavior\":\"smooth\",\"className\":\"scroll-smooth\",\"suppressHydrationWarning\":true,\"children\":[[\"$\",\"head\",null,{\"children\":[[\"$\",\"script\",null,{\"dangerouslySetInnerHTML\":{\"__html\":\"(()=\u003e{try{\\n    var raw=localStorage.getItem(\\\"hirael.customizer.css.v1\\\");\\n    if(!raw)return;\\n    var s=JSON.parse(raw);\\n    var css=location.pathname.indexOf('/embed/')===0?s.embed:s.main;\\n    if(!css)return;\\n    var el=document.createElement('style');\\n    el.id=\\\"hirael-customizer\\\";\\n    el.textContent=css;\\n    document.head.appendChild(el);\\n  }catch(e){}})();\"}}],[\"$\",\"script\",null,{\"id\":\"hirael-jsonld\",\"type\":\"application/ld+json\",\"dangerouslySetInnerHTML\":{\"__html\":\"$2\"}}],[\"$\",\"link\",null,{\"rel\":\"alternate\",\"type\":\"text/plain\",\"title\":\"llms.txt\",\"href\":\"/llms.txt\"}],[\"$\",\"link\",null,{\"rel\":\"alternate\",\"type\":\"application/json\",\"title\":\"Registry catalog\",\"href\":\"/temas/hirael/r/registry.json\"}]]}],[\"$\",\"body\",null,{\"className\":\"inter_2602f946-module__2PEFoa__variable jetbrains_mono_40f9379a-module__i8Zd-q__variable cormorant_garamond_ebce9caf-module__RtsoOa__variable font-sans antialiased\",\"children\":[[\"$\",\"a\",null,{\"href\":\"#main-content\",\"className\":\"sr-only focus:not-sr-only focus:fixed focus:start-4 focus:top-4 focus:z-100 focus:inline-flex focus:items-center focus:rounded-md focus:border focus:border-border focus:bg-popover focus:px-4 focus:py-2 focus:text-sm focus:font-medium focus:text-popover-foreground focus:shadow-elevated focus:outline-none\",\"children\":\"Skip to content\"}],\"$L3\"]}]]}]]}],{\"children\":[\"$L4\",{\"children\":[\"$L5\",{\"children\":[\"$L6\",{\"children\":[\"$L7\",{},null,false,null]},null,false,\"$8\"]},null,false,\"$8\"]},null,false,\"$8\"]},null,false,null],\"$L9\",false]],\"m\":\"$undefined\",\"G\":[\"$a\",[\"$Lb\",\"$Lc\",\"$Ld\",\"$Le\"]],\"S\":true,\"h\":null,\"r\":\"$undefined\",\"s\":\"$undefined\",\"a\":\"$undefined\",\"l\":\"$undefined\",\"p\":\"$undefined\",\"d\":\"$undefined\",\"b\":\"D37Jt-qc3l4JZDK8BfKZF\"}\nf:I[106358,[\"/temas/hirael/_next/static/chunks/3-6dxrkvm-cbx.js\",\"/temas/hirael/_next/static/chunks/0a_wj91ae_fw_.js\",\"/temas/hirael/_next/static/chunks/37pi4kcan3lay.js\",\"/temas/hirael/_next/static/chunks/42-9av97l-s67.js\",\"/temas/hirael/_next/static/chunks/3p6qey0e8feqk.js\"],\"TooltipProvider\"]\n10:I[729034,[\"/temas/hirael/_next/static/chunks/3-6dxrkvm-cbx.js\",\"/temas/hirael/_next/static/chunks/0a_wj91ae_fw_.js\",\"/temas/hirael/_next/static/chunks/37pi4kcan3lay.js\",\"/temas/hirael/_next/static/chunks/42-9av97l-s67.js\",\"/temas/hirael/_next/static/chunks/3p6qey0e8feqk.js\"],\"ThemeProvider\"]\n11:I[219513,[\"/temas/hirael/_next/static/chunks/060qgfzv98756.js\"],\"default\"]\n12:I[798127,[\"/temas/hirael/_next/static/chunks/060qgfzv98756.js\"],\"default\"]\n15:I[498416,[\"/temas/hirael/_next/static/chunks/060qgfzv98756.js\"],\"OutletBoundary\"]\n16:\"$Sreact.suspense\"\n18:I[498416,[\"/temas/hirael/_next/static/chunks/060qgfzv98756.js\"],\"ViewportBoundary\"]\n1a:I[498416,[\"/temas/hirael/_next/static/chunks/060qgfzv98756.js\"],\"MetadataBoundary\"]\n:HL[\"/temas/hirael/_next/static/chunks/1g-gwbme509kv.css\",\"style\"]\n3:[\"$\",\"$Lf\",null,{\"children\":[\"$\",\"$L10\",null,{\"children\":[\"$\",\"$L11\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L12\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":[\"$L13\",[]],\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]}]}]\n4:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L11\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L12\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\n5:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L11\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L12\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\n6:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L11\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L12\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\n7:[\"$\",\"$1\",\"c\",{\"children\":[\"$L14\",[[\"$\",\"script\",\"script-0\",{\"src\":\"/temas/hirael/_next/static/chunks/0kbxdb8hbqksr.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-1\",{\"src\":\"/temas/hirael/_next/static/chunks/3tby25hivp-zr.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-2\",{\"src\":\"/temas/hirael/_next/static/chunks/244_5k8_oblvd.js\",\"async\":true,\"nonce\":\"$undefined\"}]],[\"$\",\"$L15\",null,{\"children\":[\"$\",\"$16\",null,{\"name\":\"Next.MetadataOutlet\",\"children\":\"$@17\"}]}]]}]\n9:[\"$\",\"$1\",\"h\",{\"children\":[null,[\"$\",\"$L18\",null,{\"children\":\"$L19\"}],[\"$\",\"div\",null,{\"hidden\":true,\"children\":[\"$\",\"$L1a\",null,{\"children\":[\"$\",\"$16\",null,{\"name\":\"Next.Metadata\",\"children\":\"$L1b\"}]}]}],[\"$\",\"meta\",null,{\"name\":\"next-size-adjust\",\"content\":\"\"}]]}]\nb:[\"$\",\"link\",\"0\",{\"rel\":\"stylesheet\",\"href\":\"/temas/hirael/_next/static/chunks/28-_i3rx9npox.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}]\nc:[\"$\",\"link\",\"1\",{\"rel\":\"stylesheet\",\"href\":\"/temas/hirael/_next/static/chunks/2b3s6jivk2nnu.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}]\nd:[\"$\",\"link\",\"2\",{\"rel\":\"stylesheet\",\"href\":\"/temas/hirael/_next/static/chunks/1ff2n3jy6d9n_.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}]\ne:[\"$\",\"link\",\"3\",{\"rel\":\"stylesheet\",\"href\":\"/temas/hirael/_next/static/chunks/1g-gwbme509kv.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}]\n1c:I[23244,[\"/temas/hirael/_next/static/chunks/3-6dxrkvm-cbx.js\",\"/temas/hirael/_next/static/chunks/0a_wj91ae_fw_.js\",\"/temas/hirael/_next/static/chunks/37pi4kcan3lay.js\",\"/temas/hirael/_next/static/chunks/42-9av97l-s67.js\",\"/temas/hirael/_next/static/chunks/3p6qey0e8feqk.js\",\"/temas/hirael/_next/static/chunks/0kbxdb8hbqksr.js\",\"/temas/hirael/_next/static/chunks/3tby25hivp-zr.js\",\"/temas/hirael/_next/static/chunks/244_5k8_oblvd.js\"],\"RegistryDemo\"]\n8:C\n14:[[\"$\",\"script\",null,{\"dangerouslySetInnerHTML\":{\"__html\":\"(()=\u003e{try{var p=new URLSearchParams(location.search);var d=p.get('dir');document.documentElement.dir=d==='rtl'?'rtl':'ltr';if(window.self!==window.top)document.documentElement.setAttribute('data-framed','');if(p.get('static')==='1')document.documentElement.setAttribute('data-static','');if(p.get('fit')==='1')document.documentElement.setAttribute('data-fit','');}catch(e){}})();\"}}],[\"$\",\"div\",null,{\"data-embed-shell\":true,\"className\":\"min-h-svh bg-black\",\"children\":[\"$\",\"$L1c\",null,{\"name\":\"agency-landing\",\"base\":\"radix\"}]}]]\n1d:I[348303,[\"/temas/hirael/_next/static/chunks/3-6dxrkvm-cbx.js\",\"/temas/hirael/_next/static/chunks/0a_wj91ae_fw_.js\",\"/temas/hirael/_next/static/chunks/37pi4kcan3lay.js\",\"/temas/hirael/_next/static/chunks/42-9av97l-s67.js\",\"/temas/hirael/_next/static/chunks/3p6qey0e8feqk.js\",\"/temas/hirael/_next/static/chunks/1h1v1xankugsi.js\",\"/temas/hirael/_next/static/chunks/0hde38qgh9v96.js\",\"/temas/hirael/_next/static/chunks/2tw_hi6_pbfec.js\",\"/temas/hirael/_next/static/chunks/2rw9ff634c2eo.js\",\"/temas/hirael/_next/static/chunks/07k4ptwh0ud17.js\"],\"SiteHeader\"]\n1e:I[344506,[\"/temas/hirael/_next/static/chunks/3-6dxrkvm-cbx.js\",\"/temas/hirael/_next/static/chunks/0a_wj91ae_fw_.js\",\"/temas/hirael/_next/static/chunks/37pi4kcan3lay.js\",\"/temas/hirael/_next/static/chunks/42-9av97l-s67.js\",\"/temas/hirael/_next/static/chunks/3p6qey0e8feqk.js\",\"/temas/hirael/_next/static/chunks/0kbxdb8hbqksr.js\",\"/temas/hirael/_next/static/chunks/3tby25hivp-zr.js\",\"/temas/hirael/_next/static/chunks/244_5k8_oblvd.js\"],\"\"]\n1f:I[887284,[\"/temas/hirael/_next/static/chunks/3-6dxrkvm-cbx.js\",\"/temas/hirael/_next/static/chunks/0a_wj91ae_fw_.js\",\"/temas/hirael/_next/static/chunks/37pi4kcan3lay.js\",\"/temas/hirael/_next/static/chunks/42-9av97l-s67.js\",\"/temas/hirael/_next/static/chunks/3p6qey0e8feqk.js\",\"/temas/hirael/_next/static/chunks/1h1v1xankugsi.js\",\"/temas/hirael/_next/static/chunks/0hde38qgh9v96.js\",\"/temas/hirael/_next/static/chunks/2tw_hi6_pbfec.js\",\"/temas/hirael/_next/static/chunks/2rw9ff634c2eo.js\",\"/temas/hirael/_next/static/chunks/07k4ptwh0ud17.js\"],\"default\"]\n13:[\"$\",\"div\",null,{\"className\":\"flex min-h-svh flex-col\",\"children\":[[\"$\",\"$L1d\",null,{\"stars\":20}],[\"$\",\"main\",null,{\"id\":\"main-content\",\"tabIndex\":-1,\"className\":\"flex-1 outline-none\",\"children\":[\"$\",\"section\",null,{\"className\":\"relative overflow-hidden\",\"children\":[[\"$\",\"div\",null,{\"aria-hidden\":true,\"className\":\"ambient-halo\"}],[\"$\",\"div\",null,{\"aria-hidden\":true,\"className\":\"bg-dot-grid pointer-events-none absolute inset-0 opacity-40 mask-[radial-gradient(ellipse_60%_45%_at_50%_0%,black,transparent_75%)]\"}],[\"$\",\"div\",null,{\"className\":\"relative container flex w-full flex-col items-center gap-6 py-24 text-center sm:py-28 lg:py-36\",\"children\":[[\"$\",\"span\",null,{\"className\":\"inline-flex items-center gap-2 rounded-full border border-border bg-card/60 px-3.5 py-1 font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground backdrop-blur-sm\",\"children\":[[\"$\",\"span\",null,{\"aria-hidden\":true,\"className\":\"size-1 rounded-full bg-muted-foreground\"}],\"Error 404\"]}],[\"$\",\"h1\",null,{\"className\":\"text-display text-4xl leading-[1.04] sm:text-6xl md:text-7xl\",\"children\":\"This page isn't in the registry.\"}],[\"$\",\"p\",null,{\"className\":\"max-w-md text-base text-muted-foreground sm:text-lg\",\"children\":\"The link may be broken, or the page may have moved. Everything Hirael ships is still a click away.\"}],[\"$\",\"div\",null,{\"className\":\"flex flex-wrap items-center justify-center gap-3 pt-1\",\"children\":[[\"$\",\"$L1e\",null,{\"href\":\"/\",\"className\":\"inline-flex h-11 items-center justify-center gap-2 rounded-full bg-primary px-6 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background\",\"children\":[[\"$\",\"$L1f\",null,{\"ref\":\"$undefined\",\"iconNode\":[[\"path\",{\"d\":\"m12 19-7-7 7-7\",\"key\":\"1l729n\"}],[\"path\",{\"d\":\"M19 12H5\",\"key\":\"x3x0zl\"}]],\"className\":\"lucide-arrow-left size-4 rtl:rotate-180\"}],\"Back to home\"]}],[\"$\",\"$L1e\",null,{\"href\":\"/components\",\"className\":\"inline-flex h-11 items-center justify-center gap-2 rounded-full border border-border bg-card/60 px-6 text-sm font-medium text-foreground backdrop-blur-sm transition-colors hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background\",\"children\":[\"Browse components\",[\"$\",\"$L1f\",null,{\"ref\":\"$undefined\",\"iconNode\":[[\"path\",{\"d\":\"M5 12h14\",\"key\":\"1ays0h\"}],[\"path\",{\"d\":\"m12 5 7 7-7 7\",\"key\":\"xquz4c\"}]],\"className\":\"lucide-arrow-right size-4 rtl:rotate-180\"}]]}]]}]]}]]}]}],[\"$\",\"footer\",null,{\"className\":\"mt-auto pb-4 sm:pb-6\",\"children\":[\"$\",\"div\",null,{\"className\":\"container w-full\",\"children\":[\"$\",\"div\",null,{\"className\":\"relative overflow-hidden rounded-[1.75rem] border border-border bg-card shadow-elevated sm:rounded-[2rem]\",\"children\":[[\"$\",\"div\",null,{\"aria-hidden\":true,\"className\":\"ambient-halo opacity-70\"}],[\"$\",\"div\",null,{\"aria-hidden\":true,\"className\":\"bg-dot-grid pointer-events-none absolute inset-0 opacity-30 mask-[radial-gradient(ellipse_70%_60%_at_50%_0%,black,transparent_80%)]\"}],[\"$\",\"div\",null,{\"className\":\"relative px-6 pt-12 sm:px-10 sm:pt-14 lg:px-14\",\"children\":[[\"$\",\"div\",null,{\"className\":\"flex flex-col gap-8 border-b border-border/70 pb-10 md:flex-row md:items-end md:justify-between\",\"children\":[[\"$\",\"div\",null,{\"className\":\"flex max-w-sm flex-col gap-4\",\"children\":[[\"$\",\"$L1e\",null,{\"href\":\"/\",\"aria-label\":\"Hirael | home\",\"className\":\"inline-flex w-fit transition-opacity hover:opacity-80\",\"children\":[\"$\",\"span\",null,{\"role\":\"img\",\"aria-label\":\"Hirael\",\"className\":\"inline-flex shrink-0 text-foreground h-10\",\"children\":[\"$\",\"svg\",null,{\"xmlns\":\"http://www.w3.org/2000/svg\",\"viewBox\":\"0 0 280 60\",\"role\":\"img\",\"aria-hidden\":true,\"className\":\"h-full w-auto\",\"children\":[[\"$\",\"title\",null,{\"children\":\"Hirael\"}],[\"$\",\"svg\",null,{\"x\":\"6\",\"y\":\"6\",\"width\":\"46\",\"height\":\"46\",\"viewBox\":\"80 104 352 352\",\"children\":[[\"$\",\"path\",null,{\"d\":\"M160 340V235C160 171 203 128 256 128C309 128 352 171 352 235V340\",\"fill\":\"none\",\"stroke\":\"currentColor\",\"strokeWidth\":\"18\",\"strokeLinecap\":\"square\"}],\"$L20\",\"$L21\",\"$L22\",\"$L23\"]}],\"$L24\"]}]}]}],\"$L25\",\"$L26\"]}],\"$L27\"]}],\"$L28\"]}],\"$L29\"]}]}]}]]}]\n20:[\"$\",\"path\",null,{\"d\":\"M256 220C262 242 274 254 296 260C274 266 262 278 256 300C250 278 238 266 216 260C238 254 250 242 256 220Z\",\"fill\":\"currentColor\"}]\n21:[\"$\",\"path\",null,{\"d\":\"M95 372C160 364 352 364 417 372C352 380 160 380 95 372Z\",\"fill\":\"currentColor\"}]\n22:[\"$\",\"path\",null,{\"d\":\"M135 405C185 399 327 399 377 405C327 411 185 411 135 405Z\",\"fill\":\"currentColor\"}]\n23:[\"$\",\"path\",null,{\"d\":\"M190 438C220 434 292 434 322 438C292 442 220 442 190 438Z\",\"fill\":\"currentColor\"}]\n24:[\"$\",\"text\",null,{\"x\":\"56\",\"y\":\"44\",\"fill\":\"currentColor\",\"fontSize\":\"42\",\"style\":{\"fontFamily\":\"var(--font-cormorant), ui-serif, serif\",\"fontWeight\":500,\"letterSpacing\":\"0.18em\"},\"children\":\"HIRAEL\"}]\n25:[\"$\",\"p\",null,{\"className\":\"text-display text-xl leading-snug text-foreground/90 sm:text-2xl\",\"children\":\"The components shadcn/ui doesn't ship.\"}]\n26:[\"$\",\"p\",null,{\"className\":\"text-sm leading-relaxed text-muted-foreground\",\"children\":\"A shadcn-compatible registry of React components, section blocks, and full-page templates most products end up building anyway. The shadcn CLI copies the source into your repo, so there's no package to depend on.\"}]\n27:[\"$\",\"$L1e\",null,{\"href\":\"/components\",\"className\":\"group inline-flex h-11 w-fit items-center gap-2 self-start rounded-full bg-primary ps-6 pe-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 md:self-auto\",\"children\":[\"Browse components\",[\"$\",\"span\",null,{\"className\":\"flex size-7 items-center justify-center rounded-full bg-background/15 transition-transform group-hover:translate-x-0.5 rtl:group-hover:-translate-x-0.5\",\"children\":[\"$\",\"$L1f\",null,{\"ref\":\"$undefined\",\"iconNode\":\"$13:props:children:1:props:children:props:children:2:props:children:3:props:children:1:props:children:1:props:iconNode\",\"className\":\"lucide-arrow-right size-4 rtl:rotate-180\"}]}]]}]\n28:[\"$\",\"div\",null,{\"className\":\"grid grid-cols-2 gap-8 py-12 sm:grid-cols-4\",\"children\":[[\"$\",\"div\",\"Library\",{\"className\":\"flex flex-col gap-3.5\",\"children\":[[\"$\",\"h3\",null,{\"className\":\"font-mono text-[10px] uppercase tracking-[0.14em] text-foreground/70\",\"children\":\"Library\"}],[\"$\",\"ul\",null,{\"className\":\"flex flex-col gap-2.5\",\"children\":[[\"$\",\"li\",\"/components\",{\"children\":[\"$\",\"$L1e\",null,{\"href\":\"/components\",\"className\":\"text-sm text-muted-foreground transition-colors hover:text-foreground\",\"children\":\"Components\"}]}],[\"$\",\"li\",\"/blocks\",{\"children\":[\"$\",\"$L1e\",null,{\"href\":\"/blocks\",\"className\":\"text-sm text-muted-foreground transition-colors hover:text-foreground\",\"children\":\"Blocks\"}]}],[\"$\",\"li\",\"/templates\",{\"children\":[\"$\",\"$L1e\",null,{\"href\":\"/templates\",\"className\":\"text-sm text-muted-foreground transition-colors hover:text-foreground\",\"children\":\"Templates\"}]}]]}]]}],[\"$\",\"div\",\"Resources\",{\"className\":\"flex flex-col gap-3.5\",\"children\":[[\"$\",\"h3\",null,{\"className\":\"font-mono text-[10px] uppercase tracking-[0.14em] text-foreground/70\",\"children\":\"Resources\"}],[\"$\",\"ul\",null,{\"className\":\"flex flex-col gap-2.5\",\"children\":[[\"$\",\"li\",\"/changelog\",{\"children\":[\"$\",\"$L1e\",null,{\"href\":\"/changelog\",\"className\":\"text-sm text-muted-foreground transition-colors hover:text-foreground\",\"children\":\"Changelog\"}]}],[\"$\",\"li\",\"https://github.com/MohammadShehadeh/hirael/blob/main/CONTRIBUTING.md\",{\"children\":[\"$\",\"a\",null,{\"href\":\"https://github.com/MohammadShehadeh/hirael/blob/main/CONTRIBUTING.md\",\"target\":\"_blank\",\"rel\":\"noreferrer noopener\",\"className\":\"text-sm text-muted-foreground transition-colors hover:text-foreground\",\"children\":\"Contributing\"}]}],[\"$\",\"li\",\"https://github.com/MohammadShehadeh/hirael/blob/main/LICENSE\",{\"children\":[\"$\",\"a\",null,{\"href\":\"https://github.com/MohammadShehadeh/hirael/blob/main/LICENSE\",\"target\":\"_blank\",\"rel\":\"noreferrer noopener\",\"className\":\"text-sm text-muted-foreground transition-colors hover:text-foreground\",\"children\":\"License\"}]}]]}]]}],[\"$\",\"div\",\"For agents\",{\"className\":\"flex flex-col gap-3.5\",\"children\":[[\"$\",\"h3\",null,{\"className\":\"font-mono text-[10px] uppercase tracking-[0.14em] text-foreground/70\",\"children\":\"For agents\"}],[\"$\",\"ul\",null,{\"className\":\"flex flex-col gap-2.5\",\"children\":[[\"$\",\"li\",\"/llms.txt\",{\"children\":[\"$\",\"a\",null,{\"href\":\"/llms.txt\",\"target\":\"_blank\",\"rel\":\"noreferrer noopener\",\"className\":\"text-sm text-muted-foreground transition-colors hover:text-foreground\",\"children\":\"llms.txt\"}]}],[\"$\",\"li\",\"/temas/hirael/r/registry.json\",{\"children\":[\"$\",\"a\",null,{\"href\":\"/temas/hirael/r/registry.json\",\"target\":\"_blank\",\"rel\":\"noreferrer noopener\",\"className\":\"text-sm text-muted-foreground transition-colors hover:text-foreground\",\"children\":\"Registry JSON\"}]}]]}]]}],[\"$\",\"div\",\"Author\",{\"className\":\"flex flex-col gap-3.5\",\"children\":[[\"$\",\"h3\",null,{\"className\":\"font-mono text-[10px] uppercase tracking-[0.14em] text-foreground/70\",\"children\":\"Author\"}],[\"$\",\"ul\",null,{\"className\":\"flex flex-col gap-2.5\",\"children\":[[\"$\",\"li\",\"https://github.com/MohammadShehadeh/hirael\",{\"children\":[\"$\",\"a\",null,{\"href\":\"https://github.com/MohammadShehadeh/hirael\",\"target\":\"_blank\",\"rel\":\"noreferrer noopener\",\"className\":\"text-sm text-muted-foreground transition-colors hover:text-foreground\",\"children\":\"Repository\"}]}],[\"$\",\"li\",\"https://mohammadshehadeh.com\",{\"children\":[\"$\",\"a\",null,{\"href\":\"https://mohammadshehadeh.com\",\"target\":\"_blank\",\"rel\":\"noreferrer noopener\",\"className\":\"text-sm text-muted-foreground transition-colors hover:text-foreground\",\"children\":\"Portfolio\"}]}],[\"$\",\"li\",\"https://github.com/mohammadshehadeh/\",{\"children\":[\"$\",\"a\",null,{\"href\":\"https://github.com/mohammadshehadeh/\",\"target\":\"_blank\",\"rel\":\"noreferrer noopener\",\"className\":\"text-sm text-muted-foreground transition-colors hover:text-foreground\",\"children\":\"GitHub\"}]}]]}]]}]]}]\n29:[\"$\",\"div\",null,{\"className\":\"relative\",\"children\":[[\"$\",\"span\",null,{\"aria-hidden\":true,\"className\":\"wordmark-cutout pointer-events-none absolute inset-x-0 -bottom-4 text-center text-[18vw] leading-none sm:-bottom-8 lg:text-[12rem]\",\"children\":\"Hirael\"}],[\"$\",\"div\",null,{\"className\":\"relative flex flex-col items-start justify-between gap-3 border-t border-border/70 px-6 py-6 sm:flex-row sm:items-center sm:px-10 lg:px-14\",\"children\":[[\"$\",\"p\",null,{\"className\":\"text-xs uppercase tracking-widest text-muted-foreground\",\"children\":[\"© \",2026,\" \",\"Mohammad Shehadeh\",\" - built on shadcn\"]}],[\"$\",\"p\",null,{\"className\":\"text-xs uppercase tracking-widest text-muted-foreground\",\"children\":\"zero runtime deps\"}]]}]]}]\n19:[[\"$\",\"meta\",\"0\",{\"charSet\":\"utf-8\"}],[\"$\",\"meta\",\"1\",{\"name\":\"viewport\",\"content\":\"width=device-width, initial-scale=1\"}],[\"$\",\"meta\",\"2\",{\"name\":\"theme-color\",\"content\":\"#F4F2EC\",\"media\":\"(prefers-color-scheme: light)\"}],[\"$\",\"meta\",\"3\",{\"name\":\"theme-color\",\"content\":\"#0D1117\",\"media\":\"(prefers-color-scheme: dark)\"}],[\"$\",\"meta\",\"4\",{\"name\":\"color-scheme\",\"content\":\"light dark\"}]]\n2a:I[614712,[\"/temas/hirael/_next/static/chunks/060qgfzv98756.js\"],\"IconMark\"]\n17:null\n1b:[[\"$\",\"title\",\"0\",{\"children\":\"Agency Landing preview - Hirael\"}],[\"$\",\"meta\",\"1\",{\"name\":\"description\",\"content\":\"A shadcn-compatible registry of React components, section blocks, and full-page templates most products end up building anyway. The shadcn CLI copies the source into your repo, so there's no package to depend on.\"}],[\"$\",\"meta\",\"2\",{\"name\":\"application-name\",\"content\":\"Hirael\"}],[\"$\",\"link\",\"3\",{\"rel\":\"author\",\"href\":\"https://mohammadshehadeh.com\"}],[\"$\",\"meta\",\"4\",{\"name\":\"author\",\"content\":\"Mohammad Shehadeh\"}],[\"$\",\"link\",\"5\",{\"rel\":\"manifest\",\"href\":\"/manifest.webmanifest\",\"crossOrigin\":\"$undefined\"}],[\"$\",\"meta\",\"6\",{\"name\":\"keywords\",\"content\":\"shadcn,shadcn ui,shadcn registry,react components,ui library,tailwind css,multi-select,combobox,tag input,currency input,file dropzone,next.js components,hirael,react 19\"}],[\"$\",\"meta\",\"7\",{\"name\":\"creator\",\"content\":\"Mohammad Shehadeh\"}],[\"$\",\"meta\",\"8\",{\"name\":\"publisher\",\"content\":\"Mohammad Shehadeh\"}],[\"$\",\"meta\",\"9\",{\"name\":\"robots\",\"content\":\"noindex, nofollow\"}],[\"$\",\"meta\",\"10\",{\"name\":\"category\",\"content\":\"technology\"}],[\"$\",\"meta\",\"11\",{\"property\":\"og:title\",\"content\":\"Components, blocks and templates shadcn/ui doesn't ship - Hirael\"}],[\"$\",\"meta\",\"12\",{\"property\":\"og:description\",\"content\":\"A shadcn-compatible registry of React components, section blocks, and full-page templates most products end up building anyway. The shadcn CLI copies the source into your repo, so there's no package to depend on.\"}],[\"$\",\"meta\",\"13\",{\"property\":\"og:url\",\"content\":\"https://hirael.com\"}],[\"$\",\"meta\",\"14\",{\"property\":\"og:site_name\",\"content\":\"Hirael\"}],[\"$\",\"meta\",\"15\",{\"property\":\"og:locale\",\"content\":\"en_US\"}],[\"$\",\"meta\",\"16\",{\"property\":\"og:image\",\"content\":\"https://hirael.com/opengraph-image\"}],[\"$\",\"meta\",\"17\",{\"property\":\"og:image:width\",\"content\":\"1200\"}],[\"$\",\"meta\",\"18\",{\"property\":\"og:image:height\",\"content\":\"630\"}],[\"$\",\"meta\",\"19\",{\"property\":\"og:image:alt\",\"content\":\"Components, blocks and templates shadcn/ui doesn't ship - Hirael\"}],[\"$\",\"meta\",\"20\",{\"property\":\"og:type\",\"content\":\"website\"}],[\"$\",\"meta\",\"21\",{\"name\":\"twitter:card\",\"content\":\"summary_large_image\"}],[\"$\",\"meta\",\"22\",{\"name\":\"twitter:title\",\"content\":\"Components, blocks and templates shadcn/ui doesn't ship - Hirael\"}],[\"$\",\"meta\",\"23\",{\"name\":\"twitter:description\",\"content\":\"A shadcn-compatible registry of React components, section blocks, and full-page templates most products end up building anyway. The shadcn CLI copies the source into your repo, so there's no package to depend on.\"}],[\"$\",\"meta\",\"24\",{\"name\":\"twitter:image\",\"content\":\"https://hirael.com/opengraph-image\"}],[\"$\",\"link\",\"25\",{\"rel\":\"icon\",\"href\":\"/icon?547d71e1422d66a0\",\"alt\":\"$undefined\",\"type\":\"image/png\",\"sizes\":\"64x64\"}],[\"$\",\"link\",\"26\",{\"rel\":\"apple-touch-icon\",\"href\":\"/apple-icon?073bb306c9178443\",\"alt\":\"$undefined\",\"type\":\"image/png\",\"sizes\":\"180x180\"}],[\"$\",\"$L2a\",\"27\",{}]]\n"])</script><script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v31edd6df95cf4e85bb4c19e7a9bdbcba1788362987495" integrity="sha512-iIg7k2xntmwu6/uSb5tpc/hySgZc4eoL31yB29W6tJFo2akwjPWcEqnCEdJvGexCL0KEQwVYv5BlowfhVz26hg==" data-cf-beacon="{&quot;version&quot;:&quot;2024.11.0&quot;,&quot;token&quot;:&quot;163f31063a7a4ee2a861843267d76102&quot;,&quot;r&quot;:1,&quot;spa&quot;:2}" crossorigin="anonymous"></script>
-<next-route-announcer style="position: absolute;"></next-route-announcer></body></html>
+  /* Estela del hero: sigue al puntero y se apaga cuando deja de moverse. Solo con
+     mouse y sin preferencia de movimiento reducido. */
+  var hero = document.querySelector('[data-hero]')
+  var calmo = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  if (hero && !calmo && window.matchMedia('(hover: hover)').matches) {
+    var espera = null
+    hero.addEventListener('pointermove', function (e) {
+      var caja = hero.getBoundingClientRect()
+      hero.style.setProperty('--px', e.clientX - caja.left + 'px')
+      hero.style.setProperty('--py', e.clientY - caja.top + 'px')
+      hero.style.setProperty('--estela', '1')
+      clearTimeout(espera)
+      espera = setTimeout(function () {
+        hero.style.setProperty('--estela', '0')
+      }, 700)
+    })
+  }
+
+  /* Mapa: el iframe de Google se crea recién al hacer clic. Hasta entonces la
+     página no pide nada a Google. */
+  document.querySelectorAll('[data-mapa]').forEach(function (boton) {
+    boton.addEventListener('click', function () {
+      var medio = boton.closest('.tarjeta__medio')
+      var iframe = document.createElement('iframe')
+      iframe.src = boton.getAttribute('data-mapa')
+      iframe.title = boton.getAttribute('data-titulo')
+      iframe.referrerPolicy = 'no-referrer-when-downgrade'
+      medio.replaceChildren(iframe)
+    })
+  })
+})()
+
+  </script>
+</body>
+</html>

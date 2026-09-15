@@ -114,6 +114,18 @@ cargue el siguiente sin recargar la página de arriba, que la elección sobreviv
 y que cada template cargue su contenido, sus estilos y sus imágenes sin caer en su propia
 página de 404. No saca capturas: todo se comprueba leyendo el DOM y el resultado es texto.
 
+En las variantes propias revisa además:
+
+- que haya un solo `<h1>`;
+- que Bebas Neue e Inter carguen desde el sitio y que no se pida nada a otros dominios al abrir
+  la página;
+- el contraste AA de cada texto visible contra su fondo, gradientes incluidos;
+- que no haya desborde a lo ancho en 375, 640, 768, 1024 y 1440 px;
+- que el menú móvil abra y se cierre con Escape;
+- que el mapa de Google se cargue solo al hacer clic.
+
+Desde WSL se corre con el Chrome de Linux: `CHROME=/usr/bin/google-chrome npm run test:ui`.
+
 ### Variantes propias (etapa de contenido)
 
 Cada template va a tener una variante con el contenido, la tipografía y los colores de Kuyen, y
