@@ -1416,6 +1416,33 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
     paralaje()
   }
 
+  /* Progreso con el scroll: [data-m-progreso] publica --m-p, que va de 0 cuando
+     su borde de arriba asoma por abajo de la pantalla a 1 cuando llega a la
+     fracción de la pantalla que indica el atributo (0,3 por defecto). */
+  var progresos = [].slice.call(document.querySelectorAll('[data-m-progreso]'))
+  function progreso() {
+    var alto = window.innerHeight
+    progresos.forEach(function (el) {
+      var fin = parseFloat(el.getAttribute('data-m-progreso')) || 0.3
+      var p = (alto - el.getBoundingClientRect().top) / (alto * (1 - fin))
+      el.style.setProperty('--m-p', Math.min(1, Math.max(0, p)).toFixed(3))
+    })
+  }
+  if (progresos.length) {
+    if (calmo) {
+      progresos.forEach(function (el) { el.style.setProperty('--m-p', '1') })
+    } else {
+      var pedidoProgreso = false
+      window.addEventListener('scroll', function () {
+        if (pedidoProgreso) return
+        pedidoProgreso = true
+        requestAnimationFrame(function () { pedidoProgreso = false; progreso() })
+      }, { passive: true })
+      window.addEventListener('resize', progreso)
+      progreso()
+    }
+  }
+
   /* Cifras que suben desde cero. */
   function escribir(n, valor) {
     var decimales = Number(n.getAttribute('data-m-decimales') || 0)

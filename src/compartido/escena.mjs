@@ -1,8 +1,8 @@
 /**
  * Piezas de HTML compartidas por las variantes: la escena nocturna del logo
  * (estrellas, luna y cordillera con los gatos), las presas que flotan, los
- * títulos que se arman palabra por palabra, la marquesina y las cifras. El movimiento vive en movimiento.css
- * y movimiento.js, en esta misma carpeta.
+ * títulos que se arman palabra por palabra, la marquesina y las cifras. El
+ * movimiento vive en movimiento.css y movimiento.js, en esta misma carpeta.
  */
 
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
@@ -63,29 +63,34 @@ export const presa = ({ forma, color, clase = '', x, y, tam, prof = 30, paralaje
 
 /**
  * Título que se arma: cada palabra sube desde su propia máscara, una tras otra.
- * Recibe un texto o una lista de líneas; cada línea queda en su renglón.
+ * Recibe un texto o una lista de líneas; cada línea queda en su renglón. Una
+ * línea también puede ser una lista de tramos, y un tramo { texto, clase } pone
+ * esa clase en sus palabras (por ejemplo, para destacarlo en color).
  */
 export function titulo(lineas) {
   let i = 0
+  const palabras = (texto, clase = '') =>
+    String(texto)
+      .split(/\s+/)
+      .filter(Boolean)
+      .map((p) => `<span class="m-palabra${clase ? ` ${clase}` : ''}"><span style="--m-i: ${i++}">${esc(p)}</span></span>`)
   return []
     .concat(lineas)
     .map((linea) => {
-      const palabras = String(linea)
-        .split(/\s+/)
-        .filter(Boolean)
-        .map((p) => `<span class="m-palabra"><span style="--m-i: ${i++}">${esc(p)}</span></span>`)
-      return `<span class="m-linea">${palabras.join(' ')}</span>`
+      const tramos = Array.isArray(linea) ? linea : [linea]
+      const html = tramos.flatMap((t) => (t !== null && typeof t === 'object' ? palabras(t.texto, t.clase) : palabras(t)))
+      return `<span class="m-linea">${html.join(' ')}</span>`
     })
     .join(' ')
 }
 
 /** Marquesina: una franja por lista de palabras, en sentidos alternados. */
-export function marquesina(filas) {
+export function marquesina(filas, { clase = '' } = {}) {
   const pista = (palabras, n) => {
     const grupo = palabras.map((p) => `<span>${esc(p)}<i class="m-estrella-chica"></i></span>`).join('')
     return `<div class="m-pista${n % 2 ? ' m-pista--vuelta' : ''}">${grupo}${grupo}</div>`
   }
-  return `<div class="m-marquesina" aria-hidden="true">${filas.map(pista).join('')}</div>`
+  return `<div class="m-marquesina${clase ? ` ${clase}` : ''}" aria-hidden="true">${filas.map(pista).join('')}</div>`
 }
 
 /**
