@@ -19,9 +19,9 @@ Hive salió de los candidatos el 14-09-2026. Su captura sigue en el historial de
 | Ruta | Template |
 |---|---|
 | `/` | El marco: el template activo más el toggle |
-| `/t/karate` | [Karate](https://21st.dev/@dhileepkumargm/templates/karate) |
-| `/t/hirael` | [Hirael Agency Landing](https://21st.dev/@mohammadshehadeh/templates/hirael-agency-landing) |
-| `/t/nex` | [NexStudio](https://21st.dev/@tailgrids/templates/tailgrids-nexstudio) |
+| `/t/karate` | [Karate](https://karateacadamy.framer.website/) |
+| `/t/hirael` | [Hirael Agency Landing](https://hirael.com/embed/templates/agency-landing) |
+| `/t/nex` | [NexStudio](https://nexstudio.demos.tailgrids.com/) |
 
 Cada template se sirve entero dentro de su propio documento: su HTML, sus estilos, sus
 scripts y sus assets, sin compartir nada con el marco ni con los otros. Esa es la razón de que
@@ -64,7 +64,7 @@ marco, porque cada template vive en su propio documento. La elección se guarda 
 
 ### Los templates son de terceros
 
-Son templates comerciales de 21st.dev, guardados enteros para elegir dirección visual con
+Son templates comerciales de terceros, guardados enteros para elegir dirección visual con
 Kuyen. **No son el sitio definitivo**: elegido uno, se reescribe el markup y se reemplazan los
 assets por los de Kuyen. Por eso van con `noindex` y fuera del `sitemap.xml`.
 
@@ -94,8 +94,10 @@ solo recargar, sin esperar los 10 minutos que GitHub Pages guarda cada versión 
 | Qué templates hay, su orden, nombre e icono | `TEMAS` en `src/site.config.mjs` |
 | Con cuál abre el marco | `TEMA_POR_DEFECTO` en `src/site.config.mjs` |
 | El aspecto y el comportamiento del toggle | `src/partials/marco.html` |
-| Título y descripción de la página | `PAGINA` en `src/site.config.mjs` |
-| Dirección, teléfono, Instagram, coordenadas | `NEGOCIO` en `src/site.config.mjs` |
+| Título y descripción del marco | `PAGINA` en `src/site.config.mjs` |
+| Textos, datos del negocio, horarios, precios, eventos, reglamento y fotos | `src/contenido.mjs` |
+| La página de una variante | `src/variantes/<id>/pagina.mjs` |
+| Paleta, acento y tokens | `src/css/tokens.css` |
 
 Para verlo local con las URLs resueltas como las resuelve GitHub Pages:
 
@@ -111,6 +113,54 @@ node --experimental-websocket tools/comparar-tema.mjs http://localhost:8100
 cargue el siguiente sin recargar la página de arriba, que la elección sobreviva a una recarga
 y que cada template cargue su contenido, sus estilos y sus imágenes sin caer en su propia
 página de 404. No saca capturas: todo se comprueba leyendo el DOM y el resultado es texto.
+
+### Variantes propias (etapa de contenido)
+
+Cada template va a tener una variante con el contenido, la tipografía y los colores de Kuyen, y
+la misma estructura del template: secciones, layout, componentes, espaciado y animaciones. El
+markup, el CSS y el JavaScript de cada variante son propios.
+
+| Qué | Dónde |
+|---|---|
+| Página de la variante | `src/variantes/<id>/pagina.mjs`, con su CSS y su JS en la misma carpeta |
+| Textos y datos del negocio | `src/contenido.mjs`, sin HTML: lo leen todas las variantes |
+| Paleta del logo 2.0, acento y tokens semánticos | `src/css/tokens.css` |
+| Tipografías (Bebas Neue e Inter, licencia OFL) | `fonts/` y `src/css/fuentes.css` |
+| Fotos y derivados de marca | `img/fotos/` e `img/marca/`, generados con `tools/assets.mjs` |
+
+Mientras un template no tenga `pagina.mjs`, `/t/<id>` sigue sirviendo su captura. Con
+`npm run dev`, la captura de cada template queda además en `/ref/<id>` para comparar;
+`npm run build` y `npm run preview` no la llevan.
+
+`pagina.mjs` exporta por defecto una función que recibe el contexto y devuelve el HTML completo:
+
+- `contenido`: todo `src/contenido.mjs`.
+- `esc(texto)`: escapa texto para HTML.
+- `foto(id, opciones)`: una `<img>` con `srcset`, `sizes`, `width` y `height` de una foto de
+  `FOTOS`.
+- `cabeza(opciones)`: el `<head>` con metadatos, Open Graph, datos estructurados, fuentes,
+  tokens y el CSS de la variante (`estilos`).
+- `leer(nombre)`: un archivo de la carpeta de la variante.
+
+Lo que Kuyen no confirmó va como `[POR CONFIRMAR]`, con un comentario que dice qué falta.
+
+#### Fotos y marca
+
+Los originales no entran al repo. Con ImageMagick instalado:
+
+```bash
+node tools/assets.mjs fotos --origen=<carpeta con los JPG>
+node tools/assets.mjs marca --origen=<carpeta con los PNG del logo> --titulo=<BebasNeue.ttf> --texto=<Inter.ttf>
+```
+
+`fotos` genera cada foto de `FOTOS` en WebP de 1600, 1200 y 800 px, con la orientación de la
+cámara aplicada y bajo 300 KB, más `img/fotos/fotos.json` con las medidas. `marca` recorta el
+isotipo del logo 2.0 y genera los favicons, el logo completo y la imagen para redes
+(`og-kuyen.jpg`, de 1200 x 630). Los TTF son las versiones de escritorio de las mismas familias
+de `fonts/`, porque ImageMagick no lee woff2.
+
+Para agregar una foto: se suma a `FOTOS` en `src/contenido.mjs`, con su `id`, el archivo original
+y el texto alternativo, y se vuelve a correr `fotos`.
 
 ### Capturar o actualizar un template
 
@@ -162,6 +212,12 @@ El generador valida antes de escribir y no deja nada a medias: título o descrip
 largos, más o menos de un `<h1>` en el marco, tokens sin resolver, o un template sin sus
 assets.
 
+En las variantes revisa además que haya un solo `<h1>`, que no haya anclas rotas ni assets que
+falten en el repo, y que no queden referencias a los templates o a terceros (rutas `/temas/`,
+dominios de los templates, fuentes pedidas a Google) ni datos sin confirmar. En
+`src/contenido.mjs`, falla si un horario o un precio no dice `[POR CONFIRMAR]` o si aparece
+alguno de los valores de `DATOS_SIN_CONFIRMAR`.
+
 ## Publicación
 
 Push a `main` publica desde la raíz del repo. El workflow `verificar.yml` corre en cada push y
@@ -193,21 +249,22 @@ ni `tools/`.
 - **DNS**: cuando exista el dominio, registros A a 185.199.108/109/110/111.153. Si el DNS
   queda en Cloudflare, tiene que estar "DNS only" (nube gris), nunca proxiado, o GitHub deja
   de renovar el certificado HTTPS.
-- **Marca**: no hay archivos de logo. El isotipo `img/marca-luna.svg` es un placeholder propio
-  (luna creciente, por "küyen", luna en mapudungun), y solo se usa como favicon del marco.
+- **Marca**: el isotipo, los favicons, el logo completo y `og-kuyen.jpg` salen del logo 2.0 con
+  `tools/assets.mjs marca`. Falta el nombre de la tipografía del logo y el manual de marca, si
+  existe.
 - **Peso del repo**: las capturas ocupan cerca de 24 MB en `temas/`. Se van con los templates
   descartados.
 
 ## Datos del negocio
 
-Verificados el 09-09-2026 en la ficha de Google Maps y el perfil de Instagram del centro, y
-guardados en `NEGOCIO` de `src/site.config.mjs` para cuando entre el contenido real:
+Todos en `src/contenido.mjs`, revisados el 14-09-2026 en la ficha de Google Maps, Instagram,
+Linktree y el formulario de solicitud de ingreso del centro:
 
 - Los Patagones 375, Padre Las Casas, La Araucanía
 - +56 9 3502 8838
-- [@kuyen.climbing](https://www.instagram.com/kuyen.climbing/) · 2.928 seguidores
+- [@kuyen.climbing](https://www.instagram.com/kuyen.climbing/)
 - [Ficha de Google](https://maps.app.goo.gl/v9F89L5peqFyxcJc9): 5,0 con 14 reseñas
-- Muro de boulder con desplomes continuos hasta 25° y moonboard, y clases guiadas
-- Horarios, precios y planes de clases siguen **sin confirmar**: lo que circula sale de
-  publicaciones públicas de distinta fecha y no se escribe en el sitio hasta que Kuyen lo
-  confirme
+- Muro de boulder con desplomes continuos hasta 25°, moonboard, más de 500 rutas creadas,
+  clases guiadas desde marzo de 2026 y el programa infantil Kuyencit@s
+- Horarios, precios, correo y el detalle de clases y Kuyencit@s siguen **sin confirmar**: van
+  como `[POR CONFIRMAR]` hasta que Kuyen los confirme

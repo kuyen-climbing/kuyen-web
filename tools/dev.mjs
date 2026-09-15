@@ -2,6 +2,9 @@
  * Entorno local: genera el sitio en dist/, lo sirve en http://localhost:8100 y lo
  * vuelve a generar solo cada vez que cambia algo en src/.
  *
+ * Además sirve la captura de cada template en /ref/<id>, para compararla con
+ * su variante propia. npm run build y npm run preview no la llevan.
+ *
  *   npm run dev            (o: node tools/dev.mjs --port=8100)
  *
  * Sirve para trabajar sin esperar la caché de GitHub Pages, que guarda cada
@@ -18,7 +21,7 @@ const PUERTO = Number((process.argv.find((a) => a.startsWith('--port=')) || '--p
 
 function generar(motivo) {
   const inicio = Date.now()
-  const r = spawnSync(process.execPath, ['tools/build.mjs', '--out=dist'], { cwd: ROOT, encoding: 'utf8' })
+  const r = spawnSync(process.execPath, ['tools/build.mjs', '--out=dist', '--referencias'], { cwd: ROOT, encoding: 'utf8' })
   const hora = new Date().toLocaleTimeString('es-CL')
   if (r.status === 0) {
     console.log(`[${hora}] ${motivo}: sitio regenerado en ${Date.now() - inicio} ms`)
@@ -42,7 +45,7 @@ watch(join(ROOT, 'src'), { recursive: true }, (_, archivo) => {
   pendiente = setTimeout(() => generar(`cambió src/${String(archivo ?? '').replaceAll('\\', '/')}`), 250)
 })
 
-console.log(`\nAbre http://localhost:${PUERTO}/ en Chrome. Ctrl+C para salir.\n`)
+console.log(`\nAbre http://localhost:${PUERTO}/ en Chrome. Los templates originales están en /ref/<id>. Ctrl+C para salir.\n`)
 
 const salir = () => {
   servidor.kill()

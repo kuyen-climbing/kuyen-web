@@ -1,0 +1,155 @@
+{
+  "escaladora-muro-azul": {
+    "800": {
+      "ancho": 536,
+      "alto": 800,
+      "kb": 40
+    },
+    "1200": {
+      "ancho": 803,
+      "alto": 1200,
+      "kb": 66
+    },
+    "1600": {
+      "ancho": 1071,
+      "alto": 1600,
+      "kb": 96
+    }
+  },
+  "escalador-desplome-gris": {
+    "800": {
+      "ancho": 536,
+      "alto": 800,
+      "kb": 62
+    },
+    "1200": {
+      "ancho": 803,
+      "alto": 1200,
+      "kb": 110
+    },
+    "1600": {
+      "ancho": 1071,
+      "alto": 1600,
+      "kb": 164
+    }
+  },
+  "escaladora-desplome": {
+    "800": {
+      "ancho": 536,
+      "alto": 800,
+      "kb": 44
+    },
+    "1200": {
+      "ancho": 803,
+      "alto": 1200,
+      "kb": 75
+    },
+    "1600": {
+      "ancho": 1071,
+      "alto": 1600,
+      "kb": 110
+    }
+  },
+  "escalador-desplome-amarillo": {
+    "800": {
+      "ancho": 800,
+      "alto": 536,
+      "kb": 45
+    },
+    "1200": {
+      "ancho": 1200,
+      "alto": 803,
+      "kb": 76
+    },
+    "1600": {
+      "ancho": 1600,
+      "alto": 1071,
+      "kb": 112
+    }
+  },
+  "comunidad-evento": {
+    "800": {
+      "ancho": 800,
+      "alto": 536,
+      "kb": 57
+    },
+    "1200": {
+      "ancho": 1200,
+      "alto": 803,
+      "kb": 93
+    },
+    "1600": {
+      "ancho": 1600,
+      "alto": 1071,
+      "kb": 130
+    }
+  },
+  "escalador-muro-blanco": {
+    "800": {
+      "ancho": 800,
+      "alto": 533,
+      "kb": 29
+    },
+    "1200": {
+      "ancho": 1200,
+      "alto": 800,
+      "kb": 47
+    },
+    "1600": {
+      "ancho": 1600,
+      "alto": 1067,
+      "kb": 68
+    }
+  },
+  "nino-escalando": {
+    "800": {
+      "ancho": 800,
+      "alto": 533,
+      "kb": 39
+    },
+    "1200": {
+      "ancho": 1200,
+      "alto": 800,
+      "kb": 62
+    },
+    "1600": {
+      "ancho": 1600,
+      "alto": 1067,
+      "kb": 86
+    }
+  },
+  "joven-escalando": {
+    "800": {
+      "ancho": 800,
+      "alto": 533,
+      "kb": 32
+    },
+    "1200": {
+      "ancho": 1200,
+      "alto": 800,
+      "kb": 50
+    },
+    "1600": {
+      "ancho": 1600,
+      "alto": 1067,
+      "kb": 72
+    }
+  },
+  "pancita": {
+    "800": {
+      "ancho": 800,
+      "alto": 533,
+      "kb": 26
+    },
+    "1200": {
+      "ancho": 1200,
+      "alto": 800,
+      "kb": 44
+    },
+    "1600": {
+      "ancho": 1600,
+      "alto": 1067,
+      "kb": 66
+    }
+  }
+}
