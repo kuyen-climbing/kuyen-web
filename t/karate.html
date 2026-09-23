@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Kuyen Climbing | Escalada en boulder en Padre Las Casas</title>
-  <meta name="description" content="Centro de escalada técnica en boulder en Padre Las Casas, La Araucanía: desplomes hasta 25°, moonboard, clases guiadas y comunidad.">
+  <meta name="description" content="Centro de escalada técnica en boulder en Padre Las Casas, La Araucanía: paredes de 0° a 40°, moonboard, clases guiadas y comunidad.">
   <!-- Variante en comparación: fuera del índice hasta que se elija una. -->
   <meta name="robots" content="noindex, nofollow">
   <link rel="canonical" href="https://kuyenclimbing.cl/t/karate">
@@ -19,14 +19,14 @@
   <meta property="og:locale" content="es_CL">
   <meta property="og:url" content="https://kuyenclimbing.cl/t/karate">
   <meta property="og:title" content="Kuyen Climbing | Escalada en boulder en Padre Las Casas">
-  <meta property="og:description" content="Centro de escalada técnica en boulder en Padre Las Casas, La Araucanía: desplomes hasta 25°, moonboard, clases guiadas y comunidad.">
+  <meta property="og:description" content="Centro de escalada técnica en boulder en Padre Las Casas, La Araucanía: paredes de 0° a 40°, moonboard, clases guiadas y comunidad.">
   <meta property="og:image" content="https://kuyenclimbing.cl/img/marca/og-kuyen.jpg">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:image:alt" content="KÜYEN CLIMBING, escalada en boulder en Padre Las Casas">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Kuyen Climbing | Escalada en boulder en Padre Las Casas">
-  <meta name="twitter:description" content="Centro de escalada técnica en boulder en Padre Las Casas, La Araucanía: desplomes hasta 25°, moonboard, clases guiadas y comunidad.">
+  <meta name="twitter:description" content="Centro de escalada técnica en boulder en Padre Las Casas, La Araucanía: paredes de 0° a 40°, moonboard, clases guiadas y comunidad.">
   <meta name="twitter:image" content="https://kuyenclimbing.cl/img/marca/og-kuyen.jpg">
 
   <link rel="preload" href="/fonts/rubik-latin.woff2" as="font" type="font/woff2" crossorigin>
@@ -37,7 +37,7 @@
   "@context": "https://schema.org",
   "@type": "SportsActivityLocation",
   "name": "Kuyen Climbing",
-  "description": "Centro de escalada técnica en boulder en Padre Las Casas, La Araucanía: desplomes hasta 25°, moonboard, clases guiadas y comunidad.",
+  "description": "Centro de escalada técnica en boulder en Padre Las Casas, La Araucanía: paredes de 0° a 40°, moonboard, clases guiadas y comunidad.",
   "url": "https://kuyenclimbing.cl/",
   "image": "https://kuyenclimbing.cl/img/marca/og-kuyen.jpg",
   "logo": "https://kuyenclimbing.cl/img/marca/isotipo-512.png",
@@ -56,6 +56,23 @@
     "longitude": -72.5918641
   },
   "hasMap": "https://maps.app.goo.gl/v9F89L5peqFyxcJc9",
+  "email": "kuyen.climbing@gmail.com",
+  "openingHoursSpecification": [
+    {
+      "@type": "OpeningHoursSpecification",
+      "dayOfWeek": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "opens": "10:00",
+      "closes": "22:00"
+    }
+  ],
   "sameAs": [
     "https://www.instagram.com/kuyen.climbing/",
     "https://linktr.ee/kuyen.climbing"
@@ -244,6 +261,82 @@
 .m-luna,
 .m-cordillera { pointer-events: none; user-select: none; }
 .m-luna { filter: drop-shadow(0 0 34px rgb(247 231 180 / 0.45)); }
+
+/* El logo de Kuyen cuando va de fondo, detrás del texto: a todo el ancho de su
+   contenedor, apenas difuminado y atenuado, y desvanecido hacia arriba para que
+   se funda con la noche. Lo usan NexStudio, que además lo enmascara con la
+   linterna del puntero, y Karate, que lo recorta dentro de la tarjeta de vidrio.
+   Hirael no lo usa: ahí el logo va nítido al pie del arco (22-09-2026).
+
+   El contraste no lo mide la prueba de AA, que solo ve fondos de los ancestros y
+   no una imagen que está detrás, así que la opacidad es lo único que mantiene el
+   texto legible: subirla se nota enseguida. La prueba de interfaz la topea
+   en 0,4. */
+.m-cordillera--fondo {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1;
+  width: var(--logo-ancho, 100%);
+  height: auto;
+  margin-inline: auto;
+  filter: blur(3px);
+  opacity: 0.26;
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 55%);
+  mask-image: linear-gradient(to bottom, transparent, #000 55%);
+}
+@media (min-width: 768px) {
+  .m-cordillera--fondo { filter: blur(4px); }
+}
+
+/* Valoración de Google. Las estrellas van en amarillo luna, que sobre la noche
+   pasa AA de sobra; el resto hereda el color del bloque. */
+.m-valoracion { display: flex; flex-direction: column; gap: 0.5rem; }
+.m-valoracion__estrellas { display: flex; gap: 0.1875rem; color: var(--kuyen-luna); }
+.m-valoracion__estrellas svg { width: 1.125rem; height: 1.125rem; }
+.m-valoracion__nota { font-size: 1rem; }
+.m-valoracion__nota b { font-family: var(--fuente-titulo); font-size: 1.75rem; font-weight: 400; vertical-align: -0.1em; }
+.m-valoracion__texto { color: var(--texto-suave); font-size: 0.875rem; line-height: 1.5; }
+.m-valoracion__enlaces { display: flex; flex-wrap: wrap; gap: 0.25rem 0.75rem; font-size: 0.875rem; }
+.m-valoracion__invita { color: var(--texto-suave); }
+
+/* Hueco de una foto que Kuyen todavía no manda. Se ve a propósito: borde
+   punteado en amarillo luna y el pedido escrito adentro, del tamaño que va a
+   tener la foto. El texto va en --kuyen-luna sobre la noche, que pasa AA. */
+.m-falta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  margin: 0;
+  padding: 1.25rem;
+  border: 2px dashed rgb(247 231 180 / 0.45);
+  border-radius: 0.75rem;
+  background: rgb(247 231 180 / 0.05);
+  text-align: center;
+}
+.m-falta--horizontal { aspect-ratio: 3 / 2; }
+.m-falta--vertical { aspect-ratio: 3 / 4; }
+.m-falta__marca { display: block; width: 2rem; height: 2rem; flex: none; color: var(--kuyen-luna); }
+.m-falta__marca svg { width: 100%; height: 100%; }
+.m-falta__texto { max-width: 26rem; color: var(--kuyen-luna); font-family: var(--fuente-texto); font-size: 0.8125rem; line-height: 1.5; }
+.m-falta__texto b { display: block; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; }
+.m-falta__codigo { opacity: 0.75; }
+/* En cajas muy chicas el recuadro deja de imponer proporción y se ajusta. */
+@media (max-width: 400px) {
+  .m-falta { padding: 1rem; }
+  .m-falta--horizontal, .m-falta--vertical { aspect-ratio: auto; min-height: 11rem; }
+}
+
+/* Rejilla de huecos, para las secciones que esperan varias fotos. */
+.m-faltas { display: grid; gap: 1rem; margin-top: 2rem; }
+@media (min-width: 640px) { .m-faltas { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 1024px) {
+  .m-faltas--tres { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .m-faltas--cuatro { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
 
 /* Presas que flotan. */
 .m-presa { position: absolute; display: block; color: var(--color); filter: drop-shadow(0 12px 18px rgb(23 26 30 / 0.4)); pointer-events: none; }
@@ -587,6 +680,17 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
   border-radius: 0 0 2rem 2rem;
   background: linear-gradient(180deg, rgb(23 26 30 / 0.12), rgb(23 26 30 / 0.42));
 }
+/* El logo, grabado en el vidrio: el envoltorio lo recorta a la tarjeta y le
+   copia las esquinas redondeadas, así no se derrama por la página. Va en z-index
+   0 para quedar debajo del texto y de la pila de fotos. */
+.hero__grabado {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  border-radius: inherit;
+  pointer-events: none;
+}
 .hero__texto { position: relative; z-index: 2; }
 .hero__texto:focus { outline: none; }
 
@@ -639,7 +743,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
   .pila:hover .pila__carta--frente { top: 24%; left: -6%; rotate: -12deg; }
 }
 
-.hero__gatos { display: none; }
+
 
 @media (min-width: 768px) {
   .hero { display: flex; flex-direction: column; justify-content: center; padding-bottom: clamp(5rem, 10vw, 8.5rem); }
@@ -656,14 +760,6 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
   .hero__titulo { font-size: clamp(3.25rem, 7vw, 4.125rem); }
   .hero__parrafo { display: block; }
   .pila { height: 24rem; }
-  .hero__gatos { position: absolute; bottom: 0; left: 1.5%; z-index: 3; display: block; width: clamp(13rem, 24vw, 21rem); pointer-events: none; }
-  /* El pie oscuro del dibujo termina en cortes rectos: se funde hacia los lados. */
-  .hero__cordillera {
-    width: 100%;
-    height: auto;
-    -webkit-mask-image: linear-gradient(to right, transparent 0, #000 20%, #000 80%, transparent);
-    mask-image: linear-gradient(to right, transparent 0, #000 20%, #000 80%, transparent);
-  }
 }
 @media (min-width: 1024px) {
   .hero__tarjeta { grid-template-columns: 34rem minmax(0, 1fr); padding: 6rem 2.5rem 3rem; }
@@ -685,7 +781,6 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
   .hero__luna { top: 0.75rem; width: 5rem; margin-left: -2.5rem; }
   .hero__titulo { margin-block: 1rem; font-size: 4.25rem; }
   .pila { height: 25rem; }
-  .hero__gatos { width: clamp(11rem, 16vw, 15rem); }
 }
 
 /* ---------- Nuestra historia ---------- */
@@ -721,6 +816,27 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
   .historia__grilla { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: center; }
   .historia__parrafo { font-size: 1.0625rem; }
 }
+
+/* ---------- El muro: fichas ---------- */
+
+.muro__bajada { max-width: 46rem; margin-bottom: 2rem; color: var(--texto-suave); font-size: 1rem; line-height: 1.65; }
+.fichas { display: grid; gap: 1rem; }
+.ficha { padding: 1.25rem; border: 1px solid var(--borde); border-radius: 1rem; background: var(--superficie); }
+.ficha__titulo { margin-bottom: 0.5rem; font-family: var(--fuente-titulo); font-size: 1.0625rem; font-weight: 400; }
+.fichas--pasos { list-style: none; counter-reset: paso; }
+.ficha__numero {
+  display: inline-block;
+  margin-bottom: 0.75rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  background: var(--kuyen-luna);
+  color: var(--kuyen-tinta);
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+.ficha__texto { color: var(--texto-suave); font-size: 0.9375rem; line-height: 1.6; }
+@media (min-width: 640px) { .fichas { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 1024px) { .fichas { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.25rem; } }
 
 /* ---------- Programas ---------- */
 
@@ -785,6 +901,18 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .tabla td::before { content: attr(data-etiqueta); display: block; margin-bottom: 0.25rem; color: var(--texto-suave); font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; }
 .tramo { display: inline-block; padding: 0.25rem 0.75rem; border-radius: 9999px; background: rgb(247 231 180 / 0.14); color: var(--kuyen-luna); font-size: 0.8125rem; font-weight: 600; white-space: nowrap; }
 .horario__nota { margin-top: 1.5rem; color: var(--texto-suave); font-size: 0.9375rem; line-height: 1.6; }
+.valores { margin-top: 2.5rem; }
+.valores__titulo { margin-bottom: 1rem; color: var(--texto-suave); font-size: 0.8125rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; }
+.valores__lista { display: grid; gap: 0.875rem; }
+.valores__item { display: grid; gap: 0.25rem; padding-bottom: 0.875rem; border-bottom: 1px solid var(--borde); }
+.valores__nombre { font-size: 0.9375rem; }
+.valores__detalle { color: var(--texto-suave); font-size: 0.8125rem; }
+.valores__valor { font-family: var(--fuente-titulo); font-size: 1.0625rem; }
+.valores__estudiante { display: block; color: var(--texto-suave); font-family: var(--fuente-texto); font-size: 0.8125rem; }
+@media (min-width: 768px) {
+  .valores__item { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr) auto; align-items: baseline; gap: 1rem; }
+  .valores__valor { text-align: right; }
+}
 @media (min-width: 768px) {
   .tabla { display: table; }
   .tabla thead { position: static; display: table-header-group; width: auto; height: auto; overflow: visible; clip-path: none; }
@@ -943,9 +1071,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .pie__contacto svg { flex: none; width: 1.125rem; height: 1.125rem; margin-top: 0.1875rem; color: var(--kuyen-luna); }
 .mapa-mini { position: relative; height: 13.4375rem; overflow: hidden; border: 1px solid var(--borde); border-radius: 1rem; background: var(--superficie); }
 .mapa-mini > iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
-.mapa-mini__medio { display: flex; height: 100%; flex-direction: column; align-items: center; justify-content: center; gap: 0.625rem; padding: 1rem; text-align: center; }
-.mapa-mini__luna { width: 3.25rem; height: auto; }
-.mapa-mini__nota { color: var(--texto-suave); font-size: 0.8125rem; line-height: 1.45; }
+.mapa-mini__pie { margin-top: 0.75rem; color: var(--texto-suave); font-size: 0.8125rem; line-height: 1.45; }
 .pie__legal { display: flex; flex-direction: column; gap: 0.75rem; margin-top: 2.5rem; padding-top: 1.5rem; border-top: 1px solid var(--borde); color: var(--texto-suave); font-size: 0.875rem; }
 .pie__legal a { transition: color 300ms; }
 .pie__legal a:hover { color: var(--kuyen-luna); }
@@ -981,9 +1107,10 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
         <span class="marca__nombre">KÜYEN CLIMBING</span>
       </a>
       <ul class="cabecera__enlaces">
+        <li><a href="#muro">El muro</a></li>
         <li><a href="#programas">Programas</a></li>
-        <li><a href="#historia">Nuestra historia</a></li>
         <li><a href="#horarios">Horarios</a></li>
+        <li><a href="#primeravez">Primera vez</a></li>
         <li><a href="#contacto">Contacto</a></li>
       </ul>
       <a class="boton boton--primario boton--cabecera" href="https://docs.google.com/forms/d/e/1FAIpQLSfA0HoO-PmDaaSRjXqLt1VF37dFQKTdcsL2kD1co3wM-rGGIQ/viewform?usp=pp_url" target="_blank" rel="noopener"><span>Solicitud de ingreso</span></a>
@@ -996,9 +1123,16 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 
   <div class="menu" id="menu-movil" data-menu inert>
     <nav class="contenedor menu__enlaces" aria-label="Menú">
-      <a href="#programas">Programas</a>
       <a href="#historia">Nuestra historia</a>
+      <a href="#muro">El muro</a>
+      <a href="#equipo">Quiénes somos</a>
+      <a href="#programas">Programas</a>
+      <a href="#kuyencitos">Kuyencit@s</a>
       <a href="#horarios">Horarios</a>
+      <a href="#primeravez">Tu primera vez</a>
+      <a href="#preguntas">Preguntas</a>
+      <a href="#inclusion">Comunidad</a>
+      <a href="#instagram">En Instagram</a>
       <a href="#contacto">Contacto</a>
       <a class="boton boton--primario" href="https://docs.google.com/forms/d/e/1FAIpQLSfA0HoO-PmDaaSRjXqLt1VF37dFQKTdcsL2kD1co3wM-rGGIQ/viewform?usp=pp_url" target="_blank" rel="noopener"><span>Solicitud de ingreso</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
     </nav>
@@ -1008,14 +1142,17 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
     <div class="m-cielo" aria-hidden="true"><span class="m-estrella" style="left:0.26%;top:40.96%;--t:5px;--d:5.13s;--r:-1.73s"></span><span class="m-estrella" style="left:47.55%;top:43.45%;--t:14px;--d:5.25s;--r:-1.92s"></span><span class="m-estrella" style="left:93.92%;top:70.44%;--t:5px;--d:3.80s;--r:-3.48s"></span><span class="m-estrella" style="left:33.08%;top:11.43%;--t:12px;--d:5.48s;--r:-0.62s"></span><span class="m-estrella" style="left:18.79%;top:24.45%;--t:17px;--d:5.71s;--r:-0.41s"></span><span class="m-estrella" style="left:41.34%;top:33.47%;--t:10px;--d:4.70s;--r:-0.47s"></span><span class="m-estrella" style="left:31.62%;top:21.85%;--t:16px;--d:4.76s;--r:-3.22s"></span><span class="m-estrella" style="left:64.55%;top:30.66%;--t:9px;--d:2.32s;--r:-4.64s"></span><span class="m-estrella" style="left:76.99%;top:17.03%;--t:7px;--d:3.50s;--r:-3.26s"></span><span class="m-estrella" style="left:5.90%;top:5.40%;--t:16px;--d:3.16s;--r:-2.26s"></span><span class="m-estrella" style="left:70.98%;top:9.82%;--t:14px;--d:5.78s;--r:-4.58s"></span><span class="m-estrella" style="left:11.39%;top:2.83%;--t:6px;--d:5.61s;--r:-0.23s"></span><span class="m-estrella" style="left:44.02%;top:75.78%;--t:16px;--d:4.36s;--r:-2.89s"></span><span class="m-estrella" style="left:50.63%;top:7.13%;--t:4px;--d:4.76s;--r:-2.05s"></span><span class="m-estrella" style="left:73.40%;top:11.48%;--t:14px;--d:3.90s;--r:-1.73s"></span><span class="m-estrella" style="left:73.16%;top:35.29%;--t:12px;--d:2.42s;--r:-4.69s"></span><span class="m-estrella" style="left:0.75%;top:37.69%;--t:8px;--d:5.36s;--r:-1.95s"></span><span class="m-estrella" style="left:37.89%;top:52.46%;--t:6px;--d:5.15s;--r:-0.59s"></span><span class="m-estrella" style="left:18.75%;top:29.83%;--t:7px;--d:5.42s;--r:-3.29s"></span><span class="m-estrella" style="left:1.99%;top:30.30%;--t:12px;--d:2.72s;--r:-2.48s"></span><span class="m-estrella" style="left:84.76%;top:66.93%;--t:5px;--d:2.30s;--r:-4.41s"></span><span class="m-estrella" style="left:21.77%;top:45.32%;--t:17px;--d:5.45s;--r:-4.98s"></span><span class="m-estrella" style="left:22.44%;top:52.05%;--t:12px;--d:5.20s;--r:-4.13s"></span><span class="m-estrella" style="left:71.51%;top:67.11%;--t:10px;--d:4.25s;--r:-0.86s"></span><span class="m-estrella" style="left:11.78%;top:67.54%;--t:18px;--d:2.67s;--r:-4.48s"></span><span class="m-estrella" style="left:95.03%;top:33.74%;--t:10px;--d:5.36s;--r:-0.53s"></span><span class="m-estrella" style="left:59.39%;top:63.19%;--t:15px;--d:4.09s;--r:-3.52s"></span><span class="m-estrella" style="left:33.71%;top:31.49%;--t:16px;--d:3.49s;--r:-4.43s"></span><span class="m-estrella" style="left:32.59%;top:18.26%;--t:5px;--d:2.34s;--r:-2.37s"></span><span class="m-estrella" style="left:30.18%;top:71.62%;--t:18px;--d:3.83s;--r:-3.49s"></span><span class="m-estrella" style="left:59.41%;top:9.31%;--t:14px;--d:2.63s;--r:-3.36s"></span><span class="m-estrella" style="left:28.81%;top:71.57%;--t:12px;--d:4.94s;--r:-4.09s"></span><span class="m-estrella" style="left:3.56%;top:53.12%;--t:16px;--d:3.19s;--r:-1.96s"></span><span class="m-estrella" style="left:45.39%;top:12.97%;--t:4px;--d:4.43s;--r:-4.07s"></span><span class="m-estrella" style="left:42.34%;top:11.37%;--t:11px;--d:4.68s;--r:-2.61s"></span><span class="m-estrella" style="left:92.72%;top:57.91%;--t:14px;--d:3.01s;--r:-3.53s"></span><span class="m-estrella" style="left:69.25%;top:54.06%;--t:15px;--d:3.58s;--r:-3.47s"></span><span class="m-estrella" style="left:24.72%;top:71.83%;--t:16px;--d:5.05s;--r:-4.72s"></span><span class="m-estrella" style="left:98.78%;top:35.83%;--t:14px;--d:4.41s;--r:-0.92s"></span><span class="m-estrella" style="left:0.31%;top:68.60%;--t:10px;--d:3.71s;--r:-4.87s"></span><span class="m-estrella" style="left:5.27%;top:32.71%;--t:14px;--d:5.48s;--r:-3.85s"></span><span class="m-estrella" style="left:76.37%;top:67.48%;--t:8px;--d:3.05s;--r:-0.22s"></span><span class="m-estrella" style="left:89.32%;top:10.89%;--t:13px;--d:4.17s;--r:-3.63s"></span><span class="m-estrella" style="left:87.76%;top:2.92%;--t:16px;--d:4.03s;--r:-1.60s"></span><span class="m-estrella" style="left:27.63%;top:58.58%;--t:9px;--d:4.29s;--r:-0.71s"></span><span class="m-estrella" style="left:84.02%;top:0.13%;--t:15px;--d:2.39s;--r:-2.03s"></span><span class="m-estrella" style="left:60.72%;top:45.31%;--t:5px;--d:2.46s;--r:-0.33s"></span><span class="m-estrella" style="left:47.90%;top:25.92%;--t:13px;--d:4.03s;--r:-1.76s"></span><span class="m-estrella" style="left:77.79%;top:41.74%;--t:15px;--d:2.20s;--r:-4.34s"></span><span class="m-estrella" style="left:1.28%;top:53.78%;--t:16px;--d:4.69s;--r:-0.06s"></span><span class="m-estrella" style="left:19.70%;top:22.11%;--t:18px;--d:4.89s;--r:-3.24s"></span><span class="m-estrella" style="left:26.65%;top:68.82%;--t:8px;--d:5.59s;--r:-4.27s"></span><span class="m-estrella" style="left:65.27%;top:22.98%;--t:8px;--d:2.40s;--r:-4.43s"></span><span class="m-estrella" style="left:38.83%;top:59.67%;--t:14px;--d:5.19s;--r:-3.50s"></span><span class="m-estrella" style="left:16.49%;top:48.44%;--t:5px;--d:2.60s;--r:-0.54s"></span><span class="m-estrella" style="left:1.56%;top:10.84%;--t:10px;--d:5.20s;--r:-1.97s"></span><span class="m-estrella" style="left:20.32%;top:56.67%;--t:11px;--d:3.82s;--r:-3.91s"></span><span class="m-estrella" style="left:32.93%;top:12.66%;--t:15px;--d:5.56s;--r:-2.74s"></span><span class="m-estrella" style="left:18.54%;top:15.89%;--t:4px;--d:2.64s;--r:-1.61s"></span><span class="m-estrella" style="left:64.20%;top:47.49%;--t:5px;--d:3.56s;--r:-0.34s"></span></div>
     <div class="hero__marco">
       <div class="hero__tarjeta">
+        <div class="hero__grabado" aria-hidden="true">
+          <img class="m-cordillera m-capa m-cordillera--fondo hero__cordillera m-entra-sube" src="/img/escena/cordillera-gatos-2000.webp" srcset="/img/escena/cordillera-gatos-1200.webp 1200w, /img/escena/cordillera-gatos-2000.webp 2000w" sizes="(min-width: 1280px) 75rem, 100vw" alt="" style="--m-prof: 6" data-m-paralaje="0">
+        </div>
         <img class="m-luna m-capa hero__luna m-entra-sube" src="/img/escena/luna-600.webp" srcset="/img/escena/luna-300.webp 300w, /img/escena/luna-600.webp 600w" sizes="(min-width: 768px) 7rem, 6rem" alt="" style="--m-prof: 16" data-m-paralaje="-0.1">
         <div class="hero__texto" id="contenido" tabindex="-1">
           <a class="oferta" href="#programas" data-m-aparece>
-            <span class="oferta__etiqueta">8 clases al mes</span>
+            <span class="oferta__etiqueta">4 clases al mes</span>
             <span class="oferta__texto">Clases guiadas desde marzo de 2026</span>
           </a>
           <h1 class="hero__titulo" data-m-revelar style="--m-retraso: 200ms"><span class="m-linea"><span class="m-palabra"><span style="--m-i: 0">Nos</span></span> <span class="m-palabra"><span style="--m-i: 1">vemos</span></span></span> <span class="m-linea"><span class="m-palabra"><span style="--m-i: 2">en</span></span> <span class="m-palabra"><span style="--m-i: 3">las</span></span></span> <span class="m-linea"><span class="m-palabra m-acento"><span style="--m-i: 4">presas.</span></span></span></h1>
-          <p class="hero__parrafo" data-m-aparece style="--m-retraso: 650ms">Centro de escalada técnica en boulder en Padre Las Casas, La Araucanía: desplomes hasta 25°, moonboard, clases guiadas y comunidad.</p>
+          <p class="hero__parrafo" data-m-aparece style="--m-retraso: 650ms">Centro de escalada técnica en boulder en Padre Las Casas, La Araucanía: paredes de 0° a 40°, moonboard, clases guiadas y comunidad.</p>
           <div class="hero__acciones" data-m-aparece style="--m-retraso: 800ms">
             <a class="boton boton--primario" href="https://docs.google.com/forms/d/e/1FAIpQLSfA0HoO-PmDaaSRjXqLt1VF37dFQKTdcsL2kD1co3wM-rGGIQ/viewform?usp=pp_url" target="_blank" rel="noopener" data-m-iman><span>Solicitud de ingreso</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
             <a class="boton boton--tercero" href="https://wa.me/56935028838" target="_blank" rel="noopener"><span>Escríbenos</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
@@ -1036,9 +1173,6 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
           <span class="m-presa m-capa m-entra-escala" style="left: 88%; top: 82%; width: 13%; --m-prof: 36; --color: var(--kuyen-lila); --giro: -24deg; --m-retraso: 1300ms; --dur: 11s" data-m-paralaje="0.12" aria-hidden="true"><svg viewBox="0 0 100 100"><path d="M10 66C10 38 30 14 56 14c20 0 34 14 34 32 0 26-24 44-52 44-16 0-28-8-28-24z"/><circle cx="50" cy="50" r="7"/></svg></span>
         </div>
       </div>
-    </div>
-    <div class="hero__gatos" aria-hidden="true">
-      <img class="m-cordillera m-capa hero__cordillera m-entra-sube" src="/img/escena/cordillera-gatos-2000.webp" srcset="/img/escena/cordillera-gatos-1200.webp 1200w, /img/escena/cordillera-gatos-2000.webp 2000w" sizes="24vw" alt="" style="--m-prof: 6" data-m-paralaje="0">
     </div>
   </section>
 
@@ -1067,12 +1201,12 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
             <dd data-m-contar="5" data-m-decimales="1" data-m-sufijo="">5,0</dd>
           </div>
           <div class="m-cifra" data-m-aparece style="--m-retraso: 120ms">
-            <dt>rutas creadas</dt>
-            <dd data-m-contar="500" data-m-decimales="0" data-m-sufijo="+">500+</dd>
+            <dt>presas en el muro</dt>
+            <dd data-m-contar="1000" data-m-decimales="0" data-m-sufijo="+">1000+</dd>
           </div>
           <div class="m-cifra" data-m-aparece style="--m-retraso: 240ms">
-            <dt>de desplome continuo</dt>
-            <dd data-m-contar="25" data-m-decimales="0" data-m-sufijo="°">25°</dd>
+            <dt>de inclinación máxima</dt>
+            <dd data-m-contar="40" data-m-decimales="0" data-m-sufijo="°">40°</dd>
           </div>
         </dl>
           </div>
@@ -1080,6 +1214,127 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
             <a class="boton boton--tercero" href="https://www.instagram.com/kuyen.climbing/" target="_blank" rel="noopener"><span>Síguenos en Instagram</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
           </div>
         </div>
+      </div>
+    </section>
+
+    <section class="seccion muro-seccion" id="muro">
+      <div class="contenedor">
+        <div class="cabeza-seccion">
+          <div>
+            <p class="antetitulo" data-m-aparece><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 1c.9 6.6 4.4 10.1 11 11-6.6.9-10.1 4.4-11 11-.9-6.6-4.4-10.1-11-11 6.6-.9 10.1-4.4 11-11z"/></svg><span>El muro</span></p>
+            <h2 class="titulo-seccion" data-m-revelar><span class="m-linea"><span class="m-palabra"><span style="--m-i: 0">4,26</span></span> <span class="m-palabra"><span style="--m-i: 1">metros</span></span> <span class="m-palabra"><span style="--m-i: 2">de</span></span> <span class="m-palabra"><span style="--m-i: 3">altura,</span></span></span> <span class="m-linea"><span class="m-palabra"><span style="--m-i: 4">de</span></span> <span class="m-palabra"><span style="--m-i: 5">0°</span></span> <span class="m-palabra"><span style="--m-i: 6">a</span></span> <span class="m-palabra m-acento"><span style="--m-i: 7">40°.</span></span></span></h2>
+          </div>
+          <a class="enlace-flecha" href="#horarios" data-m-aparece><span>Ver horarios y valores</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        </div>
+        <p class="muro__bajada" data-m-aparece>Muro de boulder: bloques sin cuerda, sobre colchonetas, para todos los niveles. El muro lo construyeron Andy, Camila y Gerardo con la ayuda de unos amigos: estructura de madera, anclada al piso y al metal del galpón.</p>
+        <div class="fichas">
+          <article class="ficha" data-m-aparece>
+            <h3 class="ficha__titulo">De 0° a 40°</h3>
+            <p class="ficha__texto">Una pared plana, una de 15 grados, una de 25 y una de 40: hay dónde empezar y dónde complicarse.</p>
+          </article>
+          <article class="ficha" data-m-aparece style="--m-retraso: 80ms">
+            <h3 class="ficha__titulo">Moonboard 2016</h3>
+            <p class="ficha__texto">El set completo del 2016, a 40 grados. Lo puede usar cualquiera, con los cuidados que pide un muro así.</p>
+          </article>
+          <article class="ficha" data-m-aparece style="--m-retraso: 160ms">
+            <h3 class="ficha__titulo">Más de 1000 presas</h3>
+            <p class="ficha__texto">De resina y de madera, sobre volúmenes de terciado. Varias presas y todos los volúmenes los fabrica Kuyen.</p>
+          </article>
+          <article class="ficha" data-m-aparece style="--m-retraso: 240ms">
+            <h3 class="ficha__titulo">Rutas nuevas</h3>
+            <p class="ficha__texto">Cada mes se mueve al menos una sección del muro, y la dificultad de cada ruta va marcada con chapas.</p>
+          </article>
+          <article class="ficha" data-m-aparece style="--m-retraso: 320ms">
+            <h3 class="ficha__titulo">Colchonetas de 30 cm</h3>
+            <p class="ficha__texto">Colchonetas de 30 centímetros y densidad 35, que cubren la mayor parte del muro.</p>
+          </article>
+          <article class="ficha" data-m-aparece style="--m-retraso: 400ms">
+            <h3 class="ficha__titulo">Hacer sombra</h3>
+            <p class="ficha__texto">Hacemos sombra a toda persona que escala: cuidar al compañero es la ley primera en Kuyen.</p>
+          </article>
+          <article class="ficha" data-m-aparece style="--m-retraso: 480ms">
+            <h3 class="ficha__titulo">Para entrenar</h3>
+            <p class="ficha__texto">Campus de distintas medidas, Tablas multipresa, Kettlebells, Barra semiolímpica para piernas, peso muerto y elevaciones.</p>
+          </article>
+          <article class="ficha" data-m-aparece style="--m-retraso: 560ms">
+            <h3 class="ficha__titulo">Quién setea</h3>
+            <p class="ficha__texto">Las rutas las arman Andy, Keka, Fergus, Gus y Bastián. Andy es el headsetter del lugar.</p>
+          </article>
+          <article class="ficha" data-m-aparece style="--m-retraso: 640ms">
+            <h3 class="ficha__titulo">A la venta</h3>
+            <p class="ficha__texto">Magnesio en cubo y en bolsa, Cinta de dedos, Cepillos, Magneseras, Brownies para entrenar los dedos, Snacks. Estamos preparando más poleras de Kuyen y otros productos de la marca.</p>
+          </article>
+          <article class="ficha" data-m-aparece style="--m-retraso: 720ms">
+            <h3 class="ficha__titulo">Comodidades</h3>
+            <p class="ficha__texto">Dos baños, Agua, Hervidor y mate, Calefacción. Tenemos botiquín y personas con curso de primeros auxilios. Hay dónde estacionar en la calle, que es bien transitada, y una Copec cerca. Todavía no tenemos letrero en la entrada, pero viene pronto.</p>
+          </article>
+          <article class="ficha" data-m-aparece style="--m-retraso: 800ms">
+            <h3 class="ficha__titulo"><a class="enlace" href="https://www.instagram.com/aerial_tco" target="_blank" rel="noopener">Aerial Temuco</a></h3>
+            <p class="ficha__texto">Acrobacia aérea en el trapecio, la lira y la tela de Kuyen. Aquí hacen sus muestras.</p>
+          </article>
+          <article class="ficha" data-m-aparece style="--m-retraso: 880ms">
+            <h3 class="ficha__titulo"><a class="enlace" href="https://www.instagram.com/kelluwun_masajestemuco" target="_blank" rel="noopener">Kelluwün, terapia en movimiento</a></h3>
+            <p class="ficha__texto">Bienestar corporal con técnicas manuales: masaje de relajación, descontracturante, mixto y exprés en silla ergonómica.</p>
+          </article>
+        </div>
+        <div class="m-faltas m-faltas--cuatro"><figure class="m-falta m-falta--horizontal" data-foto-pendiente="muro-vacio" data-m-aparece>
+            <span class="m-falta__marca" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8.5A2.5 2.5 0 0 1 5.5 6h1.8l1.2-2h6.8l1.2 2h1.8A2.5 2.5 0 0 1 21 8.5v9A2.5 2.5 0 0 1 18.5 20h-13A2.5 2.5 0 0 1 3 17.5z"/><circle cx="12" cy="13" r="3.6"/></svg></span>
+            <figcaption class="m-falta__texto"><b>Falta esta foto</b> El muro completo sin gente, con buena luz. <span class="m-falta__codigo">F5</span></figcaption>
+          </figure>
+            <figure class="m-falta m-falta--horizontal" data-foto-pendiente="presas-cerca" data-m-aparece>
+            <span class="m-falta__marca" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8.5A2.5 2.5 0 0 1 5.5 6h1.8l1.2-2h6.8l1.2 2h1.8A2.5 2.5 0 0 1 21 8.5v9A2.5 2.5 0 0 1 18.5 20h-13A2.5 2.5 0 0 1 3 17.5z"/><circle cx="12" cy="13" r="3.6"/></svg></span>
+            <figcaption class="m-falta__texto"><b>Falta esta foto</b> Presas y volúmenes de cerca, donde se vean los colores y la textura. <span class="m-falta__codigo">F4</span></figcaption>
+          </figure>
+            <figure class="m-falta m-falta--vertical" data-foto-pendiente="moonboard" data-m-aparece>
+            <span class="m-falta__marca" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8.5A2.5 2.5 0 0 1 5.5 6h1.8l1.2-2h6.8l1.2 2h1.8A2.5 2.5 0 0 1 21 8.5v9A2.5 2.5 0 0 1 18.5 20h-13A2.5 2.5 0 0 1 3 17.5z"/><circle cx="12" cy="13" r="3.6"/></svg></span>
+            <figcaption class="m-falta__texto"><b>Falta esta foto</b> El moonboard completo, y otra con alguien escalando. <span class="m-falta__codigo">F7</span></figcaption>
+          </figure>
+            <figure class="m-falta m-falta--horizontal" data-foto-pendiente="seteo" data-m-aparece>
+            <span class="m-falta__marca" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8.5A2.5 2.5 0 0 1 5.5 6h1.8l1.2-2h6.8l1.2 2h1.8A2.5 2.5 0 0 1 21 8.5v9A2.5 2.5 0 0 1 18.5 20h-13A2.5 2.5 0 0 1 3 17.5z"/><circle cx="12" cy="13" r="3.6"/></svg></span>
+            <figcaption class="m-falta__texto"><b>Falta esta foto</b> El armado de rutas: seteo, lavado de presas o instalación de volúmenes. <span class="m-falta__codigo">F12</span></figcaption>
+          </figure>
+            <figure class="m-falta m-falta--horizontal" data-foto-pendiente="productos" data-m-aparece>
+            <span class="m-falta__marca" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8.5A2.5 2.5 0 0 1 5.5 6h1.8l1.2-2h6.8l1.2 2h1.8A2.5 2.5 0 0 1 21 8.5v9A2.5 2.5 0 0 1 18.5 20h-13A2.5 2.5 0 0 1 3 17.5z"/><circle cx="12" cy="13" r="3.6"/></svg></span>
+            <figcaption class="m-falta__texto"><b>Falta esta foto</b> Los productos a la venta, cada uno sobre un fondo simple. <span class="m-falta__codigo">F13</span></figcaption>
+          </figure>
+            <figure class="m-falta m-falta--horizontal" data-foto-pendiente="recepcion" data-m-aparece>
+            <span class="m-falta__marca" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8.5A2.5 2.5 0 0 1 5.5 6h1.8l1.2-2h6.8l1.2 2h1.8A2.5 2.5 0 0 1 21 8.5v9A2.5 2.5 0 0 1 18.5 20h-13A2.5 2.5 0 0 1 3 17.5z"/><circle cx="12" cy="13" r="3.6"/></svg></span>
+            <figcaption class="m-falta__texto"><b>Falta esta foto</b> La recepción y la zona de descanso. <span class="m-falta__codigo">F11</span></figcaption>
+          </figure></div>
+      </div>
+    </section>
+
+    <section class="seccion muro-seccion" id="equipo">
+      <div class="contenedor">
+        <div class="cabeza-seccion">
+          <div>
+            <p class="antetitulo" data-m-aparece><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 1c.9 6.6 4.4 10.1 11 11-6.6.9-10.1 4.4-11 11-.9-6.6-4.4-10.1-11-11 6.6-.9 10.1-4.4 11-11z"/></svg><span>El equipo</span></p>
+            <h2 class="titulo-seccion" data-m-revelar><span class="m-linea"><span class="m-palabra"><span style="--m-i: 0">Quiénes</span></span> <span class="m-palabra m-acento"><span style="--m-i: 1">somos.</span></span></span></h2>
+          </div>
+        </div>
+        <p class="muro__bajada" data-m-aparece>Kuyen lo levantan sus dueños, los seteadores y los profes, y lo vigila una gata.</p>
+        <div class="fichas">
+          <article class="ficha" data-m-aparece>
+            <h3 class="ficha__titulo">Clases</h3>
+            <p class="ficha__texto"><strong>Andrés Muñoz</strong>, estudiante de entrenador olímpico del COCH. <strong>Ingelin Daniels</strong>, profesora de educación física.</p>
+          </article>
+          <article class="ficha" data-m-aparece style="--m-retraso: 80ms">
+            <h3 class="ficha__titulo">Seteo</h3>
+            <p class="ficha__texto">Las rutas las arman Andy, Keka, Fergus, Gus y Bastián. Andy es el headsetter del lugar.</p>
+          </article>
+          <article class="ficha" data-m-aparece style="--m-retraso: 160ms">
+            <h3 class="ficha__titulo">El muro</h3>
+            <p class="ficha__texto">El muro lo construyeron Andy, Camila y Gerardo con la ayuda de unos amigos: estructura de madera, anclada al piso y al metal del galpón.</p>
+          </article>
+          <article class="ficha" data-m-aparece style="--m-retraso: 240ms">
+            <h3 class="ficha__titulo">Pancita</h3>
+            <p class="ficha__texto">Nuestra jefa de seguridad, vigilante y dueña absoluta del muro.</p>
+          </article>
+        </div>
+        <div class="m-faltas"><figure class="m-falta m-falta--horizontal" data-foto-pendiente="equipo" data-m-aparece>
+            <span class="m-falta__marca" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8.5A2.5 2.5 0 0 1 5.5 6h1.8l1.2-2h6.8l1.2 2h1.8A2.5 2.5 0 0 1 21 8.5v9A2.5 2.5 0 0 1 18.5 20h-13A2.5 2.5 0 0 1 3 17.5z"/><circle cx="12" cy="13" r="3.6"/></svg></span>
+            <figcaption class="m-falta__texto"><b>Falta esta foto</b> El equipo: una foto de cada persona, o una grupal. <span class="m-falta__codigo">F10</span></figcaption>
+          </figure></div>
       </div>
     </section>
 
@@ -1102,7 +1357,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
               <h3 class="programa__nombre">Escalada libre</h3>
               <span class="programa__flecha"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></span>
             </div>
-            <p class="programa__texto" data-m-aparece style="--m-retraso: 220ms">Boulder para todos los niveles, desde principiantes hasta escaladores con experiencia. Dos tramos: horario bajo y horario normal.</p>
+            <p class="programa__texto" data-m-aparece style="--m-retraso: 220ms">Boulder para todos los niveles, desde principiantes hasta escaladores con experiencia. Dos tramos: horario bajo y horario alto.</p>
             <span class="programa__linea" aria-hidden="true"></span>
           </a>
           <a class="programa" href="https://wa.me/56935028838" target="_blank" rel="noopener">
@@ -1114,7 +1369,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
               <h3 class="programa__nombre">Clases guiadas</h3>
               <span class="programa__flecha"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></span>
             </div>
-            <p class="programa__texto" data-m-aparece style="--m-retraso: 340ms">Desde marzo de 2026: un plan de 8 clases al mes, 2 veces por semana. Días y horarios: <!-- POR CONFIRMAR: días, horarios y cupos de las clases guiadas (pregunta 4) --><span class="pendiente">[POR CONFIRMAR]</span></p>
+            <p class="programa__texto" data-m-aparece style="--m-retraso: 340ms">Lunes a viernes de 20:00 a 22:00, y lunes y jueves de 18:00 a 20:00. De 6 a 7 personas por grupo.</p>
             <span class="programa__linea" aria-hidden="true"></span>
           </a>
           <a class="programa" href="https://wa.me/56935028838" target="_blank" rel="noopener">
@@ -1126,10 +1381,53 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
               <h3 class="programa__nombre">Kuyencit@s</h3>
               <span class="programa__flecha"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></span>
             </div>
-            <p class="programa__texto" data-m-aparece style="--m-retraso: 460ms">El programa de escalada para niñas y niños. Edades, días y valor: <!-- POR CONFIRMAR: edades, días, horario y valor de Kuyencit@s (pregunta 3) --><span class="pendiente">[POR CONFIRMAR]</span></p>
+            <p class="programa__texto" data-m-aparece style="--m-retraso: 460ms">El programa de escalada para niñas y niños. Dos grupos: de 7 a 9 años y de 10 a 15 años.</p>
             <span class="programa__linea" aria-hidden="true"></span>
           </a>
         </div>
+        <div class="m-faltas"><figure class="m-falta m-falta--horizontal" data-foto-pendiente="clase" data-m-aparece>
+            <span class="m-falta__marca" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8.5A2.5 2.5 0 0 1 5.5 6h1.8l1.2-2h6.8l1.2 2h1.8A2.5 2.5 0 0 1 21 8.5v9A2.5 2.5 0 0 1 18.5 20h-13A2.5 2.5 0 0 1 3 17.5z"/><circle cx="12" cy="13" r="3.6"/></svg></span>
+            <figcaption class="m-falta__texto"><b>Falta esta foto</b> Una clase guiada en acción. <span class="m-falta__codigo">F8</span></figcaption>
+          </figure></div>
+      </div>
+    </section>
+
+    <section class="seccion muro-seccion" id="kuyencitos">
+      <div class="contenedor">
+        <div class="cabeza-seccion">
+          <div>
+            <p class="antetitulo" data-m-aparece><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 1c.9 6.6 4.4 10.1 11 11-6.6.9-10.1 4.4-11 11-.9-6.6-4.4-10.1-11-11 6.6-.9 10.1-4.4 11-11z"/></svg><span>Niñas y niños</span></p>
+            <h2 class="titulo-seccion" data-m-revelar><span class="m-linea"><span class="m-palabra m-acento"><span style="--m-i: 0">Kuyencit@s.</span></span></span></h2>
+          </div>
+          <a class="enlace-flecha" href="https://wa.me/56935028838" target="_blank" rel="noopener" data-m-aparece><span>Escríbenos por WhatsApp</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        </div>
+        <p class="muro__bajada" data-m-aparece>El programa de escalada para niñas y niños. Dos grupos: de 7 a 9 años y de 10 a 15 años.</p>
+        <div class="fichas">
+          <article class="ficha" data-m-aparece>
+            <h3 class="ficha__titulo">Días y horario</h3>
+            <p class="ficha__texto"><!-- POR CONFIRMAR: días y horario de Kuyencit@s: Kuyen está ajustando los horarios (K2) --><span class="pendiente">[POR CONFIRMAR]</span></p>
+          </article>
+          <article class="ficha" data-m-aparece style="--m-retraso: 80ms">
+            <h3 class="ficha__titulo">Valores</h3>
+            <p class="ficha__texto">1 clase por semana: $40.000. 2 clases por semana: $52.000. Clase suelta: $9.000.</p>
+          </article>
+          <article class="ficha" data-m-aparece style="--m-retraso: 160ms">
+            <h3 class="ficha__titulo">Quién acompaña</h3>
+            <p class="ficha__texto">Acompañan los profesores. Al principio conviene que venga también su tutor, para que agarren confianza.</p>
+          </article>
+          <article class="ficha" data-m-aparece style="--m-retraso: 240ms">
+            <h3 class="ficha__titulo">Autorización</h3>
+            <p class="ficha__texto">Pedimos un consentimiento: la escalada es un deporte de riesgo y, con todas las medidas de seguridad, un accidente siempre es posible.</p>
+          </article>
+          <article class="ficha" data-m-aparece style="--m-retraso: 320ms">
+            <h3 class="ficha__titulo">Antes de los 7</h3>
+            <p class="ficha__texto">A escalada libre se puede venir desde los 5 años, siempre con un tutor a cargo.</p>
+          </article>
+        </div>
+        <div class="m-faltas"><figure class="m-falta m-falta--horizontal" data-foto-pendiente="kuyencitos" data-m-aparece>
+            <span class="m-falta__marca" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8.5A2.5 2.5 0 0 1 5.5 6h1.8l1.2-2h6.8l1.2 2h1.8A2.5 2.5 0 0 1 21 8.5v9A2.5 2.5 0 0 1 18.5 20h-13A2.5 2.5 0 0 1 3 17.5z"/><circle cx="12" cy="13" r="3.6"/></svg></span>
+            <figcaption class="m-falta__texto"><b>Falta esta foto</b> Kuyencit@s escalando, con autorización de sus apoderados. <span class="m-falta__codigo">F9</span></figcaption>
+          </figure></div>
       </div>
     </section>
 
@@ -1154,139 +1452,397 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
           </div>
           <div class="panel" role="tabpanel" id="panel-lunes" aria-labelledby="dia-lunes">
             <table class="tabla">
-              <thead><tr><th scope="col">Hora</th><th scope="col">Tramo</th><th scope="col">Actividad</th><th scope="col">A cargo</th></tr></thead>
+              <thead><tr><th scope="col">Hora</th><th scope="col">Tramo</th><th scope="col">Pase</th><th scope="col">Estudiante</th></tr></thead>
               <tbody>
                 <tr style="--i: 0">
-                  <td data-etiqueta="Hora"><!-- POR CONFIRMAR: horas del horario bajo el lunes (pregunta 1) --><span class="pendiente">[POR CONFIRMAR]</span></td>
+                  <td data-etiqueta="Hora">10:00 a 16:00</td>
                   <td data-etiqueta="Tramo"><span class="tramo">Horario bajo</span></td>
-                  <td data-etiqueta="Actividad"><!-- POR CONFIRMAR: actividad del horario bajo el lunes (pregunta 1) --><span class="pendiente">[POR CONFIRMAR]</span></td>
-                  <td data-etiqueta="A cargo"><!-- POR CONFIRMAR: quién está a cargo el lunes (pregunta 1) --><span class="pendiente">[POR CONFIRMAR]</span></td>
+                  <td data-etiqueta="Pase">$4.000</td>
+                  <td data-etiqueta="Estudiante">$3.500</td>
                 </tr>
                 <tr style="--i: 1">
-                  <td data-etiqueta="Hora"><!-- POR CONFIRMAR: horas del horario normal el lunes (pregunta 1) --><span class="pendiente">[POR CONFIRMAR]</span></td>
-                  <td data-etiqueta="Tramo"><span class="tramo">Horario normal</span></td>
-                  <td data-etiqueta="Actividad"><!-- POR CONFIRMAR: actividad del horario normal el lunes (pregunta 1) --><span class="pendiente">[POR CONFIRMAR]</span></td>
-                  <td data-etiqueta="A cargo"><!-- POR CONFIRMAR: quién está a cargo el lunes (pregunta 1) --><span class="pendiente">[POR CONFIRMAR]</span></td>
+                  <td data-etiqueta="Hora">16:00 a 22:00</td>
+                  <td data-etiqueta="Tramo"><span class="tramo">Horario alto</span></td>
+                  <td data-etiqueta="Pase">$5.000</td>
+                  <td data-etiqueta="Estudiante">$4.500</td>
                 </tr>
               </tbody>
             </table>
           </div>
           <div class="panel" role="tabpanel" id="panel-martes" aria-labelledby="dia-martes" hidden>
             <table class="tabla">
-              <thead><tr><th scope="col">Hora</th><th scope="col">Tramo</th><th scope="col">Actividad</th><th scope="col">A cargo</th></tr></thead>
+              <thead><tr><th scope="col">Hora</th><th scope="col">Tramo</th><th scope="col">Pase</th><th scope="col">Estudiante</th></tr></thead>
               <tbody>
                 <tr style="--i: 0">
-                  <td data-etiqueta="Hora"><!-- POR CONFIRMAR: horas del horario bajo el martes (pregunta 1) --><span class="pendiente">[POR CONFIRMAR]</span></td>
+                  <td data-etiqueta="Hora">10:00 a 16:00</td>
                   <td data-etiqueta="Tramo"><span class="tramo">Horario bajo</span></td>
-                  <td data-etiqueta="Actividad"><!-- POR CONFIRMAR: actividad del horario bajo el martes (pregunta 1) --><span class="pendiente">[POR CONFIRMAR]</span></td>
-                  <td data-etiqueta="A cargo"><!-- POR CONFIRMAR: quién está a cargo el martes (pregunta 1) --><span class="pendiente">[POR CONFIRMAR]</span></td>
+                  <td data-etiqueta="Pase">$4.000</td>
+                  <td data-etiqueta="Estudiante">$3.500</td>
                 </tr>
                 <tr style="--i: 1">
-                  <td data-etiqueta="Hora"><!-- POR CONFIRMAR: horas del horario normal el martes (pregunta 1) --><span class="pendiente">[POR CONFIRMAR]</span></td>
-                  <td data-etiqueta="Tramo"><span class="tramo">Horario normal</span></td>
-                  <td data-etiqueta="Actividad"><!-- POR CONFIRMAR: actividad del horario normal el martes (pregunta 1) --><span class="pendiente">[POR CONFIRMAR]</span></td>
-                  <td data-etiqueta="A cargo"><!-- POR CONFIRMAR: quién está a cargo el martes (pregunta 1) --><span class="pendiente">[POR CONFIRMAR]</span></td>
+                  <td data-etiqueta="Hora">16:00 a 22:00</td>
+                  <td data-etiqueta="Tramo"><span class="tramo">Horario alto</span></td>
+                  <td data-etiqueta="Pase">$5.000</td>
+                  <td data-etiqueta="Estudiante">$4.500</td>
                 </tr>
               </tbody>
             </table>
           </div>
           <div class="panel" role="tabpanel" id="panel-miercoles" aria-labelledby="dia-miercoles" hidden>
             <table class="tabla">
-              <thead><tr><th scope="col">Hora</th><th scope="col">Tramo</th><th scope="col">Actividad</th><th scope="col">A cargo</th></tr></thead>
+              <thead><tr><th scope="col">Hora</th><th scope="col">Tramo</th><th scope="col">Pase</th><th scope="col">Estudiante</th></tr></thead>
               <tbody>
                 <tr style="--i: 0">
-                  <td data-etiqueta="Hora"><!-- POR CONFIRMAR: horas del horario bajo el miércoles (pregunta 1) --><span class="pendiente">[POR CONFIRMAR]</span></td>
+                  <td data-etiqueta="Hora">10:00 a 16:00</td>
                   <td data-etiqueta="Tramo"><span class="tramo">Horario bajo</span></td>
-                  <td data-etiqueta="Actividad"><!-- POR CONFIRMAR: actividad del horario bajo el miércoles (pregunta 1) --><span class="pendiente">[POR CONFIRMAR]</span></td>
-                  <td data-etiqueta="A cargo"><!-- POR CONFIRMAR: quién está a cargo el miércoles (pregunta 1) --><span class="pendiente">[POR CONFIRMAR]</span></td>
+                  <td data-etiqueta="Pase">$4.000</td>
+                  <td data-etiqueta="Estudiante">$3.500</td>
                 </tr>
                 <tr style="--i: 1">
-                  <td data-etiqueta="Hora"><!-- POR CONFIRMAR: horas del horario normal el miércoles (pregunta 1) --><span class="pendiente">[POR CONFIRMAR]</span></td>
-                  <td data-etiqueta="Tramo"><span class="tramo">Horario normal</span></td>
-                  <td data-etiqueta="Actividad"><!-- POR CONFIRMAR: actividad del horario normal el miércoles (pregunta 1) --><span class="pendiente">[POR CONFIRMAR]</span></td>
-                  <td data-etiqueta="A cargo"><!-- POR CONFIRMAR: quién está a cargo el miércoles (pregunta 1) --><span class="pendiente">[POR CONFIRMAR]</span></td>
+                  <td data-etiqueta="Hora">16:00 a 22:00</td>
+                  <td data-etiqueta="Tramo"><span class="tramo">Horario alto</span></td>
+                  <td data-etiqueta="Pase">$5.000</td>
+                  <td data-etiqueta="Estudiante">$4.500</td>
                 </tr>
               </tbody>
             </table>
           </div>
           <div class="panel" role="tabpanel" id="panel-jueves" aria-labelledby="dia-jueves" hidden>
             <table class="tabla">
-              <thead><tr><th scope="col">Hora</th><th scope="col">Tramo</th><th scope="col">Actividad</th><th scope="col">A cargo</th></tr></thead>
+              <thead><tr><th scope="col">Hora</th><th scope="col">Tramo</th><th scope="col">Pase</th><th scope="col">Estudiante</th></tr></thead>
               <tbody>
                 <tr style="--i: 0">
-                  <td data-etiqueta="Hora"><!-- POR CONFIRMAR: horas del horario bajo el jueves (pregunta 1) --><span class="pendiente">[POR CONFIRMAR]</span></td>
+                  <td data-etiqueta="Hora">10:00 a 16:00</td>
                   <td data-etiqueta="Tramo"><span class="tramo">Horario bajo</span></td>
-                  <td data-etiqueta="Actividad"><!-- POR CONFIRMAR: actividad del horario bajo el jueves (pregunta 1) --><span class="pendiente">[POR CONFIRMAR]</span></td>
-                  <td data-etiqueta="A cargo"><!-- POR CONFIRMAR: quién está a cargo el jueves (pregunta 1) --><span class="pendiente">[POR CONFIRMAR]</span></td>
+                  <td data-etiqueta="Pase">$4.000</td>
+                  <td data-etiqueta="Estudiante">$3.500</td>
                 </tr>
                 <tr style="--i: 1">
-                  <td data-etiqueta="Hora"><!-- POR CONFIRMAR: horas del horario normal el jueves (pregunta 1) --><span class="pendiente">[POR CONFIRMAR]</span></td>
-                  <td data-etiqueta="Tramo"><span class="tramo">Horario normal</span></td>
-                  <td data-etiqueta="Actividad"><!-- POR CONFIRMAR: actividad del horario normal el jueves (pregunta 1) --><span class="pendiente">[POR CONFIRMAR]</span></td>
-                  <td data-etiqueta="A cargo"><!-- POR CONFIRMAR: quién está a cargo el jueves (pregunta 1) --><span class="pendiente">[POR CONFIRMAR]</span></td>
+                  <td data-etiqueta="Hora">16:00 a 22:00</td>
+                  <td data-etiqueta="Tramo"><span class="tramo">Horario alto</span></td>
+                  <td data-etiqueta="Pase">$5.000</td>
+                  <td data-etiqueta="Estudiante">$4.500</td>
                 </tr>
               </tbody>
             </table>
           </div>
           <div class="panel" role="tabpanel" id="panel-viernes" aria-labelledby="dia-viernes" hidden>
             <table class="tabla">
-              <thead><tr><th scope="col">Hora</th><th scope="col">Tramo</th><th scope="col">Actividad</th><th scope="col">A cargo</th></tr></thead>
+              <thead><tr><th scope="col">Hora</th><th scope="col">Tramo</th><th scope="col">Pase</th><th scope="col">Estudiante</th></tr></thead>
               <tbody>
                 <tr style="--i: 0">
-                  <td data-etiqueta="Hora"><!-- POR CONFIRMAR: horas del horario bajo el viernes (pregunta 1) --><span class="pendiente">[POR CONFIRMAR]</span></td>
+                  <td data-etiqueta="Hora">10:00 a 16:00</td>
                   <td data-etiqueta="Tramo"><span class="tramo">Horario bajo</span></td>
-                  <td data-etiqueta="Actividad"><!-- POR CONFIRMAR: actividad del horario bajo el viernes (pregunta 1) --><span class="pendiente">[POR CONFIRMAR]</span></td>
-                  <td data-etiqueta="A cargo"><!-- POR CONFIRMAR: quién está a cargo el viernes (pregunta 1) --><span class="pendiente">[POR CONFIRMAR]</span></td>
+                  <td data-etiqueta="Pase">$4.000</td>
+                  <td data-etiqueta="Estudiante">$3.500</td>
                 </tr>
                 <tr style="--i: 1">
-                  <td data-etiqueta="Hora"><!-- POR CONFIRMAR: horas del horario normal el viernes (pregunta 1) --><span class="pendiente">[POR CONFIRMAR]</span></td>
-                  <td data-etiqueta="Tramo"><span class="tramo">Horario normal</span></td>
-                  <td data-etiqueta="Actividad"><!-- POR CONFIRMAR: actividad del horario normal el viernes (pregunta 1) --><span class="pendiente">[POR CONFIRMAR]</span></td>
-                  <td data-etiqueta="A cargo"><!-- POR CONFIRMAR: quién está a cargo el viernes (pregunta 1) --><span class="pendiente">[POR CONFIRMAR]</span></td>
+                  <td data-etiqueta="Hora">16:00 a 22:00</td>
+                  <td data-etiqueta="Tramo"><span class="tramo">Horario alto</span></td>
+                  <td data-etiqueta="Pase">$5.000</td>
+                  <td data-etiqueta="Estudiante">$4.500</td>
                 </tr>
               </tbody>
             </table>
           </div>
           <div class="panel" role="tabpanel" id="panel-sabado" aria-labelledby="dia-sabado" hidden>
             <table class="tabla">
-              <thead><tr><th scope="col">Hora</th><th scope="col">Tramo</th><th scope="col">Actividad</th><th scope="col">A cargo</th></tr></thead>
+              <thead><tr><th scope="col">Hora</th><th scope="col">Tramo</th><th scope="col">Pase</th><th scope="col">Estudiante</th></tr></thead>
               <tbody>
                 <tr style="--i: 0">
-                  <td data-etiqueta="Hora"><!-- POR CONFIRMAR: horas del horario bajo el sábado (pregunta 1) --><span class="pendiente">[POR CONFIRMAR]</span></td>
+                  <td data-etiqueta="Hora">10:00 a 16:00</td>
                   <td data-etiqueta="Tramo"><span class="tramo">Horario bajo</span></td>
-                  <td data-etiqueta="Actividad"><!-- POR CONFIRMAR: actividad del horario bajo el sábado (pregunta 1) --><span class="pendiente">[POR CONFIRMAR]</span></td>
-                  <td data-etiqueta="A cargo"><!-- POR CONFIRMAR: quién está a cargo el sábado (pregunta 1) --><span class="pendiente">[POR CONFIRMAR]</span></td>
+                  <td data-etiqueta="Pase">$4.000</td>
+                  <td data-etiqueta="Estudiante">$3.500</td>
                 </tr>
                 <tr style="--i: 1">
-                  <td data-etiqueta="Hora"><!-- POR CONFIRMAR: horas del horario normal el sábado (pregunta 1) --><span class="pendiente">[POR CONFIRMAR]</span></td>
-                  <td data-etiqueta="Tramo"><span class="tramo">Horario normal</span></td>
-                  <td data-etiqueta="Actividad"><!-- POR CONFIRMAR: actividad del horario normal el sábado (pregunta 1) --><span class="pendiente">[POR CONFIRMAR]</span></td>
-                  <td data-etiqueta="A cargo"><!-- POR CONFIRMAR: quién está a cargo el sábado (pregunta 1) --><span class="pendiente">[POR CONFIRMAR]</span></td>
+                  <td data-etiqueta="Hora">16:00 a 22:00</td>
+                  <td data-etiqueta="Tramo"><span class="tramo">Horario alto</span></td>
+                  <td data-etiqueta="Pase">$5.000</td>
+                  <td data-etiqueta="Estudiante">$4.500</td>
                 </tr>
               </tbody>
             </table>
           </div>
           <div class="panel" role="tabpanel" id="panel-domingo" aria-labelledby="dia-domingo" hidden>
             <table class="tabla">
-              <thead><tr><th scope="col">Hora</th><th scope="col">Tramo</th><th scope="col">Actividad</th><th scope="col">A cargo</th></tr></thead>
+              <thead><tr><th scope="col">Hora</th><th scope="col">Tramo</th><th scope="col">Pase</th><th scope="col">Estudiante</th></tr></thead>
               <tbody>
                 <tr style="--i: 0">
-                  <td data-etiqueta="Hora"><!-- POR CONFIRMAR: horas del horario bajo el domingo (pregunta 1) --><span class="pendiente">[POR CONFIRMAR]</span></td>
+                  <td data-etiqueta="Hora">10:00 a 16:00</td>
                   <td data-etiqueta="Tramo"><span class="tramo">Horario bajo</span></td>
-                  <td data-etiqueta="Actividad"><!-- POR CONFIRMAR: actividad del horario bajo el domingo (pregunta 1) --><span class="pendiente">[POR CONFIRMAR]</span></td>
-                  <td data-etiqueta="A cargo"><!-- POR CONFIRMAR: quién está a cargo el domingo (pregunta 1) --><span class="pendiente">[POR CONFIRMAR]</span></td>
+                  <td data-etiqueta="Pase">$4.000</td>
+                  <td data-etiqueta="Estudiante">$3.500</td>
                 </tr>
                 <tr style="--i: 1">
-                  <td data-etiqueta="Hora"><!-- POR CONFIRMAR: horas del horario normal el domingo (pregunta 1) --><span class="pendiente">[POR CONFIRMAR]</span></td>
-                  <td data-etiqueta="Tramo"><span class="tramo">Horario normal</span></td>
-                  <td data-etiqueta="Actividad"><!-- POR CONFIRMAR: actividad del horario normal el domingo (pregunta 1) --><span class="pendiente">[POR CONFIRMAR]</span></td>
-                  <td data-etiqueta="A cargo"><!-- POR CONFIRMAR: quién está a cargo el domingo (pregunta 1) --><span class="pendiente">[POR CONFIRMAR]</span></td>
+                  <td data-etiqueta="Hora">16:00 a 22:00</td>
+                  <td data-etiqueta="Tramo"><span class="tramo">Horario alto</span></td>
+                  <td data-etiqueta="Pase">$5.000</td>
+                  <td data-etiqueta="Estudiante">$4.500</td>
                 </tr>
               </tbody>
             </table>
           </div>
-          <p class="horario__nota">Horario bajo: menos frío, menos gente, más muro para ti. Horario normal: tarde y noche. Se paga al ingresar.</p>
+          <p class="horario__nota">Horario bajo: menos frío, menos gente, más muro para ti. Horario alto: tarde y noche. Aceptamos todos los medios de pago: efectivo, débito, crédito y transferencia. Conviene escribirnos unos días antes para confirmar. En verano alargamos una hora por el calor. Lo avisamos en Instagram.</p>
         </div>
+        <div class="valores">
+          <h3 class="valores__titulo">Otros valores</h3>
+          <ul class="valores__lista">
+            <li class="valores__item" data-m-aparece>
+              <span class="valores__nombre">Mensualidad de escalada libre</span>
+              <span class="valores__detalle">Todo el mes</span>
+              <span class="valores__valor">$30.000 <span class="valores__estudiante">$25.000 estudiante</span></span>
+            </li>
+            <li class="valores__item" data-m-aparece>
+              <span class="valores__nombre">Pack de 5 pases libres</span>
+              <span class="valores__detalle">Escalada libre</span>
+              <span class="valores__valor">$18.000</span>
+            </li>
+            <li class="valores__item" data-m-aparece>
+              <span class="valores__nombre">Pack de 10 pases libres</span>
+              <span class="valores__detalle">Escalada libre</span>
+              <span class="valores__valor">$32.000</span>
+            </li>
+            <li class="valores__item" data-m-aparece>
+              <span class="valores__nombre">Plan de clases guiadas</span>
+              <span class="valores__detalle">4 clases al mes, una vez por semana. Descuento el primer mes</span>
+              <span class="valores__valor">$45.000</span>
+            </li>
+            <li class="valores__item" data-m-aparece>
+              <span class="valores__nombre">Kuyencit@s, 1 clase por semana</span>
+              <span class="valores__detalle">Programa infantil</span>
+              <span class="valores__valor">$40.000</span>
+            </li>
+            <li class="valores__item" data-m-aparece>
+              <span class="valores__nombre">Kuyencit@s, 2 clases por semana</span>
+              <span class="valores__detalle">Programa infantil</span>
+              <span class="valores__valor">$52.000</span>
+            </li>
+            <li class="valores__item" data-m-aparece>
+              <span class="valores__nombre">Kuyencit@s, clase suelta</span>
+              <span class="valores__detalle">Programa infantil</span>
+              <span class="valores__valor">$9.000</span>
+            </li>
+            <li class="valores__item" data-m-aparece>
+              <span class="valores__nombre">Arriendo de pies de gato</span>
+              <span class="valores__detalle">Por jornada, tallas 36 a 44. La primera vez es gratis</span>
+              <span class="valores__valor">$1.500</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="seccion muro-seccion" id="primeravez">
+      <div class="contenedor">
+        <div class="cabeza-seccion">
+          <div>
+            <p class="antetitulo" data-m-aparece><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 1c.9 6.6 4.4 10.1 11 11-6.6.9-10.1 4.4-11 11-.9-6.6-4.4-10.1-11-11 6.6-.9 10.1-4.4 11-11z"/></svg><span>Primera visita</span></p>
+            <h2 class="titulo-seccion" data-m-revelar><span class="m-linea"><span class="m-palabra"><span style="--m-i: 0">Tu</span></span> <span class="m-palabra m-acento"><span style="--m-i: 1">primera</span></span> <span class="m-palabra m-acento"><span style="--m-i: 2">vez.</span></span></span></h2>
+          </div>
+          <a class="enlace-flecha" href="https://docs.google.com/forms/d/e/1FAIpQLSfA0HoO-PmDaaSRjXqLt1VF37dFQKTdcsL2kD1co3wM-rGGIQ/viewform?usp=pp_url" target="_blank" rel="noopener" data-m-aparece><span>Solicitud de ingreso</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        </div>
+        <p class="muro__bajada" data-m-aparece>No hace falta reservar ni tener experiencia. Son cuatro pasos. Conviene escribirnos unos días antes para confirmar.</p>
+        <ol class="fichas fichas--pasos">
+          <li class="ficha" data-m-aparece>
+            <span class="ficha__numero">N.º 01</span>
+            <h3 class="ficha__titulo">Completa la solicitud de ingreso</h3>
+            <p class="ficha__texto">Confirmas que leíste el reglamento y dejas un contacto de emergencia. <a class="enlace" href="https://docs.google.com/forms/d/e/1FAIpQLSfA0HoO-PmDaaSRjXqLt1VF37dFQKTdcsL2kD1co3wM-rGGIQ/viewform?usp=pp_url" target="_blank" rel="noopener">Completar la solicitud</a>.</p>
+          </li>
+          <li class="ficha" data-m-aparece style="--m-retraso: 80ms">
+            <span class="ficha__numero">N.º 02</span>
+            <h3 class="ficha__titulo">Avísanos que es tu primera vez</h3>
+            <p class="ficha__texto">Si nunca has escalado, dilo al llegar: te damos una charla de seguridad, sin costo.</p>
+          </li>
+          <li class="ficha" data-m-aparece style="--m-retraso: 160ms">
+            <span class="ficha__numero">N.º 03</span>
+            <h3 class="ficha__titulo">Arrienda pies de gato</h3>
+            <p class="ficha__texto">Tenemos de la talla 36 a la 44. La primera vez son gratis.</p>
+          </li>
+          <li class="ficha" data-m-aparece style="--m-retraso: 240ms">
+            <span class="ficha__numero">N.º 04</span>
+            <h3 class="ficha__titulo">Trae ganas de aprender y de caer</h3>
+            <p class="ficha__texto">El mate lo ponemos nosotros, y siempre hay para compartir.</p>
+          </li>
+        </ol>
+        <p class="horario__nota" data-m-aparece>A escalada libre se puede venir desde los 5 años, siempre con un tutor a cargo. Los datos de emergencia de la solicitud los ven solo las personas que atienden el muro, y solo si pasa algo.</p>
+      </div>
+    </section>
+
+    <section class="seccion faq-seccion" id="preguntas">
+      <div class="contenedor">
+        <div class="faq__cabeza">
+          <p class="antetitulo" data-m-aparece><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 1c.9 6.6 4.4 10.1 11 11-6.6.9-10.1 4.4-11 11-.9-6.6-4.4-10.1-11-11 6.6-.9 10.1-4.4 11-11z"/></svg><span>Preguntas</span></p>
+          <h2 class="titulo-seccion" data-m-revelar><span class="m-linea"><span class="m-palabra"><span style="--m-i: 0">Antes</span></span> <span class="m-palabra"><span style="--m-i: 1">de</span></span> <span class="m-palabra"><span style="--m-i: 2">tu</span></span> <span class="m-palabra m-acento"><span style="--m-i: 3">primera</span></span> <span class="m-palabra m-acento"><span style="--m-i: 4">visita</span></span></span></h2>
+        </div>
+        <div class="faq">
+          <div class="faq__item" data-m-aparece>
+            <h3 class="faq__pregunta">
+              <button type="button" aria-expanded="false" aria-controls="respuesta-1" data-faq>
+                <span>¿Qué hago antes de mi primera visita?</span>
+                <span class="faq__chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span>
+              </button>
+            </h3>
+            <div class="faq__respuesta" id="respuesta-1" inert>
+              <div class="faq__interior"><div class="faq__texto"><p>Completa la solicitud de ingreso y vente a Kuyen. No hace falta reservar.</p><p><a class="enlace" href="https://docs.google.com/forms/d/e/1FAIpQLSfA0HoO-PmDaaSRjXqLt1VF37dFQKTdcsL2kD1co3wM-rGGIQ/viewform?usp=pp_url" target="_blank" rel="noopener">Completar la solicitud de ingreso</a>.</p></div></div>
+            </div>
+          </div>
+          <div class="faq__item" data-m-aparece style="--m-retraso: 60ms">
+            <h3 class="faq__pregunta">
+              <button type="button" aria-expanded="false" aria-controls="respuesta-2" data-faq>
+                <span>¿Cuáles son las reglas del muro?</span>
+                <span class="faq__chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span>
+              </button>
+            </h3>
+            <div class="faq__respuesta" id="respuesta-2" inert>
+              <div class="faq__interior"><div class="faq__texto"><p>El reglamento tiene 15 puntos, y sigue vigente tal cual:</p><ol class="faq__reglas"><li>Saludar al ingresar</li><li>Cancelar al momento de ingresar</li><li>No traer animales</li><li>No ingresar a la casa</li><li>No fumar ni beber alcohol</li><li>Ordenar sus pertenencias</li><li>Ordenar el material de entrenamiento</li><li>Escalar con calzado</li><li>Hacer sombra a toda persona</li><li>Cuidado con rutas expuestas</li><li>No sacarse la polera</li><li>No gritar intencionalmente</li><li>No manipular las presas del muro</li><li>No ingresar a la recepción</li><li>Al retirarse despídase</li></ol></div></div>
+            </div>
+          </div>
+          <div class="faq__item" data-m-aparece style="--m-retraso: 120ms">
+            <h3 class="faq__pregunta">
+              <button type="button" aria-expanded="false" aria-controls="respuesta-3" data-faq>
+                <span>¿Cuáles son los horarios y valores?</span>
+                <span class="faq__chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span>
+              </button>
+            </h3>
+            <div class="faq__respuesta" id="respuesta-3" inert>
+              <div class="faq__interior"><div class="faq__texto"><p>Abrimos de lunes a domingo de 10:00 a 22:00, con dos tarifas: horario bajo hasta las 16:00 y horario alto después. Se paga al ingresar y aceptamos todos los medios de pago.</p></div></div>
+            </div>
+          </div>
+          <div class="faq__item" data-m-aparece style="--m-retraso: 180ms">
+            <h3 class="faq__pregunta">
+              <button type="button" aria-expanded="false" aria-controls="respuesta-4" data-faq>
+                <span>¿Necesito experiencia para escalar?</span>
+                <span class="faq__chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span>
+              </button>
+            </h3>
+            <div class="faq__respuesta" id="respuesta-4" inert>
+              <div class="faq__interior"><div class="faq__texto"><p>No. Si nunca has escalado, avísanos al llegar y te damos una charla de seguridad, sin costo, para que empieces tranquilo.</p></div></div>
+            </div>
+          </div>
+          <div class="faq__item" data-m-aparece style="--m-retraso: 240ms">
+            <h3 class="faq__pregunta">
+              <button type="button" aria-expanded="false" aria-controls="respuesta-5" data-faq>
+                <span>¿Qué conviene traer la primera vez?</span>
+                <span class="faq__chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span>
+              </button>
+            </h3>
+            <div class="faq__respuesta" id="respuesta-5" inert>
+              <div class="faq__interior"><div class="faq__texto"><p>Muchas ganas de aprender y de caer. El mate lo ponemos nosotros.</p></div></div>
+            </div>
+          </div>
+          <div class="faq__item" data-m-aparece style="--m-retraso: 300ms">
+            <h3 class="faq__pregunta">
+              <button type="button" aria-expanded="false" aria-controls="respuesta-6" data-faq>
+                <span>¿Qué calzado necesito?</span>
+                <span class="faq__chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span>
+              </button>
+            </h3>
+            <div class="faq__respuesta" id="respuesta-6" inert>
+              <div class="faq__interior"><div class="faq__texto"><p>El reglamento pide escalar con calzado. Arrendamos pies de gato de la talla 36 a la 44: la primera vez son gratis y después son $1.500 por jornada. También vendemos magnesio.</p></div></div>
+            </div>
+          </div>
+          <div class="faq__item" data-m-aparece style="--m-retraso: 360ms">
+            <h3 class="faq__pregunta">
+              <button type="button" aria-expanded="false" aria-controls="respuesta-7" data-faq>
+                <span>¿Hay escalada para niñas y niños?</span>
+                <span class="faq__chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span>
+              </button>
+            </h3>
+            <div class="faq__respuesta" id="respuesta-7" inert>
+              <div class="faq__interior"><div class="faq__texto"><p>Sí. Kuyencit@s tiene dos grupos, de 7 a 9 y de 10 a 15 años. A escalada libre se puede venir desde los 5, siempre con un tutor a cargo.</p></div></div>
+            </div>
+          </div>
+          <div class="faq__item" data-m-aparece style="--m-retraso: 420ms">
+            <h3 class="faq__pregunta">
+              <button type="button" aria-expanded="false" aria-controls="respuesta-8" data-faq>
+                <span>¿Hay un máximo de personas en el muro?</span>
+                <span class="faq__chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span>
+              </button>
+            </h3>
+            <div class="faq__respuesta" id="respuesta-8" inert>
+              <div class="faq__interior"><div class="faq__texto"><p>No. Cuando somos varios el muro se siente más acogedor y se nota más la comunidad.</p></div></div>
+            </div>
+          </div>
+          <div class="faq__item" data-m-aparece style="--m-retraso: 480ms">
+            <h3 class="faq__pregunta">
+              <button type="button" aria-expanded="false" aria-controls="respuesta-9" data-faq>
+                <span>¿Reciben grupos, colegios o empresas?</span>
+                <span class="faq__chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span>
+              </button>
+            </h3>
+            <div class="faq__respuesta" id="respuesta-9" inert>
+              <div class="faq__interior"><div class="faq__texto"><p>Sí. Escríbenos por Instagram, WhatsApp o correo, llámanos, o pásate directamente por el muro y lo coordinamos.</p></div></div>
+            </div>
+          </div>
+          <div class="faq__item" data-m-aparece style="--m-retraso: 540ms">
+            <h3 class="faq__pregunta">
+              <button type="button" aria-expanded="false" aria-controls="respuesta-10" data-faq>
+                <span>¿Celebran cumpleaños en el muro?</span>
+                <span class="faq__chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span>
+              </button>
+            </h3>
+            <div class="faq__respuesta" id="respuesta-10" inert>
+              <div class="faq__interior"><div class="faq__texto"><p>Por ahora no. Tenemos actividades casi todos los días y se nos complica reagendar clases.</p></div></div>
+            </div>
+          </div>
+          <div class="faq__item" data-m-aparece style="--m-retraso: 600ms">
+            <h3 class="faq__pregunta">
+              <button type="button" aria-expanded="false" aria-controls="respuesta-11" data-faq>
+                <span>¿Qué apps usan en el muro?</span>
+                <span class="faq__chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span>
+              </button>
+            </h3>
+            <div class="faq__respuesta" id="respuesta-11" inert>
+              <div class="faq__interior"><div class="faq__texto"><p>Dos, para el moonboard y para armar bloques.</p><p><a class="enlace" href="https://play.google.com/store/search?q=moon%20climbing&amp;c=apps&amp;hl=es_419" target="_blank" rel="noopener">Moon Climbing</a>, la app del moonboard; y <a class="enlace" href="https://play.google.com/store/search?q=boulder+creator&amp;c=apps&amp;hl=es_419" target="_blank" rel="noopener">Boulder Creator</a>, para crear y compartir bloques.</p></div></div>
+            </div>
+          </div>
+          <div class="faq__item" data-m-aparece style="--m-retraso: 660ms">
+            <h3 class="faq__pregunta">
+              <button type="button" aria-expanded="false" aria-controls="respuesta-12" data-faq>
+                <span>¿Dónde se anuncian los eventos?</span>
+                <span class="faq__chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span>
+              </button>
+            </h3>
+            <div class="faq__respuesta" id="respuesta-12" inert>
+              <div class="faq__interior"><div class="faq__texto"><p>En Instagram y en Facebook. Para inscribirte, escríbenos o pásate el mismo día.</p><p><a class="enlace" href="https://www.instagram.com/kuyen.climbing/" target="_blank" rel="noopener">@kuyen.climbing</a>.</p></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="seccion muro-seccion" id="inclusion">
+      <div class="contenedor">
+        <div class="cabeza-seccion">
+          <div>
+            <p class="antetitulo" data-m-aparece><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 1c.9 6.6 4.4 10.1 11 11-6.6.9-10.1 4.4-11 11-.9-6.6-4.4-10.1-11-11 6.6-.9 10.1-4.4 11-11z"/></svg><span>Comunidad</span></p>
+            <h2 class="titulo-seccion" data-m-revelar><span class="m-linea"><span class="m-palabra"><span style="--m-i: 0">Un</span></span> <span class="m-palabra"><span style="--m-i: 1">muro</span></span> <span class="m-palabra"><span style="--m-i: 2">para</span></span> <span class="m-palabra m-acento"><span style="--m-i: 3">hacer</span></span> <span class="m-palabra m-acento"><span style="--m-i: 4">comunidad.</span></span></span></h2>
+          </div>
+          <a class="enlace-flecha" href="https://www.instagram.com/kuyen.climbing/" target="_blank" rel="noopener" data-m-aparece><span>Síguenos en Instagram</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        </div>
+        <p class="muro__bajada" data-m-aparece>A este muro se viene a hacer comunidad y a practicar el deporte que amamos. Queremos que la comunidad escaladora crezca en La Araucanía, y le hablamos a todos por igual.</p>
+        <div class="fichas">
+          <article class="ficha" data-m-aparece>
+            <h3 class="ficha__titulo">Espacio para todos</h3>
+            <p class="ficha__texto">En Google, Kuyen figura como espacio amigable con LGBTQ+. Desde principiantes hasta escaladores con años de muro, con programa infantil y foco en la escalada femenina.</p>
+          </article>
+          <article class="ficha" data-m-aparece style="--m-retraso: 80ms">
+            <h3 class="ficha__titulo">Todos los años</h3>
+            <p class="ficha__texto">El aniversario y el Día Mundial de la Escalada se repiten todos los años. Las competencias escolares y el encuentro femenino llevan dos años seguidos.</p>
+          </article>
+          <article class="ficha" data-m-aparece style="--m-retraso: 160ms">
+            <h3 class="ficha__titulo">Cómo inscribirse</h3>
+            <p class="ficha__texto">Para inscribirte, escríbenos por Instagram o WhatsApp, o pásate el mismo día y lo gestionamos. Las fechas y novedades se anuncian en Instagram y en Facebook.</p>
+          </article>
+        </div>
+        <ul class="valores__lista" data-m-aparece>
+          <li class="valores__item"><span class="valores__nombre">Comunidad &middot; Seguridad &middot; Inclusión &middot; Progreso personal &middot; Conexión con la montaña</span></li>
+        </ul>
+        <div class="m-faltas"><figure class="m-falta m-falta--horizontal" data-foto-pendiente="fachada" data-m-aparece>
+            <span class="m-falta__marca" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8.5A2.5 2.5 0 0 1 5.5 6h1.8l1.2-2h6.8l1.2 2h1.8A2.5 2.5 0 0 1 21 8.5v9A2.5 2.5 0 0 1 18.5 20h-13A2.5 2.5 0 0 1 3 17.5z"/><circle cx="12" cy="13" r="3.6"/></svg></span>
+            <figcaption class="m-falta__texto"><b>Falta esta foto</b> La fachada y la entrada, para reconocer el lugar al llegar. <span class="m-falta__codigo">F6</span></figcaption>
+          </figure></div>
       </div>
     </section>
 
@@ -1300,22 +1856,27 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
         </div>
         <div class="testimonios">
           <div class="testimonios__izquierda">
+            <div class="m-valoracion" data-m-aparece>
+          <p class="m-valoracion__estrellas" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.6l2.7 5.9 6.3.7-4.7 4.3 1.3 6.3-5.6-3.2-5.6 3.2 1.3-6.3L3 9.2l6.3-.7z"/></svg><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.6l2.7 5.9 6.3.7-4.7 4.3 1.3 6.3-5.6-3.2-5.6 3.2 1.3-6.3L3 9.2l6.3-.7z"/></svg><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.6l2.7 5.9 6.3.7-4.7 4.3 1.3 6.3-5.6-3.2-5.6 3.2 1.3-6.3L3 9.2l6.3-.7z"/></svg><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.6l2.7 5.9 6.3.7-4.7 4.3 1.3 6.3-5.6-3.2-5.6 3.2 1.3-6.3L3 9.2l6.3-.7z"/></svg><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.6l2.7 5.9 6.3.7-4.7 4.3 1.3 6.3-5.6-3.2-5.6 3.2 1.3-6.3L3 9.2l6.3-.7z"/></svg></p>
+          <p class="m-valoracion__nota"><b>5,0</b> en Google, con 14 opiniones</p>
+          <p class="m-valoracion__texto">Las 14 opiniones de Kuyen en Google son de cinco estrellas.</p>
+          <p class="m-valoracion__enlaces">
+            <a class="enlace" href="https://maps.app.goo.gl/v9F89L5peqFyxcJc9" target="_blank" rel="noopener">Leerlas en Google</a>
+            <span class="m-valoracion__invita">¿Ya escalaste acá? Déjanos tu reseña en Google.</span>
+          </p>
+        </div>
             <dl class="m-cifras" data-m-cifras>
           <div class="m-cifra" data-m-aparece style="--m-retraso: 0ms">
             <dt>rutas creadas</dt>
             <dd data-m-contar="500" data-m-decimales="0" data-m-sufijo="+">500+</dd>
           </div>
           <div class="m-cifra" data-m-aparece style="--m-retraso: 120ms">
-            <dt>de desplome continuo</dt>
-            <dd data-m-contar="25" data-m-decimales="0" data-m-sufijo="°">25°</dd>
+            <dt>presas en el muro</dt>
+            <dd data-m-contar="1000" data-m-decimales="0" data-m-sufijo="+">1000+</dd>
           </div>
           <div class="m-cifra" data-m-aparece style="--m-retraso: 240ms">
-            <dt>en Google, con 14 reseñas</dt>
-            <dd data-m-contar="5" data-m-decimales="1" data-m-sufijo="">5,0</dd>
-          </div>
-          <div class="m-cifra" data-m-aparece style="--m-retraso: 360ms">
-            <dt>años de comunidad</dt>
-            <dd data-m-contar="3" data-m-decimales="0" data-m-sufijo="">3</dd>
+            <dt>de inclinación máxima</dt>
+            <dd data-m-contar="40" data-m-decimales="0" data-m-sufijo="°">40°</dd>
           </div>
         </dl>
             <div class="acento-tarjeta" data-m-aparece>
@@ -1329,56 +1890,56 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
             <div class="carrusel__escena">
               <article class="resena" data-tarjeta="0" aria-label="Reseña 1 de 5">
                 <span class="resena__icono"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 1c.9 6.6 4.4 10.1 11 11-6.6.9-10.1 4.4-11 11-.9-6.6-4.4-10.1-11-11 6.6-.9 10.1-4.4 11-11z"/></svg></span>
-                <p class="resena__cita"><!-- POR CONFIRMAR: texto de la reseña y permiso de la persona para publicarla con su nombre --><span class="pendiente">[POR CONFIRMAR]</span></p>
+                <p class="resena__cita">«Gran boulder para entrenar. Un muro versátil que cuenta con un moonboard para escaladores exigentes. Dan clases de escalada. Tienen aparatos aéreos como trapecio, lira y tela para entrenar de forma paralela dentro del mismo gimnasio, esto se planifica con aerial_Temuco»</p>
                 <div class="resena__autor">
                   <img class="resena__avatar" src="/img/marca/isotipo-256.webp" width="256" height="256" alt="">
                   <div>
-                    <p class="resena__nombre"><!-- POR CONFIRMAR: nombre de quien escribe la reseña --><span class="pendiente">[POR CONFIRMAR]</span></p>
-                    <p class="resena__detalle"><!-- POR CONFIRMAR: desde cuándo escala en Kuyen o qué hace ahí --><span class="pendiente">[POR CONFIRMAR]</span></p>
+                    <p class="resena__nombre">jonathan sanhueza</p>
+                    <p class="resena__detalle">Local Guide · 11 opiniones en Google</p>
                   </div>
                 </div>
               </article>
               <article class="resena" data-tarjeta="1" aria-label="Reseña 2 de 5">
                 <span class="resena__icono"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 1c.9 6.6 4.4 10.1 11 11-6.6.9-10.1 4.4-11 11-.9-6.6-4.4-10.1-11-11 6.6-.9 10.1-4.4 11-11z"/></svg></span>
-                <p class="resena__cita"><!-- POR CONFIRMAR: texto de la reseña y permiso de la persona para publicarla con su nombre --><span class="pendiente">[POR CONFIRMAR]</span></p>
+                <p class="resena__cita">«Excelente muro, para todo tipo de escaladores.»</p>
                 <div class="resena__autor">
                   <img class="resena__avatar" src="/img/marca/isotipo-256.webp" width="256" height="256" alt="">
                   <div>
-                    <p class="resena__nombre"><!-- POR CONFIRMAR: nombre de quien escribe la reseña --><span class="pendiente">[POR CONFIRMAR]</span></p>
-                    <p class="resena__detalle"><!-- POR CONFIRMAR: desde cuándo escala en Kuyen o qué hace ahí --><span class="pendiente">[POR CONFIRMAR]</span></p>
+                    <p class="resena__nombre">Gustavo Carrasco</p>
+                    <p class="resena__detalle">4 opiniones en Google</p>
                   </div>
                 </div>
               </article>
               <article class="resena" data-tarjeta="2" aria-label="Reseña 3 de 5">
                 <span class="resena__icono"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 1c.9 6.6 4.4 10.1 11 11-6.6.9-10.1 4.4-11 11-.9-6.6-4.4-10.1-11-11 6.6-.9 10.1-4.4 11-11z"/></svg></span>
-                <p class="resena__cita"><!-- POR CONFIRMAR: texto de la reseña y permiso de la persona para publicarla con su nombre --><span class="pendiente">[POR CONFIRMAR]</span></p>
+                <p class="resena__cita">«Excelente muro de escalada muy amplio con desplomes continuos hasta 25° y un moonboard!»</p>
                 <div class="resena__autor">
                   <img class="resena__avatar" src="/img/marca/isotipo-256.webp" width="256" height="256" alt="">
                   <div>
-                    <p class="resena__nombre"><!-- POR CONFIRMAR: nombre de quien escribe la reseña --><span class="pendiente">[POR CONFIRMAR]</span></p>
-                    <p class="resena__detalle"><!-- POR CONFIRMAR: desde cuándo escala en Kuyen o qué hace ahí --><span class="pendiente">[POR CONFIRMAR]</span></p>
+                    <p class="resena__nombre">Shutaro Fujiwara</p>
+                    <p class="resena__detalle">2 opiniones en Google</p>
                   </div>
                 </div>
               </article>
               <article class="resena" data-tarjeta="3" aria-label="Reseña 4 de 5">
                 <span class="resena__icono"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 1c.9 6.6 4.4 10.1 11 11-6.6.9-10.1 4.4-11 11-.9-6.6-4.4-10.1-11-11 6.6-.9 10.1-4.4 11-11z"/></svg></span>
-                <p class="resena__cita"><!-- POR CONFIRMAR: texto de la reseña y permiso de la persona para publicarla con su nombre --><span class="pendiente">[POR CONFIRMAR]</span></p>
+                <p class="resena__cita">«Excelente lugar para escalar y compartir con amigos»</p>
                 <div class="resena__autor">
                   <img class="resena__avatar" src="/img/marca/isotipo-256.webp" width="256" height="256" alt="">
                   <div>
-                    <p class="resena__nombre"><!-- POR CONFIRMAR: nombre de quien escribe la reseña --><span class="pendiente">[POR CONFIRMAR]</span></p>
-                    <p class="resena__detalle"><!-- POR CONFIRMAR: desde cuándo escala en Kuyen o qué hace ahí --><span class="pendiente">[POR CONFIRMAR]</span></p>
+                    <p class="resena__nombre">kamal muñoz</p>
+                    <p class="resena__detalle">en Google</p>
                   </div>
                 </div>
               </article>
               <article class="resena" data-tarjeta="4" aria-label="Reseña 5 de 5">
                 <span class="resena__icono"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 1c.9 6.6 4.4 10.1 11 11-6.6.9-10.1 4.4-11 11-.9-6.6-4.4-10.1-11-11 6.6-.9 10.1-4.4 11-11z"/></svg></span>
-                <p class="resena__cita"><!-- POR CONFIRMAR: texto de la reseña y permiso de la persona para publicarla con su nombre --><span class="pendiente">[POR CONFIRMAR]</span></p>
+                <p class="resena__cita">«Buen ambiente»</p>
                 <div class="resena__autor">
                   <img class="resena__avatar" src="/img/marca/isotipo-256.webp" width="256" height="256" alt="">
                   <div>
-                    <p class="resena__nombre"><!-- POR CONFIRMAR: nombre de quien escribe la reseña --><span class="pendiente">[POR CONFIRMAR]</span></p>
-                    <p class="resena__detalle"><!-- POR CONFIRMAR: desde cuándo escala en Kuyen o qué hace ahí --><span class="pendiente">[POR CONFIRMAR]</span></p>
+                    <p class="resena__nombre">Ivette Silva</p>
+                    <p class="resena__detalle">en Google</p>
                   </div>
                 </div>
               </article>
@@ -1401,7 +1962,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
         <div class="llamado__texto">
           <p class="antetitulo" data-m-aparece><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 1c.9 6.6 4.4 10.1 11 11-6.6.9-10.1 4.4-11 11-.9-6.6-4.4-10.1-11-11 6.6-.9 10.1-4.4 11-11z"/></svg><span>Comunidad y eventos</span></p>
           <h2 class="titulo-seccion" data-m-revelar><span class="m-linea"><span class="m-palabra"><span style="--m-i: 0">Competencias,</span></span> <span class="m-palabra"><span style="--m-i: 1">encuentros</span></span></span> <span class="m-linea"><span class="m-palabra"><span style="--m-i: 2">y</span></span> <span class="m-palabra"><span style="--m-i: 3">talleres.</span></span></span></h2>
-          <p class="llamado__parrafo" data-m-aparece>Las fechas y novedades se anuncian en Instagram. Próximo: Taller de routesetting, 2 de octubre de 2026.</p>
+          <p class="llamado__parrafo" data-m-aparece>Las fechas y novedades se anuncian en Instagram y en Facebook. Próximo: Taller de routesetting, 2 de octubre de 2026. Para inscribirte, escríbenos por Instagram o WhatsApp, o pásate el mismo día y lo gestionamos.</p>
           <div data-m-aparece style="--m-retraso: 150ms">
             <a class="boton boton--primario" href="https://www.instagram.com/kuyen.climbing/" target="_blank" rel="noopener"><span>Síguenos en Instagram</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
           </div>
@@ -1420,9 +1981,8 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
         </div>
         <div class="programas">
           <div class="programa" data-instagram-tarjeta>
-            <div class="programa__medio m-foto" data-instagram-medio>
-              <img src="/img/fotos/escalador-desplome-amarillo-1200.webp" srcset="/img/fotos/escalador-desplome-amarillo-800.webp 800w, /img/fotos/escalador-desplome-amarillo-1200.webp 1200w, /img/fotos/escalador-desplome-amarillo-1600.webp 1600w" sizes="(min-width: 1024px) 22rem, (min-width: 768px) 45vw, 100vw" width="1200" height="803" alt="Escalador con polera verde colgado de un desplome amarillo y azul" loading="lazy" decoding="async">
-              <span class="programa__numero">Publicación</span>
+            <div class="programa__medio m-foto con-publicacion" data-instagram-medio>
+              <iframe class="instagram__marco" src="https://www.instagram.com/p/DdG5vAJSeuA/embed/captioned/" title="Publicación de Kuyen Climbing en Instagram: Taller de routesetting" loading="lazy" allowfullscreen data-instagram-marco></iframe>
             </div>
             <div class="programa__cabeza" data-m-aparece style="--m-retraso: 150ms">
               <h3 class="programa__nombre">Taller de routesetting</h3>
@@ -1430,15 +1990,13 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
             </div>
             <p class="programa__texto" data-m-aparece style="--m-retraso: 220ms">Creación, diseño y armado de rutas, para mujeres escaladoras.</p>
             <div class="programa__acciones" data-m-aparece style="--m-retraso: 260ms">
-              <button type="button" class="boton boton--primario boton--chico" data-instagram="p/DdG5vAJSeuA" data-titulo="Publicación de Kuyen Climbing en Instagram: Taller de routesetting"><span>Ver publicación</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg></button>
               <a class="enlace" href="https://www.instagram.com/p/DdG5vAJSeuA/" target="_blank" rel="noopener">Abrir en Instagram</a>
             </div>
             <span class="programa__linea" aria-hidden="true"></span>
           </div>
           <div class="programa" data-instagram-tarjeta>
-            <div class="programa__medio m-foto" style="--m-retraso: 120ms" data-instagram-medio>
-              <img src="/img/fotos/escaladora-muro-azul-1200.webp" srcset="/img/fotos/escaladora-muro-azul-800.webp 536w, /img/fotos/escaladora-muro-azul-1200.webp 803w, /img/fotos/escaladora-muro-azul-1600.webp 1071w" sizes="(min-width: 1024px) 22rem, (min-width: 768px) 45vw, 100vw" width="803" height="1200" alt="Escaladora con polera naranja en un muro azul y amarillo, mientras otra persona la observa desde abajo" loading="lazy" decoding="async">
-              <span class="programa__numero">Publicación</span>
+            <div class="programa__medio m-foto con-publicacion" style="--m-retraso: 120ms" data-instagram-medio>
+              <iframe class="instagram__marco" src="https://www.instagram.com/p/DXGCPpyjKfi/embed/captioned/" title="Publicación de Kuyen Climbing en Instagram: Hacer sombra" loading="lazy" allowfullscreen data-instagram-marco></iframe>
             </div>
             <div class="programa__cabeza" data-m-aparece style="--m-retraso: 270ms">
               <h3 class="programa__nombre">Hacer sombra</h3>
@@ -1446,15 +2004,13 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
             </div>
             <p class="programa__texto" data-m-aparece style="--m-retraso: 340ms">Cuidar al compañero es la ley primera en Kuyen.</p>
             <div class="programa__acciones" data-m-aparece style="--m-retraso: 380ms">
-              <button type="button" class="boton boton--primario boton--chico" data-instagram="p/DXGCPpyjKfi" data-titulo="Publicación de Kuyen Climbing en Instagram: Hacer sombra"><span>Ver publicación</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg></button>
               <a class="enlace" href="https://www.instagram.com/p/DXGCPpyjKfi/" target="_blank" rel="noopener">Abrir en Instagram</a>
             </div>
             <span class="programa__linea" aria-hidden="true"></span>
           </div>
           <div class="programa" data-instagram-tarjeta>
-            <div class="programa__medio m-foto" style="--m-retraso: 240ms" data-instagram-medio>
-              <img src="/img/fotos/escalador-muro-blanco-1200.webp" srcset="/img/fotos/escalador-muro-blanco-800.webp 800w, /img/fotos/escalador-muro-blanco-1200.webp 1200w, /img/fotos/escalador-muro-blanco-1600.webp 1600w" sizes="(min-width: 1024px) 22rem, (min-width: 768px) 45vw, 100vw" width="1200" height="800" alt="Escalador en un muro blanco, amarillo, azul y gris" loading="lazy" decoding="async">
-              <span class="programa__numero">Video</span>
+            <div class="programa__medio m-foto con-publicacion" style="--m-retraso: 240ms" data-instagram-medio>
+              <iframe class="instagram__marco" src="https://www.instagram.com/reel/DOenM9lElP2/embed/captioned/" title="Publicación de Kuyen Climbing en Instagram: Rutas nuevas" loading="lazy" allowfullscreen data-instagram-marco></iframe>
             </div>
             <div class="programa__cabeza" data-m-aparece style="--m-retraso: 390ms">
               <h3 class="programa__nombre">Rutas nuevas</h3>
@@ -1462,112 +2018,12 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
             </div>
             <p class="programa__texto" data-m-aparece style="--m-retraso: 460ms">Sacamos las presas, las lavamos, instalamos volúmenes y armamos rutas nuevas.</p>
             <div class="programa__acciones" data-m-aparece style="--m-retraso: 500ms">
-              <button type="button" class="boton boton--primario boton--chico" data-instagram="reel/DOenM9lElP2" data-titulo="Publicación de Kuyen Climbing en Instagram: Rutas nuevas"><span>Ver publicación</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg></button>
               <a class="enlace" href="https://www.instagram.com/reel/DOenM9lElP2/" target="_blank" rel="noopener">Abrir en Instagram</a>
             </div>
             <span class="programa__linea" aria-hidden="true"></span>
           </div>
         </div>
-        <p class="seccion__nota" data-m-aparece>La publicación se carga desde Instagram al hacer clic.</p>
-      </div>
-    </section>
-
-    <section class="seccion faq-seccion" id="preguntas">
-      <div class="contenedor">
-        <div class="faq__cabeza">
-          <p class="antetitulo" data-m-aparece><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 1c.9 6.6 4.4 10.1 11 11-6.6.9-10.1 4.4-11 11-.9-6.6-4.4-10.1-11-11 6.6-.9 10.1-4.4 11-11z"/></svg><span>Preguntas</span></p>
-          <h2 class="titulo-seccion" data-m-revelar><span class="m-linea"><span class="m-palabra"><span style="--m-i: 0">Antes</span></span> <span class="m-palabra"><span style="--m-i: 1">de</span></span> <span class="m-palabra"><span style="--m-i: 2">tu</span></span> <span class="m-palabra m-acento"><span style="--m-i: 3">primera</span></span> <span class="m-palabra m-acento"><span style="--m-i: 4">visita</span></span></span></h2>
-        </div>
-        <div class="faq">
-          <div class="faq__item" data-m-aparece>
-            <h3 class="faq__pregunta">
-              <button type="button" aria-expanded="false" aria-controls="respuesta-1" data-faq>
-                <span>¿Qué hago antes de mi primera visita?</span>
-                <span class="faq__chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span>
-              </button>
-            </h3>
-            <div class="faq__respuesta" id="respuesta-1" inert>
-              <div class="faq__interior"><div class="faq__texto"><p>Antes de tu primera visita, completa la solicitud de ingreso: confirmas que leíste el reglamento y dejas un contacto de emergencia.</p><p><a class="enlace" href="https://docs.google.com/forms/d/e/1FAIpQLSfA0HoO-PmDaaSRjXqLt1VF37dFQKTdcsL2kD1co3wM-rGGIQ/viewform?usp=pp_url" target="_blank" rel="noopener">Completar la solicitud de ingreso</a></p></div></div>
-            </div>
-          </div>
-          <div class="faq__item" data-m-aparece style="--m-retraso: 60ms">
-            <h3 class="faq__pregunta">
-              <button type="button" aria-expanded="false" aria-controls="respuesta-2" data-faq>
-                <span>¿Cuáles son las reglas del muro?</span>
-                <span class="faq__chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span>
-              </button>
-            </h3>
-            <div class="faq__respuesta" id="respuesta-2" inert>
-              <div class="faq__interior"><div class="faq__texto"><p>El reglamento tiene 15 puntos:</p><ol class="faq__reglas"><li>Saludar al ingresar</li><li>Cancelar al momento de ingresar</li><li>No traer animales</li><li>No ingresar a la casa</li><li>No fumar ni beber alcohol</li><li>Ordenar sus pertenencias</li><li>Ordenar el material de entrenamiento</li><li>Escalar con calzado</li><li>Hacer sombra a toda persona</li><li>Cuidado con rutas expuestas</li><li>No sacarse la polera</li><li>No gritar intencionalmente</li><li>No manipular las presas del muro</li><li>No ingresar a la recepción</li><li>Al retirarse despídase</li></ol></div></div>
-            </div>
-          </div>
-          <div class="faq__item" data-m-aparece style="--m-retraso: 120ms">
-            <h3 class="faq__pregunta">
-              <button type="button" aria-expanded="false" aria-controls="respuesta-3" data-faq>
-                <span>¿Necesito experiencia para escalar?</span>
-                <span class="faq__chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span>
-              </button>
-            </h3>
-            <div class="faq__respuesta" id="respuesta-3" inert>
-              <div class="faq__interior"><div class="faq__texto"><p>Boulder para todos los niveles, desde principiantes hasta escaladores con experiencia. Si quieres aprender con guía, hay clases guiadas desde marzo de 2026: un plan de 8 clases al mes, 2 veces por semana.</p></div></div>
-            </div>
-          </div>
-          <div class="faq__item" data-m-aparece style="--m-retraso: 180ms">
-            <h3 class="faq__pregunta">
-              <button type="button" aria-expanded="false" aria-controls="respuesta-4" data-faq>
-                <span>¿Hay escalada para niñas y niños?</span>
-                <span class="faq__chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span>
-              </button>
-            </h3>
-            <div class="faq__respuesta" id="respuesta-4" inert>
-              <div class="faq__interior"><div class="faq__texto"><p>Sí: Kuyencit@s es el programa de escalada para niñas y niños. Edades, días y valor: <!-- POR CONFIRMAR: edades, días, horario y valor de Kuyencit@s (pregunta 3) --><span class="pendiente">[POR CONFIRMAR]</span></p></div></div>
-            </div>
-          </div>
-          <div class="faq__item" data-m-aparece style="--m-retraso: 240ms">
-            <h3 class="faq__pregunta">
-              <button type="button" aria-expanded="false" aria-controls="respuesta-5" data-faq>
-                <span>¿Qué calzado necesito?</span>
-                <span class="faq__chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span>
-              </button>
-            </h3>
-            <div class="faq__respuesta" id="respuesta-5" inert>
-              <div class="faq__interior"><div class="faq__texto"><p>El reglamento pide escalar con calzado. Arriendo de pies de gato y venta de magnesio: <!-- POR CONFIRMAR: si arriendan pies de gato y venden magnesio, y a qué valor (pregunta 5) --><span class="pendiente">[POR CONFIRMAR]</span></p></div></div>
-            </div>
-          </div>
-          <div class="faq__item" data-m-aparece style="--m-retraso: 300ms">
-            <h3 class="faq__pregunta">
-              <button type="button" aria-expanded="false" aria-controls="respuesta-6" data-faq>
-                <span>¿Cuáles son los horarios y valores?</span>
-                <span class="faq__chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span>
-              </button>
-            </h3>
-            <div class="faq__respuesta" id="respuesta-6" inert>
-              <div class="faq__interior"><div class="faq__texto"><p>Hay dos tramos, horario bajo y horario normal, y se paga al ingresar. Horas y valores vigentes: <!-- POR CONFIRMAR: horario por día con los dos tramos y precios vigentes (preguntas 1 y 2) --><span class="pendiente">[POR CONFIRMAR]</span></p></div></div>
-            </div>
-          </div>
-          <div class="faq__item" data-m-aparece style="--m-retraso: 360ms">
-            <h3 class="faq__pregunta">
-              <button type="button" aria-expanded="false" aria-controls="respuesta-7" data-faq>
-                <span>¿Qué apps usan en el muro?</span>
-                <span class="faq__chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span>
-              </button>
-            </h3>
-            <div class="faq__respuesta" id="respuesta-7" inert>
-              <div class="faq__interior"><div class="faq__texto"><p><a class="enlace" href="https://play.google.com/store/search?q=moon%20climbing&amp;c=apps&amp;hl=es_419" target="_blank" rel="noopener">Moon Climbing</a>, la app del moonboard; y <a class="enlace" href="https://play.google.com/store/search?q=boulder+creator&amp;c=apps&amp;hl=es_419" target="_blank" rel="noopener">Boulder Creator</a>, para crear y compartir bloques.</p></div></div>
-            </div>
-          </div>
-          <div class="faq__item" data-m-aparece style="--m-retraso: 420ms">
-            <h3 class="faq__pregunta">
-              <button type="button" aria-expanded="false" aria-controls="respuesta-8" data-faq>
-                <span>¿Dónde se anuncian los eventos?</span>
-                <span class="faq__chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span>
-              </button>
-            </h3>
-            <div class="faq__respuesta" id="respuesta-8" inert>
-              <div class="faq__interior"><div class="faq__texto"><p>Las fechas y novedades se anuncian en Instagram. Síguenos en <a class="enlace" href="https://www.instagram.com/kuyen.climbing/" target="_blank" rel="noopener">@kuyen.climbing</a>.</p></div></div>
-            </div>
-          </div>
-        </div>
+        <p class="seccion__nota" data-m-aparece>Las publicaciones las sirve Instagram.</p>
       </div>
     </section>
   </main>
@@ -1584,6 +2040,8 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
           <div class="pie__iconos">
             <a href="https://www.instagram.com/kuyen.climbing/" target="_blank" rel="noopener" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg></a>
             <a href="https://wa.me/56935028838" target="_blank" rel="noopener" aria-label="WhatsApp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12a8 8 0 0 1-11.8 7L4 20l1.1-4A8 8 0 1 1 20 12z"/></svg></a>
+            <a href="https://www.tiktok.com/@kuyen.climbing" target="_blank" rel="noopener" aria-label="TikTok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg></a>
+            <a href="https://www.facebook.com/profile.php?id=61556312955426" target="_blank" rel="noopener" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg></a>
             <a href="https://linktr.ee/kuyen.climbing" target="_blank" rel="noopener" aria-label="Linktree"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg></a>
           </div>
         </div>
@@ -1592,7 +2050,12 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
           <ul class="pie__lista">
             <li><a href="#historia">Nuestra historia</a></li>
             <li><a href="#programas">Programas</a></li>
+            <li><a href="#equipo">Quiénes somos</a></li>
+            <li><a href="#kuyencitos">Kuyencit@s</a></li>
+            <li><a href="#muro">El muro</a></li>
             <li><a href="#horarios">Horarios</a></li>
+            <li><a href="#inclusion">Comunidad</a></li>
+            <li><a href="#primeravez">Tu primera vez</a></li>
             <li><a href="#comunidad">Comunidad</a></li>
             <li><a href="#instagram">En Instagram</a></li>
             <li><a href="#preguntas">Preguntas</a></li>
@@ -1603,22 +2066,19 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
           <ul class="pie__lista pie__contacto">
             <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></svg><span>Los Patagones 375, Padre Las Casas, La Araucanía</span></li>
             <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12a8 8 0 0 1-11.8 7L4 20l1.1-4A8 8 0 1 1 20 12z"/></svg><a href="https://wa.me/56935028838" target="_blank" rel="noopener">WhatsApp +56 9 3502 8838</a></li>
-            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg><span>Correo: <!-- POR CONFIRMAR: correo de contacto (pregunta 6) --><span class="pendiente">[POR CONFIRMAR]</span></span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg><a href="mailto:kuyen.climbing@gmail.com">kuyen.climbing@gmail.com</a></li>
           </ul>
         </div>
         <div class="pie__columna" data-m-aparece style="--m-retraso: 300ms">
           <h3 class="pie__titulo">Cómo llegar</h3>
           <div class="mapa-mini">
-            <div class="mapa-mini__medio">
-              <img class="m-luna m-capa mapa-mini__luna" src="/img/escena/luna-600.webp" srcset="/img/escena/luna-300.webp 300w, /img/escena/luna-600.webp 600w" sizes="4rem" alt="" style="--m-prof: 0" data-m-paralaje="-0.04">
-              <p class="mapa-mini__nota">Plus code 6CQ5+Q7 Padre Las Casas. El mapa se carga desde Google Maps al hacer clic.</p>
-              <button type="button" class="boton boton--primario boton--chico" data-mapa="https://www.google.com/maps?q=-38.7605438,-72.5918641&amp;z=16&amp;output=embed" data-titulo="Mapa de Kuyen Climbing en Los Patagones 375, Padre Las Casas"><span>Ver mapa</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></svg></button>
-            </div>
+            <iframe class="m-marco" src="https://www.google.com/maps?q=-38.7605438,-72.5918641&amp;z=16&amp;output=embed" title="Mapa de Kuyen Climbing en Los Patagones 375, Padre Las Casas" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
           </div>
+          <p class="mapa-mini__pie">Plus code 6CQ5+Q7 Padre Las Casas. A un costado de Temuco.</p>
         </div>
       </div>
       <div class="pie__legal">
-        <p>© 2026 Kuyen Climbing.</p>
+        <p>© 2026 Kuyen Climbing. Kuyen SpA.</p>
         <p><a href="https://maps.app.goo.gl/v9F89L5peqFyxcJc9" target="_blank" rel="noopener">Abrir en Google Maps</a></p>
       </div>
     </div>
@@ -1847,16 +2307,18 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 (function () {
   'use strict'
 
-  /* Publicaciones de Instagram: el iframe se crea recién al hacer clic, así que
-     hasta entonces la página no le pide nada a Instagram. Cada tarjeta lleva
-     data-instagram-tarjeta y, adentro, el recuadro con data-instagram-medio.
-     Instagram avisa el alto de la publicación con un mensaje MEASURE; si ese
-     mensaje no llega, queda el alto mínimo del CSS. */
+  /* Publicaciones de Instagram: los iframes ya vienen en la página y cargan
+     solos, sin que haya que hacer clic (22-09-2026). Van con loading="lazy", así
+     que el navegador los pide recién cuando se acercan a la pantalla.
+
+     Lo único que queda para el navegador es el alto: Instagram lo avisa con un
+     mensaje MEASURE, y hasta que llega manda el alto mínimo del CSS. */
   var ORIGEN = 'https://www.instagram.com'
-  var marcos = []
+  var marcos = [].slice.call(document.querySelectorAll('iframe[data-instagram-marco]'))
+  if (marcos.length === 0) return
 
   window.addEventListener('message', function (e) {
-    if (e.origin !== ORIGEN || marcos.length === 0) return
+    if (e.origin !== ORIGEN) return
     var datos = e.data
     if (typeof datos === 'string') {
       try { datos = JSON.parse(datos) } catch (error) { return }
@@ -1864,23 +2326,6 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
     if (!datos || datos.type !== 'MEASURE' || !datos.details || !datos.details.height) return
     marcos.forEach(function (marco) {
       if (marco.contentWindow === e.source) marco.style.height = datos.details.height + 'px'
-    })
-  })
-
-  document.querySelectorAll('[data-instagram]').forEach(function (boton) {
-    boton.addEventListener('click', function () {
-      var tarjeta = boton.closest('[data-instagram-tarjeta]')
-      var medio = tarjeta && tarjeta.querySelector('[data-instagram-medio]')
-      if (!medio) return
-      var marco = document.createElement('iframe')
-      marco.className = 'instagram__marco'
-      marco.src = ORIGEN + '/' + boton.getAttribute('data-instagram') + '/embed/captioned/'
-      marco.title = boton.getAttribute('data-titulo')
-      marco.allowFullscreen = true
-      medio.classList.add('con-publicacion')
-      medio.replaceChildren(marco)
-      marcos.push(marco)
-      marco.focus()
     })
   })
 })()
@@ -2022,18 +2467,6 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
     })
   })
 
-  /* Mapa: el iframe de Google se crea recién al hacer clic. Hasta entonces la
-     página no pide nada a Google. */
-  document.querySelectorAll('[data-mapa]').forEach(function (boton) {
-    boton.addEventListener('click', function () {
-      var recuadro = boton.closest('.mapa-mini')
-      var iframe = document.createElement('iframe')
-      iframe.src = boton.getAttribute('data-mapa')
-      iframe.title = boton.getAttribute('data-titulo')
-      iframe.referrerPolicy = 'no-referrer-when-downgrade'
-      recuadro.replaceChildren(iframe)
-    })
-  })
 })()
 ;
   </script>

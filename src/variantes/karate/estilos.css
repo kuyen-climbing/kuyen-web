@@ -196,6 +196,17 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
   border-radius: 0 0 2rem 2rem;
   background: linear-gradient(180deg, rgb(23 26 30 / 0.12), rgb(23 26 30 / 0.42));
 }
+/* El logo, grabado en el vidrio: el envoltorio lo recorta a la tarjeta y le
+   copia las esquinas redondeadas, así no se derrama por la página. Va en z-index
+   0 para quedar debajo del texto y de la pila de fotos. */
+.hero__grabado {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  border-radius: inherit;
+  pointer-events: none;
+}
 .hero__texto { position: relative; z-index: 2; }
 .hero__texto:focus { outline: none; }
 
@@ -248,7 +259,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
   .pila:hover .pila__carta--frente { top: 24%; left: -6%; rotate: -12deg; }
 }
 
-.hero__gatos { display: none; }
+
 
 @media (min-width: 768px) {
   .hero { display: flex; flex-direction: column; justify-content: center; padding-bottom: clamp(5rem, 10vw, 8.5rem); }
@@ -265,14 +276,6 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
   .hero__titulo { font-size: clamp(3.25rem, 7vw, 4.125rem); }
   .hero__parrafo { display: block; }
   .pila { height: 24rem; }
-  .hero__gatos { position: absolute; bottom: 0; left: 1.5%; z-index: 3; display: block; width: clamp(13rem, 24vw, 21rem); pointer-events: none; }
-  /* El pie oscuro del dibujo termina en cortes rectos: se funde hacia los lados. */
-  .hero__cordillera {
-    width: 100%;
-    height: auto;
-    -webkit-mask-image: linear-gradient(to right, transparent 0, #000 20%, #000 80%, transparent);
-    mask-image: linear-gradient(to right, transparent 0, #000 20%, #000 80%, transparent);
-  }
 }
 @media (min-width: 1024px) {
   .hero__tarjeta { grid-template-columns: 34rem minmax(0, 1fr); padding: 6rem 2.5rem 3rem; }
@@ -294,7 +297,6 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
   .hero__luna { top: 0.75rem; width: 5rem; margin-left: -2.5rem; }
   .hero__titulo { margin-block: 1rem; font-size: 4.25rem; }
   .pila { height: 25rem; }
-  .hero__gatos { width: clamp(11rem, 16vw, 15rem); }
 }
 
 /* ---------- Nuestra historia ---------- */
@@ -330,6 +332,27 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
   .historia__grilla { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: center; }
   .historia__parrafo { font-size: 1.0625rem; }
 }
+
+/* ---------- El muro: fichas ---------- */
+
+.muro__bajada { max-width: 46rem; margin-bottom: 2rem; color: var(--texto-suave); font-size: 1rem; line-height: 1.65; }
+.fichas { display: grid; gap: 1rem; }
+.ficha { padding: 1.25rem; border: 1px solid var(--borde); border-radius: 1rem; background: var(--superficie); }
+.ficha__titulo { margin-bottom: 0.5rem; font-family: var(--fuente-titulo); font-size: 1.0625rem; font-weight: 400; }
+.fichas--pasos { list-style: none; counter-reset: paso; }
+.ficha__numero {
+  display: inline-block;
+  margin-bottom: 0.75rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  background: var(--kuyen-luna);
+  color: var(--kuyen-tinta);
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+.ficha__texto { color: var(--texto-suave); font-size: 0.9375rem; line-height: 1.6; }
+@media (min-width: 640px) { .fichas { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 1024px) { .fichas { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.25rem; } }
 
 /* ---------- Programas ---------- */
 
@@ -394,6 +417,18 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .tabla td::before { content: attr(data-etiqueta); display: block; margin-bottom: 0.25rem; color: var(--texto-suave); font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; }
 .tramo { display: inline-block; padding: 0.25rem 0.75rem; border-radius: 9999px; background: rgb(247 231 180 / 0.14); color: var(--kuyen-luna); font-size: 0.8125rem; font-weight: 600; white-space: nowrap; }
 .horario__nota { margin-top: 1.5rem; color: var(--texto-suave); font-size: 0.9375rem; line-height: 1.6; }
+.valores { margin-top: 2.5rem; }
+.valores__titulo { margin-bottom: 1rem; color: var(--texto-suave); font-size: 0.8125rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; }
+.valores__lista { display: grid; gap: 0.875rem; }
+.valores__item { display: grid; gap: 0.25rem; padding-bottom: 0.875rem; border-bottom: 1px solid var(--borde); }
+.valores__nombre { font-size: 0.9375rem; }
+.valores__detalle { color: var(--texto-suave); font-size: 0.8125rem; }
+.valores__valor { font-family: var(--fuente-titulo); font-size: 1.0625rem; }
+.valores__estudiante { display: block; color: var(--texto-suave); font-family: var(--fuente-texto); font-size: 0.8125rem; }
+@media (min-width: 768px) {
+  .valores__item { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr) auto; align-items: baseline; gap: 1rem; }
+  .valores__valor { text-align: right; }
+}
 @media (min-width: 768px) {
   .tabla { display: table; }
   .tabla thead { position: static; display: table-header-group; width: auto; height: auto; overflow: visible; clip-path: none; }
@@ -552,9 +587,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .pie__contacto svg { flex: none; width: 1.125rem; height: 1.125rem; margin-top: 0.1875rem; color: var(--kuyen-luna); }
 .mapa-mini { position: relative; height: 13.4375rem; overflow: hidden; border: 1px solid var(--borde); border-radius: 1rem; background: var(--superficie); }
 .mapa-mini > iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
-.mapa-mini__medio { display: flex; height: 100%; flex-direction: column; align-items: center; justify-content: center; gap: 0.625rem; padding: 1rem; text-align: center; }
-.mapa-mini__luna { width: 3.25rem; height: auto; }
-.mapa-mini__nota { color: var(--texto-suave); font-size: 0.8125rem; line-height: 1.45; }
+.mapa-mini__pie { margin-top: 0.75rem; color: var(--texto-suave); font-size: 0.8125rem; line-height: 1.45; }
 .pie__legal { display: flex; flex-direction: column; gap: 0.75rem; margin-top: 2.5rem; padding-top: 1.5rem; border-top: 1px solid var(--borde); color: var(--texto-suave); font-size: 0.875rem; }
 .pie__legal a { transition: color 300ms; }
 .pie__legal a:hover { color: var(--kuyen-luna); }

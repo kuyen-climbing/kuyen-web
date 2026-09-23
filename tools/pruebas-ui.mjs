@@ -12,8 +12,9 @@
  * Si /t/<id> es una variante propia, además: un solo <h1>, Rubik Dirt y Rubik
  * cargadas desde el sitio, ningún pedido a otros dominios al cargar, contraste AA
  * en todos los textos, sin desborde de 375 a 1440 px, ningún texto encima de los
- * gatos del logo, y el menú móvil, el mapa y las publicaciones de Instagram
- * funcionando. Si es una captura, sus ajustes.
+ * gatos del logo, el menú móvil funcionando, y que el mapa y las publicaciones
+ * de Instagram vengan incrustados y con carga diferida. Si es una captura, sus
+ * ajustes.
  *
  * No saca capturas: todo se comprueba leyendo el DOM y el resultado es solo
  * texto. La verificación visual la hace una persona en su Chrome.
@@ -153,27 +154,51 @@ const CONTRASTE = `(function () {
   return fallas
 })()`
 
-// Textos o marquesina encima de la cordillera con los gatos del logo. Solo cuenta
-// lo que se ve: los elementos ocultos o inertes no tapan nada.
+// El logo con los gatos tiene dos usos, y cada uno su regla.
+//
+// Como fondo del hero (.m-cordillera--fondo, desde el 22-09-2026) va a todo el
+// ancho y el texto se lee encima a propósito: lo que se revisa es que quede
+// detrás y bien atenuado. La prueba de contraste AA no lo cubre, porque solo
+// mira los fondos de los ancestros y no una imagen que está detrás, así que la
+// opacidad y el desenfoque son la garantía de que el texto se siga leyendo.
+//
+// En cualquier otro uso sigue valiendo la regla del 15-09-2026: ningún texto ni
+// la marquesina lo tapan. Solo cuenta lo que se ve.
 const SOBRE_GATOS = `(function () {
+  var w = d.defaultView
   var cruza = function (a, b) { return Math.min(a.right, b.right) - Math.max(a.left, b.left) > 2 && Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top) > 2 }
   var textos = [].slice.call(d.querySelectorAll('h1, h2, h3, p, a, button, .m-marquesina')).filter(function (e) {
     var r = e.getBoundingClientRect()
-    return r.width > 0 && r.height > 0 && !e.closest('[inert]') && d.defaultView.getComputedStyle(e).visibility !== 'hidden'
+    return r.width > 0 && r.height > 0 && !e.closest('[inert]') && w.getComputedStyle(e).visibility !== 'hidden'
   })
-  var encima = []
+  var problemas = []
   d.querySelectorAll('.m-cordillera').forEach(function (g) {
+    var cs = w.getComputedStyle(g)
+    if (g.classList.contains('m-cordillera--fondo')) {
+      var opacidad = parseFloat(cs.opacity)
+      if (!(opacidad <= 0.4)) problemas.push('fondo con opacidad ' + cs.opacity)
+      if (cs.filter.indexOf('blur(') === -1) problemas.push('fondo sin desenfoque')
+      if (cs.pointerEvents !== 'none') problemas.push('fondo que atrapa el puntero')
+      var capa = parseInt(cs.zIndex, 10) || 0
+      textos.forEach(function (t) {
+        if (!cruza(g.getBoundingClientRect(), t.getBoundingClientRect())) return
+        var ct = w.getComputedStyle(t.closest('[style*="z-index"], [class]') || t)
+        var suya = parseInt(ct.zIndex, 10)
+        if (!isNaN(suya) && suya < capa) problemas.push('texto detrás del fondo: ' + String(t.className || t.tagName).split(' ')[0])
+      })
+      return
+    }
     var rg = g.getBoundingClientRect()
-    textos.forEach(function (t) { if (cruza(rg, t.getBoundingClientRect())) encima.push(String(t.className || t.tagName).split(' ')[0]) })
+    textos.forEach(function (t) { if (cruza(rg, t.getBoundingClientRect())) problemas.push('encima de los gatos: ' + String(t.className || t.tagName).split(' ')[0]) })
   })
-  return encima
+  return problemas
 })()`
 
 /** Lo que tiene que cumplir cualquier variante propia. */
 async function revisarVariante(doc, p) {
   check(`${p}: un solo h1`, (await en(doc, 'd.querySelectorAll("h1").length')) === 1)
   const sobreGatos = await en(doc, SOBRE_GATOS)
-  check(`${p}: ningún texto ni la marquesina tapan a los gatos`, sobreGatos.length === 0, sobreGatos.slice(0, 4).join(', '))
+  check(`${p}: el logo con los gatos, atenuado y detrás del texto`, sobreGatos.length === 0, sobreGatos.slice(0, 4).join(', '))
   const fuentes = await en(doc, `d.fonts.ready.then(function () {
     var f = Array.from(d.fonts)
     return {
@@ -356,7 +381,7 @@ try {
       await goto(rutaTema(tema.id), 2000)
       check(`${tema.id} a ${ancho} px: no se desborda a lo ancho`, await en(PAGINA, DESBORDE), await en(PAGINA, DETALLE_DESBORDE))
       const encima = await en(PAGINA, SOBRE_GATOS)
-      check(`${tema.id} a ${ancho} px: ningún texto ni la marquesina tapan a los gatos`, encima.length === 0, encima.slice(0, 4).join(', '))
+      check(`${tema.id} a ${ancho} px: el logo con los gatos, atenuado y detrás del texto`, encima.length === 0, encima.slice(0, 4).join(', '))
     }
 
     await metrics(375, 812)
@@ -373,18 +398,26 @@ try {
       check(`${tema.id} a 375 px: el menú móvil se cierra con Escape`,
         await en(PAGINA, '!d.querySelector("[data-menu]").classList.contains("abierto") && d.querySelector("[data-menu]").inert'))
     }
-    if (await en(PAGINA, '!!d.querySelector("[data-mapa]")')) {
-      check(`${tema.id}: el mapa no se carga antes del clic`, await en(PAGINA, '!d.querySelector("iframe")'))
-      await en(PAGINA, '(d.querySelector("[data-mapa]").click(), true)')
-      check(`${tema.id}: el mapa se carga al hacer clic`, await en(PAGINA, '!!d.querySelector("iframe[src*=\\"google.com/maps\\"]")'))
-    }
-    if (await en(PAGINA, '!!d.querySelector("[data-instagram]")')) {
-      check(`${tema.id}: la publicación de Instagram no se carga antes del clic`,
-        await en(PAGINA, '!d.querySelector("iframe[src*=\\"instagram.com\\"]")'))
-      await en(PAGINA, '(d.querySelector("[data-instagram]").click(), true)')
-      check(`${tema.id}: la publicación de Instagram se carga al hacer clic`,
-        await en(PAGINA, '!!d.querySelector("iframe[src*=\\"instagram.com/\\"]")'))
-    }
+    // Desde el 22-09-2026 el mapa y las publicaciones vienen incrustados y no
+    // esperan un clic. Lo que se revisa es que estén en la página, que apunten a
+    // donde tienen que apuntar y que lleven loading="lazy", que es lo que evita
+    // que la primera pantalla le pida algo a Google o a Instagram.
+    const incrustados = await en(PAGINA, `[].slice.call(d.querySelectorAll('iframe')).map(function (m) {
+      return { src: m.getAttribute('src') || '', lazy: m.getAttribute('loading') === 'lazy' }
+    })`)
+    const mapaIncrustado = incrustados.filter((m) => m.src.includes('google.com/maps'))
+    const publicaciones = incrustados.filter((m) => m.src.includes('instagram.com/'))
+    check(`${tema.id}: el mapa viene incrustado, sin clic`, mapaIncrustado.length === 1, `${mapaIncrustado.length} mapas`)
+    check(`${tema.id}: las publicaciones de Instagram vienen incrustadas, sin clic`,
+      publicaciones.length === 3, `${publicaciones.length} publicaciones`)
+    // Las reseñas se publican citando Google: la ficha tiene que estar enlazada,
+    // que es lo que sostiene la nota y deja comprobarlas.
+    check(`${tema.id}: la nota de Google enlaza a la ficha`,
+      await en(PAGINA, `!!d.querySelector('a[href*="maps.app.goo.gl"], a[href*="google.com/maps"]')`))
+
+    check(`${tema.id}: el mapa y las publicaciones van con loading lazy`,
+      [...mapaIncrustado, ...publicaciones].every((m) => m.lazy),
+      [...mapaIncrustado, ...publicaciones].filter((m) => !m.lazy).map((m) => m.src).join(', '))
   }
 } finally {
   ws.close()

@@ -45,6 +45,53 @@ export const luna = ({ clase = '', paralaje = -0.18, prof = 0, tamanos = '(min-w
 export const cordillera = ({ clase = '', paralaje = -0.05, prof = 0, tamanos = '100vw' } = {}) =>
   `<img class="m-cordillera m-capa${clase ? ` ${clase}` : ''}" src="/img/escena/cordillera-gatos-2000.webp" srcset="/img/escena/cordillera-gatos-1200.webp 1200w, /img/escena/cordillera-gatos-2000.webp 2000w" sizes="${tamanos}" alt="" style="--m-prof: ${prof}" data-m-paralaje="${paralaje}">`
 
+/**
+ * Mapa de Google y publicaciones de Instagram incrustados. Desde el 22-09-2026
+ * cargan con la página y no al hacer clic (pedido de Benjamín). Van con
+ * loading="lazy", así el navegador los pide recién cuando se acercan a la
+ * pantalla: la persona no tiene que hacer nada y la primera pantalla sigue sin
+ * pedirle nada a Google ni a Instagram.
+ */
+export const mapa = ({ url, titulo, clase = '' }) =>
+  `<iframe class="m-marco${clase ? ` ${clase}` : ''}" src="${esc(url)}" title="${esc(titulo)}" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>`
+
+/** El alto real lo avisa Instagram por mensaje; hasta entonces manda el CSS. */
+export const publicacion = ({ base, ruta, titulo, clase = '' }) =>
+  `<iframe class="instagram__marco${clase ? ` ${clase}` : ''}" src="${esc(`${base}${ruta}/embed/captioned/`)}" title="${esc(titulo)}" loading="lazy" allowfullscreen data-instagram-marco></iframe>`
+
+/**
+ * La valoración de Google: las estrellas, la nota, el recuento y los dos
+ * enlaces a la ficha. Las estrellas van con aria-hidden porque el texto de al
+ * lado ya dice la nota; quien usa lector de pantalla no oye cinco veces lo
+ * mismo.
+ */
+export function valoracion({ datos, clase = '' }) {
+  const estrella = `<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.6l2.7 5.9 6.3.7-4.7 4.3 1.3 6.3-5.6-3.2-5.6 3.2 1.3-6.3L3 9.2l6.3-.7z"/></svg>`
+  return `<div class="m-valoracion${clase ? ` ${clase}` : ''}" data-m-aparece>
+          <p class="m-valoracion__estrellas" aria-hidden="true">${estrella.repeat(datos.maximo)}</p>
+          <p class="m-valoracion__nota"><b>${esc(datos.nota)}</b> en ${esc(datos.fuente)}, con ${datos.total} opiniones</p>
+          <p class="m-valoracion__texto">${esc(datos.resumen)}</p>
+          <p class="m-valoracion__enlaces">
+            <a class="enlace" href="${esc(datos.url)}" target="_blank" rel="noopener">${esc(datos.enlace)}</a>
+            <span class="m-valoracion__invita">${esc(datos.invitacion)}</span>
+          </p>
+        </div>`
+}
+
+/**
+ * Hueco de una foto que Kuyen todavía no manda: un recuadro del tamaño que va a
+ * tener la foto, con lo que hay que sacar escrito adentro. Se ve en la página a
+ * propósito, igual que POR_CONFIRMAR (22-09-2026).
+ */
+export const fotoPendiente = ({ id, pregunta, pide, formato = 'horizontal', clase = '' }) =>
+  `<figure class="m-falta m-falta--${formato}${clase ? ` ${clase}` : ''}" data-foto-pendiente="${esc(id)}" data-m-aparece>
+            <span class="m-falta__marca" aria-hidden="true">${ICONO_CAMARA}</span>
+            <figcaption class="m-falta__texto"><b>Falta esta foto</b> ${esc(pide)} <span class="m-falta__codigo">${esc(pregunta)}</span></figcaption>
+          </figure>`
+
+const ICONO_CAMARA =
+  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8.5A2.5 2.5 0 0 1 5.5 6h1.8l1.2-2h6.8l1.2 2h1.8A2.5 2.5 0 0 1 21 8.5v9A2.5 2.5 0 0 1 18.5 20h-13A2.5 2.5 0 0 1 3 17.5z"/><circle cx="12" cy="13" r="3.6"/></svg>'
+
 /** Formas de presas de escalada, dibujadas para el sitio (viewBox de 100 x 100). */
 const FORMAS_PRESA = {
   canto: 'M50 8c20 0 38 14 40 34 2 22-14 44-38 48-26 4-44-14-44-36C8 30 26 8 50 8z',

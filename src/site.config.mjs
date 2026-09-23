@@ -26,8 +26,9 @@ export const SITES = {
     addressCountry: 'CL',
     robots: 'index, follow',
     sitemap: true,
-    // POR CONFIRMAR: el dominio no está comprado. Si termina siendo otro,
-    // se cambia acá y en el archivo CNAME de la raíz.
+    // Kuyen confirmó el dominio el 22-09-2026 (pregunta L4) y queda a nombre de
+    // Andrés Muñoz Castillo. Falta comprarlo; si termina siendo otro, se cambia
+    // acá y en el archivo CNAME de la raíz.
     cname: 'kuyenclimbing.cl',
   },
   preview: {

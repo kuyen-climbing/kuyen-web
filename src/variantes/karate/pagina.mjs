@@ -18,22 +18,27 @@
  *   10 Pie: marca con íconos, navegación, contacto y mapa.
  * La sección 5 (Built Steps) queda fuera, como en la captura.
  *
- * Sección agregada con componentes del mismo template: "En Instagram", con las
- * tarjetas de Programas, donde la publicación se carga al hacer clic.
+ * Secciones agregadas con componentes del mismo template: "En Instagram", con las
+ * tarjetas de Programas y la publicación incrustada, y "El muro",
+ * con fichas que reúnen las medidas, el seteo, lo que se vende, las comodidades y
+ * las actividades invitadas (respuestas de Kuyen del 22-09-2026).
  *
  * Diferencias con el template:
  * - Toda la página va de noche, con títulos en Rubik Dirt y acento amarillo luna.
  * - El fondo del hero pasa a ser el cielo del logo con estrellas que titilan, la
  *   luna en el medio de la tarjeta, rastro de tiza y entrada orquestada. La pila
  *   de fotos se inclina siguiendo al mouse y se abre en abanico al pasar el
- *   puntero, y los gatos del logo asoman chicos bajo la tarjeta.
- * - En los horarios, las filas quedan [POR CONFIRMAR] hasta tener el horario
- *   vigente, y en móvil cada fila se lee como una ficha.
- * - Las reseñas quedan [POR CONFIRMAR] hasta tener textos y permisos.
+ *   puntero. El logo con la cordillera y los gatos va recortado dentro de la
+ *   tarjeta, pegado a su borde inferior y con sus esquinas redondeadas, como
+ *   grabado en el vidrio (pedido del 22-09-2026).
+ * - En los horarios, la tabla muestra el horario y el valor de cada tramo, y en
+ *   móvil cada fila se lee como una ficha.
+ * - Las reseñas son las de Google, y la nota sale del grupo de cifras para
+ *   tener su propio bloque de valoración (23-09-2026).
  * - El acordeón abre con clic o toque (el template también abre con hover), para
  *   que la lista no salte al pasar el mouse.
  */
-import { cielo, luna, cordillera, presa, titulo, cifras } from '../../compartido/escena.mjs'
+import { cielo, luna, cordillera, presa, titulo, cifras, mapa, publicacion, fotoPendiente, valoracion } from '../../compartido/escena.mjs'
 
 const trazo = (d, extra = '') =>
   `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"${extra}>${d}</svg>`
@@ -58,6 +63,8 @@ const ICONOS = {
 const minusculaInicial = (texto) => texto.charAt(0).toLowerCase() + texto.slice(1)
 const sinTildes = (texto) => texto.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase()
 
+const mayusculaInicial = (texto) => texto.charAt(0).toUpperCase() + texto.slice(1)
+
 export default function pagina({ site, contenido, esc, foto, cabeza, leer, compartido }) {
   const {
     POR_CONFIRMAR,
@@ -69,15 +76,34 @@ export default function pagina({ site, contenido, esc, foto, cabeza, leer, compa
     HISTORIA,
     CIFRAS,
     INSTAGRAM,
+    MURO,
+    EQUIPO,
     SERVICIOS,
     HORARIOS,
+    PRECIOS,
+    PRODUCTOS,
+    COMODIDADES,
+    INVITADOS,
     COMUNIDAD,
     EVENTOS,
+    EVENTOS_INFO,
+    FAQ,
     REGLAMENTO,
     SOLICITUD,
-    TESTIMONIOS,
+    PRIMERA_VISITA,
+    PANCITA,
+    LEGAL,
+    RESENAS,
+    VALORACION,
     TEXTOS,
+    FOTOS_PENDIENTES,
   } = contenido
+
+  /* Hueco de una foto que Kuyen todavía no manda, por su id de FOTOS_PENDIENTES.
+     El build comprueba que estén los diez en la página. */
+  const falta = (id) => fotoPendiente(FOTOS_PENDIENTES.find((f) => f.id === id))
+  const faltas = (...ids) =>
+    `<div class="m-faltas${ids.length > 3 ? ' m-faltas--cuatro' : ids.length === 3 ? ' m-faltas--tres' : ''}">${ids.map(falta).join('\n            ')}</div>`
 
   const externo = ' target="_blank" rel="noopener"'
   const retraso = (ms) => (ms ? ` style="--m-retraso: ${ms}ms"` : '')
@@ -95,10 +121,26 @@ export default function pagina({ site, contenido, esc, foto, cabeza, leer, compa
   /** Antetítulo con la estrella del logo. */
   const antetitulo = (texto, extra = ' data-m-aparece') => `<p class="antetitulo"${extra}>${ICONOS.estrella}<span>${esc(texto)}</span></p>`
 
-  const enlacesMenu = [
+  /* La barra de escritorio lleva lo imprescindible, para que no se desborde;
+     el menú de móvil va a pantalla completa y lleva el recorrido entero. */
+  const enlacesBarra = [
+    ['#muro', 'El muro'],
     ['#programas', 'Programas'],
-    ['#historia', 'Nuestra historia'],
     ['#horarios', 'Horarios'],
+    ['#primeravez', 'Primera vez'],
+    ['#contacto', 'Contacto'],
+  ]
+  const enlacesMenu = [
+    ['#historia', 'Nuestra historia'],
+    ['#muro', 'El muro'],
+    ['#equipo', 'Quiénes somos'],
+    ['#programas', 'Programas'],
+    ['#kuyencitos', 'Kuyencit@s'],
+    ['#horarios', 'Horarios'],
+    ['#primeravez', 'Tu primera vez'],
+    ['#preguntas', 'Preguntas'],
+    ['#inclusion', 'Comunidad'],
+    ['#instagram', 'En Instagram'],
     ['#contacto', 'Contacto'],
   ]
 
@@ -108,54 +150,35 @@ export default function pagina({ site, contenido, esc, foto, cabeza, leer, compa
 
   // "Nos vemos en las presas", en tres líneas con la última destacada.
   const [inicioDespedida, finDespedida] = MARCA.frases.despedida.split(' en las ')
-  // "Desde marzo de 2026: un plan de 8 clases al mes, 2 veces por semana."
-  const [desdeClases, planClases] = clases.resumen.split(': ')
-  const clasesAlMes = planClases.match(/\d+ clases al mes/)[0]
 
   const proximo = EVENTOS.filter((e) => e.proximo).sort((a, b) => a.fecha.localeCompare(b.fecha))[0]
 
   const programas = [
     { servicio: libre, foto: 'escalador-muro-blanco', texto: `${esc(libre.resumen)} ${esc(libre.detalles[0])}` },
-    { servicio: clases, foto: 'escalador-desplome-amarillo', texto: `${esc(clases.resumen)} Días y horarios: ${pendiente('días, horarios y cupos de las clases guiadas (pregunta 4)')}` },
-    { servicio: kuyencitos, foto: 'nino-escalando', texto: `${esc(kuyencitos.resumen)} Edades, días y valor: ${pendiente('edades, días, horario y valor de Kuyencit@s (pregunta 3)')}` },
+    { servicio: clases, foto: 'escalador-desplome-amarillo', texto: `${esc(clases.dias)} ${esc(clases.cupos)}` },
+    { servicio: kuyencitos, foto: 'nino-escalando', texto: `${esc(kuyencitos.resumen)} ${esc(kuyencitos.edades)}` },
   ]
 
   const dias = HORARIOS.semana.map((d) => ({ ...d, id: sinTildes(d.dia) }))
 
-  const preguntas = [
-    {
-      pregunta: '¿Qué hago antes de mi primera visita?',
-      respuesta: `<p>${esc(SOLICITUD.resumen)}</p><p><a class="enlace" href="${esc(LINKS.solicitudIngreso)}"${externo}>Completar la solicitud de ingreso</a></p>`,
-    },
-    {
-      pregunta: '¿Cuáles son las reglas del muro?',
-      respuesta: `<p>El reglamento tiene ${REGLAMENTO.length} puntos:</p><ol class="faq__reglas">${REGLAMENTO.map((r) => `<li>${esc(r)}</li>`).join('')}</ol>`,
-    },
-    {
-      pregunta: '¿Necesito experiencia para escalar?',
-      respuesta: `<p>${esc(libre.resumen)} Si quieres aprender con guía, hay ${esc(clases.nombre.toLowerCase())} ${esc(minusculaInicial(clases.resumen))}</p>`,
-    },
-    {
-      pregunta: '¿Hay escalada para niñas y niños?',
-      respuesta: `<p>Sí: ${esc(kuyencitos.nombre)} es ${esc(minusculaInicial(kuyencitos.resumen))} Edades, días y valor: ${pendiente('edades, días, horario y valor de Kuyencit@s (pregunta 3)')}</p>`,
-    },
-    {
-      pregunta: '¿Qué calzado necesito?',
-      respuesta: `<p>El reglamento pide escalar con calzado. Arriendo de pies de gato y venta de magnesio: ${pendiente('si arriendan pies de gato y venden magnesio, y a qué valor (pregunta 5)')}</p>`,
-    },
-    {
-      pregunta: '¿Cuáles son los horarios y valores?',
-      respuesta: `<p>Hay dos tramos, horario bajo y horario normal, y se paga al ingresar. Horas y valores vigentes: ${pendiente('horario por día con los dos tramos y precios vigentes (preguntas 1 y 2)')}</p>`,
-    },
-    {
-      pregunta: '¿Qué apps usan en el muro?',
-      respuesta: `<p>${LINKS.apps.map((app) => `<a class="enlace" href="${esc(app.url)}"${externo}>${esc(app.nombre)}</a>, ${esc(minusculaInicial(app.uso))}`).join('; y ')}.</p>`,
-    },
-    {
-      pregunta: '¿Dónde se anuncian los eventos?',
-      respuesta: `<p>${esc(COMUNIDAD.anuncios)} Síguenos en <a class="enlace" href="${esc(CONTACTO.instagram)}"${externo}>${esc(CONTACTO.instagramUsuario)}</a>.</p>`,
-    },
-  ]
+  /** Una pregunta frecuente de contenido.mjs, pasada a markup de esta variante. */
+  const respuestaFaq = (p) => {
+    const partes = [`<p>${esc(p.respuesta)}</p>`]
+    if (p.lista) {
+      const etiqueta = p.ordenada ? 'ol' : 'ul'
+      partes.push(`<${etiqueta} class="faq__reglas">${p.lista.map((i) => `<li>${esc(i)}</li>`).join('')}</${etiqueta}>`)
+    }
+    if (p.enlaces) {
+      partes.push(
+        `<p>${p.enlaces
+          .map((e) => `<a class="enlace" href="${esc(e.url)}"${externo}>${esc(e.texto)}</a>${e.detalle ? `, ${esc(minusculaInicial(e.detalle))}` : ''}`)
+          .join('; y ')}.</p>`
+      )
+    }
+    return partes.join('')
+  }
+
+  const preguntas = FAQ.map((p) => ({ pregunta: p.pregunta, respuesta: respuestaFaq(p) }))
 
   return `<!DOCTYPE html>
 <html lang="${site.lang}">
@@ -171,7 +194,7 @@ ${cabeza({ estilos: `${compartido('movimiento.css')}\n${leer('estilos.css')}` })
         <span class="marca__nombre">${esc(MARCA.nombreLogo)}</span>
       </a>
       <ul class="cabecera__enlaces">
-        ${enlacesMenu.map(([href, texto]) => `<li><a href="${href}">${esc(texto)}</a></li>`).join('\n        ')}
+        ${enlacesBarra.map(([href, texto]) => `<li><a href="${href}">${esc(texto)}</a></li>`).join('\n        ')}
       </ul>
       ${boton({ texto: TEXTOS.acciones.solicitud, href: LINKS.solicitudIngreso, afuera: true, flecha: false, clase: 'boton--cabecera' })}
       <button type="button" class="cabecera__menu" aria-label="Abrir el menú" aria-expanded="false" aria-controls="menu-movil" data-menu-abrir>
@@ -192,11 +215,14 @@ ${cabeza({ estilos: `${compartido('movimiento.css')}\n${leer('estilos.css')}` })
     ${cielo({ estrellas: 60, semilla: 331, alto: 76 })}
     <div class="hero__marco">
       <div class="hero__tarjeta">
+        <div class="hero__grabado" aria-hidden="true">
+          ${cordillera({ clase: 'm-cordillera--fondo hero__cordillera m-entra-sube', paralaje: 0, prof: 6, tamanos: '(min-width: 1280px) 75rem, 100vw' })}
+        </div>
         ${luna({ clase: 'hero__luna m-entra-sube', paralaje: -0.1, prof: 16, tamanos: '(min-width: 768px) 7rem, 6rem' })}
         <div class="hero__texto" id="contenido" tabindex="-1">
           <a class="oferta" href="#programas" data-m-aparece>
-            <span class="oferta__etiqueta">${esc(clasesAlMes)}</span>
-            <span class="oferta__texto">${esc(clases.nombre)} ${esc(minusculaInicial(desdeClases))}</span>
+            <span class="oferta__etiqueta">${esc(clases.plan)}</span>
+            <span class="oferta__texto">${esc(clases.nombre)} ${esc(minusculaInicial(clases.desde))}</span>
           </a>
           <h1 class="hero__titulo" data-m-revelar style="--m-retraso: 200ms">${titulo([inicioDespedida, 'en las', [acento(`${finDespedida}.`)]])}</h1>
           <p class="hero__parrafo" data-m-aparece style="--m-retraso: 650ms">${esc(SEO.descripcion)}</p>
@@ -221,9 +247,6 @@ ${cabeza({ estilos: `${compartido('movimiento.css')}\n${leer('estilos.css')}` })
         </div>
       </div>
     </div>
-    <div class="hero__gatos" aria-hidden="true">
-      ${cordillera({ clase: 'hero__cordillera m-entra-sube', paralaje: 0, prof: 6, tamanos: '24vw' })}
-    </div>
   </section>
 
   <main>
@@ -245,12 +268,89 @@ ${cabeza({ estilos: `${compartido('movimiento.css')}\n${leer('estilos.css')}` })
           <p class="historia__parrafo" data-m-aparece>${esc(MARCA.significado)} ${esc(MARCA.definicion)} en ${esc(UBICACION.comuna)}, ${esc(UBICACION.region)}, abierto desde ${HISTORIA.desde}. ${esc(MARCA.lema)}.</p>
           <p class="historia__parrafo" data-m-aparece style="--m-retraso: 100ms">${esc(COMUNIDAD.resumen)} ${esc(COMUNIDAD.publico)}</p>
           <div class="historia__cifras">
-            ${cifras(['google', 'rutas', 'desplome'].map(cifra))}
+            ${cifras(['google', 'presas', 'inclinacion'].map(cifra))}
           </div>
           <div data-m-aparece>
             ${boton({ texto: TEXTOS.acciones.instagram, href: CONTACTO.instagram, afuera: true, variante: 'tercero' })}
           </div>
         </div>
+      </div>
+    </section>
+
+    <section class="seccion muro-seccion" id="muro">
+      <div class="contenedor">
+        <div class="cabeza-seccion">
+          <div>
+            ${antetitulo('El muro')}
+            <h2 class="titulo-seccion" data-m-revelar>${titulo([[`${MURO.altura},`], ['de 0° a', acento('40°.')]])}</h2>
+          </div>
+          <a class="enlace-flecha" href="#horarios" data-m-aparece><span>Ver horarios y valores</span>${ICONOS.flecha}</a>
+        </div>
+        <p class="muro__bajada" data-m-aparece>${esc(MURO.resumen)} ${esc(EQUIPO.construccion)}</p>
+        <div class="fichas">
+          ${MURO.caracteristicas
+            .map(
+              (c, n) => `<article class="ficha" data-m-aparece${retraso(n * 80)}>
+            <h3 class="ficha__titulo">${esc(c.titulo)}</h3>
+            <p class="ficha__texto">${esc(c.texto)}</p>
+          </article>`
+            )
+            .join('\n          ')}
+          <article class="ficha" data-m-aparece style="--m-retraso: 480ms">
+            <h3 class="ficha__titulo">Para entrenar</h3>
+            <p class="ficha__texto">${esc(MURO.entrenamiento.join(', '))}.</p>
+          </article>
+          <article class="ficha" data-m-aparece style="--m-retraso: 560ms">
+            <h3 class="ficha__titulo">Quién setea</h3>
+            <p class="ficha__texto">${esc(EQUIPO.seteadores.resumen)} ${esc(EQUIPO.seteadores.headsetter)} es el headsetter del lugar.</p>
+          </article>
+          <article class="ficha" data-m-aparece style="--m-retraso: 640ms">
+            <h3 class="ficha__titulo">A la venta</h3>
+            <p class="ficha__texto">${esc(PRODUCTOS.lista.join(', '))}. ${esc(PRODUCTOS.proximamente)}</p>
+          </article>
+          <article class="ficha" data-m-aparece style="--m-retraso: 720ms">
+            <h3 class="ficha__titulo">Comodidades</h3>
+            <p class="ficha__texto">${esc(COMODIDADES.lista.join(', '))}. ${esc(COMODIDADES.seguridad)} ${esc(COMODIDADES.estacionamiento)} ${esc(COMODIDADES.referencia)}</p>
+          </article>
+          ${INVITADOS.map(
+            (i, n) => `<article class="ficha" data-m-aparece${retraso(800 + n * 80)}>
+            <h3 class="ficha__titulo">${i.url ? `<a class="enlace" href="${esc(i.url)}"${externo}>${esc(i.nombre)}</a>` : esc(i.nombre)}</h3>
+            <p class="ficha__texto">${esc(i.resumen)}</p>
+          </article>`
+          ).join('\n          ')}
+        </div>
+        ${faltas('muro-vacio', 'presas-cerca', 'moonboard', 'seteo', 'productos', 'recepcion')}
+      </div>
+    </section>
+
+    <section class="seccion muro-seccion" id="equipo">
+      <div class="contenedor">
+        <div class="cabeza-seccion">
+          <div>
+            ${antetitulo('El equipo')}
+            <h2 class="titulo-seccion" data-m-revelar>${titulo([['Quiénes', acento('somos.')]])}</h2>
+          </div>
+        </div>
+        <p class="muro__bajada" data-m-aparece>${esc(EQUIPO.resumen)}</p>
+        <div class="fichas">
+          <article class="ficha" data-m-aparece>
+            <h3 class="ficha__titulo">Clases</h3>
+            <p class="ficha__texto">${EQUIPO.profesores.map((prof) => `<strong>${esc(prof.nombre)}</strong>, ${esc(minusculaInicial(prof.detalle))}`).join('. ')}.</p>
+          </article>
+          <article class="ficha" data-m-aparece style="--m-retraso: 80ms">
+            <h3 class="ficha__titulo">Seteo</h3>
+            <p class="ficha__texto">${esc(EQUIPO.seteadores.resumen)} ${esc(EQUIPO.seteadores.headsetter)} es el headsetter del lugar.</p>
+          </article>
+          <article class="ficha" data-m-aparece style="--m-retraso: 160ms">
+            <h3 class="ficha__titulo">El muro</h3>
+            <p class="ficha__texto">${esc(EQUIPO.construccion)}</p>
+          </article>
+          <article class="ficha" data-m-aparece style="--m-retraso: 240ms">
+            <h3 class="ficha__titulo">${esc(PANCITA.nombre)}</h3>
+            <p class="ficha__texto">${esc(PANCITA.descripcion)}</p>
+          </article>
+        </div>
+        ${faltas('equipo')}
       </div>
     </section>
 
@@ -281,6 +381,43 @@ ${cabeza({ estilos: `${compartido('movimiento.css')}\n${leer('estilos.css')}` })
             )
             .join('\n          ')}
         </div>
+        ${faltas('clase')}
+      </div>
+    </section>
+
+    <section class="seccion muro-seccion" id="kuyencitos">
+      <div class="contenedor">
+        <div class="cabeza-seccion">
+          <div>
+            ${antetitulo('Niñas y niños')}
+            <h2 class="titulo-seccion" data-m-revelar>${titulo([[acento('Kuyencit@s.')]])}</h2>
+          </div>
+          <a class="enlace-flecha" href="${esc(CONTACTO.whatsapp)}"${externo} data-m-aparece><span>${esc(TEXTOS.acciones.whatsapp)}</span>${ICONOS.flecha}</a>
+        </div>
+        <p class="muro__bajada" data-m-aparece>${esc(kuyencitos.resumen)} ${esc(kuyencitos.edades)}</p>
+        <div class="fichas">
+          <article class="ficha" data-m-aparece>
+            <h3 class="ficha__titulo">Días y horario</h3>
+            <p class="ficha__texto">${pendiente('días y horario de Kuyencit@s: Kuyen está ajustando los horarios (K2)')}</p>
+          </article>
+          <article class="ficha" data-m-aparece style="--m-retraso: 80ms">
+            <h3 class="ficha__titulo">Valores</h3>
+            <p class="ficha__texto">${PRECIOS.filter((v) => v.id.startsWith('kuyencitos')).map((v) => `${esc(mayusculaInicial(v.nombre.replace('Kuyencit@s, ', '')))}: ${esc(v.valor)}`).join('. ')}.</p>
+          </article>
+          <article class="ficha" data-m-aparece style="--m-retraso: 160ms">
+            <h3 class="ficha__titulo">Quién acompaña</h3>
+            <p class="ficha__texto">${esc(kuyencitos.acompanamiento)}</p>
+          </article>
+          <article class="ficha" data-m-aparece style="--m-retraso: 240ms">
+            <h3 class="ficha__titulo">Autorización</h3>
+            <p class="ficha__texto">${esc(kuyencitos.autorizacion)}</p>
+          </article>
+          <article class="ficha" data-m-aparece style="--m-retraso: 320ms">
+            <h3 class="ficha__titulo">Antes de los 7</h3>
+            <p class="ficha__texto">${esc(PRIMERA_VISITA.menores)}</p>
+          </article>
+        </div>
+        ${faltas('kuyencitos')}
       </div>
     </section>
 
@@ -306,15 +443,16 @@ ${cabeza({ estilos: `${compartido('movimiento.css')}\n${leer('estilos.css')}` })
             .map(
               (d, n) => `<div class="panel" role="tabpanel" id="panel-${d.id}" aria-labelledby="dia-${d.id}"${n === 0 ? '' : ' hidden'}>
             <table class="tabla">
-              <thead><tr><th scope="col">Hora</th><th scope="col">Tramo</th><th scope="col">Actividad</th><th scope="col">A cargo</th></tr></thead>
+              <thead><tr><th scope="col">Hora</th><th scope="col">Tramo</th><th scope="col">Pase</th><th scope="col">Estudiante</th></tr></thead>
               <tbody>
                 ${HORARIOS.tramos
+                  .map((tramo, f) => ({ tramo, f, precio: PRECIOS.find((p) => p.id === `pase-${tramo.id}`) }))
                   .map(
-                    (tramo, f) => `<tr style="--i: ${f}">
-                  <td data-etiqueta="Hora">${pendiente(`horas del ${tramo.nombre.toLowerCase()} el ${d.dia.toLowerCase()} (pregunta 1)`)}</td>
+                    ({ tramo, f, precio }) => `<tr style="--i: ${f}">
+                  <td data-etiqueta="Hora">${esc(tramo.horas)}</td>
                   <td data-etiqueta="Tramo"><span class="tramo">${esc(tramo.nombre)}</span></td>
-                  <td data-etiqueta="Actividad">${pendiente(`actividad del ${tramo.nombre.toLowerCase()} el ${d.dia.toLowerCase()} (pregunta 1)`)}</td>
-                  <td data-etiqueta="A cargo">${pendiente(`quién está a cargo el ${d.dia.toLowerCase()} (pregunta 1)`)}</td>
+                  <td data-etiqueta="Pase">${esc(precio.valor)}</td>
+                  <td data-etiqueta="Estudiante">${esc(precio.valorEstudiante)}</td>
                 </tr>`
                   )
                   .join('\n                ')}
@@ -323,103 +461,47 @@ ${cabeza({ estilos: `${compartido('movimiento.css')}\n${leer('estilos.css')}` })
           </div>`
             )
             .join('\n          ')}
-          <p class="horario__nota">${HORARIOS.tramos.map((t) => `${esc(t.nombre)}: ${esc(minusculaInicial(t.descripcion))}`).join(' ')} Se paga al ingresar.</p>
+          <p class="horario__nota">${HORARIOS.tramos.map((t) => `${esc(t.nombre)}: ${esc(minusculaInicial(t.descripcion))}`).join(' ')} ${esc(HORARIOS.pago)} ${esc(HORARIOS.aviso)} ${esc(HORARIOS.verano)}</p>
+        </div>
+        <div class="valores">
+          <h3 class="valores__titulo">Otros valores</h3>
+          <ul class="valores__lista">
+            ${PRECIOS.filter((p) => !p.id.startsWith('pase-'))
+              .map(
+                (p) => `<li class="valores__item" data-m-aparece>
+              <span class="valores__nombre">${esc(p.nombre)}</span>
+              <span class="valores__detalle">${esc(p.detalle)}</span>
+              <span class="valores__valor">${p.valor === POR_CONFIRMAR ? pendiente('valor del plan de clases guiadas: Kuyen confirmó el descuento del primer mes, no el precio (C2)') : esc(p.valor)}${p.valorEstudiante ? ` <span class="valores__estudiante">${esc(p.valorEstudiante)} estudiante</span>` : ''}</span>
+            </li>`
+              )
+              .join('\n            ')}
+          </ul>
         </div>
       </div>
     </section>
 
-    <section class="seccion testimonios-seccion" id="comunidad">
-      <div class="contenedor">
-        <div class="cabeza-seccion cabeza-seccion--sola">
-          <div>
-            ${antetitulo('Comunidad')}
-            <h2 class="titulo-seccion" data-m-revelar>${titulo([['Lo que dice', acento('la comunidad.')]])}</h2>
-          </div>
-        </div>
-        <div class="testimonios">
-          <div class="testimonios__izquierda">
-            ${cifras(['rutas', 'desplome', 'google', 'anios'].map(cifra))}
-            <div class="acento-tarjeta" data-m-aparece>
-              <p class="acento-tarjeta__etiqueta">Antes de venir</p>
-              <h3 class="acento-tarjeta__titulo">Completa tu solicitud de ingreso y nos vemos en el muro.</h3>
-              ${boton({ texto: TEXTOS.acciones.solicitud, href: LINKS.solicitudIngreso, afuera: true, variante: 'tinta' })}
-            </div>
-          </div>
-          <div class="carrusel" data-carrusel3d data-m-aparece style="--m-retraso: 150ms">
-            <div class="carrusel__fondo" aria-hidden="true">${foto('joven-escalando', { tamanos: '(min-width: 1024px) 34rem, 100vw', alt: '' })}</div>
-            <div class="carrusel__escena">
-              ${TESTIMONIOS.map(
-                (t, n) => `<article class="resena" data-tarjeta="${n}" aria-label="Reseña ${n + 1} de ${TESTIMONIOS.length}">
-                <span class="resena__icono">${ICONOS.estrella}</span>
-                <p class="resena__cita">${pendiente('texto de la reseña y permiso de la persona para publicarla con su nombre')}</p>
-                <div class="resena__autor">
-                  <img class="resena__avatar" src="/img/marca/isotipo-256.webp" width="256" height="256" alt="">
-                  <div>
-                    <p class="resena__nombre">${pendiente('nombre de quien escribe la reseña')}</p>
-                    <p class="resena__detalle">${pendiente('desde cuándo escala en Kuyen o qué hace ahí')}</p>
-                  </div>
-                </div>
-              </article>`
-              ).join('\n              ')}
-            </div>
-            <div class="carrusel__controles">
-              <button type="button" class="carrusel__flecha" aria-label="Reseña anterior" data-carrusel-anterior>${ICONOS.flechaAtras}</button>
-              <div class="carrusel__puntos">
-                ${TESTIMONIOS.map((t, n) => `<button type="button" class="carrusel__punto" aria-label="Ver reseña ${n + 1}" data-punto="${n}"></button>`).join('')}
-              </div>
-              <button type="button" class="carrusel__flecha" aria-label="Reseña siguiente" data-carrusel-siguiente>${ICONOS.flecha}</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="llamado">
-      <div class="llamado__tarjeta">
-        <div class="llamado__fondo m-foto" aria-hidden="true">${foto('comunidad-evento', { tamanos: '100vw', alt: '' })}</div>
-        <div class="llamado__texto">
-          ${antetitulo('Comunidad y eventos')}
-          <h2 class="titulo-seccion" data-m-revelar>${titulo(['Competencias, encuentros', 'y talleres.'])}</h2>
-          <p class="llamado__parrafo" data-m-aparece>${esc(COMUNIDAD.anuncios)}${proximo ? ` Próximo: ${esc(proximo.nombre)}, ${esc(proximo.fechaTexto)}.` : ''}</p>
-          <div data-m-aparece style="--m-retraso: 150ms">
-            ${boton({ texto: TEXTOS.acciones.instagram, href: CONTACTO.instagram, afuera: true })}
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="seccion" id="instagram">
+    <section class="seccion muro-seccion" id="primeravez">
       <div class="contenedor">
         <div class="cabeza-seccion">
           <div>
-            ${antetitulo('En Instagram')}
-            <h2 class="titulo-seccion" data-m-revelar>${titulo([['Lo último que', acento('publicamos.')]])}</h2>
+            ${antetitulo('Primera visita')}
+            <h2 class="titulo-seccion" data-m-revelar>${titulo([['Tu', acento('primera vez.')]])}</h2>
           </div>
-          <a class="enlace-flecha" href="${esc(INSTAGRAM.perfil)}"${externo} data-m-aparece><span>${esc(CONTACTO.instagramUsuario)}</span>${ICONOS.flecha}</a>
+          <a class="enlace-flecha" href="${esc(LINKS.solicitudIngreso)}"${externo} data-m-aparece><span>${esc(TEXTOS.acciones.solicitud)}</span>${ICONOS.flecha}</a>
         </div>
-        <div class="programas">
-          ${INSTAGRAM.publicaciones
+        <p class="muro__bajada" data-m-aparece>${esc(PRIMERA_VISITA.resumen)} ${esc(PRIMERA_VISITA.aviso)}</p>
+        <ol class="fichas fichas--pasos">
+          ${PRIMERA_VISITA.pasos
             .map(
-              (pub, n) => `<div class="programa" data-instagram-tarjeta>
-            <div class="programa__medio m-foto"${retraso(n * 120)} data-instagram-medio>
-              ${foto(pub.foto, { tamanos: '(min-width: 1024px) 22rem, (min-width: 768px) 45vw, 100vw' })}
-              <span class="programa__numero">${esc(pub.tipo)}</span>
-            </div>
-            <div class="programa__cabeza" data-m-aparece${retraso(n * 120 + 150)}>
-              <h3 class="programa__nombre">${esc(pub.titulo)}</h3>
-              <span class="programa__flecha">${ICONOS.instagram}</span>
-            </div>
-            <p class="programa__texto" data-m-aparece${retraso(n * 120 + 220)}>${esc(pub.detalle)}</p>
-            <div class="programa__acciones" data-m-aparece${retraso(n * 120 + 260)}>
-              <button type="button" class="boton boton--primario boton--chico" data-instagram="${esc(pub.ruta)}" data-titulo="${esc(`Publicación de ${MARCA.nombre} en Instagram: ${pub.titulo}`)}"><span>${esc(TEXTOS.acciones.verPublicacion)}</span>${ICONOS.instagram}</button>
-              <a class="enlace" href="${esc(`${INSTAGRAM.base}${pub.ruta}/`)}"${externo}>${esc(TEXTOS.acciones.abrirInstagram)}</a>
-            </div>
-            <span class="programa__linea" aria-hidden="true"></span>
-          </div>`
+              (paso, n) => `<li class="ficha" data-m-aparece${retraso(n * 80)}>
+            <span class="ficha__numero">N.º 0${n + 1}</span>
+            <h3 class="ficha__titulo">${esc(paso.titulo)}</h3>
+            <p class="ficha__texto">${esc(paso.texto)}${paso.enlace ? ` <a class="enlace" href="${esc(paso.enlace.url)}"${externo}>${esc(paso.enlace.texto)}</a>.` : ''}</p>
+          </li>`
             )
             .join('\n          ')}
-        </div>
-        <p class="seccion__nota" data-m-aparece>${esc(TEXTOS.instagram)}</p>
+        </ol>
+        <p class="horario__nota" data-m-aparece>${esc(PRIMERA_VISITA.menores)} ${esc(LEGAL.privacidad)}</p>
       </div>
     </section>
 
@@ -448,6 +530,131 @@ ${cabeza({ estilos: `${compartido('movimiento.css')}\n${leer('estilos.css')}` })
         </div>
       </div>
     </section>
+
+    <section class="seccion muro-seccion" id="inclusion">
+      <div class="contenedor">
+        <div class="cabeza-seccion">
+          <div>
+            ${antetitulo('Comunidad')}
+            <h2 class="titulo-seccion" data-m-revelar>${titulo([['Un muro para', acento('hacer comunidad.')]])}</h2>
+          </div>
+          <a class="enlace-flecha" href="${esc(CONTACTO.instagram)}"${externo} data-m-aparece><span>${esc(TEXTOS.acciones.instagram)}</span>${ICONOS.flecha}</a>
+        </div>
+        <p class="muro__bajada" data-m-aparece>${esc(COMUNIDAD.foco)} ${esc(COMUNIDAD.destinatario)}</p>
+        <div class="fichas">
+          <article class="ficha" data-m-aparece>
+            <h3 class="ficha__titulo">Espacio para todos</h3>
+            <p class="ficha__texto">${esc(COMUNIDAD.inclusion)} ${esc(COMUNIDAD.publico)}</p>
+          </article>
+          <article class="ficha" data-m-aparece style="--m-retraso: 80ms">
+            <h3 class="ficha__titulo">Todos los años</h3>
+            <p class="ficha__texto">${esc(EVENTOS_INFO.repiten)}</p>
+          </article>
+          <article class="ficha" data-m-aparece style="--m-retraso: 160ms">
+            <h3 class="ficha__titulo">Cómo inscribirse</h3>
+            <p class="ficha__texto">${esc(EVENTOS_INFO.inscripcion)} ${esc(COMUNIDAD.anuncios)}</p>
+          </article>
+        </div>
+        <ul class="valores__lista" data-m-aparece>
+          <li class="valores__item"><span class="valores__nombre">${COMUNIDAD.valores.map(esc).join(' &middot; ')}</span></li>
+        </ul>
+        ${faltas('fachada')}
+      </div>
+    </section>
+
+    <section class="seccion testimonios-seccion" id="comunidad">
+      <div class="contenedor">
+        <div class="cabeza-seccion cabeza-seccion--sola">
+          <div>
+            ${antetitulo('Comunidad')}
+            <h2 class="titulo-seccion" data-m-revelar>${titulo([['Lo que dice', acento('la comunidad.')]])}</h2>
+          </div>
+        </div>
+        <div class="testimonios">
+          <div class="testimonios__izquierda">
+            ${valoracion({ datos: VALORACION })}
+            ${cifras(['rutas', 'presas', 'inclinacion'].map(cifra))}
+            <div class="acento-tarjeta" data-m-aparece>
+              <p class="acento-tarjeta__etiqueta">Antes de venir</p>
+              <h3 class="acento-tarjeta__titulo">Completa tu solicitud de ingreso y nos vemos en el muro.</h3>
+              ${boton({ texto: TEXTOS.acciones.solicitud, href: LINKS.solicitudIngreso, afuera: true, variante: 'tinta' })}
+            </div>
+          </div>
+          <div class="carrusel" data-carrusel3d data-m-aparece style="--m-retraso: 150ms">
+            <div class="carrusel__fondo" aria-hidden="true">${foto('joven-escalando', { tamanos: '(min-width: 1024px) 34rem, 100vw', alt: '' })}</div>
+            <div class="carrusel__escena">
+              ${RESENAS.map(
+                (r, n) => `<article class="resena" data-tarjeta="${n}" aria-label="Reseña ${n + 1} de ${RESENAS.length}">
+                <span class="resena__icono">${ICONOS.estrella}</span>
+                <p class="resena__cita">${esc(`«${r.cita}»`)}</p>
+                <div class="resena__autor">
+                  <img class="resena__avatar" src="/img/marca/isotipo-256.webp" width="256" height="256" alt="">
+                  <div>
+                    <p class="resena__nombre">${esc(r.autor)}</p>
+                    <p class="resena__detalle">${esc(r.perfil ? `${r.perfil} en ${r.fuente}` : `en ${r.fuente}`)}</p>
+                  </div>
+                </div>
+              </article>`
+              ).join('\n              ')}
+            </div>
+            <div class="carrusel__controles">
+              <button type="button" class="carrusel__flecha" aria-label="Reseña anterior" data-carrusel-anterior>${ICONOS.flechaAtras}</button>
+              <div class="carrusel__puntos">
+                ${RESENAS.map((r, n) => `<button type="button" class="carrusel__punto" aria-label="Ver reseña ${n + 1}" data-punto="${n}"></button>`).join('')}
+              </div>
+              <button type="button" class="carrusel__flecha" aria-label="Reseña siguiente" data-carrusel-siguiente>${ICONOS.flecha}</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="llamado">
+      <div class="llamado__tarjeta">
+        <div class="llamado__fondo m-foto" aria-hidden="true">${foto('comunidad-evento', { tamanos: '100vw', alt: '' })}</div>
+        <div class="llamado__texto">
+          ${antetitulo('Comunidad y eventos')}
+          <h2 class="titulo-seccion" data-m-revelar>${titulo(['Competencias, encuentros', 'y talleres.'])}</h2>
+          <p class="llamado__parrafo" data-m-aparece>${esc(COMUNIDAD.anuncios)}${proximo ? ` Próximo: ${esc(proximo.nombre)}, ${esc(proximo.fechaTexto)}.` : ''} ${esc(EVENTOS_INFO.inscripcion)}</p>
+          <div data-m-aparece style="--m-retraso: 150ms">
+            ${boton({ texto: TEXTOS.acciones.instagram, href: CONTACTO.instagram, afuera: true })}
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="seccion" id="instagram">
+      <div class="contenedor">
+        <div class="cabeza-seccion">
+          <div>
+            ${antetitulo('En Instagram')}
+            <h2 class="titulo-seccion" data-m-revelar>${titulo([['Lo último que', acento('publicamos.')]])}</h2>
+          </div>
+          <a class="enlace-flecha" href="${esc(INSTAGRAM.perfil)}"${externo} data-m-aparece><span>${esc(CONTACTO.instagramUsuario)}</span>${ICONOS.flecha}</a>
+        </div>
+        <div class="programas">
+          ${INSTAGRAM.publicaciones
+            .map(
+              (pub, n) => `<div class="programa" data-instagram-tarjeta>
+            <div class="programa__medio m-foto con-publicacion"${retraso(n * 120)} data-instagram-medio>
+              ${publicacion({ base: INSTAGRAM.base, ruta: pub.ruta, titulo: `Publicación de ${MARCA.nombre} en Instagram: ${pub.titulo}` })}
+            </div>
+            <div class="programa__cabeza" data-m-aparece${retraso(n * 120 + 150)}>
+              <h3 class="programa__nombre">${esc(pub.titulo)}</h3>
+              <span class="programa__flecha">${ICONOS.instagram}</span>
+            </div>
+            <p class="programa__texto" data-m-aparece${retraso(n * 120 + 220)}>${esc(pub.detalle)}</p>
+            <div class="programa__acciones" data-m-aparece${retraso(n * 120 + 260)}>
+              <a class="enlace" href="${esc(`${INSTAGRAM.base}${pub.ruta}/`)}"${externo}>${esc(TEXTOS.acciones.abrirInstagram)}</a>
+            </div>
+            <span class="programa__linea" aria-hidden="true"></span>
+          </div>`
+            )
+            .join('\n          ')}
+        </div>
+        <p class="seccion__nota" data-m-aparece>${esc(TEXTOS.instagram)}</p>
+      </div>
+    </section>
   </main>
 
   <footer class="pie" id="contacto">
@@ -462,6 +669,8 @@ ${cabeza({ estilos: `${compartido('movimiento.css')}\n${leer('estilos.css')}` })
           <div class="pie__iconos">
             <a href="${esc(CONTACTO.instagram)}"${externo} aria-label="Instagram">${ICONOS.instagram}</a>
             <a href="${esc(CONTACTO.whatsapp)}"${externo} aria-label="WhatsApp">${ICONOS.telefono}</a>
+            <a href="${esc(CONTACTO.tiktok)}"${externo} aria-label="TikTok">${ICONOS.enlace}</a>
+            <a href="${esc(CONTACTO.facebook)}"${externo} aria-label="Facebook">${ICONOS.enlace}</a>
             <a href="${esc(LINKS.linktree)}"${externo} aria-label="Linktree">${ICONOS.enlace}</a>
           </div>
         </div>
@@ -470,7 +679,12 @@ ${cabeza({ estilos: `${compartido('movimiento.css')}\n${leer('estilos.css')}` })
           <ul class="pie__lista">
             <li><a href="#historia">Nuestra historia</a></li>
             <li><a href="#programas">Programas</a></li>
+            <li><a href="#equipo">Quiénes somos</a></li>
+            <li><a href="#kuyencitos">Kuyencit@s</a></li>
+            <li><a href="#muro">El muro</a></li>
             <li><a href="#horarios">Horarios</a></li>
+            <li><a href="#inclusion">Comunidad</a></li>
+            <li><a href="#primeravez">Tu primera vez</a></li>
             <li><a href="#comunidad">Comunidad</a></li>
             <li><a href="#instagram">En Instagram</a></li>
             <li><a href="#preguntas">Preguntas</a></li>
@@ -481,22 +695,19 @@ ${cabeza({ estilos: `${compartido('movimiento.css')}\n${leer('estilos.css')}` })
           <ul class="pie__lista pie__contacto">
             <li>${ICONOS.pin}<span>${esc(UBICACION.calle)}, ${esc(UBICACION.comuna)}, ${esc(UBICACION.region)}</span></li>
             <li>${ICONOS.telefono}<a href="${esc(CONTACTO.whatsapp)}"${externo}>WhatsApp ${esc(CONTACTO.telefono)}</a></li>
-            <li>${ICONOS.correo}<span>Correo: ${pendiente('correo de contacto (pregunta 6)')}</span></li>
+            <li>${ICONOS.correo}<a href="mailto:${esc(CONTACTO.correo)}">${esc(CONTACTO.correo)}</a></li>
           </ul>
         </div>
         <div class="pie__columna" data-m-aparece style="--m-retraso: 300ms">
           <h3 class="pie__titulo">Cómo llegar</h3>
           <div class="mapa-mini">
-            <div class="mapa-mini__medio">
-              ${luna({ clase: 'mapa-mini__luna', paralaje: -0.04, tamanos: '4rem' })}
-              <p class="mapa-mini__nota">Plus code ${esc(UBICACION.plusCode)}. ${esc(TEXTOS.mapa)}</p>
-              <button type="button" class="boton boton--primario boton--chico" data-mapa="${esc(UBICACION.mapaEmbebido)}" data-titulo="${esc(`Mapa de ${MARCA.nombre} en ${UBICACION.calle}, ${UBICACION.comuna}`)}"><span>${esc(TEXTOS.acciones.verMapa)}</span>${ICONOS.pin}</button>
-            </div>
+            ${mapa({ url: UBICACION.mapaEmbebido, titulo: `Mapa de ${MARCA.nombre} en ${UBICACION.calle}, ${UBICACION.comuna}` })}
           </div>
+          <p class="mapa-mini__pie">Plus code ${esc(UBICACION.plusCode)}. ${esc(UBICACION.referencia)}.</p>
         </div>
       </div>
       <div class="pie__legal">
-        <p>© 2026 ${esc(MARCA.nombre)}.</p>
+        <p>© 2026 ${esc(MARCA.nombre)}. ${esc(LEGAL.razonSocial)}.</p>
         <p><a href="${esc(UBICACION.maps)}"${externo}>${esc(TEXTOS.acciones.abrirMaps)}</a></p>
       </div>
     </div>

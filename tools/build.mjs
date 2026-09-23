@@ -122,10 +122,10 @@ function foto(id, { tamanos = '100vw', clase = '', prioridad = false, alt } = {}
 
 /**
  * Datos estructurados del negocio. SportsActivityLocation es el tipo de
- * schema.org para un centro deportivo. Va sin horario: Kuyen no lo confirmó.
+ * schema.org para un centro deportivo.
  */
 function datosEstructurados(site) {
-  const { MARCA, UBICACION, CONTACTO, LINKS, SEO } = contenido
+  const { MARCA, UBICACION, CONTACTO, LINKS, SEO, HORARIOS } = contenido
   return {
     '@context': 'https://schema.org',
     '@type': 'SportsActivityLocation',
@@ -145,6 +145,16 @@ function datosEstructurados(site) {
     },
     geo: { '@type': 'GeoCoordinates', latitude: UBICACION.lat, longitude: UBICACION.lng },
     hasMap: UBICACION.maps,
+    email: CONTACTO.correo,
+    // Kuyen abre los siete días con el mismo horario (planilla, pregunta H1).
+    openingHoursSpecification: [
+      {
+        '@type': 'OpeningHoursSpecification',
+        dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+        opens: HORARIOS.abre,
+        closes: HORARIOS.cierra,
+      },
+    ],
     sameAs: [CONTACTO.instagram, LINKS.linktree],
   }
 }
@@ -369,27 +379,55 @@ function validar(marco, capturas) {
 }
 
 /**
- * El contenido no puede publicar horarios ni precios sin confirmar, ni los
- * valores que circulan en publicaciones viejas.
+ * Busca un dato viejo dentro de un texto. La comparación no puede ser por
+ * coincidencia simple: valores vigentes como $32.000 y $18.000 contienen
+ * "2.000" y "8.000", que sí son datos viejos cuando van solos. La frontera de
+ * la izquierda deja pasar el valor largo y sigue atajando el corto.
+ */
+function apareceDatoViejo(texto, dato) {
+  const escapado = dato.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+  return new RegExp(`(?<![\\d.:])${escapado}`).test(texto)
+}
+
+/**
+ * El contenido no puede publicar horarios ni precios en blanco, ni los valores
+ * que circulan en publicaciones viejas. Cada horario y cada precio dice el dato
+ * que Kuyen confirmó o POR_CONFIRMAR, nunca un campo vacío.
  */
 function validarContenido() {
-  const { POR_CONFIRMAR, HORARIOS, PRECIOS, DATOS_SIN_CONFIRMAR, SEO, INSTAGRAM, FOTOS } = contenido
+  const { HORARIOS, PRECIOS, DATOS_SIN_CONFIRMAR, SEO, INSTAGRAM, FOTOS } = contenido
   const problemas = []
-  const pendiente = (donde) =>
-    problemas.push(`contenido: ${donde} tiene que decir ${POR_CONFIRMAR} mientras Kuyen no confirme el valor`)
+  const vacio = (donde) => problemas.push(`contenido: ${donde} está vacío`)
+  const lleno = (v) => typeof v === 'string' && v.trim() !== ''
 
   for (const tramo of HORARIOS.tramos) {
-    for (const campo of ['dias', 'horas']) if (tramo[campo] !== POR_CONFIRMAR) pendiente(`HORARIOS, tramo "${tramo.id}", ${campo},`)
+    for (const campo of ['dias', 'horas']) if (!lleno(tramo[campo])) vacio(`HORARIOS, tramo "${tramo.id}", ${campo},`)
   }
   for (const dia of HORARIOS.semana) {
-    for (const campo of ['horas', 'tramo']) if (dia[campo] !== POR_CONFIRMAR) pendiente(`HORARIOS, ${dia.dia}, ${campo},`)
+    for (const campo of ['horas', 'tramo']) if (!lleno(dia[campo])) vacio(`HORARIOS, ${dia.dia}, ${campo},`)
   }
-  for (const precio of PRECIOS) if (precio.valor !== POR_CONFIRMAR) pendiente(`PRECIOS, "${precio.id}",`)
+  for (const precio of PRECIOS) if (!lleno(precio.valor)) vacio(`PRECIOS, "${precio.id}",`)
 
   const { DATOS_SIN_CONFIRMAR: _, ...resto } = contenido
   const texto = JSON.stringify(resto)
   for (const dato of DATOS_SIN_CONFIRMAR) {
-    if (texto.includes(dato)) problemas.push(`contenido: aparece "${dato}", un dato que Kuyen no confirmó`)
+    if (apareceDatoViejo(texto, dato)) problemas.push(`contenido: aparece "${dato}", un dato que Kuyen no confirmó`)
+  }
+
+  // Las reseñas van copiadas de Google: no puede quedar una a medias, ni haber
+  // más de las que la ficha tiene con texto.
+  const { RESENAS, VALORACION } = contenido
+  for (const r of RESENAS) {
+    for (const campo of ['cita', 'autor']) {
+      if (!lleno(r[campo])) problemas.push(`contenido: RESENAS, "${r.id}", ${campo} está vacío`)
+    }
+  }
+  if (!(Number.isInteger(VALORACION.total) && VALORACION.total > 0)) {
+    problemas.push('contenido: VALORACION.total tiene que ser un entero positivo')
+  }
+  if (!lleno(VALORACION.nota)) problemas.push('contenido: VALORACION.nota está vacía')
+  if (RESENAS.length > VALORACION.conTexto) {
+    problemas.push(`contenido: hay ${RESENAS.length} reseñas y la ficha solo tiene ${VALORACION.conTexto} con texto`)
   }
 
   // Cada publicación de Instagram: la ruta con la forma que usa el sitio y una foto de Kuyen.
@@ -431,7 +469,15 @@ function validarVariante({ ruta, html }) {
   }
 
   for (const dato of contenido.DATOS_SIN_CONFIRMAR) {
-    if (html.includes(dato)) problemas.push(`${ruta}: aparece "${dato}", un dato que Kuyen no confirmó`)
+    if (apareceDatoViejo(html, dato)) problemas.push(`${ruta}: aparece "${dato}", un dato que Kuyen no confirmó`)
+  }
+
+  // Cada foto que falta tiene que tener su hueco a la vista, en las tres
+  // variantes: así no se pierde ninguna al mover secciones de sitio.
+  for (const falta of contenido.FOTOS_PENDIENTES) {
+    if (!html.includes(`data-foto-pendiente="${falta.id}"`)) {
+      problemas.push(`${ruta}: falta el hueco de la foto "${falta.id}" (${falta.pregunta})`)
+    }
   }
 
   const minusculas = html.toLowerCase()
