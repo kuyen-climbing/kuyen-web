@@ -12,11 +12,12 @@
  *
  * Secciones agregadas con componentes del mismo template (decisión del
  * 15-09-2026), entre la 3 y el pie:
- *   "3 · Clases y Kuyencit@s" y "6 · Visítanos": tarjetas de la sección 2.
- *   "4 · Horarios y valores" y "5 · Reglamento": intro de la sección 1 con las
- *   columnas del pie.
- *   "7 · En Instagram": tarjetas de la sección 2, con la publicación que se carga
- *   al hacer clic.
+ *   Clases, Kuyencit@s, En Instagram y Visítanos: tarjetas de la sección 2.
+ *   El muro por dentro, El equipo, Horarios y valores, Tu primera vez,
+ *   Reglamento, Comunidad y En el lugar: intro de la sección 1 con las columnas
+ *   del pie.
+ *   El orden de las trece secciones y la numeración de sus etiquetas se fijaron
+ *   el 22-09-2026; el mapa y las publicaciones vienen incrustados.
  *
  * Revisión visual de Benjamín (15-09-2026): la página se veía plana. Se aplican
  * la tipografía (Rubik Dirt y Rubik), la noche completa con acento amarillo luna
@@ -29,9 +30,9 @@
  *   ser increíble"): la escaladora en un arco, una foto redonda que lo cruza y
  *   presas que flotan, con entrada orquestada, profundidad que sigue al puntero y
  *   rastro de tiza. La luna va a la vista, en el medio, entre el texto y la
- *   escalada. La cordillera con los gatos queda chica, abajo a
- *   la izquierda. Hasta 1023 px la composición va arriba, el texto al medio y los
- *   gatos en una franja al pie.
+ *   escalada. El logo con la cordillera y los gatos va de fondo del hero, como
+ *   una cenefa centrada al pie, difuminada y atenuada (pedido del 22-09-2026).
+ *   Hasta 1023 px la composición va arriba y el texto al medio.
  * - La cabecera queda fija arriba al bajar por la página y suma una sombra
  *   (pedido del 15-09-2026); en el template se va con el scroll.
  * - Marquesina con la jerga del muro entre el hero y la sección 1, y cifras en
@@ -44,7 +45,7 @@
  * - El menú móvil también se cierra con Escape y queda inerte mientras está
  *   cerrado.
  */
-import { cielo, luna, cordillera, presa, titulo, marquesina, cifras } from '../../compartido/escena.mjs'
+import { cielo, luna, cordillera, presa, titulo, marquesina, cifras, mapa, publicacion, fotoPendiente, valoracion } from '../../compartido/escena.mjs'
 
 const ICONOS = {
   flecha:
@@ -60,6 +61,8 @@ const ICONOS = {
   pin: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></svg>',
 }
 
+const mayusculaInicial = (texto) => texto.charAt(0).toUpperCase() + texto.slice(1)
+
 export default function pagina({ site, contenido, esc, foto, cabeza, leer, compartido }) {
   const {
     POR_CONFIRMAR,
@@ -70,15 +73,33 @@ export default function pagina({ site, contenido, esc, foto, cabeza, leer, compa
     HISTORIA,
     CIFRAS,
     INSTAGRAM,
+    MURO,
+    EQUIPO,
     SERVICIOS,
     HORARIOS,
     PRECIOS,
+    PRODUCTOS,
+    COMODIDADES,
+    INVITADOS,
     COMUNIDAD,
     REGLAMENTO,
     SOLICITUD,
+    PRIMERA_VISITA,
+    PANCITA,
+    EVENTOS_INFO,
+    LEGAL,
+    RESENAS,
+    VALORACION,
     MARQUESINA,
     TEXTOS,
+    FOTOS_PENDIENTES,
   } = contenido
+
+  /* Hueco de una foto que Kuyen todavía no manda, por su id de FOTOS_PENDIENTES.
+     El build comprueba que estén los diez en la página. */
+  const falta = (id) => fotoPendiente(FOTOS_PENDIENTES.find((f) => f.id === id))
+  const faltas = (...ids) =>
+    `<div class="m-faltas${ids.length > 3 ? ' m-faltas--cuatro' : ids.length === 3 ? ' m-faltas--tres' : ''}">${ids.map(falta).join('\n            ')}</div>`
 
   const externo = ' target="_blank" rel="noopener"'
   const servicio = (id) => SERVICIOS.find((s) => s.id === id)
@@ -101,16 +122,9 @@ export default function pagina({ site, contenido, esc, foto, cabeza, leer, compa
         </div>`
 
   /** Píldora de 36 px que se estira en hover y muestra su texto. */
-  const pildora = ({ texto, href, oscura = false, abierta, mapa, publicacion }) => {
+  const pildora = ({ texto, href, oscura = false, abierta }) => {
     const clases = `pildora${oscura ? ' pildora--oscura' : ''}`
-    const icono = mapa ? ICONOS.pin : publicacion ? ICONOS.instagram : ICONOS.diagonal
-    const interior = `<span class="pildora__icono">${icono}</span><span class="pildora__texto">${esc(texto)}</span>`
-    if (publicacion) {
-      return `<button type="button" class="${clases}" style="--abierta: ${abierta}" data-instagram="${esc(publicacion.ruta)}" data-titulo="${esc(`Publicación de ${MARCA.nombre} en Instagram: ${publicacion.titulo}`)}">${interior}</button>`
-    }
-    if (mapa) {
-      return `<button type="button" class="${clases}" style="--abierta: ${abierta}" data-mapa="${esc(mapa.url)}" data-titulo="${esc(mapa.titulo)}">${interior}</button>`
-    }
+    const interior = `<span class="pildora__icono">${ICONOS.diagonal}</span><span class="pildora__texto">${esc(texto)}</span>`
     return `<a class="${clases}" style="--abierta: ${abierta}" href="${esc(href)}"${externo}>${interior}</a>`
   }
 
@@ -124,10 +138,26 @@ export default function pagina({ site, contenido, esc, foto, cabeza, leer, compa
             <h3 class="tarjeta__titulo" data-m-aparece${retraso(desde + 350)}>${nombre}</h3>
           </article>`
 
-  const enlacesMenu = [
-    ['#kuyen', 'Kuyen'],
+  /* La barra de escritorio lleva lo imprescindible, para que no se desborde;
+     el menú de móvil es una hoja a pantalla completa y lleva el recorrido
+     entero, incluidas las secciones nuevas. */
+  const enlacesBarra = [
     ['#muro', 'El muro'],
     ['#clases', 'Clases'],
+    ['#horarios', 'Horarios'],
+    ['#primeravez', 'Primera vez'],
+    ['#visitanos', 'Visítanos'],
+  ]
+  const enlacesMenu = [
+    ['#kuyen', 'Qué es Kuyen'],
+    ['#muro', 'El muro'],
+    ['#equipo', 'Quiénes somos'],
+    ['#clases', 'Clases'],
+    ['#kuyencitos', 'Kuyencit@s'],
+    ['#horarios', 'Horarios y valores'],
+    ['#primeravez', 'Tu primera vez'],
+    ['#inclusion', 'Comunidad'],
+    ['#instagram', 'En Instagram'],
     ['#visitanos', 'Visítanos'],
   ]
 
@@ -156,7 +186,7 @@ ${cabeza({ estilos: `${compartido('movimiento.css')}\n${leer('estilos.css')}` })
           <span class="marca__nombre">${esc(MARCA.nombreLogo)}</span>
         </a>
         <div class="cabecera__enlaces">
-          ${enlacesMenu.map(([href, texto]) => `<a href="${href}">${esc(texto)}</a>`).join('\n            ')}
+          ${enlacesBarra.map(([href, texto]) => `<a href="${href}">${esc(texto)}</a>`).join('\n            ')}
         </div>
       </div>
       <div class="cabecera__derecha">
@@ -184,6 +214,7 @@ ${cabeza({ estilos: `${compartido('movimiento.css')}\n${leer('estilos.css')}` })
         ${presa({ forma: 'pinza', color: 'var(--kuyen-blanco)', clase: 'm-entra-escala', x: 90, y: -6, tam: 12, prof: 52, paralaje: 0.3, giro: -8, retraso: 1300, duracion: 7 })}
         ${presa({ forma: 'regleta', color: 'var(--kuyen-luna)', clase: 'm-entra-escala', x: 60, y: 84, tam: 16, prof: 60, paralaje: 0.36, giro: 18, retraso: 1400, duracion: 8 })}
         ${presa({ forma: 'volumen', color: 'var(--kuyen-lila)', clase: 'm-entra-escala hero__presa--ancha', x: 44, y: -3, tam: 10, prof: 44, paralaje: 0.24, giro: 30, retraso: 1150, duracion: 10 })}
+        ${cordillera({ clase: 'hero__cordillera m-entra-sube', paralaje: 0, prof: 6, tamanos: '(min-width: 1024px) 28vw, 62vw' })}
       </div>
     </div>
 
@@ -196,15 +227,12 @@ ${cabeza({ estilos: `${compartido('movimiento.css')}\n${leer('estilos.css')}` })
           <div class="chip tono-claro" data-m-aparece style="--m-retraso: 850ms">
             ${ICONOS.estrella}
             <span class="chip__texto">${esc(google.valor)} en Google</span>
-            <span class="chip__insignia">${esc(google.etiqueta.split(', con ')[1])}</span>
+            <span class="chip__insignia">${VALORACION.total} reseñas</span>
           </div>
         </div>
       </div>
     </div>
 
-    <div class="hero__franja" aria-hidden="true">
-      ${cordillera({ clase: 'hero__cordillera m-entra-sube', paralaje: 0, prof: 6, tamanos: '(min-width: 1024px) 48vw, 100vw' })}
-    </div>
   </section>
 
   <div class="menu" id="menu-movil" data-menu inert>
@@ -227,6 +255,7 @@ ${cabeza({ estilos: `${compartido('movimiento.css')}\n${leer('estilos.css')}` })
         <div class="intro__grilla">
           <div class="intro__texto">
             <p class="intro__parrafo" data-m-aparece>${esc(MARCA.significado)} Desde ${HISTORIA.desde}, ${esc(MARCA.lema.charAt(0).toLowerCase() + MARCA.lema.slice(1))}.</p>
+            ${HISTORIA.relato.map((p, n) => `<p class="intro__relato" data-m-aparece${retraso((n + 1) * 90)}>${esc(p)}</p>`).join('\n            ')}
             ${boton({ texto: 'Conoce el muro', href: '#muro', clase: 'intro__boton', aparece: 150 })}
           </div>
           <div class="m-foto intro__foto intro__foto--chica">
@@ -250,7 +279,7 @@ ${cabeza({ estilos: `${compartido('movimiento.css')}\n${leer('estilos.css')}` })
           ${tarjeta({
             medio: foto('escalador-desplome-amarillo', { tamanos: '(min-width: 768px) 50vw, 100vw' }),
             pildoraHtml: pildora({ texto: 'Ver en Instagram', href: CONTACTO.instagram, abierta: '10.25rem' }),
-            descripcion: 'Desplomes continuos hasta 25°, moonboard y rutas nuevas de forma periódica.',
+            descripcion: `${esc(MURO.altura)}, paredes de 0° a 40°, moonboard y rutas nuevas cada mes.`,
             titulo: esc(servicio('escalada-libre').nombre),
           })}
           ${tarjeta({
@@ -264,34 +293,129 @@ ${cabeza({ estilos: `${compartido('movimiento.css')}\n${leer('estilos.css')}` })
       </div>
     </section>
 
+    <section class="seccion seccion--intro tono-oscuro" id="pordentro">
+      <div class="contenedor">
+        ${etiqueta(3, 'El muro por dentro')}
+        <h2 class="titulo-intro intro__titulo" data-m-revelar>${titulo([`${MURO.altura},`, 'de 0° a 40°.'])}</h2>
+        <div class="bloque">
+          <p class="intro__parrafo" data-m-aparece>${esc(MURO.resumen)} ${esc(EQUIPO.construccion)}</p>
+        </div>
+        <div class="columnas">
+          ${MURO.caracteristicas
+            .map(
+              (c, n) => `<div class="columna" data-m-aparece${retraso(n * 90)}>
+            <h3 class="columna__titulo">${esc(c.titulo)}</h3>
+            <p class="columna__texto">${esc(c.texto)}</p>
+          </div>`
+            )
+            .join('\n          ')}
+          <div class="columna" data-m-aparece style="--m-retraso: 540ms">
+            <h3 class="columna__titulo">Para entrenar</h3>
+            <ul class="columna__lista">
+              ${MURO.entrenamiento.map((e) => `<li>${esc(e)}</li>`).join('\n              ')}
+            </ul>
+          </div>
+          <div class="columna" data-m-aparece style="--m-retraso: 630ms">
+            <h3 class="columna__titulo">Quién setea</h3>
+            <p class="columna__texto">${esc(EQUIPO.seteadores.resumen)} ${esc(EQUIPO.seteadores.headsetter)} es el headsetter del lugar.</p>
+          </div>
+        </div>
+        ${faltas('muro-vacio', 'presas-cerca', 'moonboard', 'seteo')}
+      </div>
+    </section>
+
+    <section class="seccion seccion--intro tono-gradiente" id="equipo">
+      <div class="contenedor">
+        ${etiqueta(4, 'El equipo')}
+        <h2 class="titulo-intro intro__titulo" data-m-revelar>${titulo(['Quiénes', 'somos.'])}</h2>
+        <div class="bloque">
+          <p class="intro__parrafo" data-m-aparece>${esc(EQUIPO.resumen)}</p>
+        </div>
+        <div class="columnas">
+          <div class="columna" data-m-aparece>
+            <h3 class="columna__titulo">Clases</h3>
+            <ul class="columna__lista">
+              ${EQUIPO.profesores.map((prof) => `<li>${esc(prof.nombre)} <span class="columna__nota">${esc(prof.detalle)}</span></li>`).join('\n              ')}
+            </ul>
+          </div>
+          <div class="columna" data-m-aparece style="--m-retraso: 120ms">
+            <h3 class="columna__titulo">Seteo</h3>
+            <p class="columna__texto">${esc(EQUIPO.seteadores.nombres.join(', '))}. ${esc(EQUIPO.seteadores.headsetter)} es el headsetter del lugar.</p>
+          </div>
+          <div class="columna" data-m-aparece style="--m-retraso: 240ms">
+            <h3 class="columna__titulo">El muro</h3>
+            <p class="columna__texto">${esc(EQUIPO.construccion)}</p>
+          </div>
+          <div class="columna columna--ancha" data-m-aparece style="--m-retraso: 360ms">
+            <h3 class="columna__titulo">${esc(PANCITA.nombre)}</h3>
+            <p class="columna__texto">${esc(PANCITA.descripcion)}</p>
+          </div>
+        </div>
+        ${faltas('equipo')}
+      </div>
+    </section>
+
     <section class="seccion seccion--tarjetas tono-oscuro" id="clases">
       <div class="contenedor">
-        ${etiqueta(3, 'Clases y Kuyencit@s')}
+        ${etiqueta(5, 'Clases guiadas')}
         <h2 class="titulo-grande tarjetas__titulo" data-m-revelar>${titulo('Aprende con nosotros')}</h2>
         <div class="tarjetas">
           ${tarjeta({
             medio: foto('escaladora-desplome', { tamanos: '(min-width: 768px) 50vw, 100vw' }),
             pildoraHtml: pildora({ texto: TEXTOS.acciones.escribenos, href: CONTACTO.whatsapp, abierta: '8.5rem' }),
-            descripcion: `${esc(clases.resumen)} Técnica, seguridad y lectura de rutas. Días y horarios: ${pendiente('días, horarios y cupos de las clases guiadas (pregunta 4)')}`,
+            descripcion: `${esc(clases.dias)} ${esc(clases.cupos)} ${esc(clases.nivel)}`,
             titulo: esc(clases.nombre),
           })}
           ${tarjeta({
-            medio: foto('nino-escalando', { tamanos: '(min-width: 768px) 50vw, 100vw' }),
+            medio: foto('escalador-desplome-gris', { tamanos: '(min-width: 768px) 50vw, 100vw' }),
             pildoraHtml: pildora({ texto: TEXTOS.acciones.escribenos, href: CONTACTO.whatsapp, oscura: true, abierta: '8.5rem' }),
-            descripcion: `${esc(servicio('kuyencitos').resumen)} Edades y días: ${pendiente('edades, días, horario y valor de Kuyencit@s (pregunta 3)')}`,
-            titulo: esc(servicio('kuyencitos').nombre),
+            descripcion: `${esc(clases.prueba)} ${esc(clases.incluyeEntrada)} ${esc(clases.descuento)}`,
+            titulo: 'Antes de inscribirte',
             desde: 160,
           })}
         </div>
+        ${faltas('clase')}
+      </div>
+    </section>
+
+    <section class="seccion seccion--intro tono-oscuro" id="kuyencitos">
+      <div class="contenedor">
+        ${etiqueta(6, 'Niñas y niños')}
+        <h2 class="titulo-intro intro__titulo" data-m-revelar>${titulo(['Kuyencit@s.'])}</h2>
+        <div class="bloque">
+          <p class="intro__parrafo" data-m-aparece>${esc(servicio('kuyencitos').resumen)} ${esc(servicio('kuyencitos').edades)}</p>
+          ${boton({ texto: TEXTOS.acciones.escribenos, href: CONTACTO.whatsapp, afuera: true, clase: 'intro__boton', aparece: 150 })}
+        </div>
+        <div class="columnas">
+          <div class="columna" data-m-aparece>
+            <h3 class="columna__titulo">Días y horario</h3>
+            <p class="columna__texto">${pendiente('días y horario de Kuyencit@s: Kuyen está ajustando los horarios (K2)')}</p>
+          </div>
+          <div class="columna" data-m-aparece style="--m-retraso: 120ms">
+            <h3 class="columna__titulo">Valores</h3>
+            <ul class="columna__lista">
+              ${PRECIOS.filter((v) => v.id.startsWith('kuyencitos')).map((v) => `<li>${esc(mayusculaInicial(v.nombre.replace('Kuyencit@s, ', '')))}: ${esc(v.valor)}</li>`).join('\n              ')}
+            </ul>
+          </div>
+          <div class="columna" data-m-aparece style="--m-retraso: 240ms">
+            <h3 class="columna__titulo">Quién acompaña</h3>
+            <p class="columna__texto">${esc(servicio('kuyencitos').acompanamiento)}</p>
+          </div>
+          <div class="columna columna--ancha" data-m-aparece style="--m-retraso: 360ms">
+            <h3 class="columna__titulo">Autorización</h3>
+            <p class="columna__texto">${esc(servicio('kuyencitos').autorizacion)} ${esc(PRIMERA_VISITA.menores)}</p>
+          </div>
+        </div>
+        ${faltas('kuyencitos')}
       </div>
     </section>
 
     <section class="seccion seccion--intro tono-gradiente" id="horarios">
       <div class="contenedor">
-        ${etiqueta(4, 'Horarios y valores')}
-        <h2 class="titulo-intro intro__titulo" data-m-revelar>${titulo(['Dos tramos para escalar:', 'horario bajo y horario normal.'])}</h2>
+        ${etiqueta(7, 'Horarios y valores')}
+        <h2 class="titulo-intro intro__titulo" data-m-revelar>${titulo(['Lunes a domingo,', `de ${HORARIOS.abre} a ${HORARIOS.cierra}.`])}</h2>
         <div class="bloque">
-          <p class="intro__parrafo" data-m-aparece>Se paga al ingresar. Horarios y valores vigentes: ${pendiente('horario por día con los dos tramos y precios vigentes (preguntas 1 y 2)')}</p>
+          <p class="intro__parrafo" data-m-aparece>${esc(HORARIOS.pago)} ${esc(HORARIOS.aviso)} ${esc(HORARIOS.verano)}</p>
           ${boton({ texto: 'Consultar por WhatsApp', href: CONTACTO.whatsapp, afuera: true, clase: 'intro__boton', aparece: 150 })}
         </div>
         <div class="columnas">
@@ -301,8 +425,8 @@ ${cabeza({ estilos: `${compartido('movimiento.css')}\n${leer('estilos.css')}` })
             <h3 class="columna__titulo">${esc(tramo.nombre)}</h3>
             <ul class="columna__lista">
               <li>${esc(tramo.descripcion)}</li>
-              <li>Días: ${pendiente(`días del ${tramo.nombre.toLowerCase()} (pregunta 1)`)}</li>
-              <li>Horas: ${pendiente(`horas del ${tramo.nombre.toLowerCase()} (pregunta 1)`)}</li>
+              <li>${esc(tramo.dias)}</li>
+              <li>${esc(tramo.horas)}</li>
             </ul>
           </div>`
             )
@@ -310,19 +434,42 @@ ${cabeza({ estilos: `${compartido('movimiento.css')}\n${leer('estilos.css')}` })
           <div class="columna columna--ancha" data-m-aparece style="--m-retraso: 240ms">
             <h3 class="columna__titulo">Valores</h3>
             <ul class="columna__lista">
-              ${PRECIOS.map((precio) => `<li>${esc(precio.nombre)}: ${pendiente(`valor de ${precio.nombre.toLowerCase()} (pregunta 2)`)}</li>`).join('\n              ')}
+              ${PRECIOS.map((precio) => `<li>${esc(precio.nombre)}: ${precio.valor === POR_CONFIRMAR ? pendiente('valor del plan de clases guiadas: Kuyen confirmó el descuento del primer mes, no el precio (C2)') : esc(precio.valor)}${precio.valorEstudiante ? ` <span class="columna__nota">${esc(precio.valorEstudiante)} con credencial de estudiante</span>` : ''}</li>`).join('\n              ')}
             </ul>
           </div>
         </div>
       </div>
     </section>
 
+    <section class="seccion seccion--intro tono-gradiente" id="primeravez">
+      <div class="contenedor">
+        ${etiqueta(8, 'Primera visita')}
+        <h2 class="titulo-intro intro__titulo" data-m-revelar>${titulo(['Tu', 'primera vez.'])}</h2>
+        <div class="bloque">
+          <p class="intro__parrafo" data-m-aparece>${esc(PRIMERA_VISITA.resumen)} ${esc(PRIMERA_VISITA.aviso)} ${esc(PRIMERA_VISITA.menores)}</p>
+          ${boton({ texto: TEXTOS.acciones.solicitud, href: LINKS.solicitudIngreso, afuera: true, clase: 'intro__boton', aparece: 150 })}
+        </div>
+        <div class="columnas">
+          ${PRIMERA_VISITA.pasos
+            .map(
+              (paso, n) => `<div class="columna${n === 3 ? ' columna--ancha' : ''}" data-m-aparece${retraso(n * 120)}>
+            <h3 class="columna__titulo">Paso ${n + 1}</h3>
+            <ol class="columna__lista columna__lista--numerada" start="${n + 1}">
+              <li>${esc(paso.titulo)}. <span class="columna__nota">${esc(paso.texto)}${paso.enlace ? ` <a class="enlace" href="${esc(paso.enlace.url)}"${externo}>${esc(paso.enlace.texto)}</a>.` : ''}</span></li>
+            </ol>
+          </div>`
+            )
+            .join('\n          ')}
+        </div>
+      </div>
+    </section>
+
     <section class="seccion seccion--intro tono-oscuro" id="reglamento">
       <div class="contenedor">
-        ${etiqueta(5, 'Reglamento')}
+        ${etiqueta(9, 'Reglamento')}
         <h2 class="titulo-intro intro__titulo" data-m-revelar>${titulo(['Para cuidarnos', 'entre todos.'])}</h2>
         <div class="bloque">
-          <p class="intro__parrafo" data-m-aparece>${esc(SOLICITUD.resumen)}</p>
+          <p class="intro__parrafo" data-m-aparece>${esc(SOLICITUD.resumen)} ${esc(LEGAL.privacidad)}</p>
           ${boton({ texto: TEXTOS.acciones.solicitud, href: LINKS.solicitudIngreso, afuera: true, clase: 'intro__boton', aparece: 150 })}
         </div>
         <div class="columnas">
@@ -340,39 +487,84 @@ ${cabeza({ estilos: `${compartido('movimiento.css')}\n${leer('estilos.css')}` })
       </div>
     </section>
 
-    <section class="seccion seccion--tarjetas tono-gradiente" id="visitanos">
+    <section class="seccion seccion--intro tono-oscuro" id="inclusion">
       <div class="contenedor">
-        ${etiqueta(6, 'Visítanos')}
-        <h2 class="titulo-grande tarjetas__titulo" data-m-revelar>${titulo(UBICACION.calle)}</h2>
-        <div class="tarjetas">
-          ${tarjeta({
-            claseMedio: 'tarjeta__medio--mapa',
-            medio: `<div class="mapa">
-                ${luna({ clase: 'mapa__luna', paralaje: -0.06, tamanos: '8rem' })}
-                <p class="mapa__direccion">${esc(UBICACION.calle)}<br>${esc(UBICACION.comuna)}, ${esc(UBICACION.region)}</p>
-                <p class="mapa__nota">${esc(TEXTOS.mapa)}</p>
-              </div>`,
-            pildoraHtml: pildora({
-              texto: TEXTOS.acciones.verMapa,
-              abierta: '7.5rem',
-              mapa: { url: UBICACION.mapaEmbebido, titulo: `Mapa de ${MARCA.nombre} en ${UBICACION.calle}, ${UBICACION.comuna}` },
-            }),
-            descripcion: `Plus code ${esc(UBICACION.plusCode)}. ${esc(UBICACION.referencia)}. <a class="enlace" href="${esc(UBICACION.maps)}"${externo}>${esc(TEXTOS.acciones.abrirMaps)}</a>`,
-            titulo: 'Cómo llegar',
-          })}
-          ${tarjeta({
-            medio: foto('joven-escalando', { tamanos: '(min-width: 768px) 50vw, 100vw' }),
-            pildoraHtml: pildora({ texto: TEXTOS.acciones.escribenos, href: CONTACTO.whatsapp, oscura: true, abierta: '8.5rem' }),
-            descripcion: `WhatsApp ${esc(CONTACTO.telefono)} o mensaje directo en Instagram, ${esc(CONTACTO.instagramUsuario)}.`,
-            titulo: 'Contacto',
-            desde: 160,
-          })}
+        ${etiqueta(10, 'Comunidad')}
+        <h2 class="titulo-intro intro__titulo" data-m-revelar>${titulo(['Un muro para', 'hacer comunidad.'])}</h2>
+        <div class="bloque">
+          <p class="intro__parrafo" data-m-aparece>${esc(COMUNIDAD.foco)} ${esc(COMUNIDAD.destinatario)}</p>
+          ${valoracion({ datos: VALORACION, clase: 'intro__valoracion' })}
+          ${boton({ texto: TEXTOS.acciones.instagram, href: CONTACTO.instagram, afuera: true, clase: 'intro__boton', aparece: 150 })}
+        </div>
+        <div class="columnas">
+          <div class="columna" data-m-aparece>
+            <h3 class="columna__titulo">Espacio para todos</h3>
+            <p class="columna__texto">${esc(COMUNIDAD.inclusion)} ${esc(COMUNIDAD.publico)}</p>
+          </div>
+          <div class="columna" data-m-aparece style="--m-retraso: 120ms">
+            <h3 class="columna__titulo">Todos los años</h3>
+            <p class="columna__texto">${esc(EVENTOS_INFO.repiten)}</p>
+          </div>
+          <div class="columna" data-m-aparece style="--m-retraso: 240ms">
+            <h3 class="columna__titulo">Cómo inscribirse</h3>
+            <p class="columna__texto">${esc(EVENTOS_INFO.inscripcion)} ${esc(COMUNIDAD.anuncios)}</p>
+          </div>
+          <div class="columna columna--ancha" data-m-aparece style="--m-retraso: 360ms">
+            <h3 class="columna__titulo">Lo que nos importa</h3>
+            <ul class="columna__lista">
+              ${COMUNIDAD.valores.map((v) => `<li>${esc(v)}</li>`).join('\n              ')}
+            </ul>
+          </div>
+        </div>
+        <h3 class="columna__titulo comunidad__rotulo" data-m-aparece>Lo que dicen en ${esc(VALORACION.fuente)}</h3>
+        <div class="columnas">
+          ${RESENAS.map(
+            (r, n) => `<div class="columna${n === 0 ? ' columna--ancha' : ''}" data-m-aparece${retraso(n * 90)}>
+            <blockquote class="resena__cita">${esc(`«${r.cita}»`)}</blockquote>
+            <p class="resena__autor">${esc(r.autor)} <span class="columna__nota">${esc(r.perfil ? `${r.perfil} en ${r.fuente}` : `en ${r.fuente}`)}</span></p>
+          </div>`
+          ).join('\n          ')}
         </div>
       </div>
     </section>
+
+    <section class="seccion seccion--intro tono-oscuro" id="enellugar">
+      <div class="contenedor">
+        ${etiqueta(11, 'En el lugar')}
+        <h2 class="titulo-intro intro__titulo" data-m-revelar>${titulo(['Todo lo que', 'hay en Kuyen.'])}</h2>
+        <div class="bloque">
+          <p class="intro__parrafo" data-m-aparece>${esc(COMODIDADES.seguridad)} ${esc(COMODIDADES.estacionamiento)}</p>
+        </div>
+        <div class="columnas">
+          <div class="columna" data-m-aparece>
+            <h3 class="columna__titulo">A la venta</h3>
+            <ul class="columna__lista">
+              ${PRODUCTOS.lista.map((p) => `<li>${esc(p)}</li>`).join('\n              ')}
+            </ul>
+          </div>
+          <div class="columna" data-m-aparece style="--m-retraso: 120ms">
+            <h3 class="columna__titulo">Comodidades</h3>
+            <ul class="columna__lista">
+              ${COMODIDADES.lista.map((c) => `<li>${esc(c)}</li>`).join('\n              ')}
+            </ul>
+          </div>
+          <div class="columna columna--ancha" data-m-aparece style="--m-retraso: 240ms">
+            <h3 class="columna__titulo">También pasa acá</h3>
+            <ul class="columna__lista">
+              ${INVITADOS.map(
+                (i) =>
+                  `<li>${i.url ? `<a class="enlace" href="${esc(i.url)}"${externo}>${esc(i.nombre)}</a>` : esc(i.nombre)}: ${esc(i.resumen)}</li>`
+              ).join('\n              ')}
+            </ul>
+          </div>
+        </div>
+        ${faltas('productos', 'recepcion')}
+      </div>
+    </section>
+
     <section class="seccion seccion--tarjetas tono-oscuro" id="instagram">
       <div class="contenedor">
-        ${etiqueta(7, 'En Instagram')}
+        ${etiqueta(12, 'En Instagram')}
         <h2 class="titulo-grande tarjetas__titulo" data-m-revelar>${titulo('Lo que publicamos')}</h2>
         <div class="tarjetas tarjetas--tres">
           ${INSTAGRAM.publicaciones
@@ -381,8 +573,9 @@ ${cabeza({ estilos: `${compartido('movimiento.css')}\n${leer('estilos.css')}` })
                 claseMedio: 'tarjeta__medio--instagram',
                 atributos: ' data-instagram-tarjeta',
                 atributosMedio: ' data-instagram-medio',
-                medio: foto(pub.foto, { tamanos: '(min-width: 1024px) 30vw, (min-width: 768px) 45vw, 100vw' }),
-                pildoraHtml: pildora({ texto: TEXTOS.acciones.verPublicacion, abierta: '10.5rem', publicacion: pub }),
+                claseMedio: 'con-publicacion',
+                medio: publicacion({ base: INSTAGRAM.base, ruta: pub.ruta, titulo: `Publicación de ${MARCA.nombre} en Instagram: ${pub.titulo}` }),
+                pildoraHtml: '',
                 descripcion: `${esc(pub.detalle)} <a class="enlace" href="${esc(`${INSTAGRAM.base}${pub.ruta}/`)}"${externo}>${esc(TEXTOS.acciones.abrirInstagram)}</a>`,
                 titulo: esc(pub.titulo),
                 desde: n * 140,
@@ -391,6 +584,30 @@ ${cabeza({ estilos: `${compartido('movimiento.css')}\n${leer('estilos.css')}` })
             .join('\n          ')}
         </div>
         <p class="tarjetas__nota" data-m-aparece>${esc(TEXTOS.instagram)}</p>
+      </div>
+    </section>
+
+    <section class="seccion seccion--tarjetas tono-gradiente" id="visitanos">
+      <div class="contenedor">
+        ${etiqueta(13, 'Visítanos')}
+        <h2 class="titulo-grande tarjetas__titulo" data-m-revelar>${titulo(UBICACION.calle)}</h2>
+        <div class="tarjetas">
+          ${tarjeta({
+            claseMedio: 'tarjeta__medio--mapa',
+            medio: mapa({ url: UBICACION.mapaEmbebido, titulo: `Mapa de ${MARCA.nombre} en ${UBICACION.calle}, ${UBICACION.comuna}` }),
+            pildoraHtml: '',
+            descripcion: `Plus code ${esc(UBICACION.plusCode)}. ${esc(UBICACION.referencia)}. <a class="enlace" href="${esc(UBICACION.maps)}"${externo}>${esc(TEXTOS.acciones.abrirMaps)}</a>`,
+            titulo: 'Cómo llegar',
+          })}
+          ${tarjeta({
+            medio: foto('joven-escalando', { tamanos: '(min-width: 768px) 50vw, 100vw' }),
+            pildoraHtml: pildora({ texto: TEXTOS.acciones.escribenos, href: CONTACTO.whatsapp, oscura: true, abierta: '8.5rem' }),
+            descripcion: `WhatsApp ${esc(CONTACTO.telefono)}, mensaje directo en Instagram, ${esc(CONTACTO.instagramUsuario)}, o correo a <a class="enlace" href="mailto:${esc(CONTACTO.correo)}">${esc(CONTACTO.correo)}</a>. ${esc(CONTACTO.horarioRespuesta)} ${esc(COMODIDADES.referencia)}`,
+            titulo: 'Contacto',
+            desde: 160,
+          })}
+        </div>
+        ${faltas('fachada')}
       </div>
     </section>
   </main>
@@ -425,7 +642,13 @@ ${cabeza({ estilos: `${compartido('movimiento.css')}\n${leer('estilos.css')}` })
           <ul>
             ${enlacePie('#kuyen', 'Qué es Kuyen')}
             ${enlacePie('#muro', 'El muro')}
+            ${enlacePie('#pordentro', 'El muro por dentro')}
+            ${enlacePie('#equipo', 'Quiénes somos')}
             ${enlacePie('#clases', 'Clases')}
+            ${enlacePie('#kuyencitos', 'Kuyencit@s')}
+            ${enlacePie('#inclusion', 'Comunidad')}
+            ${enlacePie('#primeravez', 'Tu primera vez')}
+            ${enlacePie('#enellugar', 'En el lugar')}
             ${enlacePie('#reglamento', 'Reglamento')}
             ${enlacePie('#instagram', 'En Instagram')}
           </ul>
@@ -444,8 +667,10 @@ ${cabeza({ estilos: `${compartido('movimiento.css')}\n${leer('estilos.css')}` })
           <ul>
             ${enlacePie(CONTACTO.whatsapp, 'WhatsApp', true)}
             ${enlacePie(CONTACTO.instagram, 'Instagram', true)}
+            ${enlacePie(CONTACTO.tiktok, 'TikTok', true)}
+            ${enlacePie(CONTACTO.facebook, 'Facebook', true)}
             ${enlacePie(LINKS.linktree, 'Linktree', true)}
-            <li><span>Correo: ${pendiente('correo de contacto (pregunta 6)')}</span></li>
+            ${enlacePie(`mailto:${CONTACTO.correo}`, CONTACTO.correo)}
           </ul>
         </nav>
       </div>
@@ -453,7 +678,7 @@ ${cabeza({ estilos: `${compartido('movimiento.css')}\n${leer('estilos.css')}` })
       <div class="pie__gigante" aria-hidden="true"><span>KÜYEN</span></div>
 
       <div class="pie__legal">
-        <p>© 2026 ${esc(MARCA.nombre)}.</p>
+        <p>© 2026 ${esc(MARCA.nombre)}. ${esc(LEGAL.razonSocial)}.</p>
         <div class="pie__legal-enlaces">
           <a href="${esc(CONTACTO.instagram)}"${externo}>Instagram</a>
           <a href="${esc(CONTACTO.whatsapp)}"${externo}>WhatsApp</a>

@@ -39,16 +39,4 @@
     marcar()
   }
 
-  /* Mapa: el iframe de Google se crea recién al hacer clic. Hasta entonces la
-     página no pide nada a Google. */
-  document.querySelectorAll('[data-mapa]').forEach(function (boton) {
-    boton.addEventListener('click', function () {
-      var medio = boton.closest('.tarjeta__medio')
-      var iframe = document.createElement('iframe')
-      iframe.src = boton.getAttribute('data-mapa')
-      iframe.title = boton.getAttribute('data-titulo')
-      iframe.referrerPolicy = 'no-referrer-when-downgrade'
-      medio.replaceChildren(iframe)
-    })
-  })
 })()

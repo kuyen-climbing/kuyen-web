@@ -234,10 +234,19 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
   to { scale: 1.16; }
 }
 
-/* Cordillera con los gatos: una franja chica al pie del hero, a la izquierda,
-   que se funde hacia la derecha cuando no ocupa todo el ancho. */
-.hero__franja { position: relative; z-index: 7; width: min(100%, 34rem); aspect-ratio: 2000 / 890; pointer-events: none; }
-.hero__cordillera { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; object-position: left bottom; }
+/* Los gatos del logo se apoyan al pie del arco, mirando hacia la escaladora.
+   Van nítidos y con su opacidad entera, porque ningún texto pasa por encima:
+   quedan dentro de la composición, que en móvil va arriba del texto y desde
+   1024 px se va a la derecha (pedido del 22-09-2026). */
+.hero__cordillera {
+  position: absolute;
+  bottom: -5%;
+  left: 50%;
+  z-index: 4;
+  width: 118%;
+  height: auto;
+  transform: translateX(-50%);
+}
 
 .hero__contenido { position: relative; z-index: 20; }
 .hero__contenido:focus { outline: none; }
@@ -246,10 +255,6 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .hero__acciones { display: flex; flex-direction: column; align-items: flex-start; gap: 1rem; margin-top: 1.5rem; }
 @media (min-width: 640px) {
   .hero__visual { --alto: min(46vh, 30rem); }
-  .hero__cordillera {
-    -webkit-mask-image: linear-gradient(to right, #000 74%, transparent);
-    mask-image: linear-gradient(to right, #000 74%, transparent);
-  }
   .hero__antetitulo { margin-bottom: 1.5rem; font-size: 0.875rem; }
   .hero__acciones { flex-direction: row; align-items: center; gap: 1.25rem; margin-top: 2.5rem; }
 }
@@ -268,10 +273,11 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
   }
   .hero__circulo { left: -24%; width: 46%; }
   .hero__presa--ancha { display: block; }
-  .hero__franja { position: absolute; bottom: 0; left: 0; width: auto; height: min(34vh, 18rem); }
-  .hero__contenido { margin-top: auto; max-width: 56%; }
+  /* El texto se angosta para que el logo del arco no lo alcance nunca. */
+  .hero__contenido { margin-top: auto; max-width: 48%; }
+  .hero__cordillera { width: 100%; }
   .hero .titulo-grande { font-size: clamp(2.5rem, 4.3vw, 4.75rem); }
-  .hero__interior { padding-bottom: calc(min(34vh, 18rem) + 1.5rem); }
+  .hero__interior { padding-bottom: 3rem; }
 }
 @media (min-width: 1024px) and (max-width: 1279px) {
   .hero__composicion { left: 62%; height: min(60%, 34rem); }
@@ -416,6 +422,11 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 }
 .intro__texto { grid-area: texto; margin-bottom: 1rem; }
 .intro__parrafo { color: var(--texto); font-size: 0.9375rem; font-weight: 400; line-height: 1.6; }
+.intro__relato { color: var(--texto-suave); font-size: 0.875rem; font-weight: 400; line-height: 1.65; margin-top: 0.875rem; }
+.intro__valoracion { margin-top: 1.5rem; }
+.comunidad__rotulo { margin-top: 3rem; }
+.resena__cita { margin: 0 0 0.75rem; font-size: 0.9375rem; line-height: 1.6; }
+.resena__autor { font-size: 0.875rem; font-weight: 500; }
 .intro__boton { margin-top: 1.5rem; }
 .intro__foto { --m-radio: 0.75rem; width: 100%; }
 .intro__foto--chica { grid-area: chica; aspect-ratio: 438 / 346; }
@@ -506,7 +517,6 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .pildora__icono { display: flex; flex: none; align-items: center; justify-content: center; width: 2.25rem; height: 2.25rem; }
 .pildora__icono svg { width: 14px; height: 14px; transform: rotate(-45deg); transition: transform 300ms; }
 .pildora__texto { padding-right: 0.875rem; font-size: 0.8125rem; font-weight: 500; white-space: nowrap; opacity: 0; transition: opacity 300ms 100ms; }
-.pildora[data-mapa] .pildora__icono svg { transform: none; }
 @media (hover: hover) {
   .tarjeta__medio:hover .pildora { width: var(--abierta); }
   .tarjeta__medio:hover .pildora__icono svg { transform: rotate(0deg); }
@@ -533,6 +543,8 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .columna--ancha { grid-column: span 2; }
 .columna__titulo { color: var(--texto-suave); font-family: var(--fuente-texto); font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; }
 .columna__lista { display: flex; flex-direction: column; gap: 0.625rem; font-size: 0.875rem; line-height: 1.5; }
+.columna__texto { font-size: 0.875rem; line-height: 1.55; }
+.columna__nota { display: block; color: var(--texto-suave); font-size: 0.8125rem; }
 .columna__lista--numerada { padding-left: 1.5rem; list-style: decimal; }
 .columna__lista--numerada li::marker { color: var(--acento); font-size: 0.8125rem; }
 @media (min-width: 640px) { .columnas { margin-top: 4rem; } }
@@ -578,7 +590,10 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .pie__columna a:hover svg { opacity: 1; }
 
 .pie__gigante { overflow: hidden; padding-top: 2.5rem; border-top: 1px solid var(--borde); pointer-events: none; user-select: none; }
-.pie__gigante span { display: block; color: rgb(247 231 180 / 0.07); font-family: var(--fuente-titulo); font-size: 18vw; line-height: 0.9; }
+/* El tope importa: el contenedor no pasa de 1440 px, así que sin él la palabra
+   sigue creciendo con la pantalla y a partir de unos 2100 px se sale de su caja
+   y overflow la corta. 23rem es lo que entra en los 1344 px de contenido. */
+.pie__gigante span { display: block; color: rgb(247 231 180 / 0.07); font-family: var(--fuente-titulo); font-size: min(18vw, 23rem); line-height: 0.9; }
 
 .pie__legal { display: flex; flex-direction: column; gap: 1rem; padding-top: 2rem; color: var(--texto-suave); font-size: 0.8125rem; }
 .pie__legal-enlaces { display: flex; flex-wrap: wrap; gap: 0.5rem 1.25rem; }

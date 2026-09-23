@@ -191,7 +191,21 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
   pointer-events: none;
 }
 
-.hero { position: relative; z-index: 5; padding-block: 1.5rem 2.5rem; }
+/* El hero recorta el logo, que va detrás del título revelado por la linterna. */
+.hero { position: relative; z-index: 5; overflow: hidden; padding-block: 1.5rem 2.5rem; }
+/* El logo se ve solo donde ilumina el puntero: misma máscara redonda que usan
+   los pernos del muro, con las mismas variables --m-mx y --m-my. Sin mouse
+   queda encendido detrás del título. */
+.hero__cordillera {
+  --x: calc(50% + var(--m-mx, 0) * 50%);
+  --y: calc(50% + var(--m-my, -0.35) * 50%);
+  opacity: 0.4;
+  -webkit-mask-image: radial-gradient(circle 16rem at var(--x) var(--y), #000, transparent);
+  mask-image: radial-gradient(circle 16rem at var(--x) var(--y), #000, transparent);
+}
+@media (min-width: 1024px) {
+  .hero__cordillera { -webkit-mask-image: radial-gradient(circle 22rem at var(--x) var(--y), #000, transparent); mask-image: radial-gradient(circle 22rem at var(--x) var(--y), #000, transparent); }
+}
 .hero:focus { outline: none; }
 .hero__interior { position: relative; z-index: 2; max-width: 48rem; margin-inline: auto; text-align: center; }
 .hero__luna { display: block; width: 5rem; height: auto; margin: 0 auto 1.25rem; }
@@ -233,23 +247,10 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .marquesina .m-pista span { font-size: clamp(1.75rem, 1.2rem + 2vw, 2.75rem); }
 @media (min-width: 1024px) { .marquesina { padding-block: 2rem; } }
 
-/* Portada: se abre a lo ancho al bajar (--m-p va de 0 a 1). La cordillera con
-   los gatos asoma chica por detrás, a la izquierda; el relleno de arriba, en
-   porcentaje del ancho, le deja lugar para que no roce los botones del hero. */
+/* Portada: se abre a lo ancho al bajar (--m-p va de 0 a 1). El relleno de
+   arriba, en porcentaje del ancho, la separa de los botones del hero. */
 .portada { position: relative; z-index: 4; max-width: 90rem; margin-inline: auto; padding: calc(22% - 0.5rem) 1rem 1rem; }
 .portada__interior { position: relative; }
-.portada__cordillera {
-  position: absolute;
-  bottom: 100%;
-  left: 4%;
-  z-index: 1;
-  width: 50%;
-  height: auto;
-  margin-bottom: -1rem;
-  /* El pie oscuro del dibujo termina en cortes rectos: se funde hacia los lados. */
-  -webkit-mask-image: linear-gradient(to right, transparent 0, #000 20%, #000 80%, transparent);
-  mask-image: linear-gradient(to right, transparent 0, #000 20%, #000 80%, transparent);
-}
 .portada__foto {
   position: relative;
   z-index: 2;
@@ -262,12 +263,10 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .portada__foto img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 45%; scale: calc(1.14 - var(--m-p, 1) * 0.14); }
 @media (min-width: 640px) {
   .portada { padding: calc(14% - 0.5rem) 1.5rem 1.5rem; }
-  .portada__cordillera { width: 32%; }
 }
 @media (min-width: 768px) { .portada__foto { aspect-ratio: 2.69; } }
 @media (min-width: 1024px) {
   .portada { padding-top: 1.5rem; }
-  .portada__cordillera { width: 24%; margin-bottom: -1.5rem; }
 }
 
 /* ---------- Secciones ---------- */
@@ -411,6 +410,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .reglas__item { display: flex; align-items: baseline; gap: 0.875rem; padding-bottom: 1.25rem; border-bottom: 1px solid var(--borde); }
 .reglas__item .lista__marca { min-width: 2.25rem; }
 .reglas__texto { font-size: 1.125rem; line-height: 1.4; }
+.reglas__detalle { display: block; margin-top: 0.375rem; color: var(--texto-suave); font-size: 0.9375rem; line-height: 1.55; }
 @media (min-width: 640px) { .reglas { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (min-width: 1024px) { .reglas { grid-template-columns: repeat(3, minmax(0, 1fr)); margin-bottom: 4rem; } }
 
@@ -429,11 +429,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .visitanos .llamado__fila { margin-bottom: 3rem; }
 .mapa { position: relative; min-height: 26rem; overflow: hidden; border: 1px solid var(--borde); border-radius: 1.5rem; background: var(--kuyen-tinta); }
 .mapa > iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
-.mapa__medio { display: flex; min-height: 26rem; height: 100%; flex-direction: column; align-items: center; justify-content: center; gap: 1rem; padding: 2rem 1.5rem; text-align: center; }
-.mapa__luna { width: 5rem; height: auto; }
-.mapa__direccion { font-family: var(--fuente-titulo); font-size: clamp(1.75rem, 1.2rem + 2vw, 2.75rem); line-height: 1.1; }
-.mapa__nota { max-width: 32rem; color: var(--texto-suave); font-size: 0.9375rem; line-height: 1.5; }
-.mapa__medio .boton { margin-top: 0.5rem; }
+.mapa__pie { margin-top: 1rem; color: var(--texto-suave); font-size: 0.9375rem; line-height: 1.5; }
 .visitanos__contacto { margin-top: 1.5rem; color: var(--texto-suave); line-height: 1.6; text-align: center; }
 /* La proporción de la portada va recién desde 1280 px: antes, con el alto mínimo
    del recuadro, obligaría a un ancho mayor que la pantalla. */

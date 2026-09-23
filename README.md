@@ -7,7 +7,17 @@ Sigue el flujo de sitios estáticos documentado en
 `C:\Proyectos\INCBA\docs\Flujo-Sitios-Web-GitHub-Pages.md`: generador propio, verificación
 funcional y CI que impide publicar HTML desincronizado.
 
-## Estado (15-09-2026): etapa de contenido
+## Estado (22-09-2026): etapa de contenido
+
+Kuyen respondió la planilla de las 101 preguntas y el sitio ya publica sus datos reales:
+horarios, valores, clases, Kuyencit@s, el muro en detalle, quiénes lo construyeron y quiénes
+setean, la historia, los productos, las comodidades y el correo de contacto. Quedan dos
+pendientes a la vista: los días y el horario de Kuyencit@s, y las reseñas.
+
+Las tres variantes suman cuatro secciones armadas con ese material: **Quiénes somos** (los
+profes, el seteo, los dueños y Pancita), **Kuyencit@s** con lugar propio, **Comunidad e
+inclusión**, y **Tu primera vez** en cuatro pasos, que es el camino que Kuyen dijo que más le
+importa.
 
 Cada template candidato pasa a tener una variante propia con el contenido, la tipografía y los
 colores de Kuyen. **Karate, Hirael y NexStudio ya son variantes propias**: el sitio generado no
@@ -18,14 +28,21 @@ al siguiente.
 El estilo de las variantes, elegido el 15-09-2026: títulos en Rubik Dirt y texto en Rubik, la
 página entera de noche (tinta y gradiente del logo 2.0) con acento amarillo luna y movimiento en
 títulos, textos, fotos y secciones. En las tres, el hero abre sobre el cielo de estrellas que
-titilan, con la luna en el medio y a la vista, entrada orquestada, rastro de tiza y la cordillera
-con los dos gatos chica, a un costado; la cabecera queda fija arriba. Cada una suma lo suyo:
+titilan, con la luna en el medio y a la vista, entrada orquestada y rastro de tiza; la cabecera
+queda fija arriba. Cada una suma lo suyo:
+
+El logo con la cordillera y los gatos aparece en los tres heroes, y desde el 22-09-2026 cada
+variante lo trata a su manera, para que la comparación no sea solo de estructura:
 
 - **Hirael**: la escaladora en un arco, una foto redonda y presas que flotan con profundidad.
+  El logo se apoya al pie del arco, nítido y a escala, con los gatos mirando hacia la
+  escaladora. Es el único de los tres que se lee como dibujo y no como fondo.
 - **NexStudio**: los pernos del muro que se iluminan donde apunta el mouse y la portada que se
-  abre al bajar, con los gatos asomando detrás.
+  abre al bajar. El logo va detrás del título y se revela solo donde cae la luz del puntero,
+  con la misma máscara redonda que usan los pernos.
 - **Karate**: una pila de tres fotos que se inclina con el mouse y se abre en abanico, dentro de
-  una tarjeta de vidrio; desde 768 px, los gatos asoman debajo de la tarjeta.
+  una tarjeta de vidrio. El logo va recortado dentro de esa tarjeta, pegado a su borde inferior
+  y con sus esquinas redondeadas, como grabado en el vidrio.
 
 Hive salió de los candidatos el 14-09-2026. Su captura sigue en el historial de git:
 `git checkout 3ba77fb -- src/temas/hive temas/hive`.
@@ -136,11 +153,12 @@ En las variantes propias revisa además:
 - el contraste AA de cada texto visible contra su fondo, gradientes incluidos;
 - que no haya desborde a lo ancho en 375, 640, 768, 1024 y 1440 px;
 - que el menú móvil abra y se cierre con Escape;
-- que el mapa de Google se cargue solo al hacer clic;
-- que la publicación de Instagram se cargue solo al hacer clic;
+- que el mapa y las tres publicaciones de Instagram vengan incrustados, sin clic, y con
+  `loading="lazy"`, que es lo que evita que la primera pantalla pida algo a Google o a Instagram;
 - que la entrada del hero termine;
 - que la cabecera quede a la vista al bajar por la página;
-- que ningún texto ni la marquesina tapen a los gatos del logo, en todos los anchos;
+- que el logo de fondo del hero quede detrás del texto, difuminado y con poca opacidad, y que
+  donde el logo no sea fondo ningún texto ni la marquesina lo tapen, en todos los anchos;
 - que no haya errores de JavaScript al cargar.
 
 Antes de medir el contraste recorre la página entera, porque los textos y las fotos que entran
@@ -158,7 +176,7 @@ markup, el CSS y el JavaScript de cada variante son propios.
 |---|---|
 | Página de la variante | `src/variantes/<id>/pagina.mjs`, con su CSS y su JS en la misma carpeta |
 | Textos y datos del negocio | `src/contenido.mjs`, sin HTML: lo leen todas las variantes |
-| Qué publicaciones de Instagram se muestran | `INSTAGRAM` en `src/contenido.mjs`: solo públicas, sin precios ni horarios sin confirmar y sin marcas de terceros sin permiso. La publicación se carga al hacer clic, con `src/compartido/instagram.js` |
+| Qué publicaciones de Instagram se muestran | `INSTAGRAM` en `src/contenido.mjs`: solo públicas, sin precios ni horarios sin confirmar y sin marcas de terceros sin permiso. La publicación va incrustada y carga sola; `src/compartido/instagram.js` solo ajusta el alto que avisa Instagram |
 | Paleta del logo 2.0, acento y tokens semánticos | `src/css/tokens.css` |
 | Tipografías (Rubik Dirt y Rubik, licencia OFL) | `fonts/` y `src/css/fuentes.css` |
 | Escena del logo y movimiento que comparten las variantes | `src/compartido/`: `escena.mjs` (cielo, luna, cordillera con los gatos, presas que flotan, títulos que se arman, marquesina y cifras), `movimiento.css` y `movimiento.js` (entrada del hero, profundidad con el puntero, paralaje, rastro de tiza y apariciones) |
@@ -178,7 +196,9 @@ Mientras un template no tenga `pagina.mjs`, `/t/<id>` sigue sirviendo su captura
   tokens y el CSS de la variante (`estilos`).
 - `leer(nombre)`: un archivo de la carpeta de la variante.
 
-Lo que Kuyen no confirmó va como `[POR CONFIRMAR]`, con un comentario que dice qué falta.
+Lo que Kuyen no confirmó va como `[POR CONFIRMAR]`, con un comentario que dice qué falta. Cada
+dato que viene de la planilla de preguntas lleva el código de su pregunta entre paréntesis
+(`H4` es horarios y tarifas, `C1` clases, `M5` el muro, y así).
 
 #### Fotos y marca
 
@@ -257,8 +277,10 @@ assets.
 En las variantes revisa además que haya un solo `<h1>`, que no haya anclas rotas ni assets que
 falten en el repo, y que no queden referencias a los templates o a terceros (rutas `/temas/`,
 dominios de los templates, fuentes pedidas a Google) ni datos sin confirmar. En
-`src/contenido.mjs`, falla si un horario o un precio no dice `[POR CONFIRMAR]` o si aparece
-alguno de los valores de `DATOS_SIN_CONFIRMAR`.
+`src/contenido.mjs`, falla si un horario o un precio queda en blanco, o si aparece alguno de
+los valores de `DATOS_SIN_CONFIRMAR`. Esa búsqueda la hace `apareceDatoViejo`, que exige una
+frontera a la izquierda del valor: así `2.000`, que es un dato viejo, no salta dentro de
+`$32.000`, que sí es un precio vigente.
 
 ## Publicación
 
@@ -282,6 +304,31 @@ ni `tools/`.
 
 ## Pendientes
 
+### Fotos que tiene que subir Kuyen
+
+F3 a F14 de la planilla quedaron todas en blanco. Las diez que van en una sección se muestran
+en su sitio como un recuadro punteado que dice qué falta, con la misma lógica que
+`[POR CONFIRMAR]`: lo que no está se ve. Están en `FOTOS_PENDIENTES` de `src/contenido.mjs`, y
+el build falla si alguna deja de aparecer en cualquiera de las tres variantes.
+
+| Código | Qué falta | Dónde se ve el hueco |
+|---|---|---|
+| F5 | El muro completo sin gente, con buena luz | El muro |
+| F4 | Presas y volúmenes de cerca | El muro |
+| F7 | El moonboard completo, y con alguien escalando | El muro |
+| F12 | El armado de rutas: seteo, lavado de presas, volúmenes | El muro |
+| F10 | El equipo: una foto de cada persona, o una grupal | Quiénes somos |
+| F8 | Una clase guiada en acción | Clases |
+| F9 | Kuyencit@s escalando, con autorización de sus apoderados | Kuyencit@s |
+| F13 | Los productos a la venta, sobre fondo simple | En el lugar |
+| F11 | La recepción y la zona de descanso | En el lugar |
+| F6 | La fachada y la entrada | Visítanos |
+
+Dos pedidos más no son una foto de sección y van solo en `MATERIAL_PENDIENTE`: los originales
+de la sesión de abril de 2026 (F3) y videos cortos del muro, de 10 a 30 segundos (F14).
+
+### Del sitio
+
 - **Elegir template**: es la decisión que desbloquea todo lo demás. Elegido uno, se sacan los
   otros dos de `TEMAS` y se borran sus capturas de `temas/`.
 - **Adaptar el elegido**: reemplazar textos, fotos y marca por los de Kuyen. Recién ahí entra
@@ -299,14 +346,23 @@ ni `tools/`.
 
 ## Datos del negocio
 
-Todos en `src/contenido.mjs`, revisados el 14-09-2026 en la ficha de Google Maps, Instagram,
-Linktree y el formulario de solicitud de ingreso del centro:
+Todos en `src/contenido.mjs`. La base se revisó el 14-09-2026 en la ficha de Google Maps,
+Instagram, Linktree y el formulario de solicitud de ingreso; el 22-09-2026 Kuyen confirmó el
+resto en la planilla de preguntas:
 
-- Los Patagones 375, Padre Las Casas, La Araucanía
-- +56 9 3502 8838
+- Los Patagones 375, Padre Las Casas, La Araucanía. Razón social: Kuyen SpA
+- +56 9 3502 8838, kuyen.climbing@gmail.com
 - [@kuyen.climbing](https://www.instagram.com/kuyen.climbing/)
 - [Ficha de Google](https://maps.app.goo.gl/v9F89L5peqFyxcJc9): 5,0 con 14 reseñas
-- Muro de boulder con desplomes continuos hasta 25°, moonboard, más de 500 rutas creadas,
-  clases guiadas desde marzo de 2026 y el programa infantil Kuyencit@s
-- Horarios, precios, correo y el detalle de clases y Kuyencit@s siguen **sin confirmar**: van
-  como `[POR CONFIRMAR]` hasta que Kuyen los confirme
+- Lunes a domingo de 10:00 a 22:00, con horario bajo hasta las 16:00 y horario alto después
+- Muro de boulder de 4,26 m, paredes de 0° a 40°, moonboard 2016 completa, más de 1000 presas,
+  clases guiadas, el programa infantil Kuyencit@s y talleres
+- Sigue **sin confirmar** y va como `[POR CONFIRMAR]`: los días y el horario de Kuyencit@s
+- Reseñas: las cinco de Google que tienen texto, copiadas de la ficha el 23-09-2026 abriéndola
+  en Chrome. De las 14 opiniones, las otras nueve son estrellas sin comentario. Kuyen no
+  respondió T1, que preguntaba por el permiso; Benjamín decidió publicarlas igual, y si alguien
+  pide bajar la suya se borra su entrada de `RESENAS`
+- **No se declara `aggregateRating`** en los datos estructurados: las guías de Google no
+  permiten marcar como valoración propia una nota recogida en su propia ficha
+- El plan de clases guiadas es de 4 clases al mes, una vez por semana. El de 8 clases al mes
+  que Kuyen lanzó en marzo salió del sitio hasta saber si sigue existiendo y a qué valor

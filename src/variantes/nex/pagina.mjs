@@ -16,9 +16,9 @@
  *   10 Pie con cuatro columnas, marca en contorno y enlaces al pie.
  *
  * Secciones agregadas con componentes del mismo template (decisión del
- * 15-09-2026): "Horarios y valores" y "Reglamento" con la lista de Servicios,
- * "Visítanos" con el llamado y la portada, y "En Instagram" con las entradas del
- * blog, donde la publicación se carga al hacer clic.
+ * 15-09-2026): "Horarios y valores", "En el lugar" y "Reglamento" con la lista de
+ * Servicios, "Visítanos" con el llamado y la portada, y "En Instagram" con las
+ * entradas del blog, con la publicación incrustada.
  *
  * Diferencias con el template:
  * - Toda la página va de noche, con títulos en Rubik Dirt y acento amarillo luna.
@@ -27,18 +27,20 @@
  * - La apertura (hero, marquesina y portada) comparte el cielo del logo: estrellas
  *   que titilan, la luna en el medio sobre el título, los pernos del muro que se
  *   iluminan donde apunta el mouse, como con una linterna frontal, presas que
- *   flotan, rastro de tiza y entrada orquestada. La cordillera con los gatos
- *   asoma chica detrás de la portada, a la izquierda, y la portada se abre a lo
- *   ancho al bajar.
+ *   flotan, rastro de tiza y entrada orquestada. El logo con la cordillera y los
+ *   gatos va detrás del título, y se revela solo donde cae la luz del puntero,
+ *   con la misma máscara de los pernos (pedido del 22-09-2026). La portada se
+ *   abre a lo ancho al bajar.
  * - La cabecera queda fija arriba (pedido del 15-09-2026).
  * - La marquesina lleva la jerga del muro en vez de logos de clientes, y va
- *   después de la portada: así la foto del muro asoma en la primera pantalla y
- *   la jerga no pasa por encima de los gatos.
- * - Las reseñas quedan [POR CONFIRMAR] hasta tener textos y permisos.
+ *   después de la portada, para que la foto del muro asome en la primera
+ *   pantalla.
+ * - Las reseñas son las de Google, con el bloque de valoración en la cabecera
+ *   de la sección (23-09-2026).
  * - El blog pasa a próximos eventos, y en móvil la portada es más alta que en el
  *   template para que se vea el muro.
  */
-import { cielo, luna, cordillera, presa, titulo, marquesina } from '../../compartido/escena.mjs'
+import { cielo, luna, cordillera, presa, titulo, marquesina, mapa, publicacion, fotoPendiente, valoracion } from '../../compartido/escena.mjs'
 
 const ICONOS = {
   flecha:
@@ -49,8 +51,12 @@ const ICONOS = {
   estrella:
     '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 1c.9 6.6 4.4 10.1 11 11-6.6.9-10.1 4.4-11 11-.9-6.6-4.4-10.1-11-11 6.6-.9 10.1-4.4 11-11z"/></svg>',
   // Íconos de las características del muro, dibujados para el sitio.
-  desplome:
+  inclinaciones:
     '<svg viewBox="0 0 56 56" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 49h44"/><path d="M19 49 34 7"/><path d="M30 49a11 11 0 0 0-7.3-10.4"/><circle cx="26.5" cy="29" r="2.6" fill="currentColor"/><circle cx="31" cy="16" r="2.6" fill="currentColor"/></svg>',
+  presas:
+    '<svg viewBox="0 0 56 56" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 40a9 9 0 0 1 9-9h4a6 6 0 0 0 6-6v-2"/><circle cx="17" cy="16" r="6"/><rect x="34" y="34" width="12" height="12" rx="3"/><circle cx="41" cy="16" r="3.2" fill="currentColor"/></svg>',
+  colchonetas:
+    '<svg viewBox="0 0 56 56" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="33" width="46" height="9" rx="3"/><rect x="5" y="42" width="46" height="9" rx="3"/><path d="M28 27V9M28 9l-7 7M28 9l7 7"/></svg>',
   moonboard:
     '<svg viewBox="0 0 56 56" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="11" y="5" width="34" height="46" rx="3"/><g fill="currentColor" stroke="none"><circle cx="19" cy="14" r="2.4"/><circle cx="37" cy="20" r="2.4"/><circle cx="28" cy="28" r="2.4"/><circle cx="19" cy="36" r="2.4"/><circle cx="36" cy="43" r="2.4"/></g></svg>',
   rutas:
@@ -67,6 +73,8 @@ const FOTO_EVENTO = {
   'competencia-escolar': 'nino-escalando',
 }
 
+const mayusculaInicial = (texto) => texto.charAt(0).toUpperCase() + texto.slice(1)
+
 export default function pagina({ site, contenido, esc, foto, cabeza, leer, compartido }) {
   const {
     POR_CONFIRMAR,
@@ -78,17 +86,33 @@ export default function pagina({ site, contenido, esc, foto, cabeza, leer, compa
     CIFRAS,
     INSTAGRAM,
     MURO,
+    EQUIPO,
     SERVICIOS,
     HORARIOS,
     PRECIOS,
+    PRODUCTOS,
+    COMODIDADES,
+    INVITADOS,
     COMUNIDAD,
     EVENTOS,
+    EVENTOS_INFO,
     REGLAMENTO,
     SOLICITUD,
-    TESTIMONIOS,
+    PRIMERA_VISITA,
+    PANCITA,
+    LEGAL,
+    RESENAS,
+    VALORACION,
     MARQUESINA,
     TEXTOS,
+    FOTOS_PENDIENTES,
   } = contenido
+
+  /* Hueco de una foto que Kuyen todavía no manda, por su id de FOTOS_PENDIENTES.
+     El build comprueba que estén los diez en la página. */
+  const falta = (id) => fotoPendiente(FOTOS_PENDIENTES.find((f) => f.id === id))
+  const faltas = (...ids) =>
+    `<div class="m-faltas${ids.length > 3 ? ' m-faltas--cuatro' : ids.length === 3 ? ' m-faltas--tres' : ''}">${ids.map(falta).join('\n            ')}</div>`
 
   const externo = ' target="_blank" rel="noopener"'
   const retraso = (ms) => (ms ? ` style="--m-retraso: ${ms}ms"` : '')
@@ -106,10 +130,25 @@ export default function pagina({ site, contenido, esc, foto, cabeza, leer, compa
   const boton = ({ texto, href, variante = 'primario', afuera = false, flecha = false, clase = '', extra = '' }) =>
     `<a class="boton boton--${variante}${clase ? ` ${clase}` : ''}" href="${esc(href)}"${afuera ? externo : ''}${extra}>${rueda(texto)}${flecha ? ICONOS.flecha : ''}</a>`
 
-  const enlacesMenu = [
-    ['#kuyen', 'Kuyen'],
+  /* La barra de escritorio lleva lo imprescindible, para que no se desborde;
+     el menú de móvil baja bajo la barra y lleva el recorrido entero. */
+  const enlacesBarra = [
     ['#muro', 'El muro'],
     ['#servicios', 'Servicios'],
+    ['#horarios', 'Horarios'],
+    ['#primeravez', 'Primera vez'],
+    ['#visitanos', 'Visítanos'],
+  ]
+  const enlacesMenu = [
+    ['#kuyen', 'Qué es Kuyen'],
+    ['#muro', 'El muro'],
+    ['#equipo', 'Quiénes somos'],
+    ['#servicios', 'Servicios'],
+    ['#kuyencitos', 'Kuyencit@s'],
+    ['#horarios', 'Horarios y valores'],
+    ['#primeravez', 'Tu primera vez'],
+    ['#inclusion', 'Comunidad'],
+    ['#instagram', 'En Instagram'],
     ['#visitanos', 'Visítanos'],
   ]
 
@@ -128,9 +167,9 @@ export default function pagina({ site, contenido, esc, foto, cabeza, leer, compa
 
   const textoServicio = {
     'escalada-libre': `${esc(servicio('escalada-libre').resumen)} ${esc(servicio('escalada-libre').detalles[0])}`,
-    clases: `${esc(servicio('clases').resumen)} Días y horarios: ${pendiente('días, horarios y cupos de las clases guiadas (pregunta 4)')}`,
-    kuyencitos: `${esc(servicio('kuyencitos').resumen)} Edades, días y valor: ${pendiente('edades, días, horario y valor de Kuyencit@s (pregunta 3)')}`,
-    talleres: esc(servicio('talleres').resumen),
+    clases: `${esc(servicio('clases').resumen)} ${esc(servicio('clases').dias)} ${esc(servicio('clases').cupos)}`,
+    kuyencitos: `${esc(servicio('kuyencitos').resumen)} ${esc(servicio('kuyencitos').edades)} <a class="enlace" href="#kuyencitos">Ver Kuyencit@s</a>.`,
+    talleres: `${esc(servicio('talleres').resumen)} ${esc(servicio('talleres').detalles[0])}`,
   }
 
   return `<!DOCTYPE html>
@@ -147,7 +186,7 @@ ${cabeza({ estilos: `${compartido('movimiento.css')}\n${leer('estilos.css')}` })
         <span class="marca__nombre">${esc(MARCA.nombreLogo)}</span>
       </a>
       <ul class="cabecera__enlaces">
-        ${enlacesMenu.map(([href, texto]) => `<li><a href="${href}">${rueda(texto)}</a></li>`).join('\n        ')}
+        ${enlacesBarra.map(([href, texto]) => `<li><a href="${href}">${rueda(texto)}</a></li>`).join('\n        ')}
       </ul>
       <div class="cabecera__acciones">
         ${boton({ texto: TEXTOS.acciones.solicitud, href: LINKS.solicitudIngreso, afuera: true, clase: 'boton--cabecera' })}
@@ -185,11 +224,11 @@ ${cabeza({ estilos: `${compartido('movimiento.css')}\n${leer('estilos.css')}` })
       ${presa({ forma: 'volumen', color: 'var(--kuyen-lila)', clase: 'm-entra-escala hero__presa--escritorio', x: 3, y: 50, tam: 4.5, prof: 34, paralaje: 0.18, giro: 30, retraso: 1200, duracion: 10 })}
       ${presa({ forma: 'pinza', color: 'var(--kuyen-blanco)', clase: 'm-entra-escala hero__presa--movil', x: 12, y: 5, tam: 9, prof: 0, paralaje: 0.2, giro: -10, retraso: 1100, duracion: 7 })}
       ${presa({ forma: 'canto', color: 'var(--kuyen-luna)', clase: 'm-entra-escala hero__presa--movil', x: 77, y: 3, tam: 11, prof: 0, paralaje: 0.14, giro: 14, retraso: 1250, duracion: 9 })}
+      ${cordillera({ clase: 'm-cordillera--fondo hero__cordillera m-entra-sube', paralaje: 0, prof: 8, tamanos: '100vw' })}
     </section>
 
     <div class="portada">
       <div class="portada__interior">
-        ${cordillera({ clase: 'portada__cordillera m-entra-sube', paralaje: -0.06, prof: 10, tamanos: '(min-width: 1024px) 24vw, 50vw' })}
         <div class="portada__foto" data-m-progreso="0.35">
           ${foto('escalador-muro-blanco', { tamanos: '(min-width: 1440px) 1392px, 100vw' })}
         </div>
@@ -234,6 +273,56 @@ ${cabeza({ estilos: `${compartido('movimiento.css')}\n${leer('estilos.css')}` })
             )
             .join('\n          ')}
         </div>
+        <ul class="lista lista--muro">
+          <li class="lista__item" data-m-aparece>
+            <span class="lista__marca">Medidas</span>
+            <h3 class="lista__nombre">${esc(MURO.altura)}</h3>
+            <p class="lista__texto">${esc(EQUIPO.construccion)}</p>
+          </li>
+          <li class="lista__item" data-m-aparece style="--m-retraso: 90ms">
+            <span class="lista__marca">Seteo</span>
+            <h3 class="lista__nombre">Quién arma las rutas</h3>
+            <p class="lista__texto">${esc(EQUIPO.seteadores.resumen)} ${esc(EQUIPO.seteadores.headsetter)} es el headsetter del lugar.</p>
+          </li>
+          <li class="lista__item" data-m-aparece style="--m-retraso: 180ms">
+            <span class="lista__marca">Entrenar</span>
+            <h3 class="lista__nombre">Material de entrenamiento</h3>
+            <p class="lista__texto">${esc(MURO.entrenamiento.join(', '))}.</p>
+          </li>
+        </ul>
+        ${faltas('muro-vacio', 'presas-cerca', 'moonboard', 'seteo')}
+      </div>
+    </section>
+
+    <section class="seccion tono-oscuro" id="equipo">
+      <div class="contenedor">
+        <div class="lista__cabeza">
+          <h2 class="titulo-seccion" data-m-revelar>${titulo([['Quiénes', acento('somos')]])}</h2>
+          <p class="lista__bajada" data-m-aparece>${esc(EQUIPO.resumen)}</p>
+        </div>
+        <ul class="lista">
+          <li class="lista__item" data-m-aparece>
+            <span class="lista__marca">Clases</span>
+            <h3 class="lista__nombre">${esc(EQUIPO.profesores.map((prof) => prof.nombre).join(' y '))}</h3>
+            <p class="lista__texto">${EQUIPO.profesores.map((prof) => esc(prof.detalle)).join('. ')}.</p>
+          </li>
+          <li class="lista__item" data-m-aparece style="--m-retraso: 90ms">
+            <span class="lista__marca">Seteo</span>
+            <h3 class="lista__nombre">${esc(EQUIPO.seteadores.nombres.join(', '))}</h3>
+            <p class="lista__texto">${esc(EQUIPO.seteadores.headsetter)} es el headsetter del lugar.</p>
+          </li>
+          <li class="lista__item" data-m-aparece style="--m-retraso: 180ms">
+            <span class="lista__marca">El muro</span>
+            <h3 class="lista__nombre">${esc(EQUIPO.duenos.join(', '))}</h3>
+            <p class="lista__texto">${esc(EQUIPO.construccion)}</p>
+          </li>
+          <li class="lista__item" data-m-aparece style="--m-retraso: 270ms">
+            <span class="lista__marca">Seguridad</span>
+            <h3 class="lista__nombre">${esc(PANCITA.nombre)}</h3>
+            <p class="lista__texto">${esc(PANCITA.descripcion)}</p>
+          </li>
+        </ul>
+        ${faltas('equipo')}
       </div>
     </section>
 
@@ -249,6 +338,43 @@ ${cabeza({ estilos: `${compartido('movimiento.css')}\n${leer('estilos.css')}` })
           </li>`
           ).join('\n          ')}
         </ul>
+        ${faltas('clase')}
+      </div>
+    </section>
+
+    <section class="seccion tono-oscuro tono-noche" id="kuyencitos">
+      <div class="contenedor">
+        <div class="lista__cabeza">
+          <h2 class="titulo-seccion" data-m-revelar>${titulo([[acento('Kuyencit@s')]])}</h2>
+          <p class="lista__bajada" data-m-aparece>${esc(servicio('kuyencitos').resumen)} ${esc(servicio('kuyencitos').edades)}</p>
+        </div>
+        <ul class="lista">
+          <li class="lista__item" data-m-aparece>
+            <span class="lista__marca">Horario</span>
+            <h3 class="lista__nombre">Días y horario</h3>
+            <p class="lista__texto">${pendiente('días y horario de Kuyencit@s: Kuyen está ajustando los horarios (K2)')}</p>
+          </li>
+          ${PRECIOS.filter((v) => v.id.startsWith('kuyencitos'))
+            .map(
+              (v, n) => `<li class="lista__item" data-m-aparece${retraso((n + 1) * 90)}>
+            <span class="lista__marca">Valor</span>
+            <h3 class="lista__nombre">${esc(mayusculaInicial(v.nombre.replace('Kuyencit@s, ', '')))}</h3>
+            <p class="lista__texto">${esc(v.valor)}</p>
+          </li>`
+            )
+            .join('\n          ')}
+          <li class="lista__item" data-m-aparece style="--m-retraso: 360ms">
+            <span class="lista__marca">Acompaña</span>
+            <h3 class="lista__nombre">Quién está con ellos</h3>
+            <p class="lista__texto">${esc(servicio('kuyencitos').acompanamiento)}</p>
+          </li>
+          <li class="lista__item" data-m-aparece style="--m-retraso: 450ms">
+            <span class="lista__marca">Permiso</span>
+            <h3 class="lista__nombre">Autorización</h3>
+            <p class="lista__texto">${esc(servicio('kuyencitos').autorizacion)} ${esc(PRIMERA_VISITA.menores)}</p>
+          </li>
+        </ul>
+        ${faltas('kuyencitos')}
       </div>
     </section>
 
@@ -256,7 +382,7 @@ ${cabeza({ estilos: `${compartido('movimiento.css')}\n${leer('estilos.css')}` })
       <div class="contenedor">
         <div class="lista__cabeza">
           <h2 class="titulo-seccion" data-m-revelar>${titulo([['Horarios y', acento('valores')]])}</h2>
-          <p class="lista__bajada" data-m-aparece>Se paga al ingresar. Para cualquier duda, <a class="enlace" href="${esc(CONTACTO.whatsapp)}"${externo}>escríbenos por WhatsApp</a>.</p>
+          <p class="lista__bajada" data-m-aparece>Abrimos de lunes a domingo, de ${esc(HORARIOS.abre)} a ${esc(HORARIOS.cierra)}. ${esc(HORARIOS.pago)} ${esc(HORARIOS.aviso)} ${esc(HORARIOS.verano)} Para cualquier duda, <a class="enlace" href="${esc(CONTACTO.whatsapp)}"${externo}>escríbenos por WhatsApp</a>.</p>
         </div>
         <ul class="lista">
           ${HORARIOS.tramos
@@ -264,7 +390,7 @@ ${cabeza({ estilos: `${compartido('movimiento.css')}\n${leer('estilos.css')}` })
               (tramo, n) => `<li class="lista__item" data-m-aparece${retraso(n * 90)}>
             <span class="lista__marca">Tramo</span>
             <h3 class="lista__nombre">${esc(tramo.nombre)}</h3>
-            <p class="lista__texto">${esc(tramo.descripcion)} Días y horas: ${pendiente(`días y horas del ${tramo.nombre.toLowerCase()} (pregunta 1)`)}</p>
+            <p class="lista__texto">${esc(tramo.descripcion)} ${esc(tramo.dias)}, de ${esc(tramo.horas)}.</p>
           </li>`
             )
             .join('\n          ')}
@@ -272,9 +398,75 @@ ${cabeza({ estilos: `${compartido('movimiento.css')}\n${leer('estilos.css')}` })
             (precio, n) => `<li class="lista__item" data-m-aparece${retraso((n + 2) * 90)}>
             <span class="lista__marca">Valor</span>
             <h3 class="lista__nombre">${esc(precio.nombre)}</h3>
-            <p class="lista__texto">${esc(precio.detalle)}. Valor: ${pendiente(`valor de ${precio.nombre.toLowerCase()} (pregunta 2)`)}</p>
+            <p class="lista__texto">${esc(precio.detalle)}. ${precio.valor === POR_CONFIRMAR ? `Valor: ${pendiente('valor del plan de clases guiadas: Kuyen confirmó el descuento del primer mes, no el precio (C2)')}` : `${esc(precio.valor)}${precio.valorEstudiante ? `, o ${esc(precio.valorEstudiante)} con credencial de estudiante` : ''}.`}</p>
           </li>`
           ).join('\n          ')}
+        </ul>
+      </div>
+    </section>
+
+    <section class="seccion tono-oscuro tono-noche" id="primeravez">
+      <div class="contenedor">
+        <div class="lista__cabeza">
+          <h2 class="titulo-seccion" data-m-revelar>${titulo([['Tu', acento('primera vez')]])}</h2>
+          <p class="lista__bajada" data-m-aparece>${esc(PRIMERA_VISITA.resumen)} ${esc(PRIMERA_VISITA.aviso)}</p>
+        </div>
+        <ol class="reglas">
+          ${PRIMERA_VISITA.pasos
+            .map(
+              (paso, n) => `<li class="reglas__item" data-m-aparece${retraso(n * 80)}>
+            <span class="lista__marca">#${n + 1}</span>
+            <span class="reglas__texto">${esc(paso.titulo)}. <span class="reglas__detalle">${esc(paso.texto)}${paso.enlace ? ` <a class="enlace" href="${esc(paso.enlace.url)}"${externo}>${esc(paso.enlace.texto)}</a>.` : ''}</span></span>
+          </li>`
+            )
+            .join('\n          ')}
+        </ol>
+        <p class="lista__bajada" data-m-aparece>${esc(PRIMERA_VISITA.menores)}</p>
+      </div>
+    </section>
+
+    <section class="seccion tono-oscuro" id="reglamento">
+      <div class="contenedor">
+        <div class="lista__cabeza">
+          <h2 class="titulo-seccion" data-m-revelar>${titulo([['Para cuidarnos', acento('entre todos')]])}</h2>
+          <p class="lista__bajada" data-m-aparece>${esc(SOLICITUD.resumen)} ${esc(LEGAL.privacidad)}</p>
+        </div>
+        <ul class="reglas">
+          ${REGLAMENTO.map(
+            (regla, n) => `<li class="reglas__item" data-m-aparece${retraso((n % 3) * 80)}>
+            <span class="lista__marca">#${n + 1}</span>
+            <span class="reglas__texto">${esc(regla)}</span>
+          </li>`
+          ).join('\n          ')}
+        </ul>
+        <div data-m-aparece>
+          ${boton({ texto: TEXTOS.acciones.solicitud, href: LINKS.solicitudIngreso, afuera: true, flecha: true })}
+        </div>
+      </div>
+    </section>
+
+    <section class="seccion tono-oscuro tono-noche" id="inclusion">
+      <div class="contenedor">
+        <div class="lista__cabeza">
+          <h2 class="titulo-seccion" data-m-revelar>${titulo([['Un muro para', acento('hacer comunidad')]])}</h2>
+          <p class="lista__bajada" data-m-aparece>${esc(COMUNIDAD.foco)} ${esc(COMUNIDAD.destinatario)}</p>
+        </div>
+        <ul class="lista">
+          <li class="lista__item" data-m-aparece>
+            <span class="lista__marca">Para todos</span>
+            <h3 class="lista__nombre">Espacio seguro</h3>
+            <p class="lista__texto">${esc(COMUNIDAD.inclusion)} ${esc(COMUNIDAD.publico)}</p>
+          </li>
+          <li class="lista__item" data-m-aparece style="--m-retraso: 90ms">
+            <span class="lista__marca">Cada año</span>
+            <h3 class="lista__nombre">Lo que se repite</h3>
+            <p class="lista__texto">${esc(EVENTOS_INFO.repiten)}</p>
+          </li>
+          <li class="lista__item" data-m-aparece style="--m-retraso: 180ms">
+            <span class="lista__marca">Sumarse</span>
+            <h3 class="lista__nombre">Cómo inscribirse</h3>
+            <p class="lista__texto">${esc(EVENTOS_INFO.inscripcion)} ${esc(COMUNIDAD.anuncios)}</p>
+          </li>
         </ul>
       </div>
     </section>
@@ -301,36 +493,6 @@ ${cabeza({ estilos: `${compartido('movimiento.css')}\n${leer('estilos.css')}` })
       </div>
     </section>
 
-    <section class="seccion tono-oscuro tono-noche resenas" id="comunidad" data-carrusel-zona>
-      <div class="resenas__interior">
-        <div class="resenas__fila">
-          <div class="resenas__cabeza">
-            <h2 class="titulo-seccion resenas__titulo" data-m-revelar>${titulo([['Lo que dice', acento('la comunidad')]])}</h2>
-            <div class="resenas__flechas" data-m-aparece>
-              <button type="button" class="flecha" aria-label="Reseña anterior" data-carrusel-anterior>${ICONOS.flechaAtras}</button>
-              <button type="button" class="flecha" aria-label="Reseña siguiente" data-carrusel-siguiente>${ICONOS.flecha}</button>
-            </div>
-          </div>
-          <div class="resenas__ventana" data-m-aparece style="--m-retraso: 150ms">
-            <ul class="resenas__pista" data-carrusel>
-              ${TESTIMONIOS.slice(0, 3)
-                .map(
-                  () => `<li class="resena">
-                <span class="resena__icono">${ICONOS.estrella}</span>
-                <p class="resena__cita">${pendiente('texto de la reseña y permiso de la persona para publicarla con su nombre')}</p>
-                <div>
-                  <p class="resena__autor">${pendiente('nombre de quien escribe la reseña')}</p>
-                  <p class="resena__detalle">${pendiente('desde cuándo escala en Kuyen o qué hace ahí')}</p>
-                </div>
-              </li>`
-                )
-                .join('\n              ')}
-            </ul>
-          </div>
-        </div>
-      </div>
-    </section>
-
     <section class="seccion tono-oscuro tono-noche" id="eventos">
       <div class="contenedor">
         <h2 class="titulo-seccion entradas__titulo" data-m-revelar>${titulo([['Próximos', acento('eventos')]])}</h2>
@@ -347,6 +509,65 @@ ${cabeza({ estilos: `${compartido('movimiento.css')}\n${leer('estilos.css')}` })
             )
             .join('\n          ')}
         </div>
+        <p class="lista__bajada" data-m-aparece>${esc(EVENTOS_INFO.repiten)} ${esc(EVENTOS_INFO.inscripcion)}</p>
+      </div>
+    </section>
+
+    <section class="seccion tono-oscuro tono-noche resenas" id="comunidad" data-carrusel-zona>
+      <div class="resenas__interior">
+        <div class="resenas__fila">
+          <div class="resenas__cabeza">
+            <h2 class="titulo-seccion resenas__titulo" data-m-revelar>${titulo([['Lo que dice', acento('la comunidad')]])}</h2>
+            ${valoracion({ datos: VALORACION, clase: 'resenas__valoracion' })}
+            <div class="resenas__flechas" data-m-aparece>
+              <button type="button" class="flecha" aria-label="Reseña anterior" data-carrusel-anterior>${ICONOS.flechaAtras}</button>
+              <button type="button" class="flecha" aria-label="Reseña siguiente" data-carrusel-siguiente>${ICONOS.flecha}</button>
+            </div>
+          </div>
+          <div class="resenas__ventana" data-m-aparece style="--m-retraso: 150ms">
+            <ul class="resenas__pista" data-carrusel>
+              ${RESENAS.map(
+                (r) => `<li class="resena">
+                <span class="resena__icono">${ICONOS.estrella}</span>
+                <p class="resena__cita">${esc(`«${r.cita}»`)}</p>
+                <div>
+                  <p class="resena__autor">${esc(r.autor)}</p>
+                  <p class="resena__detalle">${esc(r.perfil ? `${r.perfil} en ${r.fuente}` : `en ${r.fuente}`)}</p>
+                </div>
+              </li>`
+              ).join('\n              ')}
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="seccion tono-oscuro" id="enellugar">
+      <div class="contenedor">
+        <div class="lista__cabeza">
+          <h2 class="titulo-seccion" data-m-revelar>${titulo([['Todo lo que hay', acento('en Kuyen')]])}</h2>
+          <p class="lista__bajada" data-m-aparece>${esc(COMODIDADES.seguridad)} ${esc(COMODIDADES.estacionamiento)}</p>
+        </div>
+        <ul class="lista">
+          <li class="lista__item" data-m-aparece>
+            <span class="lista__marca">Venta</span>
+            <h3 class="lista__nombre">A la venta en el muro</h3>
+            <p class="lista__texto">${esc(PRODUCTOS.lista.join(', '))}. ${esc(PRODUCTOS.proximamente)}</p>
+          </li>
+          <li class="lista__item" data-m-aparece style="--m-retraso: 90ms">
+            <span class="lista__marca">Comodidades</span>
+            <h3 class="lista__nombre">Para estar cómodo</h3>
+            <p class="lista__texto">${esc(COMODIDADES.lista.join(', '))}. ${esc(COMODIDADES.referencia)}</p>
+          </li>
+          ${INVITADOS.map(
+            (i, n) => `<li class="lista__item" data-m-aparece${retraso((n + 2) * 90)}>
+            <span class="lista__marca">Invitados</span>
+            <h3 class="lista__nombre">${i.url ? `<a class="enlace" href="${esc(i.url)}"${externo}>${esc(i.nombre)}</a>` : esc(i.nombre)}</h3>
+            <p class="lista__texto">${esc(i.resumen)}</p>
+          </li>`
+          ).join('\n          ')}
+        </ul>
+        ${faltas('productos', 'recepcion')}
       </div>
     </section>
 
@@ -357,14 +578,13 @@ ${cabeza({ estilos: `${compartido('movimiento.css')}\n${leer('estilos.css')}` })
           ${INSTAGRAM.publicaciones
             .map(
               (pub, n) => `<article class="entrada" data-instagram-tarjeta>
-            <div class="entrada__foto m-foto"${retraso(n * 120)} data-instagram-medio>
-              ${foto(pub.foto, { tamanos: '(min-width: 1024px) 30vw, (min-width: 640px) 45vw, 100vw' })}
+            <div class="entrada__foto m-foto con-publicacion"${retraso(n * 120)} data-instagram-medio>
+              ${publicacion({ base: INSTAGRAM.base, ruta: pub.ruta, titulo: `Publicación de ${MARCA.nombre} en Instagram: ${pub.titulo}` })}
             </div>
             <div class="entrada__meta" data-m-aparece${retraso(n * 120 + 150)}><span>${esc(pub.tipo)}</span><span>${esc(pub.fechaTexto)}</span></div>
             <h3 class="entrada__titulo" data-m-aparece${retraso(n * 120 + 200)}>${esc(pub.titulo)}</h3>
             <p class="entrada__texto" data-m-aparece${retraso(n * 120 + 240)}>${esc(pub.detalle)}</p>
             <div class="entrada__acciones" data-m-aparece${retraso(n * 120 + 280)}>
-              <button type="button" class="boton boton--borde" data-instagram="${esc(pub.ruta)}" data-titulo="${esc(`Publicación de ${MARCA.nombre} en Instagram: ${pub.titulo}`)}">${rueda(TEXTOS.acciones.verPublicacion)}</button>
               <a class="enlace" href="${esc(`${INSTAGRAM.base}${pub.ruta}/`)}"${externo}>${esc(TEXTOS.acciones.abrirInstagram)}</a>
             </div>
           </article>`
@@ -372,26 +592,6 @@ ${cabeza({ estilos: `${compartido('movimiento.css')}\n${leer('estilos.css')}` })
             .join('\n          ')}
         </div>
         <p class="entradas__nota" data-m-aparece>${esc(TEXTOS.instagram)}</p>
-      </div>
-    </section>
-
-    <section class="seccion tono-oscuro" id="reglamento">
-      <div class="contenedor">
-        <div class="lista__cabeza">
-          <h2 class="titulo-seccion" data-m-revelar>${titulo([['Para cuidarnos', acento('entre todos')]])}</h2>
-          <p class="lista__bajada" data-m-aparece>${esc(SOLICITUD.resumen)}</p>
-        </div>
-        <ul class="reglas">
-          ${REGLAMENTO.map(
-            (regla, n) => `<li class="reglas__item" data-m-aparece${retraso((n % 3) * 80)}>
-            <span class="lista__marca">#${n + 1}</span>
-            <span class="reglas__texto">${esc(regla)}</span>
-          </li>`
-          ).join('\n          ')}
-        </ul>
-        <div data-m-aparece>
-          ${boton({ texto: TEXTOS.acciones.solicitud, href: LINKS.solicitudIngreso, afuera: true, flecha: true })}
-        </div>
       </div>
     </section>
 
@@ -406,14 +606,11 @@ ${cabeza({ estilos: `${compartido('movimiento.css')}\n${leer('estilos.css')}` })
           </div>
         </div>
         <div class="mapa" data-m-aparece>
-          <div class="mapa__medio">
-            ${luna({ clase: 'mapa__luna', paralaje: -0.05, tamanos: '6rem' })}
-            <p class="mapa__direccion">${esc(UBICACION.calle)}<br>${esc(UBICACION.comuna)}, ${esc(UBICACION.region)}</p>
-            <p class="mapa__nota">Plus code ${esc(UBICACION.plusCode)}. ${esc(UBICACION.referencia)}. ${esc(TEXTOS.mapa)}</p>
-            <button type="button" class="boton boton--primario" data-mapa="${esc(UBICACION.mapaEmbebido)}" data-titulo="${esc(`Mapa de ${MARCA.nombre} en ${UBICACION.calle}, ${UBICACION.comuna}`)}">${rueda(TEXTOS.acciones.verMapa)}</button>
-          </div>
+          ${mapa({ url: UBICACION.mapaEmbebido, titulo: `Mapa de ${MARCA.nombre} en ${UBICACION.calle}, ${UBICACION.comuna}` })}
         </div>
-        <p class="visitanos__contacto" data-m-aparece>Escríbenos por WhatsApp al <a class="enlace" href="${esc(CONTACTO.whatsapp)}"${externo}>${esc(CONTACTO.telefono)}</a> o por mensaje directo en Instagram, <a class="enlace" href="${esc(CONTACTO.instagram)}"${externo}>${esc(CONTACTO.instagramUsuario)}</a>.</p>
+        <p class="mapa__pie" data-m-aparece>${esc(UBICACION.calle)}, ${esc(UBICACION.comuna)}, ${esc(UBICACION.region)}. Plus code ${esc(UBICACION.plusCode)}. ${esc(UBICACION.referencia)}.</p>
+        <p class="visitanos__contacto" data-m-aparece>Escríbenos por WhatsApp al <a class="enlace" href="${esc(CONTACTO.whatsapp)}"${externo}>${esc(CONTACTO.telefono)}</a>, por mensaje directo en Instagram, <a class="enlace" href="${esc(CONTACTO.instagram)}"${externo}>${esc(CONTACTO.instagramUsuario)}</a>, o a <a class="enlace" href="mailto:${esc(CONTACTO.correo)}">${esc(CONTACTO.correo)}</a>. ${esc(CONTACTO.horarioRespuesta)}</p>
+        ${faltas('fachada')}
       </div>
     </section>
 
@@ -441,7 +638,12 @@ ${cabeza({ estilos: `${compartido('movimiento.css')}\n${leer('estilos.css')}` })
           <ul>
             ${enlacePie('#kuyen', 'Qué es Kuyen')}
             ${enlacePie('#muro', 'El muro')}
+            ${enlacePie('#equipo', 'Quiénes somos')}
+            ${enlacePie('#kuyencitos', 'Kuyencit@s')}
             ${enlacePie('#horarios', 'Horarios y valores')}
+            ${enlacePie('#inclusion', 'Comunidad')}
+            ${enlacePie('#primeravez', 'Tu primera vez')}
+            ${enlacePie('#enellugar', 'En el lugar')}
             ${enlacePie('#reglamento', 'Reglamento')}
             ${enlacePie('#visitanos', 'Visítanos')}
             ${enlacePie('#instagram', 'En Instagram')}
@@ -467,8 +669,10 @@ ${cabeza({ estilos: `${compartido('movimiento.css')}\n${leer('estilos.css')}` })
           <ul>
             ${enlacePie(CONTACTO.whatsapp, 'WhatsApp', true)}
             ${enlacePie(CONTACTO.instagram, 'Instagram', true)}
+            ${enlacePie(CONTACTO.tiktok, 'TikTok', true)}
+            ${enlacePie(CONTACTO.facebook, 'Facebook', true)}
             ${enlacePie(UBICACION.maps, 'Google Maps', true)}
-            <li><span>Correo: ${pendiente('correo de contacto (pregunta 6)')}</span></li>
+            ${enlacePie(`mailto:${CONTACTO.correo}`, CONTACTO.correo)}
           </ul>
         </nav>
       </div>
@@ -479,7 +683,7 @@ ${cabeza({ estilos: `${compartido('movimiento.css')}\n${leer('estilos.css')}` })
           <a href="${esc(CONTACTO.whatsapp)}"${externo}>WhatsApp</a>
           <a href="${esc(LINKS.linktree)}"${externo}>Linktree</a>
         </div>
-        <p>© 2026 ${esc(MARCA.nombre)}.</p>
+        <p>© 2026 ${esc(MARCA.nombre)}. ${esc(LEGAL.razonSocial)}.</p>
       </div>
     </div>
   </footer>
