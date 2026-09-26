@@ -55,20 +55,6 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
   :is(a, button):hover > .rueda > span + span { transform: none; }
 }
 
-/* Dato sin confirmar: resaltado para ubicarlo fácil. */
-.pendiente {
-  display: inline-block;
-  padding: 0.0625rem 0.375rem;
-  border-radius: 4px;
-  background: rgb(247 231 180 / 0.2);
-  color: var(--kuyen-luna);
-  font-family: var(--fuente-texto);
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 0.02em;
-  line-height: 1.4;
-  white-space: nowrap;
-}
 
 .enlace { color: var(--kuyen-luna); text-decoration: underline; text-underline-offset: 3px; }
 
@@ -301,9 +287,17 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .porque__nombre { margin-block: 2rem 1.25rem; font-family: var(--fuente-titulo); font-size: 1.5rem; font-weight: 400; line-height: 1.2; }
 .porque__texto { color: var(--texto-suave); font-size: 1.125rem; line-height: 1.55; }
 @media (min-width: 640px) { .porque { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 640px) {
+  .porque > .porque__item:nth-child(2n + 1):last-child { grid-column: 1 / -1; }
+}
 @media (min-width: 1024px) {
   .porque__titulo { width: 33.333%; margin-bottom: 4rem; }
   .porque { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .porque > .porque__item:nth-child(2n + 1):last-child { grid-column: auto; }
+  /* Son seis características: en cuatro columnas quedan 4 + 2, con dos huecos.
+     Con seis van 3 + 3. */
+  .porque:has(> :nth-child(6):last-child) { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .porque > .porque__item:nth-child(4n + 1):last-child { grid-column: 1 / -1; }
 }
 
 /* Lista de servicios, también en horarios y valores. */
@@ -324,6 +318,18 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .proyectos { border-radius: 2rem; }
 .proyectos__titulo { margin-bottom: 4rem; }
 .proyectos__grilla { display: grid; gap: 2rem; margin-bottom: 4rem; }
+/* Las tarjetas se levantan al pasar el mouse. El desplazamiento va en `translate`
+   y no en `transform`, que lo usa la animación de entrada de [data-m-aparece]. */
+@media (hover: hover) {
+  .proyecto, .entrada { transition: translate 400ms var(--m-curva), border-color 300ms; }
+  .proyecto:hover, .proyecto:focus-within, .entrada:hover, .entrada:focus-within { translate: 0 -4px; }
+  .proyecto:hover, .proyecto:focus-within { border-color: rgb(247 231 180 / 0.4); }
+  .lista__item { transition: translate 400ms var(--m-curva); }
+  .lista__item:hover { translate: 0 -2px; }
+  .lista__item:hover .lista__nombre { color: var(--kuyen-luna); }
+  .lista__nombre { transition: color 300ms; }
+}
+
 .proyecto { padding: 1.5rem; border: 1px solid rgb(255 255 255 / 0.14); border-radius: 1.25rem; background: rgb(23 26 30 / 0.55); }
 .proyecto__titulo { font-size: 1.125rem; font-weight: 400; }
 .proyecto__titulo a { transition: color 300ms; }
@@ -403,6 +409,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 @media (min-width: 640px) {
   .entradas__titulo { text-align: left; }
   .entradas { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .entradas > .entrada:nth-child(2n + 1):last-child { grid-column: 1 / -1; }
 }
 
 /* Reglamento en tres columnas. */
@@ -411,8 +418,22 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .reglas__item .lista__marca { min-width: 2.25rem; }
 .reglas__texto { font-size: 1.125rem; line-height: 1.4; }
 .reglas__detalle { display: block; margin-top: 0.375rem; color: var(--texto-suave); font-size: 0.9375rem; line-height: 1.55; }
-@media (min-width: 640px) { .reglas { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-@media (min-width: 1024px) { .reglas { grid-template-columns: repeat(3, minmax(0, 1fr)); margin-bottom: 4rem; } }
+
+/* Un elemento solo en la última fila se ve como un error de maquetación: con
+   cuatro en tres columnas, el cuarto queda abajo con dos huecos al lado. Con
+   cuatro se reparte 2 y 2; con cualquier otro resto de uno el último se lleva
+   la fila entera. `:has()` cuenta los hijos sin tocar el markup. */
+@media (min-width: 640px) {
+  .reglas { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .reglas > :nth-child(2n + 1):last-child { grid-column: 1 / -1; max-width: 46rem; }
+}
+@media (min-width: 1024px) {
+  .reglas { grid-template-columns: repeat(3, minmax(0, 1fr)); margin-bottom: 4rem; }
+  .reglas > :nth-child(2n + 1):last-child { grid-column: auto; max-width: none; }
+  .reglas > :nth-child(3n + 1):last-child { grid-column: 1 / -1; max-width: 46rem; }
+  .reglas:has(> :nth-child(4):last-child) { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .reglas:has(> :nth-child(4):last-child) > :last-child { grid-column: auto; max-width: none; }
+}
 
 /* Llamado en mitades, también en Visítanos. */
 .llamado { padding-block: 3.5rem; background: var(--fondo); color: var(--texto); }
@@ -430,7 +451,8 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .mapa { position: relative; min-height: 26rem; overflow: hidden; border: 1px solid var(--borde); border-radius: 1.5rem; background: var(--kuyen-tinta); }
 .mapa > iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
 .mapa__pie { margin-top: 1rem; color: var(--texto-suave); font-size: 0.9375rem; line-height: 1.5; }
-.visitanos__contacto { margin-top: 1.5rem; color: var(--texto-suave); line-height: 1.6; text-align: center; }
+/* Sin tope, a 1440 px la línea pasa de 150 caracteres y deja de leerse. */
+.visitanos__contacto { max-width: 60ch; margin: 1.5rem auto 0; color: var(--texto-suave); line-height: 1.6; text-align: center; }
 /* La proporción de la portada va recién desde 1280 px: antes, con el alto mínimo
    del recuadro, obligaría a un ancho mayor que la pantalla. */
 @media (min-width: 1280px) { .mapa { min-height: 0; aspect-ratio: 2.69; } }

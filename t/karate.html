@@ -301,41 +301,244 @@
 .m-valoracion__enlaces { display: flex; flex-wrap: wrap; gap: 0.25rem 0.75rem; font-size: 0.875rem; }
 .m-valoracion__invita { color: var(--texto-suave); }
 
-/* Hueco de una foto que Kuyen todavía no manda. Se ve a propósito: borde
-   punteado en amarillo luna y el pedido escrito adentro, del tamaño que va a
-   tener la foto. El texto va en --kuyen-luna sobre la noche, que pasa AA. */
-.m-falta {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 0.75rem;
-  margin: 0;
-  padding: 1.25rem;
-  border: 2px dashed rgb(247 231 180 / 0.45);
-  border-radius: 0.75rem;
-  background: rgb(247 231 180 / 0.05);
-  text-align: center;
+/* ---------- Visor de fotos ----------
+   Las fotos de contenido se abren ampliadas al hacer clic y se recorren con las
+   flechas dentro de su grupo. El markup lo arma visor.js la primera vez que se
+   abre: acá van solo los estilos. */
+/* Preselección: la foto que se puede ampliar avisa creciendo dentro de su marco,
+   y el marco se enciende con un aro del amarillo de la luna. Reemplaza al cursor
+   de lupa, que era del navegador y no decía nada del sitio. */
+.visor-activa { cursor: pointer; }
+.visor-marco { position: relative; }
+.visor-marco::after {
+  content: "";
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+  border: 2px solid transparent;
+  border-radius: inherit;
+  pointer-events: none;
 }
-.m-falta--horizontal { aspect-ratio: 3 / 2; }
-.m-falta--vertical { aspect-ratio: 3 / 4; }
-.m-falta__marca { display: block; width: 2rem; height: 2rem; flex: none; color: var(--kuyen-luna); }
-.m-falta__marca svg { width: 100%; height: 100%; }
-.m-falta__texto { max-width: 26rem; color: var(--kuyen-luna); font-family: var(--fuente-texto); font-size: 0.8125rem; line-height: 1.5; }
-.m-falta__texto b { display: block; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; }
-.m-falta__codigo { opacity: 0.75; }
-/* En cajas muy chicas el recuadro deja de imponer proporción y se ajusta. */
-@media (max-width: 400px) {
-  .m-falta { padding: 1rem; }
-  .m-falta--horizontal, .m-falta--vertical { aspect-ratio: auto; min-height: 11rem; }
+.visor-marco:focus-within::after { border-color: rgb(247 231 180 / 0.6); }
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .visor-marco::after { transition: border-color 350ms var(--m-curva); }
+  .visor-marco:hover::after { border-color: rgb(247 231 180 / 0.6); }
+  /* Las de galería descansan en 1. Las de .m-foto descansan en 1.1, que es donde
+     termina su animación de entrada, así que suben desde ahí: el selector de más
+     abajo gana por especificidad y ninguna foto encoge al pasar el mouse. */
+  .visor-marco .visor-activa { transition: scale 600ms var(--m-curva); }
+  .visor-marco:hover .visor-activa { scale: 1.06; }
+  .m-js .m-foto.m-visible.visor-marco:hover img { scale: 1.18; transition-duration: 700ms; transition-delay: 0ms; }
 }
 
-/* Rejilla de huecos, para las secciones que esperan varias fotos. */
-.m-faltas { display: grid; gap: 1rem; margin-top: 2rem; }
-@media (min-width: 640px) { .m-faltas { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.visor-abierto { overflow: hidden; }
+
+/* El visor se funde al abrir y al cerrar. `display` no se puede transicionar sin
+   @starting-style, así que se queda en display: flex y lo que cambia es la
+   visibilidad: oculto sale del árbol de accesibilidad y del contraste, y sin
+   pointer-events no atrapa clics. El retardo de visibility al cerrar es lo que
+   deja que el fundido se vea antes de esconderlo. */
+.visor {
+  position: fixed;
+  z-index: 90;
+  display: flex;
+  inset: 0;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 320ms ease, visibility 0s linear 320ms;
+}
+.visor--abierto {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transition: opacity 320ms ease, visibility 0s;
+}
+.visor--calmo, .visor--calmo .visor__foto { transition: none; }
+.visor__fondo { position: absolute; inset: 0; background: rgb(12 13 16 / 0.94); }
+
+.visor__figura {
+  position: relative;
+  display: flex;
+  max-width: 92vw;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.875rem;
+  margin: 0;
+  touch-action: pan-y;
+}
+.visor__foto {
+  display: block;
+  max-width: 92vw;
+  max-height: 74vh;
+  border-radius: 0.75rem;
+  object-fit: contain;
+  /* Se funde al cambiar de una foto a otra dentro del carrusel: visor.js le
+     saca la clase al pedir la nueva y se la devuelve cuando termina de cargar. */
+  opacity: 0;
+  transition: opacity 260ms ease;
+}
+.visor__foto--lista { opacity: 1; }
+.visor__pie {
+  display: flex;
+  max-width: 46rem;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: center;
+  gap: 0.25rem 0.75rem;
+  color: var(--kuyen-luna);
+  font-family: var(--fuente-texto);
+  font-size: 0.875rem;
+  line-height: 1.5;
+  text-align: center;
+}
+.visor__contador { color: rgb(247 231 180 / 0.72); font-size: 0.8125rem; white-space: nowrap; }
+
+.visor__boton {
+  position: absolute;
+  z-index: 1;
+  display: flex;
+  width: 2.75rem;
+  height: 2.75rem;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgb(247 231 180 / 0.28);
+  border-radius: 9999px;
+  background: rgb(23 26 30 / 0.72);
+  color: var(--kuyen-luna);
+  transition: border-color 200ms, background-color 200ms;
+}
+.visor__boton:hover { border-color: rgb(247 231 180 / 0.6); background: rgb(23 26 30 / 0.92); }
+.visor__boton:focus-visible { outline: 2px solid var(--kuyen-luna); outline-offset: 2px; }
+.visor__boton svg { width: 1.375rem; height: 1.375rem; }
+.visor__boton--cerrar { top: 1rem; right: 1rem; }
+.visor__boton--atras { bottom: 1rem; left: 50%; translate: -3.25rem 0; }
+.visor__boton--siguiente { bottom: 1rem; left: 50%; translate: 0.5rem 0; }
+@media (min-width: 768px) {
+  .visor__foto { max-height: 80vh; }
+  .visor__boton--atras { top: 50%; bottom: auto; left: 1.25rem; translate: 0 -50%; }
+  .visor__boton--siguiente { top: 50%; bottom: auto; left: auto; right: 1.25rem; translate: 0 -50%; }
+}
+/* En teléfono los dos botones de abajo se sientan sobre el pie: se le deja aire. */
+@media (max-width: 767px) {
+  .visor__figura { padding-bottom: 3.75rem; }
+}
+
+/* Cada foto de una galería, en su recuadro: proporción fija según su orientación
+   y recorte al centro, para que una fila quede pareja aunque los originales
+   tengan medidas distintas. */
+.m-caja { position: relative; margin: 0; overflow: hidden; border-radius: 0.75rem; background: rgb(247 231 180 / 0.06); }
+.m-caja--horizontal { aspect-ratio: 3 / 2; }
+.m-caja--vertical { aspect-ratio: 3 / 4; }
+.m-caja img { display: block; width: 100%; height: 100%; object-fit: cover; }
+/* Cada foto es su propia zona de puntero (data-m-puntero en fotoCaja): se
+   inclina un poco hacia donde está el mouse. Va en el <img> y no en el <figure>,
+   porque el figure usa transform para su animación de entrada. Las variables
+   valen 0 mientras el puntero no está encima, así que en reposo no se inclina
+   nada y no asoman las esquinas del recorte. */
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .m-caja img {
+    transform: rotateX(calc(var(--m-my, 0) * -2deg)) rotateY(calc(var(--m-mx, 0) * 2deg));
+    transform-origin: center;
+  }
+}
+@media (max-width: 400px) {
+  .m-caja--horizontal, .m-caja--vertical { aspect-ratio: auto; min-height: 11rem; }
+}
+
+/* Escala de graduación: una chapa de cada color con los grados que cubre. El
+   color sale del dato, no del tema, porque es el color real de la chapa que va
+   atornillada al lado de la ruta. La chapa blanca lleva borde para verse. */
+.m-grados { display: flex; flex-direction: column; gap: 0.75rem; margin-top: 2rem; }
+.m-grados__titulo { font-family: var(--fuente-titulo); font-size: 1.25rem; font-weight: 400; }
+.m-grados__intro { color: var(--texto-suave); font-size: 0.9375rem; }
+.m-grados__lista { display: grid; gap: 0.5rem; margin: 0; padding: 0; list-style: none; }
+@media (min-width: 560px) { .m-grados__lista { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 900px) { .m-grados__lista { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.m-grados__fila {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid rgb(247 231 180 / 0.18);
+  border-radius: 999px;
+  font-size: 0.9375rem;
+}
+.m-grados__chapa {
+  width: 1.125rem;
+  height: 1.125rem;
+  flex: none;
+  border: 1px solid rgb(247 231 180 / 0.55);
+  border-radius: 50%;
+  background: var(--chapa);
+}
+.m-grados__chapa { transition: scale 300ms var(--m-curva); }
+@media (hover: hover) {
+  .m-grados__fila { transition: border-color 300ms var(--m-curva); }
+  .m-grados__fila:hover { border-color: rgb(247 231 180 / 0.5); }
+  .m-grados__fila:hover .m-grados__chapa { scale: 1.25; }
+}
+.m-grados__color { font-weight: 600; }
+.m-grados__valor { margin-left: auto; color: var(--texto-suave); font-family: var(--fuente-titulo); letter-spacing: 0.04em; }
+.m-grados__nota { color: var(--texto-suave); font-size: 0.875rem; }
+
+/* Galería de una sección: mosaico de dos columnas, y tres o cuatro en pantalla
+   grande según cuántas lleve la fila. En teléfono también van de a dos: en una
+   sola columna, las ocho fotos del muro son cuatro pantallas de scroll. Una foto
+   sola manda, ocupa el ancho entero y por eso va más apaisada. */
+.m-galeria { display: grid; gap: 1rem; margin-top: 2rem; grid-template-columns: repeat(2, minmax(0, 1fr)); perspective: 1000px; }
+/* Dos filas seguidas son un solo bloque de fotos: se separan como las columnas. */
+.m-galeria + .m-galeria { margin-top: 1rem; }
+.m-galeria--sola { grid-template-columns: minmax(0, 1fr); }
+/* Debajo de 1024 px la galería tiene dos columnas y la tercera foto quedaría
+   sola: se lleva la fila, y como la ocupa entera va apaisada, igual que una foto
+   sola. Desde 1024 px son tres columnas y las tres van parejas, así que la regla
+   no puede salir de su media query. */
+@media (max-width: 1023px) {
+  .m-galeria--tres > :nth-child(3):last-child {
+    grid-column: 1 / -1;
+    /* Anclada al ancho: estirada también en alto, la proporción le devolvía un
+       ancho mayor que el de su columna y ensanchaba la página. */
+    width: 100%;
+    align-self: start;
+  }
+  .m-galeria--tres > :nth-child(3):last-child.m-caja--horizontal { aspect-ratio: 16 / 7; }
+  .m-galeria--tres > :nth-child(3):last-child.m-caja--vertical { aspect-ratio: 16 / 9; }
+}
+@media (min-width: 640px) {
+  .m-galeria--sola .m-caja--horizontal { aspect-ratio: 16 / 7; }
+  .m-galeria--sola .m-caja--vertical { aspect-ratio: 16 / 9; }
+}
 @media (min-width: 1024px) {
-  .m-faltas--tres { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-  .m-faltas--cuatro { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .m-galeria--tres { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .m-galeria--cuatro { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+
+/* ---------- Telón de sección ----------
+   Fondo de escalada para las secciones de poco texto: una cordillera al pie y
+   presas grandes flotando. `isolation: isolate` en la sección deja que el telón
+   vaya en z-index -1 sin caerse detrás del fondo de la sección, y `overflow`
+   recorta las presas que asoman para que no ensanchen la página. */
+.m-con-telon { position: relative; isolation: isolate; }
+.m-telon { position: absolute; z-index: -1; inset: 0; overflow: hidden; pointer-events: none; }
+.m-telon__cumbre {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 130%;
+  height: clamp(7rem, 18vw, 14rem);
+  translate: -50% 0;
+  fill: var(--kuyen-luna);
+  opacity: 0.05;
+}
+.m-presa--telon { filter: none; opacity: 0.06; }
+.m-presa--telon svg { rotate: var(--giro, 0deg); }
+@media (min-width: 768px) {
+  .m-telon__cumbre { opacity: 0.06; }
+  .m-presa--telon { opacity: 0.07; }
 }
 
 /* Presas que flotan. */
@@ -351,6 +554,7 @@
   .m-estrella { animation: m-titilar var(--d) ease-in-out var(--r) infinite; }
   .m-luna { animation: m-mecer 9s ease-in-out infinite alternate; }
   .m-presa svg { animation: m-flotar var(--dur, 8s) ease-in-out infinite alternate; }
+  .m-presa--telon { translate: 0 var(--m-y, 0px); }
 
   /* Entrada del hero: con [data-m-entrada], las piezas esperan a .m-listo, que
      llega cuando cargó la foto principal. Las estrellas se encienden, sube lo
@@ -480,6 +684,11 @@
 }
 @media (min-width: 640px) {
   .m-cifras { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  /* Son números cortos: con cuatro conviene una fila de cuatro antes que dejar
+     la cuarta sola debajo de las tres primeras. */
+  .m-cifras:has(> :nth-child(4):last-child) { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .m-cifras > :nth-child(3n + 1):last-child { grid-column: 1 / -1; }
+  .m-cifras:has(> :nth-child(4):last-child) > :last-child { grid-column: auto; }
 }
 
 /*
@@ -541,19 +750,6 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 }
 .antetitulo svg { width: 0.875rem; height: 0.875rem; }
 
-.pendiente {
-  display: inline-block;
-  padding: 0.0625rem 0.375rem;
-  border-radius: 4px;
-  background: rgb(247 231 180 / 0.2);
-  color: var(--kuyen-luna);
-  font-family: var(--fuente-texto);
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 0.02em;
-  line-height: 1.4;
-  white-space: nowrap;
-}
 
 .enlace { color: var(--kuyen-luna); text-decoration: underline; text-underline-offset: 3px; }
 
@@ -582,7 +778,8 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .boton--chico { padding: 0.5rem 0.875rem; font-size: 0.875rem; }
 @media (min-width: 768px) { .boton { font-size: 1.125rem; } .boton--chico { font-size: 0.875rem; } }
 
-.enlace-flecha { display: inline-flex; align-items: center; gap: 0.5rem; color: var(--kuyen-luna); font-weight: 600; }
+/* Enlace suelto, no dentro de un párrafo: necesita área que se pueda tocar. */
+.enlace-flecha { display: inline-flex; min-height: 2.75rem; align-items: center; gap: 0.5rem; color: var(--kuyen-luna); font-weight: 600; }
 .enlace-flecha svg { width: 1.125rem; height: 1.125rem; transition: transform 300ms var(--m-curva); }
 .enlace-flecha:hover svg { transform: translateX(4px); }
 
@@ -821,6 +1018,13 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 
 .muro__bajada { max-width: 46rem; margin-bottom: 2rem; color: var(--texto-suave); font-size: 1rem; line-height: 1.65; }
 .fichas { display: grid; gap: 1rem; }
+/* Las tarjetas se levantan al pasar el mouse. El desplazamiento va en `translate`
+   y no en `transform`, que lo usa la animación de entrada de [data-m-aparece]. */
+@media (hover: hover) {
+  .ficha { transition: translate 400ms var(--m-curva), border-color 300ms; }
+  .ficha:hover, .ficha:focus-within { translate: 0 -4px; border-color: rgb(247 231 180 / 0.45); }
+}
+
 .ficha { padding: 1.25rem; border: 1px solid var(--borde); border-radius: 1rem; background: var(--superficie); }
 .ficha__titulo { margin-bottom: 0.5rem; font-family: var(--fuente-titulo); font-size: 1.0625rem; font-weight: 400; }
 .fichas--pasos { list-style: none; counter-reset: paso; }
@@ -835,8 +1039,31 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
   font-weight: 600;
 }
 .ficha__texto { color: var(--texto-suave); font-size: 0.9375rem; line-height: 1.6; }
-@media (min-width: 640px) { .fichas { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-@media (min-width: 1024px) { .fichas { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.25rem; } }
+
+/* Un elemento solo en la última fila se ve como un error de maquetación: con
+   cuatro en tres columnas, el cuarto queda abajo con dos huecos al lado. Con
+   cuatro se reparte 2 y 2; con cualquier otro resto de uno el último se lleva
+   la fila entera. `:has()` cuenta los hijos sin tocar el markup. */
+@media (min-width: 640px) {
+  .fichas { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .fichas > :nth-child(2n + 1):last-child { grid-column: 1 / -1; }
+}
+@media (min-width: 1024px) {
+  .fichas { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.25rem; }
+  .fichas > :nth-child(2n + 1):last-child { grid-column: auto; }
+  .fichas > :nth-child(3n + 1):last-child { grid-column: 1 / -1; }
+  .fichas:has(> :nth-child(4):last-child) { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .fichas:has(> :nth-child(4):last-child) > :last-child { grid-column: auto; }
+  /* Resto de dos (5, 8, 11...): la última fila lleva dos, y para que llene el
+     ancho la grilla pasa a seis pistas y cada tarjeta ocupa dos, o tres cuando
+     es de las dos últimas. */
+  .fichas:has(> :nth-child(3n + 1):nth-last-child(2)) { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+  .fichas:has(> :nth-child(3n + 1):nth-last-child(2)) > * { grid-column: span 2; }
+  /* Las dos últimas van con el mismo prefijo :has que la regla de arriba: si no,
+     esa gana por especificidad y las deja en dos pistas, con un hueco al final. */
+  .fichas:has(> :nth-child(3n + 1):nth-last-child(2)) > :nth-child(3n + 1):nth-last-child(2),
+  .fichas:has(> :nth-child(3n + 1):nth-last-child(2)) > :nth-child(3n + 1):nth-last-child(2) ~ * { grid-column: span 3; }
+}
 
 /* ---------- Programas ---------- */
 
@@ -855,25 +1082,33 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
   font-size: 0.8125rem;
   font-weight: 600;
 }
-.programa__cabeza { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+/* La cabeza es el enlace a WhatsApp: la tarjeta entera dejó de serlo para que
+   la foto se pueda ampliar (25-09-2026). */
+.programa__cabeza { display: flex; min-height: 2.75rem; align-items: center; justify-content: space-between; gap: 1rem; padding-block: 0.375rem; margin-block: -0.375rem; }
+.programa__cabeza:focus-visible { outline: 2px solid var(--kuyen-luna); outline-offset: 4px; border-radius: 0.25rem; }
 .programa__nombre { font-family: var(--fuente-titulo); font-size: 1.25rem; font-weight: 400; line-height: 1.15; transition: color 300ms; }
 .programa__flecha svg { width: 1.5rem; height: 1.5rem; transition: transform 300ms var(--m-curva); }
 .programa__texto { color: var(--texto-suave); font-size: 0.9375rem; line-height: 1.6; }
 .programa__linea { position: relative; height: 1px; overflow: hidden; background: var(--borde); }
 .programa__linea::after { content: ""; position: absolute; inset: 0; background: var(--kuyen-luna); transform: scaleX(0); transform-origin: left; transition: transform 500ms var(--m-curva); }
 @media (hover: hover) {
-  .programa:hover .programa__nombre { color: var(--kuyen-luna); }
-  .programa:hover .programa__flecha svg { transform: rotate(45deg); }
-  .programa:hover .programa__linea::after { transform: scaleX(1); }
+  .programa:hover .programa__nombre, .programa:focus-within .programa__nombre { color: var(--kuyen-luna); }
+  .programa:hover .programa__flecha svg, .programa:focus-within .programa__flecha svg { transform: rotate(45deg); }
+  .programa:hover .programa__linea::after, .programa:focus-within .programa__linea::after { transform: scaleX(1); }
   .m-js .programa:hover .m-foto.m-visible img { scale: 1.18; transition-duration: 700ms; transition-delay: 0ms; }
 }
-.programa:focus-visible .programa__linea::after { transform: scaleX(1); }
+.programa:focus-within .programa__linea::after { transform: scaleX(1); }
 @media (min-width: 768px) {
   .programas { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .programas > .programa:nth-child(2n + 1):last-child { grid-column: 1 / -1; }
   .programa__nombre { font-size: 1.375rem; }
 }
 @media (min-width: 1024px) {
   .programas { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .programas > .programa:nth-child(2n + 1):last-child { grid-column: auto; }
+  .programas > .programa:nth-child(3n + 1):last-child { grid-column: 1 / -1; }
+  .programas:has(> :nth-child(4):last-child) { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .programas:has(> :nth-child(4):last-child) > .programa:last-child { grid-column: auto; }
   .programa__nombre { font-size: 1.625rem; }
 }
 
@@ -900,8 +1135,27 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .tabla tr { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.875rem 1rem; padding-block: 1.125rem; border-bottom: 1px solid var(--borde); }
 .tabla td::before { content: attr(data-etiqueta); display: block; margin-bottom: 0.25rem; color: var(--texto-suave); font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; }
 .tramo { display: inline-block; padding: 0.25rem 0.75rem; border-radius: 9999px; background: rgb(247 231 180 / 0.14); color: var(--kuyen-luna); font-size: 0.8125rem; font-weight: 600; white-space: nowrap; }
-.horario__nota { margin-top: 1.5rem; color: var(--texto-suave); font-size: 0.9375rem; line-height: 1.6; }
+/* Sin tope, a 1440 px la línea pasa de 140 caracteres y deja de leerse. */
+.horario__nota { max-width: 68ch; margin-top: 1.5rem; color: var(--texto-suave); font-size: 0.9375rem; line-height: 1.6; }
 .valores { margin-top: 2.5rem; }
+/* Los valores de la comunidad: una fila de píldoras, no una tabla de precios.
+   Venían usando .valores__item, que desde 640 px es una grilla de tres columnas
+   para nombre, detalle y valor, así que el texto entero caía apretado en la
+   primera y las otras dos quedaban vacías. */
+.lema { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.625rem; margin-top: 2.5rem; }
+.lema__item {
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--borde);
+  border-radius: 9999px;
+  color: var(--texto-suave);
+  font-size: 0.9375rem;
+  line-height: 1.3;
+}
+@media (min-width: 640px) {
+  .lema { gap: 0.75rem; }
+  .lema__item { padding: 0.5625rem 1.25rem; }
+}
+
 .valores__titulo { margin-bottom: 1rem; color: var(--texto-suave); font-size: 0.8125rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; }
 .valores__lista { display: grid; gap: 0.875rem; }
 .valores__item { display: grid; gap: 0.25rem; padding-bottom: 0.875rem; border-bottom: 1px solid var(--borde); }
@@ -934,7 +1188,9 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .cabeza-seccion--sola { margin-bottom: 2.5rem; }
 .testimonios { display: grid; gap: 1.5rem; }
 .testimonios__izquierda { display: grid; gap: 1.5rem; align-content: start; }
+/* Tres cifras en dos columnas dejaban la tercera sola: se lleva la fila. */
 .testimonios .m-cifras { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.5rem; }
+.testimonios .m-cifras > :nth-child(2n + 1):last-child { grid-column: 1 / -1; }
 .testimonios .m-cifra dd { font-size: clamp(2.25rem, 1.8rem + 2vw, 3.5rem); }
 .acento-tarjeta { padding: 2rem; border-radius: 1.5rem; background: var(--kuyen-luna); color: var(--kuyen-tinta); }
 .acento-tarjeta__etiqueta { font-size: 0.8125rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; }
@@ -983,7 +1239,6 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .resena__avatar { width: 2.5rem; height: 2.5rem; border-radius: 9999px; }
 .resena__nombre { font-weight: 600; }
 .resena__detalle { margin-top: 0.125rem; font-size: 0.875rem; }
-.resena .pendiente { background: rgb(43 46 131 / 0.12); color: var(--kuyen-indigo); }
 .carrusel__controles { position: relative; display: flex; align-items: center; justify-content: center; gap: 1rem; margin-top: 1rem; }
 .carrusel__flecha {
   display: inline-flex;
@@ -997,9 +1252,27 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 }
 .carrusel__flecha:hover { background: var(--kuyen-blanco); color: var(--kuyen-tinta); }
 .carrusel__flecha svg { width: 1.125rem; height: 1.125rem; }
-.carrusel__puntos { display: flex; gap: 0.5rem; }
-.carrusel__punto { width: 0.625rem; height: 0.625rem; border-radius: 9999px; background: rgb(255 255 255 / 0.35); transition: width 300ms, background-color 300ms; }
-.carrusel__punto[aria-current="true"] { width: 1.5rem; background: var(--kuyen-luna); }
+.carrusel__puntos { display: flex; }
+/* El punto se ve de 10 px, pero el botón mide 32: con 10 px no se acierta
+   con el dedo. El relleno da el área y el ::before dibuja el punto. */
+.carrusel__punto {
+  display: flex;
+  align-items: center;
+  width: 2rem;
+  height: 2rem;
+  justify-content: center;
+  background: none;
+}
+.carrusel__punto::before {
+  content: '';
+  display: block;
+  width: 0.625rem;
+  height: 0.625rem;
+  border-radius: 9999px;
+  background: rgb(255 255 255 / 0.35);
+  transition: width 300ms, background-color 300ms;
+}
+.carrusel__punto[aria-current="true"]::before { width: 1.5rem; background: var(--kuyen-luna); }
 
 /* ---------- Llamado ---------- */
 
@@ -1148,7 +1421,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
         <img class="m-luna m-capa hero__luna m-entra-sube" src="/img/escena/luna-600.webp" srcset="/img/escena/luna-300.webp 300w, /img/escena/luna-600.webp 600w" sizes="(min-width: 768px) 7rem, 6rem" alt="" style="--m-prof: 16" data-m-paralaje="-0.1">
         <div class="hero__texto" id="contenido" tabindex="-1">
           <a class="oferta" href="#programas" data-m-aparece>
-            <span class="oferta__etiqueta">4 clases al mes</span>
+            <span class="oferta__etiqueta">De 4 a 12 clases al mes, según cuántas veces por semana vengas.</span>
             <span class="oferta__texto">Clases guiadas desde marzo de 2026</span>
           </a>
           <h1 class="hero__titulo" data-m-revelar style="--m-retraso: 200ms"><span class="m-linea"><span class="m-palabra"><span style="--m-i: 0">Nos</span></span> <span class="m-palabra"><span style="--m-i: 1">vemos</span></span></span> <span class="m-linea"><span class="m-palabra"><span style="--m-i: 2">en</span></span> <span class="m-palabra"><span style="--m-i: 3">las</span></span></span> <span class="m-linea"><span class="m-palabra m-acento"><span style="--m-i: 4">presas.</span></span></span></h1>
@@ -1242,7 +1515,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
           </article>
           <article class="ficha" data-m-aparece style="--m-retraso: 240ms">
             <h3 class="ficha__titulo">Rutas nuevas</h3>
-            <p class="ficha__texto">Cada mes se mueve al menos una sección del muro, y la dificultad de cada ruta va marcada con chapas.</p>
+            <p class="ficha__texto">Cada mes se mueve al menos una sección del muro, y la dificultad de cada ruta va marcada con el color de su chapa.</p>
           </article>
           <article class="ficha" data-m-aparece style="--m-retraso: 320ms">
             <h3 class="ficha__titulo">Colchonetas de 30 cm</h3>
@@ -1277,29 +1550,66 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
             <p class="ficha__texto">Bienestar corporal con técnicas manuales: masaje de relajación, descontracturante, mixto y exprés en silla ergonómica.</p>
           </article>
         </div>
-        <div class="m-faltas m-faltas--cuatro"><figure class="m-falta m-falta--horizontal" data-foto-pendiente="muro-vacio" data-m-aparece>
-            <span class="m-falta__marca" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8.5A2.5 2.5 0 0 1 5.5 6h1.8l1.2-2h6.8l1.2 2h1.8A2.5 2.5 0 0 1 21 8.5v9A2.5 2.5 0 0 1 18.5 20h-13A2.5 2.5 0 0 1 3 17.5z"/><circle cx="12" cy="13" r="3.6"/></svg></span>
-            <figcaption class="m-falta__texto"><b>Falta esta foto</b> El muro completo sin gente, con buena luz. <span class="m-falta__codigo">F5</span></figcaption>
+        <div class="m-grados" data-m-aparece>
+          <h3 class="m-grados__titulo">Graduación de boulder</h3>
+          <p class="m-grados__intro">La dificultad va marcada con el color de la chapa.</p>
+          <ul class="m-grados__lista">
+            <li class="m-grados__fila">
+              <span class="m-grados__chapa" style="--chapa: #2b1fbf" aria-hidden="true"></span>
+              <span class="m-grados__color">Azul</span>
+              <span class="m-grados__valor">V0 a V1</span>
+            </li>
+            <li class="m-grados__fila">
+              <span class="m-grados__chapa" style="--chapa: #4ca64c" aria-hidden="true"></span>
+              <span class="m-grados__color">Verde</span>
+              <span class="m-grados__valor">V1 a V2</span>
+            </li>
+            <li class="m-grados__fila">
+              <span class="m-grados__chapa" style="--chapa: #ffd029" aria-hidden="true"></span>
+              <span class="m-grados__color">Amarillo</span>
+              <span class="m-grados__valor">V3 a V4</span>
+            </li>
+            <li class="m-grados__fila">
+              <span class="m-grados__chapa" style="--chapa: #e01b1b" aria-hidden="true"></span>
+              <span class="m-grados__color">Rojo</span>
+              <span class="m-grados__valor">V5 a V6</span>
+            </li>
+            <li class="m-grados__fila">
+              <span class="m-grados__chapa" style="--chapa: #111111" aria-hidden="true"></span>
+              <span class="m-grados__color">Negro</span>
+              <span class="m-grados__valor">V7 a V8</span>
+            </li>
+            <li class="m-grados__fila">
+              <span class="m-grados__chapa" style="--chapa: #f7f2e4" aria-hidden="true"></span>
+              <span class="m-grados__color">Blanco</span>
+              <span class="m-grados__valor">V9 a V10</span>
+            </li>
+          </ul>
+          <p class="m-grados__nota">Los volúmenes son válidos para todas las rutas.</p>
+        </div>
+        <div class="m-galeria m-galeria--cuatro"><figure class="m-caja m-caja--horizontal" data-m-aparece data-m-puntero>
+            <img src="/img/fotos/muro-placa-1200.webp" srcset="/img/fotos/muro-placa-800.webp 800w, /img/fotos/muro-placa-1200.webp 1200w, /img/fotos/muro-placa-1600.webp 1600w" sizes="(min-width: 1024px) 24vw, (min-width: 640px) 45vw, 92vw" width="1200" height="900" alt="La placa de punta a punta, sin nadie escalando: paneles negros, azules, amarillos y blancos llenos de presas de colores" loading="lazy" decoding="async">
           </figure>
-            <figure class="m-falta m-falta--horizontal" data-foto-pendiente="presas-cerca" data-m-aparece>
-            <span class="m-falta__marca" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8.5A2.5 2.5 0 0 1 5.5 6h1.8l1.2-2h6.8l1.2 2h1.8A2.5 2.5 0 0 1 21 8.5v9A2.5 2.5 0 0 1 18.5 20h-13A2.5 2.5 0 0 1 3 17.5z"/><circle cx="12" cy="13" r="3.6"/></svg></span>
-            <figcaption class="m-falta__texto"><b>Falta esta foto</b> Presas y volúmenes de cerca, donde se vean los colores y la textura. <span class="m-falta__codigo">F4</span></figcaption>
+            <figure class="m-caja m-caja--horizontal" data-m-aparece data-m-puntero style="--m-retraso: 90ms">
+            <img src="/img/fotos/muro-15-1200.webp" srcset="/img/fotos/muro-15-800.webp 800w, /img/fotos/muro-15-1200.webp 1200w, /img/fotos/muro-15-1600.webp 1600w" sizes="(min-width: 1024px) 24vw, (min-width: 640px) 45vw, 92vw" width="1200" height="900" alt="El muro de 15 grados, con volúmenes de terciado y de resina repartidos sobre paneles azules, grises y amarillos" loading="lazy" decoding="async">
           </figure>
-            <figure class="m-falta m-falta--vertical" data-foto-pendiente="moonboard" data-m-aparece>
-            <span class="m-falta__marca" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8.5A2.5 2.5 0 0 1 5.5 6h1.8l1.2-2h6.8l1.2 2h1.8A2.5 2.5 0 0 1 21 8.5v9A2.5 2.5 0 0 1 18.5 20h-13A2.5 2.5 0 0 1 3 17.5z"/><circle cx="12" cy="13" r="3.6"/></svg></span>
-            <figcaption class="m-falta__texto"><b>Falta esta foto</b> El moonboard completo, y otra con alguien escalando. <span class="m-falta__codigo">F7</span></figcaption>
+            <figure class="m-caja m-caja--horizontal" data-m-aparece data-m-puntero style="--m-retraso: 180ms">
+            <img src="/img/fotos/muro-25-1200.webp" srcset="/img/fotos/muro-25-800.webp 800w, /img/fotos/muro-25-1200.webp 1200w, /img/fotos/muro-25-1600.webp 1600w" sizes="(min-width: 1024px) 24vw, (min-width: 640px) 45vw, 92vw" width="1200" height="900" alt="El desplome de 25 grados, con paneles azules, blancos y amarillos y las colchonetas naranjas al pie" loading="lazy" decoding="async">
           </figure>
-            <figure class="m-falta m-falta--horizontal" data-foto-pendiente="seteo" data-m-aparece>
-            <span class="m-falta__marca" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8.5A2.5 2.5 0 0 1 5.5 6h1.8l1.2-2h6.8l1.2 2h1.8A2.5 2.5 0 0 1 21 8.5v9A2.5 2.5 0 0 1 18.5 20h-13A2.5 2.5 0 0 1 3 17.5z"/><circle cx="12" cy="13" r="3.6"/></svg></span>
-            <figcaption class="m-falta__texto"><b>Falta esta foto</b> El armado de rutas: seteo, lavado de presas o instalación de volúmenes. <span class="m-falta__codigo">F12</span></figcaption>
+            <figure class="m-caja m-caja--horizontal" data-m-aparece data-m-puntero style="--m-retraso: 270ms">
+            <img src="/img/fotos/moonboard-1200.webp" srcset="/img/fotos/moonboard-800.webp 800w, /img/fotos/moonboard-1200.webp 1200w, /img/fotos/moonboard-1600.webp 1600w" sizes="(min-width: 1024px) 24vw, (min-width: 640px) 45vw, 92vw" width="1200" height="702" alt="El panel amarillo y azul con las tablas de presas en cuadrícula, y el muro de colores a su derecha" loading="lazy" decoding="async">
+          </figure></div>
+        <div class="m-galeria m-galeria--cuatro"><figure class="m-caja m-caja--vertical" data-m-aparece data-m-puntero>
+            <img src="/img/fotos/muro-desplomes-1200.webp" srcset="/img/fotos/muro-desplomes-800.webp 600w, /img/fotos/muro-desplomes-1200.webp 900w, /img/fotos/muro-desplomes-1600.webp 1200w" sizes="(min-width: 1024px) 24vw, (min-width: 640px) 45vw, 92vw" width="900" height="1200" alt="Los desplomes vistos desde abajo, con el panel naranjo inclinado sobre las colchonetas amarillas y rojas" loading="lazy" decoding="async">
           </figure>
-            <figure class="m-falta m-falta--horizontal" data-foto-pendiente="productos" data-m-aparece>
-            <span class="m-falta__marca" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8.5A2.5 2.5 0 0 1 5.5 6h1.8l1.2-2h6.8l1.2 2h1.8A2.5 2.5 0 0 1 21 8.5v9A2.5 2.5 0 0 1 18.5 20h-13A2.5 2.5 0 0 1 3 17.5z"/><circle cx="12" cy="13" r="3.6"/></svg></span>
-            <figcaption class="m-falta__texto"><b>Falta esta foto</b> Los productos a la venta, cada uno sobre un fondo simple. <span class="m-falta__codigo">F13</span></figcaption>
+            <figure class="m-caja m-caja--vertical" data-m-aparece data-m-puntero style="--m-retraso: 90ms">
+            <img src="/img/fotos/muro-placa-desplome-1200.webp" srcset="/img/fotos/muro-placa-desplome-800.webp 600w, /img/fotos/muro-placa-desplome-1200.webp 900w, /img/fotos/muro-placa-desplome-1600.webp 1200w" sizes="(min-width: 1024px) 24vw, (min-width: 640px) 45vw, 92vw" width="900" height="1200" alt="La placa y el desplome uno junto al otro, con un volumen verde grande colgando arriba a la derecha" loading="lazy" decoding="async">
           </figure>
-            <figure class="m-falta m-falta--horizontal" data-foto-pendiente="recepcion" data-m-aparece>
-            <span class="m-falta__marca" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8.5A2.5 2.5 0 0 1 5.5 6h1.8l1.2-2h6.8l1.2 2h1.8A2.5 2.5 0 0 1 21 8.5v9A2.5 2.5 0 0 1 18.5 20h-13A2.5 2.5 0 0 1 3 17.5z"/><circle cx="12" cy="13" r="3.6"/></svg></span>
-            <figcaption class="m-falta__texto"><b>Falta esta foto</b> La recepción y la zona de descanso. <span class="m-falta__codigo">F11</span></figcaption>
+            <figure class="m-caja m-caja--vertical" data-m-aparece data-m-puntero style="--m-retraso: 180ms">
+            <img src="/img/fotos/presa-cerca-1200.webp" srcset="/img/fotos/presa-cerca-800.webp 600w, /img/fotos/presa-cerca-1200.webp 900w, /img/fotos/presa-cerca-1600.webp 1200w" sizes="(min-width: 1024px) 24vw, (min-width: 640px) 45vw, 92vw" width="900" height="1200" alt="Una presa verde con magnesio, atornillada a un panel de textura rugosa, vista de muy cerca" loading="lazy" decoding="async">
+          </figure>
+            <figure class="m-caja m-caja--vertical" data-m-aparece data-m-puntero style="--m-retraso: 270ms">
+            <img src="/img/fotos/presa-volumen-1200.webp" srcset="/img/fotos/presa-volumen-800.webp 408w, /img/fotos/presa-volumen-1200.webp 612w, /img/fotos/presa-volumen-1600.webp 816w" sizes="(min-width: 1024px) 24vw, (min-width: 640px) 45vw, 92vw" width="612" height="1200" alt="Una presa roja grande atornillada a un volumen negro, vista de muy cerca" loading="lazy" decoding="async">
           </figure></div>
       </div>
     </section>
@@ -1331,14 +1641,11 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
             <p class="ficha__texto">Nuestra jefa de seguridad, vigilante y dueña absoluta del muro.</p>
           </article>
         </div>
-        <div class="m-faltas"><figure class="m-falta m-falta--horizontal" data-foto-pendiente="equipo" data-m-aparece>
-            <span class="m-falta__marca" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8.5A2.5 2.5 0 0 1 5.5 6h1.8l1.2-2h6.8l1.2 2h1.8A2.5 2.5 0 0 1 21 8.5v9A2.5 2.5 0 0 1 18.5 20h-13A2.5 2.5 0 0 1 3 17.5z"/><circle cx="12" cy="13" r="3.6"/></svg></span>
-            <figcaption class="m-falta__texto"><b>Falta esta foto</b> El equipo: una foto de cada persona, o una grupal. <span class="m-falta__codigo">F10</span></figcaption>
-          </figure></div>
       </div>
     </section>
 
-    <section class="seccion programas-seccion" id="programas">
+    <section class="seccion m-con-telon programas-seccion" id="programas">
+      <div class="m-telon" aria-hidden="true"><svg class="m-telon__cumbre" viewBox="0 0 1200 220" preserveAspectRatio="none" focusable="false"><path d="M0 220 140 118 232 168 392 58 520 142 636 96 760 176 880 108 1010 162 1120 120 1200 170 1200 220Z"/></svg><span class="m-presa m-presa--telon" style="left: 4.0%; top: 58.5%; width: 14.4%; --color: var(--kuyen-blanco); --giro: 30deg; --dur: 14.9s; --m-retraso: 0ms" data-m-paralaje="0.16"><svg viewBox="0 0 100 100"><path d="M10 66C10 38 30 14 56 14c20 0 34 14 34 32 0 26-24 44-52 44-16 0-28-8-28-24z"/></svg></span><span class="m-presa m-presa--telon" style="left: 77.1%; top: 17.2%; width: 15.9%; --color: var(--kuyen-blanco); --giro: 21deg; --dur: 12.1s; --m-retraso: 160ms" data-m-paralaje="0.17"><svg viewBox="0 0 100 100"><path d="M10 66C10 38 30 14 56 14c20 0 34 14 34 32 0 26-24 44-52 44-16 0-28-8-28-24z"/></svg></span><span class="m-presa m-presa--telon" style="left: 67.8%; top: 13.4%; width: 15.9%; --color: var(--kuyen-blanco); --giro: -5deg; --dur: 15.5s; --m-retraso: 320ms" data-m-paralaje="0.07"><svg viewBox="0 0 100 100"><path d="M10 66C10 38 30 14 56 14c20 0 34 14 34 32 0 26-24 44-52 44-16 0-28-8-28-24z"/></svg></span><span class="m-presa m-presa--telon" style="left: 4.0%; top: 68.9%; width: 8.8%; --color: var(--kuyen-lila); --giro: -6deg; --dur: 9.8s; --m-retraso: 480ms" data-m-paralaje="0.17"><svg viewBox="0 0 100 100"><path d="M30 10h40l24 40-24 40H30L6 50z"/></svg></span></div>
       <div class="contenedor">
         <div class="cabeza-seccion">
           <div>
@@ -1348,46 +1655,48 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
           <a class="enlace-flecha" href="https://wa.me/56935028838" target="_blank" rel="noopener" data-m-aparece><span>Escríbenos por WhatsApp</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
         </div>
         <div class="programas">
-          <a class="programa" href="https://wa.me/56935028838" target="_blank" rel="noopener">
+          <article class="programa">
             <div class="programa__medio m-foto">
               <img src="/img/fotos/escalador-muro-blanco-1200.webp" srcset="/img/fotos/escalador-muro-blanco-800.webp 800w, /img/fotos/escalador-muro-blanco-1200.webp 1200w, /img/fotos/escalador-muro-blanco-1600.webp 1600w" sizes="(min-width: 1024px) 22rem, (min-width: 768px) 45vw, 100vw" width="1200" height="800" alt="Escalador en un muro blanco, amarillo, azul y gris" loading="lazy" decoding="async">
               <span class="programa__numero">N.º 01</span>
             </div>
-            <div class="programa__cabeza" data-m-aparece style="--m-retraso: 150ms">
+            <a class="programa__cabeza" href="https://wa.me/56935028838" target="_blank" rel="noopener" data-m-aparece style="--m-retraso: 150ms">
               <h3 class="programa__nombre">Escalada libre</h3>
               <span class="programa__flecha"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></span>
-            </div>
+            </a>
             <p class="programa__texto" data-m-aparece style="--m-retraso: 220ms">Boulder para todos los niveles, desde principiantes hasta escaladores con experiencia. Dos tramos: horario bajo y horario alto.</p>
             <span class="programa__linea" aria-hidden="true"></span>
-          </a>
-          <a class="programa" href="https://wa.me/56935028838" target="_blank" rel="noopener">
+          </article>
+          <article class="programa">
             <div class="programa__medio m-foto" style="--m-retraso: 120ms">
               <img src="/img/fotos/escalador-desplome-amarillo-1200.webp" srcset="/img/fotos/escalador-desplome-amarillo-800.webp 800w, /img/fotos/escalador-desplome-amarillo-1200.webp 1200w, /img/fotos/escalador-desplome-amarillo-1600.webp 1600w" sizes="(min-width: 1024px) 22rem, (min-width: 768px) 45vw, 100vw" width="1200" height="803" alt="Escalador con polera verde colgado de un desplome amarillo y azul" loading="lazy" decoding="async">
               <span class="programa__numero">N.º 02</span>
             </div>
-            <div class="programa__cabeza" data-m-aparece style="--m-retraso: 270ms">
+            <a class="programa__cabeza" href="https://wa.me/56935028838" target="_blank" rel="noopener" data-m-aparece style="--m-retraso: 270ms">
               <h3 class="programa__nombre">Clases guiadas</h3>
               <span class="programa__flecha"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></span>
-            </div>
+            </a>
             <p class="programa__texto" data-m-aparece style="--m-retraso: 340ms">Lunes a viernes de 20:00 a 22:00, y lunes y jueves de 18:00 a 20:00. De 6 a 7 personas por grupo.</p>
             <span class="programa__linea" aria-hidden="true"></span>
-          </a>
-          <a class="programa" href="https://wa.me/56935028838" target="_blank" rel="noopener">
+          </article>
+          <article class="programa">
             <div class="programa__medio m-foto" style="--m-retraso: 240ms">
               <img src="/img/fotos/nino-escalando-1200.webp" srcset="/img/fotos/nino-escalando-800.webp 800w, /img/fotos/nino-escalando-1200.webp 1200w, /img/fotos/nino-escalando-1600.webp 1600w" sizes="(min-width: 1024px) 22rem, (min-width: 768px) 45vw, 100vw" width="1200" height="800" alt="Niño escalando mientras el público lo mira desde abajo" loading="lazy" decoding="async">
               <span class="programa__numero">N.º 03</span>
             </div>
-            <div class="programa__cabeza" data-m-aparece style="--m-retraso: 390ms">
+            <a class="programa__cabeza" href="https://wa.me/56935028838" target="_blank" rel="noopener" data-m-aparece style="--m-retraso: 390ms">
               <h3 class="programa__nombre">Kuyencit@s</h3>
               <span class="programa__flecha"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></span>
-            </div>
+            </a>
             <p class="programa__texto" data-m-aparece style="--m-retraso: 460ms">El programa de escalada para niñas y niños. Dos grupos: de 7 a 9 años y de 10 a 15 años.</p>
             <span class="programa__linea" aria-hidden="true"></span>
-          </a>
+          </article>
         </div>
-        <div class="m-faltas"><figure class="m-falta m-falta--horizontal" data-foto-pendiente="clase" data-m-aparece>
-            <span class="m-falta__marca" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8.5A2.5 2.5 0 0 1 5.5 6h1.8l1.2-2h6.8l1.2 2h1.8A2.5 2.5 0 0 1 21 8.5v9A2.5 2.5 0 0 1 18.5 20h-13A2.5 2.5 0 0 1 3 17.5z"/><circle cx="12" cy="13" r="3.6"/></svg></span>
-            <figcaption class="m-falta__texto"><b>Falta esta foto</b> Una clase guiada en acción. <span class="m-falta__codigo">F8</span></figcaption>
+        <div class="m-galeria"><figure class="m-caja m-caja--vertical" data-m-aparece data-m-puntero>
+            <img src="/img/fotos/campus-1200.webp" srcset="/img/fotos/campus-800.webp 536w, /img/fotos/campus-1200.webp 803w, /img/fotos/campus-1600.webp 1071w" sizes="(min-width: 1024px) 24vw, (min-width: 640px) 45vw, 92vw" width="803" height="1200" alt="El campus de madera colgado sobre la zona de entrenamiento, con gente descansando abajo" loading="lazy" decoding="async">
+          </figure>
+            <figure class="m-caja m-caja--vertical" data-m-aparece data-m-puntero style="--m-retraso: 90ms">
+            <img src="/img/fotos/competencia-escaladora-1200.webp" srcset="/img/fotos/competencia-escaladora-800.webp 536w, /img/fotos/competencia-escaladora-1200.webp 803w, /img/fotos/competencia-escaladora-1600.webp 1071w" sizes="(min-width: 1024px) 24vw, (min-width: 640px) 45vw, 92vw" width="803" height="1200" alt="Escaladora con polerón morado y pantalón burdeo en un panel gris y azul, durante una competencia" loading="lazy" decoding="async">
           </figure></div>
       </div>
     </section>
@@ -1405,7 +1714,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
         <div class="fichas">
           <article class="ficha" data-m-aparece>
             <h3 class="ficha__titulo">Días y horario</h3>
-            <p class="ficha__texto"><!-- POR CONFIRMAR: días y horario de Kuyencit@s: Kuyen está ajustando los horarios (K2) --><span class="pendiente">[POR CONFIRMAR]</span></p>
+            <p class="ficha__texto">Los horarios se coordinan al inscribirse, según el grupo de edad. Escríbenos y te contamos los cupos que hay abiertos.</p>
           </article>
           <article class="ficha" data-m-aparece style="--m-retraso: 80ms">
             <h3 class="ficha__titulo">Valores</h3>
@@ -1424,10 +1733,6 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
             <p class="ficha__texto">A escalada libre se puede venir desde los 5 años, siempre con un tutor a cargo.</p>
           </article>
         </div>
-        <div class="m-faltas"><figure class="m-falta m-falta--horizontal" data-foto-pendiente="kuyencitos" data-m-aparece>
-            <span class="m-falta__marca" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8.5A2.5 2.5 0 0 1 5.5 6h1.8l1.2-2h6.8l1.2 2h1.8A2.5 2.5 0 0 1 21 8.5v9A2.5 2.5 0 0 1 18.5 20h-13A2.5 2.5 0 0 1 3 17.5z"/><circle cx="12" cy="13" r="3.6"/></svg></span>
-            <figcaption class="m-falta__texto"><b>Falta esta foto</b> Kuyencit@s escalando, con autorización de sus apoderados. <span class="m-falta__codigo">F9</span></figcaption>
-          </figure></div>
       </div>
     </section>
 
@@ -1604,9 +1909,24 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
               <span class="valores__valor">$32.000</span>
             </li>
             <li class="valores__item" data-m-aparece>
-              <span class="valores__nombre">Plan de clases guiadas</span>
-              <span class="valores__detalle">4 clases al mes, una vez por semana. Descuento el primer mes</span>
+              <span class="valores__nombre">Clases guiadas, 1 vez por semana</span>
+              <span class="valores__detalle">4 clases al mes. Descuento el primer mes</span>
               <span class="valores__valor">$45.000</span>
+            </li>
+            <li class="valores__item" data-m-aparece>
+              <span class="valores__nombre">Clases guiadas, 2 veces por semana</span>
+              <span class="valores__detalle">8 clases al mes</span>
+              <span class="valores__valor">$52.000</span>
+            </li>
+            <li class="valores__item" data-m-aparece>
+              <span class="valores__nombre">Clases guiadas, 3 veces por semana</span>
+              <span class="valores__detalle">12 clases al mes</span>
+              <span class="valores__valor">$72.000</span>
+            </li>
+            <li class="valores__item" data-m-aparece>
+              <span class="valores__nombre">Clase guiada suelta</span>
+              <span class="valores__detalle">Una clase, sin plan</span>
+              <span class="valores__valor">$13.500</span>
             </li>
             <li class="valores__item" data-m-aparece>
               <span class="valores__nombre">Kuyencit@s, 1 clase por semana</span>
@@ -1666,6 +1986,15 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
           </li>
         </ol>
         <p class="horario__nota" data-m-aparece>A escalada libre se puede venir desde los 5 años, siempre con un tutor a cargo. Los datos de emergencia de la solicitud los ven solo las personas que atienden el muro, y solo si pasa algo.</p>
+        <div class="m-galeria m-galeria--tres"><figure class="m-caja m-caja--horizontal" data-m-aparece data-m-puntero>
+            <img src="/img/fotos/fachada-1200.webp" srcset="/img/fotos/fachada-800.webp 800w, /img/fotos/fachada-1200.webp 1200w, /img/fotos/fachada-1600.webp 1200w" sizes="(min-width: 1024px) 24vw, (min-width: 640px) 45vw, 92vw" width="1200" height="704" alt="La entrada de Kuyen desde la vereda: la casa de ladrillo amarillo, el portón de reja negra y el pasillo hacia el galpón" loading="lazy" decoding="async">
+          </figure>
+            <figure class="m-caja m-caja--horizontal" data-m-aparece data-m-puntero style="--m-retraso: 90ms">
+            <img src="/img/fotos/galpon-1200.webp" srcset="/img/fotos/galpon-800.webp 800w, /img/fotos/galpon-1200.webp 1200w, /img/fotos/galpon-1600.webp 1200w" sizes="(min-width: 1024px) 24vw, (min-width: 640px) 45vw, 92vw" width="1200" height="896" alt="El galpón por dentro: la pasarela de colchonetas naranjas entre los dos muros, con las banquetas de madera a un costado" loading="lazy" decoding="async">
+          </figure>
+            <figure class="m-caja m-caja--horizontal" data-m-aparece data-m-puntero style="--m-retraso: 180ms">
+            <img src="/img/fotos/descanso-1200.webp" srcset="/img/fotos/descanso-800.webp 800w, /img/fotos/descanso-1200.webp 1200w, /img/fotos/descanso-1600.webp 1600w" sizes="(min-width: 1024px) 24vw, (min-width: 640px) 45vw, 92vw" width="1200" height="800" alt="Las banquetas de madera junto al muro, con gente sentada mirando mientras alguien escala una placa" loading="lazy" decoding="async">
+          </figure></div>
       </div>
     </section>
 
@@ -1836,12 +2165,24 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
             <p class="ficha__texto">Para inscribirte, escríbenos por Instagram o WhatsApp, o pásate el mismo día y lo gestionamos. Las fechas y novedades se anuncian en Instagram y en Facebook.</p>
           </article>
         </div>
-        <ul class="valores__lista" data-m-aparece>
-          <li class="valores__item"><span class="valores__nombre">Comunidad &middot; Seguridad &middot; Inclusión &middot; Progreso personal &middot; Conexión con la montaña</span></li>
+        <ul class="lema" data-m-aparece>
+          <li class="lema__item">Comunidad</li>
+          <li class="lema__item">Seguridad</li>
+          <li class="lema__item">Inclusión</li>
+          <li class="lema__item">Progreso personal</li>
+          <li class="lema__item">Conexión con la montaña</li>
         </ul>
-        <div class="m-faltas"><figure class="m-falta m-falta--horizontal" data-foto-pendiente="fachada" data-m-aparece>
-            <span class="m-falta__marca" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8.5A2.5 2.5 0 0 1 5.5 6h1.8l1.2-2h6.8l1.2 2h1.8A2.5 2.5 0 0 1 21 8.5v9A2.5 2.5 0 0 1 18.5 20h-13A2.5 2.5 0 0 1 3 17.5z"/><circle cx="12" cy="13" r="3.6"/></svg></span>
-            <figcaption class="m-falta__texto"><b>Falta esta foto</b> La fachada y la entrada, para reconocer el lugar al llegar. <span class="m-falta__codigo">F6</span></figcaption>
+        <div class="m-galeria m-galeria--cuatro"><figure class="m-caja m-caja--horizontal" data-m-aparece data-m-puntero>
+            <img src="/img/fotos/aniversario-escalador-1200.webp" srcset="/img/fotos/aniversario-escalador-800.webp 800w, /img/fotos/aniversario-escalador-1200.webp 1200w, /img/fotos/aniversario-escalador-1600.webp 1600w" sizes="(min-width: 1024px) 24vw, (min-width: 640px) 45vw, 92vw" width="1200" height="774" alt="Escalador con polera blanca estirando el brazo en un muro amarillo, azul y blanco, durante el aniversario" loading="lazy" decoding="async">
+          </figure>
+            <figure class="m-caja m-caja--horizontal" data-m-aparece data-m-puntero style="--m-retraso: 90ms">
+            <img src="/img/fotos/aniversario-volumen-1200.webp" srcset="/img/fotos/aniversario-volumen-800.webp 800w, /img/fotos/aniversario-volumen-1200.webp 1200w, /img/fotos/aniversario-volumen-1600.webp 1600w" sizes="(min-width: 1024px) 24vw, (min-width: 640px) 45vw, 92vw" width="1200" height="800" alt="Escalador colgado de un volumen azul y amarillo mientras el público lo mira desde abajo" loading="lazy" decoding="async">
+          </figure>
+            <figure class="m-caja m-caja--horizontal" data-m-aparece data-m-puntero style="--m-retraso: 180ms">
+            <img src="/img/fotos/aniversario-travesia-1200.webp" srcset="/img/fotos/aniversario-travesia-800.webp 800w, /img/fotos/aniversario-travesia-1200.webp 1200w, /img/fotos/aniversario-travesia-1600.webp 1600w" sizes="(min-width: 1024px) 24vw, (min-width: 640px) 45vw, 92vw" width="1200" height="800" alt="Escalador con camisa a cuadros cruzando un muro azul, amarillo y blanco mientras la gente mira desde abajo" loading="lazy" decoding="async">
+          </figure>
+            <figure class="m-caja m-caja--horizontal" data-m-aparece data-m-puntero style="--m-retraso: 270ms">
+            <img src="/img/fotos/competencia-publico-1200.webp" srcset="/img/fotos/competencia-publico-800.webp 800w, /img/fotos/competencia-publico-1200.webp 1200w, /img/fotos/competencia-publico-1600.webp 1600w" sizes="(min-width: 1024px) 24vw, (min-width: 640px) 45vw, 92vw" width="1200" height="803" alt="Público reunido junto a la estufa durante una competencia, con el muro y la escalera de madera al fondo" loading="lazy" decoding="async">
           </figure></div>
       </div>
     </section>
@@ -1886,7 +2227,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
             </div>
           </div>
           <div class="carrusel" data-carrusel3d data-m-aparece style="--m-retraso: 150ms">
-            <div class="carrusel__fondo" aria-hidden="true"><img src="/img/fotos/joven-escalando-1200.webp" srcset="/img/fotos/joven-escalando-800.webp 800w, /img/fotos/joven-escalando-1200.webp 1200w, /img/fotos/joven-escalando-1600.webp 1600w" sizes="(min-width: 1024px) 34rem, 100vw" width="1200" height="800" alt="" loading="lazy" decoding="async"></div>
+            <div class="carrusel__fondo" aria-hidden="true"><img src="/img/fotos/aniversario-galpon-1200.webp" srcset="/img/fotos/aniversario-galpon-800.webp 800w, /img/fotos/aniversario-galpon-1200.webp 1200w, /img/fotos/aniversario-galpon-1600.webp 1600w" sizes="(min-width: 1024px) 34rem, 100vw" width="1200" height="699" alt="" loading="lazy" decoding="async"></div>
             <div class="carrusel__escena">
               <article class="resena" data-tarjeta="0" aria-label="Reseña 1 de 5">
                 <span class="resena__icono"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 1c.9 6.6 4.4 10.1 11 11-6.6.9-10.1 4.4-11 11-.9-6.6-4.4-10.1-11-11 6.6-.9 10.1-4.4 11-11z"/></svg></span>
@@ -1970,7 +2311,8 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
       </div>
     </section>
 
-    <section class="seccion" id="instagram">
+    <section class="seccion m-con-telon" id="instagram">
+      <div class="m-telon" aria-hidden="true"><svg class="m-telon__cumbre" viewBox="0 0 1200 220" preserveAspectRatio="none" focusable="false"><path d="M0 220 140 118 232 168 392 58 520 142 636 96 760 176 880 108 1010 162 1120 120 1200 170 1200 220Z"/></svg><span class="m-presa m-presa--telon" style="left: 4.0%; top: 11.7%; width: 10.8%; --color: var(--kuyen-luna); --giro: 1deg; --dur: 14.5s; --m-retraso: 0ms" data-m-paralaje="0.07"><svg viewBox="0 0 100 100"><path d="M50 8l38 58c7 11-1 26-14 26H26c-13 0-21-15-14-26z"/></svg></span><span class="m-presa m-presa--telon" style="left: 9.1%; top: 78.2%; width: 15.0%; --color: var(--kuyen-luna); --giro: 18deg; --dur: 9.5s; --m-retraso: 160ms" data-m-paralaje="0.11"><svg viewBox="0 0 100 100"><path d="M10 66C10 38 30 14 56 14c20 0 34 14 34 32 0 26-24 44-52 44-16 0-28-8-28-24z"/></svg></span><span class="m-presa m-presa--telon" style="left: 74.9%; top: 23.7%; width: 15.0%; --color: var(--kuyen-luna); --giro: 31deg; --dur: 11.0s; --m-retraso: 320ms" data-m-paralaje="0.16"><svg viewBox="0 0 100 100"><path d="M8 56c2-16 20-28 44-30 20-2 38 6 40 18 2 14-16 26-40 30C28 78 6 72 8 56z"/></svg></span></div>
       <div class="contenedor">
         <div class="cabeza-seccion">
           <div>
@@ -2302,6 +2644,213 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
       })
     })
   }
+})()
+;
+/**
+ * Visor de fotos: al hacer clic en una foto de contenido se abre ampliada, y
+ * las flechas recorren las de su grupo (25-09-2026, pedido de Benjamín).
+ *
+ * El grupo es la galería más cercana y, si no hay, la sección. Así una foto del
+ * muro recorre las cuatro de su fila y las dos de "Qué es Kuyen" se recorren
+ * entre ellas, sin saltar a otra parte de la página.
+ *
+ * El diálogo se arma la primera vez que se abre, no en el HTML generado: la
+ * página servida no cambia y nada oculto entra en las pruebas de contraste ni
+ * de desborde.
+ */
+(function () {
+  'use strict'
+
+  var calmo = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+  /* Fotos de contenido: las que salen de FOTOS y tienen texto alternativo. Las
+     decorativas van con alt vacío (los fondos del llamado y del carrusel) y se
+     quedan fuera, igual que el isotipo de los avatares, que no vive en fotos/. */
+  var fotos = [].slice
+    .call(document.querySelectorAll('img[src^="/img/fotos/"]'))
+    .filter(function (img) {
+      if (!img.getAttribute('alt')) return false
+      for (var n = img; n && n.nodeType === 1; n = n.parentElement) {
+        if (n.getAttribute('aria-hidden') === 'true') return false
+        if (n.tagName === 'A' && n.getAttribute('href')) return false
+      }
+      return true
+    })
+
+  if (!fotos.length) return
+
+  function grupoDe(img) {
+    return img.closest('.m-galeria') || img.closest('section') || document.body
+  }
+
+  /* Cada foto queda activable: role de botón, foco por tabulación y el nombre
+     que oye un lector de pantalla. No se envuelve en nada nuevo, porque hay
+     selectores que cuelgan del padre directo (.m-caja img, .pila__foto img). */
+  fotos.forEach(function (img) {
+    img.setAttribute('role', 'button')
+    img.setAttribute('tabindex', '0')
+    img.setAttribute('aria-haspopup', 'dialog')
+    img.setAttribute('aria-label', 'Ampliar foto: ' + img.getAttribute('alt'))
+    img.classList.add('visor-activa')
+    // El marco es lo que dibuja el aro y lo que recorta el crecimiento de la
+    // foto. Todos los contenedores de fotos del sitio ya recortan (.m-caja,
+    // .m-foto y los suyos), así que basta con marcarlos.
+    if (img.parentElement) img.parentElement.classList.add('visor-marco')
+  })
+
+  /** El derivado más grande que tenga la foto: la última entrada del srcset. */
+  function grande(img) {
+    var set = img.getAttribute('srcset')
+    if (!set) return img.currentSrc || img.src
+    var partes = set.split(',')
+    return partes[partes.length - 1].trim().split(/\s+/)[0]
+  }
+
+  var ICONOS = {
+    cerrar: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>',
+    atras: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>',
+    siguiente: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>',
+  }
+
+  var visor = null
+  var partes = {}
+  var grupo = []
+  var indice = 0
+  var origen = null
+
+  function armar() {
+    visor = document.createElement('div')
+    visor.className = 'visor'
+    visor.setAttribute('role', 'dialog')
+    visor.setAttribute('aria-modal', 'true')
+    visor.setAttribute('aria-label', 'Foto ampliada')
+    visor.innerHTML =
+      '<div class="visor__fondo" data-visor-fondo></div>' +
+      '<button type="button" class="visor__boton visor__boton--cerrar" data-visor-cerrar aria-label="Cerrar">' + ICONOS.cerrar + '</button>' +
+      '<button type="button" class="visor__boton visor__boton--atras" data-visor-atras aria-label="Foto anterior">' + ICONOS.atras + '</button>' +
+      '<button type="button" class="visor__boton visor__boton--siguiente" data-visor-siguiente aria-label="Foto siguiente">' + ICONOS.siguiente + '</button>' +
+      '<figure class="visor__figura" data-visor-figura>' +
+      '<img class="visor__foto" data-visor-foto alt="">' +
+      '<figcaption class="visor__pie"><span class="visor__texto" data-visor-texto></span><span class="visor__contador" data-visor-contador></span></figcaption>' +
+      '</figure>'
+
+    partes = {
+      fondo: visor.querySelector('[data-visor-fondo]'),
+      cerrar: visor.querySelector('[data-visor-cerrar]'),
+      atras: visor.querySelector('[data-visor-atras]'),
+      siguiente: visor.querySelector('[data-visor-siguiente]'),
+      figura: visor.querySelector('[data-visor-figura]'),
+      foto: visor.querySelector('[data-visor-foto]'),
+      texto: visor.querySelector('[data-visor-texto]'),
+      contador: visor.querySelector('[data-visor-contador]'),
+    }
+
+    partes.cerrar.addEventListener('click', cerrar)
+    partes.fondo.addEventListener('click', cerrar)
+    partes.atras.addEventListener('click', function () { mover(-1) })
+    partes.siguiente.addEventListener('click', function () { mover(1) })
+    visor.addEventListener('keydown', teclado)
+
+    // Arrastre horizontal en táctil, con un umbral que no se dispara al hacer
+    // scroll: solo cuenta si el movimiento es más horizontal que vertical.
+    var x0 = null
+    var y0 = null
+    partes.figura.addEventListener('pointerdown', function (e) { x0 = e.clientX; y0 = e.clientY })
+    partes.figura.addEventListener('pointerup', function (e) {
+      if (x0 === null) return
+      var dx = e.clientX - x0
+      var dy = e.clientY - y0
+      x0 = null
+      if (Math.abs(dx) > 48 && Math.abs(dx) > Math.abs(dy)) mover(dx < 0 ? 1 : -1)
+    })
+
+    if (calmo) visor.classList.add('visor--calmo')
+    document.body.appendChild(visor)
+  }
+
+  /** Pide la vecina para que el salto sea inmediato. */
+  function precargar(i) {
+    if (!grupo[i]) return
+    var img = new Image()
+    img.src = grande(grupo[i])
+  }
+
+  function pintar() {
+    var img = grupo[indice]
+    var url = grande(img)
+    // La foto entra con un fundido: se apaga, se pide la nueva y se enciende
+    // cuando termina de cargar. Si ya estaba en caché, se enciende al toque.
+    partes.foto.classList.remove('visor__foto--lista')
+    partes.foto.onload = function () { partes.foto.classList.add('visor__foto--lista') }
+    partes.foto.src = url
+    if (partes.foto.complete && partes.foto.naturalWidth) partes.foto.classList.add('visor__foto--lista')
+    partes.foto.alt = img.getAttribute('alt')
+    partes.texto.textContent = img.getAttribute('alt')
+    var solas = grupo.length < 2
+    partes.contador.textContent = solas ? '' : indice + 1 + ' de ' + grupo.length
+    partes.atras.hidden = solas
+    partes.siguiente.hidden = solas
+    precargar(indice + 1)
+    precargar(indice - 1)
+  }
+
+  function mover(paso) {
+    if (grupo.length < 2) return
+    indice = (indice + paso + grupo.length) % grupo.length
+    pintar()
+  }
+
+  function enfocables() {
+    return [].slice.call(visor.querySelectorAll('button')).filter(function (b) { return !b.hidden })
+  }
+
+  function teclado(e) {
+    if (e.key === 'Escape') { e.preventDefault(); cerrar(); return }
+    if (e.key === 'ArrowRight') { e.preventDefault(); mover(1); return }
+    if (e.key === 'ArrowLeft') { e.preventDefault(); mover(-1); return }
+    if (e.key !== 'Tab') return
+    // El foco no se escapa del diálogo mientras está abierto.
+    var lista = enfocables()
+    if (!lista.length) return
+    var primero = lista[0]
+    var ultimo = lista[lista.length - 1]
+    if (e.shiftKey && document.activeElement === primero) { e.preventDefault(); ultimo.focus() }
+    else if (!e.shiftKey && document.activeElement === ultimo) { e.preventDefault(); primero.focus() }
+  }
+
+  function abrir(img) {
+    if (!visor) armar()
+    origen = img
+    grupo = fotos.filter(function (f) { return grupoDe(f) === grupoDe(img) })
+    if (grupo.indexOf(img) === -1) grupo = [img]
+    indice = grupo.indexOf(img)
+    pintar()
+    document.body.classList.add('visor-abierto')
+    visor.classList.add('visor--abierto')
+    partes.cerrar.focus()
+  }
+
+  function cerrar() {
+    if (!visor) return
+    visor.classList.remove('visor--abierto')
+    partes.foto.classList.remove('visor__foto--lista')
+    document.body.classList.remove('visor-abierto')
+    // La foto se suelta para que no quede pedida en memoria, pero recién cuando
+    // terminó el fundido: si se saca antes, el visor se vacía a la vista.
+    setTimeout(function () {
+      if (!visor.classList.contains('visor--abierto')) partes.foto.removeAttribute('src')
+    }, calmo ? 0 : 340)
+    if (origen) { origen.focus(); origen = null }
+  }
+
+  fotos.forEach(function (img) {
+    img.addEventListener('click', function () { abrir(img) })
+    img.addEventListener('keydown', function (e) {
+      if (e.key !== 'Enter' && e.key !== ' ' && e.key !== 'Spacebar') return
+      e.preventDefault()
+      abrir(img)
+    })
+  })
 })()
 ;
 (function () {

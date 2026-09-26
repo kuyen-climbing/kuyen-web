@@ -57,19 +57,6 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 }
 .antetitulo svg { width: 0.875rem; height: 0.875rem; }
 
-.pendiente {
-  display: inline-block;
-  padding: 0.0625rem 0.375rem;
-  border-radius: 4px;
-  background: rgb(247 231 180 / 0.2);
-  color: var(--kuyen-luna);
-  font-family: var(--fuente-texto);
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 0.02em;
-  line-height: 1.4;
-  white-space: nowrap;
-}
 
 .enlace { color: var(--kuyen-luna); text-decoration: underline; text-underline-offset: 3px; }
 
@@ -98,7 +85,8 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .boton--chico { padding: 0.5rem 0.875rem; font-size: 0.875rem; }
 @media (min-width: 768px) { .boton { font-size: 1.125rem; } .boton--chico { font-size: 0.875rem; } }
 
-.enlace-flecha { display: inline-flex; align-items: center; gap: 0.5rem; color: var(--kuyen-luna); font-weight: 600; }
+/* Enlace suelto, no dentro de un párrafo: necesita área que se pueda tocar. */
+.enlace-flecha { display: inline-flex; min-height: 2.75rem; align-items: center; gap: 0.5rem; color: var(--kuyen-luna); font-weight: 600; }
 .enlace-flecha svg { width: 1.125rem; height: 1.125rem; transition: transform 300ms var(--m-curva); }
 .enlace-flecha:hover svg { transform: translateX(4px); }
 
@@ -337,6 +325,13 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 
 .muro__bajada { max-width: 46rem; margin-bottom: 2rem; color: var(--texto-suave); font-size: 1rem; line-height: 1.65; }
 .fichas { display: grid; gap: 1rem; }
+/* Las tarjetas se levantan al pasar el mouse. El desplazamiento va en `translate`
+   y no en `transform`, que lo usa la animación de entrada de [data-m-aparece]. */
+@media (hover: hover) {
+  .ficha { transition: translate 400ms var(--m-curva), border-color 300ms; }
+  .ficha:hover, .ficha:focus-within { translate: 0 -4px; border-color: rgb(247 231 180 / 0.45); }
+}
+
 .ficha { padding: 1.25rem; border: 1px solid var(--borde); border-radius: 1rem; background: var(--superficie); }
 .ficha__titulo { margin-bottom: 0.5rem; font-family: var(--fuente-titulo); font-size: 1.0625rem; font-weight: 400; }
 .fichas--pasos { list-style: none; counter-reset: paso; }
@@ -351,8 +346,31 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
   font-weight: 600;
 }
 .ficha__texto { color: var(--texto-suave); font-size: 0.9375rem; line-height: 1.6; }
-@media (min-width: 640px) { .fichas { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-@media (min-width: 1024px) { .fichas { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.25rem; } }
+
+/* Un elemento solo en la última fila se ve como un error de maquetación: con
+   cuatro en tres columnas, el cuarto queda abajo con dos huecos al lado. Con
+   cuatro se reparte 2 y 2; con cualquier otro resto de uno el último se lleva
+   la fila entera. `:has()` cuenta los hijos sin tocar el markup. */
+@media (min-width: 640px) {
+  .fichas { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .fichas > :nth-child(2n + 1):last-child { grid-column: 1 / -1; }
+}
+@media (min-width: 1024px) {
+  .fichas { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.25rem; }
+  .fichas > :nth-child(2n + 1):last-child { grid-column: auto; }
+  .fichas > :nth-child(3n + 1):last-child { grid-column: 1 / -1; }
+  .fichas:has(> :nth-child(4):last-child) { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .fichas:has(> :nth-child(4):last-child) > :last-child { grid-column: auto; }
+  /* Resto de dos (5, 8, 11...): la última fila lleva dos, y para que llene el
+     ancho la grilla pasa a seis pistas y cada tarjeta ocupa dos, o tres cuando
+     es de las dos últimas. */
+  .fichas:has(> :nth-child(3n + 1):nth-last-child(2)) { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+  .fichas:has(> :nth-child(3n + 1):nth-last-child(2)) > * { grid-column: span 2; }
+  /* Las dos últimas van con el mismo prefijo :has que la regla de arriba: si no,
+     esa gana por especificidad y las deja en dos pistas, con un hueco al final. */
+  .fichas:has(> :nth-child(3n + 1):nth-last-child(2)) > :nth-child(3n + 1):nth-last-child(2),
+  .fichas:has(> :nth-child(3n + 1):nth-last-child(2)) > :nth-child(3n + 1):nth-last-child(2) ~ * { grid-column: span 3; }
+}
 
 /* ---------- Programas ---------- */
 
@@ -371,25 +389,33 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
   font-size: 0.8125rem;
   font-weight: 600;
 }
-.programa__cabeza { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+/* La cabeza es el enlace a WhatsApp: la tarjeta entera dejó de serlo para que
+   la foto se pueda ampliar (25-09-2026). */
+.programa__cabeza { display: flex; min-height: 2.75rem; align-items: center; justify-content: space-between; gap: 1rem; padding-block: 0.375rem; margin-block: -0.375rem; }
+.programa__cabeza:focus-visible { outline: 2px solid var(--kuyen-luna); outline-offset: 4px; border-radius: 0.25rem; }
 .programa__nombre { font-family: var(--fuente-titulo); font-size: 1.25rem; font-weight: 400; line-height: 1.15; transition: color 300ms; }
 .programa__flecha svg { width: 1.5rem; height: 1.5rem; transition: transform 300ms var(--m-curva); }
 .programa__texto { color: var(--texto-suave); font-size: 0.9375rem; line-height: 1.6; }
 .programa__linea { position: relative; height: 1px; overflow: hidden; background: var(--borde); }
 .programa__linea::after { content: ""; position: absolute; inset: 0; background: var(--kuyen-luna); transform: scaleX(0); transform-origin: left; transition: transform 500ms var(--m-curva); }
 @media (hover: hover) {
-  .programa:hover .programa__nombre { color: var(--kuyen-luna); }
-  .programa:hover .programa__flecha svg { transform: rotate(45deg); }
-  .programa:hover .programa__linea::after { transform: scaleX(1); }
+  .programa:hover .programa__nombre, .programa:focus-within .programa__nombre { color: var(--kuyen-luna); }
+  .programa:hover .programa__flecha svg, .programa:focus-within .programa__flecha svg { transform: rotate(45deg); }
+  .programa:hover .programa__linea::after, .programa:focus-within .programa__linea::after { transform: scaleX(1); }
   .m-js .programa:hover .m-foto.m-visible img { scale: 1.18; transition-duration: 700ms; transition-delay: 0ms; }
 }
-.programa:focus-visible .programa__linea::after { transform: scaleX(1); }
+.programa:focus-within .programa__linea::after { transform: scaleX(1); }
 @media (min-width: 768px) {
   .programas { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .programas > .programa:nth-child(2n + 1):last-child { grid-column: 1 / -1; }
   .programa__nombre { font-size: 1.375rem; }
 }
 @media (min-width: 1024px) {
   .programas { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .programas > .programa:nth-child(2n + 1):last-child { grid-column: auto; }
+  .programas > .programa:nth-child(3n + 1):last-child { grid-column: 1 / -1; }
+  .programas:has(> :nth-child(4):last-child) { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .programas:has(> :nth-child(4):last-child) > .programa:last-child { grid-column: auto; }
   .programa__nombre { font-size: 1.625rem; }
 }
 
@@ -416,8 +442,27 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .tabla tr { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.875rem 1rem; padding-block: 1.125rem; border-bottom: 1px solid var(--borde); }
 .tabla td::before { content: attr(data-etiqueta); display: block; margin-bottom: 0.25rem; color: var(--texto-suave); font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; }
 .tramo { display: inline-block; padding: 0.25rem 0.75rem; border-radius: 9999px; background: rgb(247 231 180 / 0.14); color: var(--kuyen-luna); font-size: 0.8125rem; font-weight: 600; white-space: nowrap; }
-.horario__nota { margin-top: 1.5rem; color: var(--texto-suave); font-size: 0.9375rem; line-height: 1.6; }
+/* Sin tope, a 1440 px la línea pasa de 140 caracteres y deja de leerse. */
+.horario__nota { max-width: 68ch; margin-top: 1.5rem; color: var(--texto-suave); font-size: 0.9375rem; line-height: 1.6; }
 .valores { margin-top: 2.5rem; }
+/* Los valores de la comunidad: una fila de píldoras, no una tabla de precios.
+   Venían usando .valores__item, que desde 640 px es una grilla de tres columnas
+   para nombre, detalle y valor, así que el texto entero caía apretado en la
+   primera y las otras dos quedaban vacías. */
+.lema { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.625rem; margin-top: 2.5rem; }
+.lema__item {
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--borde);
+  border-radius: 9999px;
+  color: var(--texto-suave);
+  font-size: 0.9375rem;
+  line-height: 1.3;
+}
+@media (min-width: 640px) {
+  .lema { gap: 0.75rem; }
+  .lema__item { padding: 0.5625rem 1.25rem; }
+}
+
 .valores__titulo { margin-bottom: 1rem; color: var(--texto-suave); font-size: 0.8125rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; }
 .valores__lista { display: grid; gap: 0.875rem; }
 .valores__item { display: grid; gap: 0.25rem; padding-bottom: 0.875rem; border-bottom: 1px solid var(--borde); }
@@ -450,7 +495,9 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .cabeza-seccion--sola { margin-bottom: 2.5rem; }
 .testimonios { display: grid; gap: 1.5rem; }
 .testimonios__izquierda { display: grid; gap: 1.5rem; align-content: start; }
+/* Tres cifras en dos columnas dejaban la tercera sola: se lleva la fila. */
 .testimonios .m-cifras { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.5rem; }
+.testimonios .m-cifras > :nth-child(2n + 1):last-child { grid-column: 1 / -1; }
 .testimonios .m-cifra dd { font-size: clamp(2.25rem, 1.8rem + 2vw, 3.5rem); }
 .acento-tarjeta { padding: 2rem; border-radius: 1.5rem; background: var(--kuyen-luna); color: var(--kuyen-tinta); }
 .acento-tarjeta__etiqueta { font-size: 0.8125rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; }
@@ -499,7 +546,6 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .resena__avatar { width: 2.5rem; height: 2.5rem; border-radius: 9999px; }
 .resena__nombre { font-weight: 600; }
 .resena__detalle { margin-top: 0.125rem; font-size: 0.875rem; }
-.resena .pendiente { background: rgb(43 46 131 / 0.12); color: var(--kuyen-indigo); }
 .carrusel__controles { position: relative; display: flex; align-items: center; justify-content: center; gap: 1rem; margin-top: 1rem; }
 .carrusel__flecha {
   display: inline-flex;
@@ -513,9 +559,27 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 }
 .carrusel__flecha:hover { background: var(--kuyen-blanco); color: var(--kuyen-tinta); }
 .carrusel__flecha svg { width: 1.125rem; height: 1.125rem; }
-.carrusel__puntos { display: flex; gap: 0.5rem; }
-.carrusel__punto { width: 0.625rem; height: 0.625rem; border-radius: 9999px; background: rgb(255 255 255 / 0.35); transition: width 300ms, background-color 300ms; }
-.carrusel__punto[aria-current="true"] { width: 1.5rem; background: var(--kuyen-luna); }
+.carrusel__puntos { display: flex; }
+/* El punto se ve de 10 px, pero el botón mide 32: con 10 px no se acierta
+   con el dedo. El relleno da el área y el ::before dibuja el punto. */
+.carrusel__punto {
+  display: flex;
+  align-items: center;
+  width: 2rem;
+  height: 2rem;
+  justify-content: center;
+  background: none;
+}
+.carrusel__punto::before {
+  content: '';
+  display: block;
+  width: 0.625rem;
+  height: 0.625rem;
+  border-radius: 9999px;
+  background: rgb(255 255 255 / 0.35);
+  transition: width 300ms, background-color 300ms;
+}
+.carrusel__punto[aria-current="true"]::before { width: 1.5rem; background: var(--kuyen-luna); }
 
 /* ---------- Llamado ---------- */
 

@@ -472,13 +472,6 @@ function validarVariante({ ruta, html }) {
     if (apareceDatoViejo(html, dato)) problemas.push(`${ruta}: aparece "${dato}", un dato que Kuyen no confirmó`)
   }
 
-  // Cada foto que falta tiene que tener su hueco a la vista, en las tres
-  // variantes: así no se pierde ninguna al mover secciones de sitio.
-  for (const falta of contenido.FOTOS_PENDIENTES) {
-    if (!html.includes(`data-foto-pendiente="${falta.id}"`)) {
-      problemas.push(`${ruta}: falta el hueco de la foto "${falta.id}" (${falta.pregunta})`)
-    }
-  }
 
   const minusculas = html.toLowerCase()
   for (const t of TERCEROS) {

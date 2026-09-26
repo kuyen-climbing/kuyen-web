@@ -194,6 +194,77 @@ const SOBRE_GATOS = `(function () {
   return problemas
 })()`
 
+// Una grilla de tres columnas con cuatro elementos deja el cuarto solo abajo,
+// con dos huecos al lado, y se ve como un error de maquetación. Lo que se mide
+// no es "cuántos hay en la última fila" sino cuánto ancho queda sin usar: un
+// elemento que se lleva la fila entera está bien, uno que ocupa un tercio y
+// deja dos huecos al lado, no. Se reclama si sobra más de media columna.
+const HUERFANOS = `(function () {
+  var w = d.defaultView
+  var problemas = []
+  d.querySelectorAll('*').forEach(function (caja) {
+    var cs = w.getComputedStyle(caja)
+    if (cs.display !== 'grid' || cs.gridTemplateAreas !== 'none') return
+    var pistas = cs.gridTemplateColumns.split(' ').filter(Boolean)
+    if (pistas.length < 2) return
+    var hijos = [].slice.call(caja.children).filter(function (e) {
+      var r = e.getBoundingClientRect()
+      return r.width > 0 && r.height > 0 && w.getComputedStyle(e).position !== 'absolute'
+    })
+    if (hijos.length < 3) return
+
+    // Dos hijos van en la misma fila si se cruzan verticalmente, no si empiezan
+    // a la misma altura: con align-items: center cada uno arranca donde le toca
+    // según su alto, y comparar el borde de arriba partiría una sola fila en tres.
+    var filas = []
+    hijos.forEach(function (e) {
+      var r = e.getBoundingClientRect()
+      var fila = filas.filter(function (f) { return Math.min(f.bottom, r.bottom) - Math.max(f.top, r.top) > 1 })[0]
+      if (fila) {
+        fila.ancho += r.width
+        fila.n++
+        fila.top = Math.min(fila.top, r.top)
+        fila.bottom = Math.max(fila.bottom, r.bottom)
+      } else filas.push({ top: r.top, bottom: r.bottom, ancho: r.width, n: 1 })
+    })
+    if (filas.length < 2) return
+
+    var separacion = parseFloat(cs.columnGap) || 0
+    var interior = caja.getBoundingClientRect().width -
+      (parseFloat(cs.paddingLeft) || 0) - (parseFloat(cs.paddingRight) || 0)
+    var columna = (interior - separacion * (pistas.length - 1)) / pistas.length
+    var ultima = filas[filas.length - 1]
+    var usado = ultima.ancho + separacion * (ultima.n - 1)
+    var sobra = interior - usado
+    if (sobra > columna * 0.5) {
+      problemas.push(String(caja.className || caja.tagName).split(' ')[0] +
+        ' (' + hijos.length + ' en ' + pistas.length + ' columnas, sobran ' + Math.round(sobra) + 'px)')
+    }
+  })
+  return problemas
+})()`
+
+// Todas las fotos de contenido se pueden ampliar: visor.js les pone role de
+// botón y foco por tabulación. Las decorativas (alt vacío) quedan fuera a
+// propósito, porque son capas de fondo con texto encima.
+const FOTOS_AMPLIABLES = `(function () {
+  var fotos = [].slice.call(d.querySelectorAll('img[src^="/img/fotos/"]')).filter(function (i) {
+    if (!i.getAttribute('alt')) return false
+    for (var n = i; n && n.nodeType === 1; n = n.parentElement) {
+      if (n.getAttribute('aria-hidden') === 'true') return false
+      if (n.tagName === 'A' && n.getAttribute('href')) return false
+    }
+    return true
+  })
+  var w = d.defaultView
+  var sinVisor = fotos.filter(function (i) { return i.getAttribute('role') !== 'button' || i.getAttribute('tabindex') !== '0' })
+  // La señal al pasar el mouse es la foto que crece dentro de un marco que se
+  // enciende, no el cursor de lupa del navegador.
+  var conLupa = fotos.filter(function (i) { return w.getComputedStyle(i).cursor === 'zoom-in' })
+  var sinMarco = fotos.filter(function (i) { return !i.parentElement || !i.parentElement.classList.contains('visor-marco') })
+  return { total: fotos.length, sinVisor: sinVisor.length, conLupa: conLupa.length, sinMarco: sinMarco.length }
+})()`
+
 /** Lo que tiene que cumplir cualquier variante propia. */
 async function revisarVariante(doc, p) {
   check(`${p}: un solo h1`, (await en(doc, 'd.querySelectorAll("h1").length')) === 1)
@@ -382,6 +453,9 @@ try {
       check(`${tema.id} a ${ancho} px: no se desborda a lo ancho`, await en(PAGINA, DESBORDE), await en(PAGINA, DETALLE_DESBORDE))
       const encima = await en(PAGINA, SOBRE_GATOS)
       check(`${tema.id} a ${ancho} px: el logo con los gatos, atenuado y detrás del texto`, encima.length === 0, encima.slice(0, 4).join(', '))
+      const huerfanos = await en(PAGINA, HUERFANOS)
+      check(`${tema.id} a ${ancho} px: ninguna grilla deja un elemento solo en la última fila`,
+        huerfanos.length === 0, [...new Set(huerfanos)].slice(0, 4).join(' | '))
     }
 
     await metrics(375, 812)
@@ -418,6 +492,84 @@ try {
     check(`${tema.id}: el mapa y las publicaciones van con loading lazy`,
       [...mapaIncrustado, ...publicaciones].every((m) => m.lazy),
       [...mapaIncrustado, ...publicaciones].filter((m) => !m.lazy).map((m) => m.src).join(', '))
+
+    // Visor de fotos (25-09-2026): cualquier foto de contenido se amplía y las
+    // flechas recorren las de su grupo.
+    await metrics(1440, 900)
+    await goto(rutaTema(tema.id), 2000)
+    const ampliables = await en(PAGINA, FOTOS_AMPLIABLES)
+    check(`${tema.id}: todas las fotos de contenido se pueden ampliar`,
+      ampliables.total > 0 && ampliables.sinVisor === 0, `${ampliables.sinVisor} de ${ampliables.total} sin visor`)
+    check(`${tema.id}: las fotos avisan con su marco y no con el cursor de lupa`,
+      ampliables.conLupa === 0 && ampliables.sinMarco === 0,
+      `${ampliables.conLupa} con lupa, ${ampliables.sinMarco} sin marco`)
+    check(`${tema.id}: el visor no deja nada en la página hasta que se abre`,
+      await en(PAGINA, '!d.querySelector(".visor")'))
+    // Una galería de tres va en una sola fila desde 1024 px: la regla que
+    // reparte la tercera cuando hay dos columnas no puede pasarse de ancho.
+    const galeriaTres = await en(PAGINA, `(function () {
+      var fila = d.querySelector('.m-galeria--tres')
+      if (!fila) return 'sin galería de tres'
+      var cajas = [].slice.call(fila.children).map(function (c) { return c.getBoundingClientRect() })
+      return cajas.every(function (r) { return Math.min(r.bottom, cajas[0].bottom) - Math.max(r.top, cajas[0].top) > 1 })
+    })()`)
+    if (galeriaTres !== 'sin galería de tres') {
+      check(`${tema.id} a 1440 px: la galería de tres va en una sola fila`, galeriaTres === true)
+    }
+
+    // Se abre la segunda foto de una galería de cuatro, que es donde el carrusel
+    // tiene hacia dónde moverse en los dos sentidos.
+    const abierto = await en(PAGINA, `(function () {
+      var fila = d.querySelector('.m-galeria--cuatro')
+      if (!fila) return 'no hay una galería de cuatro'
+      var img = fila.querySelectorAll('img')[1]
+      img.setAttribute('data-prueba-origen', '1')
+      img.click()
+      var v = d.querySelector('.visor.visor--abierto')
+      if (!v) return 'el visor no se abrió'
+      var grande = v.querySelector('[data-visor-foto]').getAttribute('src') || ''
+      return {
+        h1: d.querySelectorAll('h1').length,
+        dialogo: v.getAttribute('role') + '/' + v.getAttribute('aria-modal'),
+        grande: /-1600\\.webp$/.test(grande),
+        contador: v.querySelector('[data-visor-contador]').textContent,
+        foco: d.activeElement === v.querySelector('[data-visor-cerrar]'),
+      }
+    })()`)
+    check(`${tema.id}: el visor abre la foto en grande`,
+      typeof abierto === 'object' && abierto.dialogo === 'dialog/true' && abierto.grande && abierto.h1 === 1 && abierto.foco,
+      JSON.stringify(abierto))
+    check(`${tema.id}: el visor cuenta las fotos del grupo, no las de la página`,
+      typeof abierto === 'object' && abierto.contador === '2 de 4', typeof abierto === 'object' ? abierto.contador : String(abierto))
+
+    await en(PAGINA, '(d.querySelector("[data-visor-siguiente]").click(), true)')
+    await sleep(300)
+    check(`${tema.id}: la flecha siguiente avanza en el grupo`,
+      (await en(PAGINA, 'd.querySelector("[data-visor-contador]").textContent')) === '3 de 4')
+
+    await en(PAGINA, '(d.querySelector(".visor").dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true })), true)')
+    // El cierre se funde en 320 ms: hay que esperar a que termine para mirar
+    // cómo queda oculto.
+    await sleep(600)
+    const cerrado = await en(PAGINA, `(function () {
+      var v = d.querySelector('.visor')
+      return {
+        abierto: v.classList.contains('visor--abierto'),
+        cuerpo: d.body.classList.contains('visor-abierto'),
+        foco: d.activeElement === d.querySelector('[data-prueba-origen]'),
+      }
+    })()`)
+    check(`${tema.id}: Escape cierra el visor y el foco vuelve a la foto`,
+      !cerrado.abierto && !cerrado.cuerpo && cerrado.foco, JSON.stringify(cerrado))
+    // Cerrado se funde hasta desaparecer: queda en el DOM, pero oculto, sin
+    // opacidad y sin atrapar clics.
+    const oculto = await en(PAGINA, `(function () {
+      var cs = getComputedStyle(d.querySelector('.visor'))
+      return { visibilidad: cs.visibility, opacidad: cs.opacity, puntero: cs.pointerEvents }
+    })()`)
+    check(`${tema.id}: el visor cerrado no se ve ni atrapa clics`,
+      oculto.visibilidad === 'hidden' && oculto.opacidad === '0' && oculto.puntero === 'none',
+      JSON.stringify(oculto))
   }
 } finally {
   ws.close()
