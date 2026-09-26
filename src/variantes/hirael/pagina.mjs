@@ -45,7 +45,7 @@
  * - El menú móvil también se cierra con Escape y queda inerte mientras está
  *   cerrado.
  */
-import { cielo, luna, cordillera, presa, titulo, marquesina, cifras, mapa, publicacion, fotoPendiente, valoracion } from '../../compartido/escena.mjs'
+import { cielo, luna, cordillera, presa, titulo, marquesina, cifras, mapa, publicacion, fotoCaja, graduacion, telon, valoracion } from '../../compartido/escena.mjs'
 
 const ICONOS = {
   flecha:
@@ -65,7 +65,6 @@ const mayusculaInicial = (texto) => texto.charAt(0).toUpperCase() + texto.slice(
 
 export default function pagina({ site, contenido, esc, foto, cabeza, leer, compartido }) {
   const {
-    POR_CONFIRMAR,
     MARCA,
     UBICACION,
     CONTACTO,
@@ -92,22 +91,30 @@ export default function pagina({ site, contenido, esc, foto, cabeza, leer, compa
     VALORACION,
     MARQUESINA,
     TEXTOS,
-    FOTOS_PENDIENTES,
+    FOTOS,
   } = contenido
 
-  /* Hueco de una foto que Kuyen todavía no manda, por su id de FOTOS_PENDIENTES.
-     El build comprueba que estén los diez en la página. */
-  const falta = (id) => fotoPendiente(FOTOS_PENDIENTES.find((f) => f.id === id))
-  const faltas = (...ids) =>
-    `<div class="m-faltas${ids.length > 3 ? ' m-faltas--cuatro' : ids.length === 3 ? ' m-faltas--tres' : ''}">${ids.map(falta).join('\n            ')}</div>`
+  /* Galería de una sección, por ids de FOTOS. Toda la fila toma la orientación
+     de la primera foto, así las cajas quedan del mismo alto aunque los
+     originales no lo estén. Las filas se arman agrupando por orientación. */
+  const galeria = (...ids) => {
+    const orientacion = FOTOS.find((f) => f.id === ids[0])?.orientacion || 'horizontal'
+    const cajas = ids.map((id, n) => {
+      if (!FOTOS.some((f) => f.id === id)) throw new Error(`foto desconocida en una galería: "${id}"`)
+      return fotoCaja({
+        formato: orientacion,
+        retraso: n * 90,
+        medio: foto(id, { tamanos: '(min-width: 1024px) 24vw, (min-width: 640px) 45vw, 92vw' }),
+      })
+    })
+    const ancho = ids.length > 3 ? ' m-galeria--cuatro' : ids.length === 3 ? ' m-galeria--tres' : ids.length === 1 ? ' m-galeria--sola' : ''
+    return `<div class="m-galeria${ancho}">${cajas.join('\n            ')}</div>`
+  }
 
   const externo = ' target="_blank" rel="noopener"'
   const servicio = (id) => SERVICIOS.find((s) => s.id === id)
   const google = CIFRAS.find((c) => c.id === 'google')
   const retraso = (ms) => (ms ? ` style="--m-retraso: ${ms}ms"` : '')
-
-  /** Dato que Kuyen no confirmó: visible en la página y comentado en el código. */
-  const pendiente = (falta) => `<!-- POR CONFIRMAR: ${falta} --><span class="pendiente">${POR_CONFIRMAR}</span>`
 
   /** Botón píldora con texto que rueda y círculo con flecha. */
   const boton = ({ texto, href, variante = 'primario', afuera = false, clase = '', aparece = null, iman = false }) => `<a class="boton boton--${variante}${clase ? ` ${clase}` : ''}" href="${esc(href)}"${afuera ? externo : ''}${aparece === null ? '' : ` data-m-aparece${retraso(aparece)}`}${iman ? ' data-m-iman' : ''}>
@@ -271,7 +278,8 @@ ${cabeza({ estilos: `${compartido('movimiento.css')}\n${leer('estilos.css')}` })
       </div>
     </section>
 
-    <section class="seccion seccion--tarjetas tono-gradiente" id="muro">
+    <section class="seccion m-con-telon seccion--tarjetas tono-gradiente" id="muro">
+      ${telon({ semilla: 11, presas: 3 })}
       <div class="contenedor">
         ${etiqueta(2, 'El muro y la comunidad')}
         <h2 class="titulo-grande tarjetas__titulo" data-m-revelar>${titulo('Escalar en Kuyen')}</h2>
@@ -320,7 +328,9 @@ ${cabeza({ estilos: `${compartido('movimiento.css')}\n${leer('estilos.css')}` })
             <p class="columna__texto">${esc(EQUIPO.seteadores.resumen)} ${esc(EQUIPO.seteadores.headsetter)} es el headsetter del lugar.</p>
           </div>
         </div>
-        ${faltas('muro-vacio', 'presas-cerca', 'moonboard', 'seteo')}
+        ${graduacion({ datos: MURO.graduacion })}
+        ${galeria('muro-placa', 'muro-15', 'muro-25', 'moonboard')}
+        ${galeria('muro-desplomes', 'muro-placa-desplome', 'presa-cerca', 'presa-volumen')}
       </div>
     </section>
 
@@ -346,16 +356,16 @@ ${cabeza({ estilos: `${compartido('movimiento.css')}\n${leer('estilos.css')}` })
             <h3 class="columna__titulo">El muro</h3>
             <p class="columna__texto">${esc(EQUIPO.construccion)}</p>
           </div>
-          <div class="columna columna--ancha" data-m-aparece style="--m-retraso: 360ms">
+          <div class="columna" data-m-aparece style="--m-retraso: 360ms">
             <h3 class="columna__titulo">${esc(PANCITA.nombre)}</h3>
             <p class="columna__texto">${esc(PANCITA.descripcion)}</p>
           </div>
         </div>
-        ${faltas('equipo')}
       </div>
     </section>
 
-    <section class="seccion seccion--tarjetas tono-oscuro" id="clases">
+    <section class="seccion m-con-telon seccion--tarjetas tono-oscuro" id="clases">
+      ${telon({ semilla: 23, presas: 4 })}
       <div class="contenedor">
         ${etiqueta(5, 'Clases guiadas')}
         <h2 class="titulo-grande tarjetas__titulo" data-m-revelar>${titulo('Aprende con nosotros')}</h2>
@@ -367,18 +377,18 @@ ${cabeza({ estilos: `${compartido('movimiento.css')}\n${leer('estilos.css')}` })
             titulo: esc(clases.nombre),
           })}
           ${tarjeta({
-            medio: foto('escalador-desplome-gris', { tamanos: '(min-width: 768px) 50vw, 100vw' }),
+            medio: foto('aniversario-escalador', { tamanos: '(min-width: 768px) 50vw, 100vw' }),
             pildoraHtml: pildora({ texto: TEXTOS.acciones.escribenos, href: CONTACTO.whatsapp, oscura: true, abierta: '8.5rem' }),
             descripcion: `${esc(clases.prueba)} ${esc(clases.incluyeEntrada)} ${esc(clases.descuento)}`,
             titulo: 'Antes de inscribirte',
             desde: 160,
           })}
         </div>
-        ${faltas('clase')}
+        ${galeria('campus', 'competencia-escaladora')}
       </div>
     </section>
 
-    <section class="seccion seccion--intro tono-oscuro" id="kuyencitos">
+    <section class="seccion seccion--intro tono-gradiente" id="kuyencitos">
       <div class="contenedor">
         ${etiqueta(6, 'Niñas y niños')}
         <h2 class="titulo-intro intro__titulo" data-m-revelar>${titulo(['Kuyencit@s.'])}</h2>
@@ -389,7 +399,7 @@ ${cabeza({ estilos: `${compartido('movimiento.css')}\n${leer('estilos.css')}` })
         <div class="columnas">
           <div class="columna" data-m-aparece>
             <h3 class="columna__titulo">Días y horario</h3>
-            <p class="columna__texto">${pendiente('días y horario de Kuyencit@s: Kuyen está ajustando los horarios (K2)')}</p>
+            <p class="columna__texto">${esc(servicio('kuyencitos').dias)}</p>
           </div>
           <div class="columna" data-m-aparece style="--m-retraso: 120ms">
             <h3 class="columna__titulo">Valores</h3>
@@ -401,16 +411,16 @@ ${cabeza({ estilos: `${compartido('movimiento.css')}\n${leer('estilos.css')}` })
             <h3 class="columna__titulo">Quién acompaña</h3>
             <p class="columna__texto">${esc(servicio('kuyencitos').acompanamiento)}</p>
           </div>
-          <div class="columna columna--ancha" data-m-aparece style="--m-retraso: 360ms">
+          <div class="columna" data-m-aparece style="--m-retraso: 360ms">
             <h3 class="columna__titulo">Autorización</h3>
             <p class="columna__texto">${esc(servicio('kuyencitos').autorizacion)} ${esc(PRIMERA_VISITA.menores)}</p>
           </div>
         </div>
-        ${faltas('kuyencitos')}
+        ${galeria('nino-escalando', 'joven-escalando')}
       </div>
     </section>
 
-    <section class="seccion seccion--intro tono-gradiente" id="horarios">
+    <section class="seccion seccion--intro tono-oscuro" id="horarios">
       <div class="contenedor">
         ${etiqueta(7, 'Horarios y valores')}
         <h2 class="titulo-intro intro__titulo" data-m-revelar>${titulo(['Lunes a domingo,', `de ${HORARIOS.abre} a ${HORARIOS.cierra}.`])}</h2>
@@ -431,10 +441,10 @@ ${cabeza({ estilos: `${compartido('movimiento.css')}\n${leer('estilos.css')}` })
           </div>`
             )
             .join('\n          ')}
-          <div class="columna columna--ancha" data-m-aparece style="--m-retraso: 240ms">
+          <div class="columna" data-m-aparece style="--m-retraso: 240ms">
             <h3 class="columna__titulo">Valores</h3>
             <ul class="columna__lista">
-              ${PRECIOS.map((precio) => `<li>${esc(precio.nombre)}: ${precio.valor === POR_CONFIRMAR ? pendiente('valor del plan de clases guiadas: Kuyen confirmó el descuento del primer mes, no el precio (C2)') : esc(precio.valor)}${precio.valorEstudiante ? ` <span class="columna__nota">${esc(precio.valorEstudiante)} con credencial de estudiante</span>` : ''}</li>`).join('\n              ')}
+              ${PRECIOS.map((precio) => `<li>${esc(precio.nombre)}: ${esc(precio.valor)}${precio.valorEstudiante ? ` <span class="columna__nota">${esc(precio.valorEstudiante)} con credencial de estudiante</span>` : ''}</li>`).join('\n              ')}
             </ul>
           </div>
         </div>
@@ -452,7 +462,7 @@ ${cabeza({ estilos: `${compartido('movimiento.css')}\n${leer('estilos.css')}` })
         <div class="columnas">
           ${PRIMERA_VISITA.pasos
             .map(
-              (paso, n) => `<div class="columna${n === 3 ? ' columna--ancha' : ''}" data-m-aparece${retraso(n * 120)}>
+              (paso, n) => `<div class="columna" data-m-aparece${retraso(n * 120)}>
             <h3 class="columna__titulo">Paso ${n + 1}</h3>
             <ol class="columna__lista columna__lista--numerada" start="${n + 1}">
               <li>${esc(paso.titulo)}. <span class="columna__nota">${esc(paso.texto)}${paso.enlace ? ` <a class="enlace" href="${esc(paso.enlace.url)}"${externo}>${esc(paso.enlace.texto)}</a>.` : ''}</span></li>
@@ -475,7 +485,7 @@ ${cabeza({ estilos: `${compartido('movimiento.css')}\n${leer('estilos.css')}` })
         <div class="columnas">
           ${[0, 5, 10]
             .map(
-              (desde) => `<div class="columna${desde === 10 ? ' columna--ancha' : ''}" data-m-aparece${retraso(desde * 24)}>
+              (desde) => `<div class="columna" data-m-aparece${retraso(desde * 24)}>
             <h3 class="columna__titulo">Del ${desde + 1} al ${desde + 5}</h3>
             <ol class="columna__lista columna__lista--numerada" start="${desde + 1}">
               ${REGLAMENTO.slice(desde, desde + 5).map((regla) => `<li>${esc(regla)}</li>`).join('\n              ')}
@@ -487,7 +497,7 @@ ${cabeza({ estilos: `${compartido('movimiento.css')}\n${leer('estilos.css')}` })
       </div>
     </section>
 
-    <section class="seccion seccion--intro tono-oscuro" id="inclusion">
+    <section class="seccion seccion--intro tono-gradiente" id="inclusion">
       <div class="contenedor">
         ${etiqueta(10, 'Comunidad')}
         <h2 class="titulo-intro intro__titulo" data-m-revelar>${titulo(['Un muro para', 'hacer comunidad.'])}</h2>
@@ -509,7 +519,7 @@ ${cabeza({ estilos: `${compartido('movimiento.css')}\n${leer('estilos.css')}` })
             <h3 class="columna__titulo">Cómo inscribirse</h3>
             <p class="columna__texto">${esc(EVENTOS_INFO.inscripcion)} ${esc(COMUNIDAD.anuncios)}</p>
           </div>
-          <div class="columna columna--ancha" data-m-aparece style="--m-retraso: 360ms">
+          <div class="columna" data-m-aparece style="--m-retraso: 360ms">
             <h3 class="columna__titulo">Lo que nos importa</h3>
             <ul class="columna__lista">
               ${COMUNIDAD.valores.map((v) => `<li>${esc(v)}</li>`).join('\n              ')}
@@ -519,12 +529,13 @@ ${cabeza({ estilos: `${compartido('movimiento.css')}\n${leer('estilos.css')}` })
         <h3 class="columna__titulo comunidad__rotulo" data-m-aparece>Lo que dicen en ${esc(VALORACION.fuente)}</h3>
         <div class="columnas">
           ${RESENAS.map(
-            (r, n) => `<div class="columna${n === 0 ? ' columna--ancha' : ''}" data-m-aparece${retraso(n * 90)}>
+            (r, n) => `<div class="columna" data-m-aparece${retraso(n * 90)}>
             <blockquote class="resena__cita">${esc(`«${r.cita}»`)}</blockquote>
             <p class="resena__autor">${esc(r.autor)} <span class="columna__nota">${esc(r.perfil ? `${r.perfil} en ${r.fuente}` : `en ${r.fuente}`)}</span></p>
           </div>`
           ).join('\n          ')}
         </div>
+        ${galeria('aniversario-galpon', 'aniversario-volumen', 'aniversario-travesia', 'competencia-publico')}
       </div>
     </section>
 
@@ -548,7 +559,7 @@ ${cabeza({ estilos: `${compartido('movimiento.css')}\n${leer('estilos.css')}` })
               ${COMODIDADES.lista.map((c) => `<li>${esc(c)}</li>`).join('\n              ')}
             </ul>
           </div>
-          <div class="columna columna--ancha" data-m-aparece style="--m-retraso: 240ms">
+          <div class="columna" data-m-aparece style="--m-retraso: 240ms">
             <h3 class="columna__titulo">También pasa acá</h3>
             <ul class="columna__lista">
               ${INVITADOS.map(
@@ -558,11 +569,12 @@ ${cabeza({ estilos: `${compartido('movimiento.css')}\n${leer('estilos.css')}` })
             </ul>
           </div>
         </div>
-        ${faltas('productos', 'recepcion')}
+        ${galeria('galpon', 'descanso')}
       </div>
     </section>
 
-    <section class="seccion seccion--tarjetas tono-oscuro" id="instagram">
+    <section class="seccion m-con-telon seccion--tarjetas tono-oscuro" id="instagram">
+      ${telon({ semilla: 37, presas: 3 })}
       <div class="contenedor">
         ${etiqueta(12, 'En Instagram')}
         <h2 class="titulo-grande tarjetas__titulo" data-m-revelar>${titulo('Lo que publicamos')}</h2>
@@ -587,7 +599,8 @@ ${cabeza({ estilos: `${compartido('movimiento.css')}\n${leer('estilos.css')}` })
       </div>
     </section>
 
-    <section class="seccion seccion--tarjetas tono-gradiente" id="visitanos">
+    <section class="seccion m-con-telon seccion--tarjetas tono-gradiente" id="visitanos">
+      ${telon({ semilla: 53, presas: 3 })}
       <div class="contenedor">
         ${etiqueta(13, 'Visítanos')}
         <h2 class="titulo-grande tarjetas__titulo" data-m-revelar>${titulo(UBICACION.calle)}</h2>
@@ -600,14 +613,13 @@ ${cabeza({ estilos: `${compartido('movimiento.css')}\n${leer('estilos.css')}` })
             titulo: 'Cómo llegar',
           })}
           ${tarjeta({
-            medio: foto('joven-escalando', { tamanos: '(min-width: 768px) 50vw, 100vw' }),
+            medio: foto('fachada', { tamanos: '(min-width: 768px) 50vw, 100vw' }),
             pildoraHtml: pildora({ texto: TEXTOS.acciones.escribenos, href: CONTACTO.whatsapp, oscura: true, abierta: '8.5rem' }),
             descripcion: `WhatsApp ${esc(CONTACTO.telefono)}, mensaje directo en Instagram, ${esc(CONTACTO.instagramUsuario)}, o correo a <a class="enlace" href="mailto:${esc(CONTACTO.correo)}">${esc(CONTACTO.correo)}</a>. ${esc(CONTACTO.horarioRespuesta)} ${esc(COMODIDADES.referencia)}`,
             titulo: 'Contacto',
             desde: 160,
           })}
         </div>
-        ${faltas('fachada')}
       </div>
     </section>
   </main>
@@ -689,6 +701,7 @@ ${cabeza({ estilos: `${compartido('movimiento.css')}\n${leer('estilos.css')}` })
 
   <script>
 ${compartido('movimiento.js')};
+${compartido('visor.js')};
 ${compartido('instagram.js')};
 ${leer('script.js')};
   </script>

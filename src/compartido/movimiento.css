@@ -79,41 +79,244 @@
 .m-valoracion__enlaces { display: flex; flex-wrap: wrap; gap: 0.25rem 0.75rem; font-size: 0.875rem; }
 .m-valoracion__invita { color: var(--texto-suave); }
 
-/* Hueco de una foto que Kuyen todavía no manda. Se ve a propósito: borde
-   punteado en amarillo luna y el pedido escrito adentro, del tamaño que va a
-   tener la foto. El texto va en --kuyen-luna sobre la noche, que pasa AA. */
-.m-falta {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 0.75rem;
-  margin: 0;
-  padding: 1.25rem;
-  border: 2px dashed rgb(247 231 180 / 0.45);
-  border-radius: 0.75rem;
-  background: rgb(247 231 180 / 0.05);
-  text-align: center;
+/* ---------- Visor de fotos ----------
+   Las fotos de contenido se abren ampliadas al hacer clic y se recorren con las
+   flechas dentro de su grupo. El markup lo arma visor.js la primera vez que se
+   abre: acá van solo los estilos. */
+/* Preselección: la foto que se puede ampliar avisa creciendo dentro de su marco,
+   y el marco se enciende con un aro del amarillo de la luna. Reemplaza al cursor
+   de lupa, que era del navegador y no decía nada del sitio. */
+.visor-activa { cursor: pointer; }
+.visor-marco { position: relative; }
+.visor-marco::after {
+  content: "";
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+  border: 2px solid transparent;
+  border-radius: inherit;
+  pointer-events: none;
 }
-.m-falta--horizontal { aspect-ratio: 3 / 2; }
-.m-falta--vertical { aspect-ratio: 3 / 4; }
-.m-falta__marca { display: block; width: 2rem; height: 2rem; flex: none; color: var(--kuyen-luna); }
-.m-falta__marca svg { width: 100%; height: 100%; }
-.m-falta__texto { max-width: 26rem; color: var(--kuyen-luna); font-family: var(--fuente-texto); font-size: 0.8125rem; line-height: 1.5; }
-.m-falta__texto b { display: block; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; }
-.m-falta__codigo { opacity: 0.75; }
-/* En cajas muy chicas el recuadro deja de imponer proporción y se ajusta. */
-@media (max-width: 400px) {
-  .m-falta { padding: 1rem; }
-  .m-falta--horizontal, .m-falta--vertical { aspect-ratio: auto; min-height: 11rem; }
+.visor-marco:focus-within::after { border-color: rgb(247 231 180 / 0.6); }
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .visor-marco::after { transition: border-color 350ms var(--m-curva); }
+  .visor-marco:hover::after { border-color: rgb(247 231 180 / 0.6); }
+  /* Las de galería descansan en 1. Las de .m-foto descansan en 1.1, que es donde
+     termina su animación de entrada, así que suben desde ahí: el selector de más
+     abajo gana por especificidad y ninguna foto encoge al pasar el mouse. */
+  .visor-marco .visor-activa { transition: scale 600ms var(--m-curva); }
+  .visor-marco:hover .visor-activa { scale: 1.06; }
+  .m-js .m-foto.m-visible.visor-marco:hover img { scale: 1.18; transition-duration: 700ms; transition-delay: 0ms; }
 }
 
-/* Rejilla de huecos, para las secciones que esperan varias fotos. */
-.m-faltas { display: grid; gap: 1rem; margin-top: 2rem; }
-@media (min-width: 640px) { .m-faltas { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.visor-abierto { overflow: hidden; }
+
+/* El visor se funde al abrir y al cerrar. `display` no se puede transicionar sin
+   @starting-style, así que se queda en display: flex y lo que cambia es la
+   visibilidad: oculto sale del árbol de accesibilidad y del contraste, y sin
+   pointer-events no atrapa clics. El retardo de visibility al cerrar es lo que
+   deja que el fundido se vea antes de esconderlo. */
+.visor {
+  position: fixed;
+  z-index: 90;
+  display: flex;
+  inset: 0;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 320ms ease, visibility 0s linear 320ms;
+}
+.visor--abierto {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transition: opacity 320ms ease, visibility 0s;
+}
+.visor--calmo, .visor--calmo .visor__foto { transition: none; }
+.visor__fondo { position: absolute; inset: 0; background: rgb(12 13 16 / 0.94); }
+
+.visor__figura {
+  position: relative;
+  display: flex;
+  max-width: 92vw;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.875rem;
+  margin: 0;
+  touch-action: pan-y;
+}
+.visor__foto {
+  display: block;
+  max-width: 92vw;
+  max-height: 74vh;
+  border-radius: 0.75rem;
+  object-fit: contain;
+  /* Se funde al cambiar de una foto a otra dentro del carrusel: visor.js le
+     saca la clase al pedir la nueva y se la devuelve cuando termina de cargar. */
+  opacity: 0;
+  transition: opacity 260ms ease;
+}
+.visor__foto--lista { opacity: 1; }
+.visor__pie {
+  display: flex;
+  max-width: 46rem;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: center;
+  gap: 0.25rem 0.75rem;
+  color: var(--kuyen-luna);
+  font-family: var(--fuente-texto);
+  font-size: 0.875rem;
+  line-height: 1.5;
+  text-align: center;
+}
+.visor__contador { color: rgb(247 231 180 / 0.72); font-size: 0.8125rem; white-space: nowrap; }
+
+.visor__boton {
+  position: absolute;
+  z-index: 1;
+  display: flex;
+  width: 2.75rem;
+  height: 2.75rem;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgb(247 231 180 / 0.28);
+  border-radius: 9999px;
+  background: rgb(23 26 30 / 0.72);
+  color: var(--kuyen-luna);
+  transition: border-color 200ms, background-color 200ms;
+}
+.visor__boton:hover { border-color: rgb(247 231 180 / 0.6); background: rgb(23 26 30 / 0.92); }
+.visor__boton:focus-visible { outline: 2px solid var(--kuyen-luna); outline-offset: 2px; }
+.visor__boton svg { width: 1.375rem; height: 1.375rem; }
+.visor__boton--cerrar { top: 1rem; right: 1rem; }
+.visor__boton--atras { bottom: 1rem; left: 50%; translate: -3.25rem 0; }
+.visor__boton--siguiente { bottom: 1rem; left: 50%; translate: 0.5rem 0; }
+@media (min-width: 768px) {
+  .visor__foto { max-height: 80vh; }
+  .visor__boton--atras { top: 50%; bottom: auto; left: 1.25rem; translate: 0 -50%; }
+  .visor__boton--siguiente { top: 50%; bottom: auto; left: auto; right: 1.25rem; translate: 0 -50%; }
+}
+/* En teléfono los dos botones de abajo se sientan sobre el pie: se le deja aire. */
+@media (max-width: 767px) {
+  .visor__figura { padding-bottom: 3.75rem; }
+}
+
+/* Cada foto de una galería, en su recuadro: proporción fija según su orientación
+   y recorte al centro, para que una fila quede pareja aunque los originales
+   tengan medidas distintas. */
+.m-caja { position: relative; margin: 0; overflow: hidden; border-radius: 0.75rem; background: rgb(247 231 180 / 0.06); }
+.m-caja--horizontal { aspect-ratio: 3 / 2; }
+.m-caja--vertical { aspect-ratio: 3 / 4; }
+.m-caja img { display: block; width: 100%; height: 100%; object-fit: cover; }
+/* Cada foto es su propia zona de puntero (data-m-puntero en fotoCaja): se
+   inclina un poco hacia donde está el mouse. Va en el <img> y no en el <figure>,
+   porque el figure usa transform para su animación de entrada. Las variables
+   valen 0 mientras el puntero no está encima, así que en reposo no se inclina
+   nada y no asoman las esquinas del recorte. */
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .m-caja img {
+    transform: rotateX(calc(var(--m-my, 0) * -2deg)) rotateY(calc(var(--m-mx, 0) * 2deg));
+    transform-origin: center;
+  }
+}
+@media (max-width: 400px) {
+  .m-caja--horizontal, .m-caja--vertical { aspect-ratio: auto; min-height: 11rem; }
+}
+
+/* Escala de graduación: una chapa de cada color con los grados que cubre. El
+   color sale del dato, no del tema, porque es el color real de la chapa que va
+   atornillada al lado de la ruta. La chapa blanca lleva borde para verse. */
+.m-grados { display: flex; flex-direction: column; gap: 0.75rem; margin-top: 2rem; }
+.m-grados__titulo { font-family: var(--fuente-titulo); font-size: 1.25rem; font-weight: 400; }
+.m-grados__intro { color: var(--texto-suave); font-size: 0.9375rem; }
+.m-grados__lista { display: grid; gap: 0.5rem; margin: 0; padding: 0; list-style: none; }
+@media (min-width: 560px) { .m-grados__lista { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 900px) { .m-grados__lista { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.m-grados__fila {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid rgb(247 231 180 / 0.18);
+  border-radius: 999px;
+  font-size: 0.9375rem;
+}
+.m-grados__chapa {
+  width: 1.125rem;
+  height: 1.125rem;
+  flex: none;
+  border: 1px solid rgb(247 231 180 / 0.55);
+  border-radius: 50%;
+  background: var(--chapa);
+}
+.m-grados__chapa { transition: scale 300ms var(--m-curva); }
+@media (hover: hover) {
+  .m-grados__fila { transition: border-color 300ms var(--m-curva); }
+  .m-grados__fila:hover { border-color: rgb(247 231 180 / 0.5); }
+  .m-grados__fila:hover .m-grados__chapa { scale: 1.25; }
+}
+.m-grados__color { font-weight: 600; }
+.m-grados__valor { margin-left: auto; color: var(--texto-suave); font-family: var(--fuente-titulo); letter-spacing: 0.04em; }
+.m-grados__nota { color: var(--texto-suave); font-size: 0.875rem; }
+
+/* Galería de una sección: mosaico de dos columnas, y tres o cuatro en pantalla
+   grande según cuántas lleve la fila. En teléfono también van de a dos: en una
+   sola columna, las ocho fotos del muro son cuatro pantallas de scroll. Una foto
+   sola manda, ocupa el ancho entero y por eso va más apaisada. */
+.m-galeria { display: grid; gap: 1rem; margin-top: 2rem; grid-template-columns: repeat(2, minmax(0, 1fr)); perspective: 1000px; }
+/* Dos filas seguidas son un solo bloque de fotos: se separan como las columnas. */
+.m-galeria + .m-galeria { margin-top: 1rem; }
+.m-galeria--sola { grid-template-columns: minmax(0, 1fr); }
+/* Debajo de 1024 px la galería tiene dos columnas y la tercera foto quedaría
+   sola: se lleva la fila, y como la ocupa entera va apaisada, igual que una foto
+   sola. Desde 1024 px son tres columnas y las tres van parejas, así que la regla
+   no puede salir de su media query. */
+@media (max-width: 1023px) {
+  .m-galeria--tres > :nth-child(3):last-child {
+    grid-column: 1 / -1;
+    /* Anclada al ancho: estirada también en alto, la proporción le devolvía un
+       ancho mayor que el de su columna y ensanchaba la página. */
+    width: 100%;
+    align-self: start;
+  }
+  .m-galeria--tres > :nth-child(3):last-child.m-caja--horizontal { aspect-ratio: 16 / 7; }
+  .m-galeria--tres > :nth-child(3):last-child.m-caja--vertical { aspect-ratio: 16 / 9; }
+}
+@media (min-width: 640px) {
+  .m-galeria--sola .m-caja--horizontal { aspect-ratio: 16 / 7; }
+  .m-galeria--sola .m-caja--vertical { aspect-ratio: 16 / 9; }
+}
 @media (min-width: 1024px) {
-  .m-faltas--tres { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-  .m-faltas--cuatro { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .m-galeria--tres { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .m-galeria--cuatro { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+
+/* ---------- Telón de sección ----------
+   Fondo de escalada para las secciones de poco texto: una cordillera al pie y
+   presas grandes flotando. `isolation: isolate` en la sección deja que el telón
+   vaya en z-index -1 sin caerse detrás del fondo de la sección, y `overflow`
+   recorta las presas que asoman para que no ensanchen la página. */
+.m-con-telon { position: relative; isolation: isolate; }
+.m-telon { position: absolute; z-index: -1; inset: 0; overflow: hidden; pointer-events: none; }
+.m-telon__cumbre {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 130%;
+  height: clamp(7rem, 18vw, 14rem);
+  translate: -50% 0;
+  fill: var(--kuyen-luna);
+  opacity: 0.05;
+}
+.m-presa--telon { filter: none; opacity: 0.06; }
+.m-presa--telon svg { rotate: var(--giro, 0deg); }
+@media (min-width: 768px) {
+  .m-telon__cumbre { opacity: 0.06; }
+  .m-presa--telon { opacity: 0.07; }
 }
 
 /* Presas que flotan. */
@@ -129,6 +332,7 @@
   .m-estrella { animation: m-titilar var(--d) ease-in-out var(--r) infinite; }
   .m-luna { animation: m-mecer 9s ease-in-out infinite alternate; }
   .m-presa svg { animation: m-flotar var(--dur, 8s) ease-in-out infinite alternate; }
+  .m-presa--telon { translate: 0 var(--m-y, 0px); }
 
   /* Entrada del hero: con [data-m-entrada], las piezas esperan a .m-listo, que
      llega cuando cargó la foto principal. Las estrellas se encienden, sube lo
@@ -258,4 +462,9 @@
 }
 @media (min-width: 640px) {
   .m-cifras { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  /* Son números cortos: con cuatro conviene una fila de cuatro antes que dejar
+     la cuarta sola debajo de las tres primeras. */
+  .m-cifras:has(> :nth-child(4):last-child) { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .m-cifras > :nth-child(3n + 1):last-child { grid-column: 1 / -1; }
+  .m-cifras:has(> :nth-child(4):last-child) > :last-child { grid-column: auto; }
 }

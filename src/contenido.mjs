@@ -13,9 +13,12 @@
  * primera visita y reglas, V comunidad y eventos, E equipo e historia, L marca
  * y datos legales, D lo que Kuyen quiere destacar.
  *
- * Lo que sigue sin respuesta lleva POR_CONFIRMAR y un comentario "Falta:" con
- * lo que hay que preguntar. El build falla si un horario o un precio queda en
- * blanco, y si en el sitio aparece alguno de DATOS_SIN_CONFIRMAR.
+ * El 25-09-2026 llegaron las fotos y las gráficas de precios, y Benjamín cerró
+ * la etapa: el sitio se entrega con lo que hay. Lo que Kuyen nunca fijó, como el
+ * horario de Kuyencit@s, no se inventa ni se deja como hueco: la página manda a
+ * escribir, que es lo que pasaba igual. POR_CONFIRMAR queda como herramienta
+ * para lo que venga. El build falla si un horario o un precio queda en blanco, y
+ * si en el sitio aparece alguno de DATOS_SIN_CONFIRMAR.
  */
 
 export const POR_CONFIRMAR = '[POR CONFIRMAR]'
@@ -171,7 +174,7 @@ export const MURO = {
     {
       id: 'rutas',
       titulo: 'Rutas nuevas',
-      texto: 'Cada mes se mueve al menos una sección del muro, y la dificultad de cada ruta va marcada con chapas.', // M7, M8
+      texto: 'Cada mes se mueve al menos una sección del muro, y la dificultad de cada ruta va marcada con el color de su chapa.', // M7, M8
     },
     {
       id: 'colchonetas',
@@ -193,6 +196,26 @@ export const MURO = {
   ],
   // Proceso de renovación mostrado en Instagram (septiembre de 2025).
   renovacion: 'Sacamos las presas, las lavamos, instalamos volúmenes y armamos rutas nuevas.',
+  /**
+   * Graduación de boulder por color de chapa (M7, M8), copiada de la gráfica
+   * "Graduación de boulder" que Andy subió el 25-09-2026. Los tramos se pisan a
+   * propósito: una ruta de V1 puede ir marcada azul o verde según cómo salga.
+   * `color` es el nombre que usa Kuyen y `muestra`, el color con que se dibuja
+   * la chapa en la página.
+   */
+  graduacion: {
+    titulo: 'Graduación de boulder',
+    intro: 'La dificultad va marcada con el color de la chapa.',
+    nota: 'Los volúmenes son válidos para todas las rutas.',
+    escala: [
+      { id: 'azul', color: 'Azul', grados: 'V0 a V1', muestra: '#2b1fbf' },
+      { id: 'verde', color: 'Verde', grados: 'V1 a V2', muestra: '#4ca64c' },
+      { id: 'amarillo', color: 'Amarillo', grados: 'V3 a V4', muestra: '#ffd029' },
+      { id: 'rojo', color: 'Rojo', grados: 'V5 a V6', muestra: '#e01b1b' },
+      { id: 'negro', color: 'Negro', grados: 'V7 a V8', muestra: '#111111' },
+      { id: 'blanco', color: 'Blanco', grados: 'V9 a V10', muestra: '#f7f2e4' },
+    ],
+  },
 }
 
 /**
@@ -270,12 +293,12 @@ export const SERVICIOS = [
   {
     id: 'clases',
     nombre: 'Clases guiadas',
-    // C2: Andy confirmó el 22-09-2026 que el plan es de una vez por semana. El de
-    // 8 clases al mes que Kuyen lanzó en marzo sale del sitio hasta saber si
-    // sigue existiendo y a qué valor.
-    resumen: 'Desde marzo de 2026: un plan de 4 clases al mes, una vez por semana.',
+    // C2: Andy dijo el 22-09-2026 que el plan era de una vez por semana. Las
+    // gráficas de precios del 25-09-2026 muestran los tres: una, dos y tres
+    // veces por semana, más la clase suelta.
+    resumen: 'Desde marzo de 2026: planes de una, dos o tres clases por semana, o una clase suelta.',
     desde: 'Desde marzo de 2026',
-    plan: '4 clases al mes',
+    plan: 'De 4 a 12 clases al mes, según cuántas veces por semana vengas.',
     descuento: 'El primer mes va con descuento.',
     temas: [
       'Técnica',
@@ -299,8 +322,9 @@ export const SERVICIOS = [
     nombre: 'Kuyencit@s',
     resumen: 'El programa de escalada para niñas y niños.',
     edades: 'Dos grupos: de 7 a 9 años y de 10 a 15 años.', // K1
-    // Falta: días y horario de Kuyencit@s. Kuyen está ajustando los horarios (K2).
-    dias: POR_CONFIRMAR,
+    // K2: Kuyen estaba ajustando los horarios y no los fijó. En vez de dejar el
+    // hueco a la vista, la página manda a escribir, que es lo que pasa igual.
+    dias: 'Los horarios se coordinan al inscribirse, según el grupo de edad. Escríbenos y te contamos los cupos que hay abiertos.',
     acompanamiento: 'Acompañan los profesores. Al principio conviene que venga también su tutor, para que agarren confianza.', // K4
     autorizacion: 'Pedimos un consentimiento: la escalada es un deporte de riesgo y, con todas las medidas de seguridad, un accidente siempre es posible.', // K5
   },
@@ -348,7 +372,13 @@ export const PRECIOS = [
   { id: 'mensualidad', nombre: 'Mensualidad de escalada libre', detalle: 'Todo el mes', valor: '$30.000', valorEstudiante: '$25.000' },
   { id: 'pack-5', nombre: 'Pack de 5 pases libres', detalle: 'Escalada libre', valor: '$18.000' },
   { id: 'pack-10', nombre: 'Pack de 10 pases libres', detalle: 'Escalada libre', valor: '$32.000' },
-  { id: 'clases', nombre: 'Plan de clases guiadas', detalle: '4 clases al mes, una vez por semana. Descuento el primer mes', valor: '$45.000' },
+  // C2: las tres gráficas de precios que Andy subió el 25-09-2026 confirman los
+  // valores de arriba y agregan los planes de 2 y 3 veces por semana y la clase
+  // suelta, que hasta ahora no estaban.
+  { id: 'clases-1', nombre: 'Clases guiadas, 1 vez por semana', detalle: '4 clases al mes. Descuento el primer mes', valor: '$45.000' },
+  { id: 'clases-2', nombre: 'Clases guiadas, 2 veces por semana', detalle: '8 clases al mes', valor: '$52.000' },
+  { id: 'clases-3', nombre: 'Clases guiadas, 3 veces por semana', detalle: '12 clases al mes', valor: '$72.000' },
+  { id: 'clases-suelta', nombre: 'Clase guiada suelta', detalle: 'Una clase, sin plan', valor: '$13.500' },
   // K3: Kuyen aclaró el 23-09-2026 que los dos planes son por semana.
   { id: 'kuyencitos-1', nombre: 'Kuyencit@s, 1 clase por semana', detalle: 'Programa infantil', valor: '$40.000' },
   { id: 'kuyencitos-2', nombre: 'Kuyencit@s, 2 clases por semana', detalle: 'Programa infantil', valor: '$52.000' },
@@ -713,8 +743,20 @@ export const TESTIMONIOS = RESENAS
  * Fotos entregadas por Kuyen. Las genera `node tools/assets.mjs fotos` en
  * img/fotos/<id>-<ancho>.webp, con la orientación EXIF aplicada.
  *
- * F1: las tomó @vbizama.studio, que es quien se encarga de las fotos de Kuyen.
- * F2: las personas que aparecen dieron permiso para salir en la página.
+ * F1: las de la sesión las tomó @vbizama.studio, que es quien se encarga de las
+ * fotos de Kuyen. F2: las personas que aparecen dieron permiso para salir.
+ *
+ * El 25-09-2026 Andy subió el resto del material. Por el EXIF son tres jornadas
+ * distintas: una competencia con la Nikon D200, el aniversario con la D3100 y la
+ * jornada de la que ya salían las fotos de arriba, también con la D3100. Las dos
+ * cámaras tienen el reloj un año atrasado: el EXIF del aniversario marca el 24 de
+ * mayo de 2025 y la competencia de tercer aniversario fue el 16 de mayo de 2026.
+ * Por eso ninguna fecha de acá sale de la cámara. Aparte llegaron fotos del muro
+ * sacadas con teléfono por el propio equipo, que llevan otro crédito.
+ *
+ * `recorte` deja fuera una marca de terceros sin perder la foto entera: el panel
+ * amarillo del galpón tiene pegados los logos de @astroméridas y MORBID, y en el
+ * lienzo del fondo se lee Patagonia. Se recorta al generar, no se retoca.
  */
 export const FOTOS = [
   {
@@ -771,46 +813,148 @@ export const FOTOS = [
     orientacion: 'horizontal',
     alt: 'Pancita, la gata de Kuyen, mirando a la cámara con el muro de fondo',
   },
-].map((foto) => ({ ...foto, anchos: [1600, 1200, 800], credito: '@vbizama.studio' }))
+  {
+    id: 'competencia-escaladora',
+    original: 'Competencia.JPG',
+    orientacion: 'vertical',
+    alt: 'Escaladora con polerón morado y pantalón burdeo en un panel gris y azul, durante una competencia',
+  },
+  {
+    id: 'competencia-publico',
+    original: 'Competencia (3).JPG',
+    orientacion: 'horizontal',
+    alt: 'Público reunido junto a la estufa durante una competencia, con el muro y la escalera de madera al fondo',
+  },
+  {
+    id: 'aniversario-escalador',
+    original: 'aniversario.JPG',
+    orientacion: 'horizontal',
+    alt: 'Escalador con polera blanca estirando el brazo en un muro amarillo, azul y blanco, durante el aniversario',
+  },
+  {
+    id: 'aniversario-travesia',
+    original: 'aniversario (2).JPG',
+    orientacion: 'horizontal',
+    alt: 'Escalador con camisa a cuadros cruzando un muro azul, amarillo y blanco mientras la gente mira desde abajo',
+  },
+  {
+    id: 'aniversario-galpon',
+    original: 'aniversario (6).JPG',
+    orientacion: 'horizontal',
+    alt: 'El galpón lleno durante el aniversario: gente sentada en las colchonetas mientras alguien escala a la derecha',
+  },
+  // Las sacó el equipo de Kuyen con teléfono, no la sesión: van con su propio
+  // crédito. Son las de F4, F5 y F6, que la sesión con cámara no cubría.
+  {
+    id: 'muro-placa',
+    original: 'Placa.jpeg',
+    orientacion: 'horizontal',
+    alt: 'La placa de punta a punta, sin nadie escalando: paneles negros, azules, amarillos y blancos llenos de presas de colores',
+    credito: 'Kuyen Climbing',
+  },
+  {
+    id: 'muro-15',
+    original: 'Muro de 15.jpeg',
+    orientacion: 'horizontal',
+    alt: 'El muro de 15 grados, con volúmenes de terciado y de resina repartidos sobre paneles azules, grises y amarillos',
+    credito: 'Kuyen Climbing',
+  },
+  {
+    id: 'muro-25',
+    original: 'Desplome de 25.jpeg',
+    orientacion: 'horizontal',
+    alt: 'El desplome de 25 grados, con paneles azules, blancos y amarillos y las colchonetas naranjas al pie',
+    credito: 'Kuyen Climbing',
+  },
+  {
+    id: 'muro-desplomes',
+    original: 'Desplomes.jpeg',
+    orientacion: 'vertical',
+    alt: 'Los desplomes vistos desde abajo, con el panel naranjo inclinado sobre las colchonetas amarillas y rojas',
+    credito: 'Kuyen Climbing',
+  },
+  {
+    id: 'muro-placa-desplome',
+    original: 'Muro placa desplome.jpeg',
+    orientacion: 'vertical',
+    alt: 'La placa y el desplome uno junto al otro, con un volumen verde grande colgando arriba a la derecha',
+    credito: 'Kuyen Climbing',
+  },
+  {
+    id: 'presa-cerca',
+    original: 'Foto de presa.jpeg',
+    orientacion: 'vertical',
+    alt: 'Una presa verde con magnesio, atornillada a un panel de textura rugosa, vista de muy cerca',
+    credito: 'Kuyen Climbing',
+  },
+  {
+    id: 'moonboard',
+    original: 'Moonboard.jpeg',
+    orientacion: 'horizontal',
+    // El recorte saca la franja de arriba, donde están los logos ajenos.
+    recorte: { desde: 'south', zona: '100%x78%+0+0' },
+    alt: 'El panel amarillo y azul con las tablas de presas en cuadrícula, y el muro de colores a su derecha',
+    credito: 'Kuyen Climbing',
+  },
+  {
+    id: 'galpon',
+    original: 'Foto del muro.jpeg',
+    orientacion: 'horizontal',
+    recorte: { desde: 'south', zona: '100%x56%+0+0' },
+    alt: 'El galpón por dentro: la pasarela de colchonetas naranjas entre los dos muros, con las banquetas de madera a un costado',
+    credito: 'Kuyen Climbing',
+  },
+  {
+    id: 'presa-volumen',
+    original: 'Foto de presa y volumen.jpeg',
+    orientacion: 'vertical',
+    recorte: { desde: 'west', zona: '68%x100%+0+0' },
+    alt: 'Una presa roja grande atornillada a un volumen negro, vista de muy cerca',
+    credito: 'Kuyen Climbing',
+  },
+  {
+    id: 'campus',
+    original: 'Competencia (2).JPG',
+    orientacion: 'vertical',
+    alt: 'El campus de madera colgado sobre la zona de entrenamiento, con gente descansando abajo',
+  },
+  {
+    id: 'descanso',
+    original: 'aniversario (5).JPG',
+    orientacion: 'horizontal',
+    alt: 'Las banquetas de madera junto al muro, con gente sentada mirando mientras alguien escala una placa',
+  },
+  {
+    id: 'aniversario-volumen',
+    original: 'aniversario (4).JPG',
+    orientacion: 'horizontal',
+    alt: 'Escalador colgado de un volumen azul y amarillo mientras el público lo mira desde abajo',
+  },
+  {
+    id: 'fachada',
+    original: 'Fachada.jpeg',
+    orientacion: 'horizontal',
+    // La original es vertical y la mitad de arriba es cielo gris. El recorte se
+    // queda con la banda del portón, que es lo que hay que reconocer al llegar.
+    recorte: { desde: 'center', zona: '100%x44%+0+90' },
+    alt: 'La entrada de Kuyen desde la vereda: la casa de ladrillo amarillo, el portón de reja negra y el pasillo hacia el galpón',
+    credito: 'Kuyen Climbing',
+  },
+  // El crédito por defecto es el de la sesión; una foto puede traer el suyo.
+].map((foto) => ({ anchos: [1600, 1200, 800], credito: '@vbizama.studio', ...foto }))
 
 /**
- * Fotos que Kuyen todavía no manda: F3 a F14 de la planilla quedaron todas en
- * blanco. Cada una se muestra en su sitio como un recuadro que dice qué falta,
- * con la misma lógica que POR_CONFIRMAR: lo que no está se ve, no se disimula,
- * así Andy sabe de un vistazo qué tiene que sacar y dónde va.
- *
- * El build comprueba que cada id aparezca en las tres variantes, para que
- * ninguna quede olvidada al mover secciones.
- */
-export const FOTOS_PENDIENTES = [
-  { id: 'muro-vacio', pregunta: 'F5', formato: 'horizontal', pide: 'El muro completo sin gente, con buena luz.' },
-  { id: 'presas-cerca', pregunta: 'F4', formato: 'horizontal', pide: 'Presas y volúmenes de cerca, donde se vean los colores y la textura.' },
-  { id: 'moonboard', pregunta: 'F7', formato: 'vertical', pide: 'El moonboard completo, y otra con alguien escalando.' },
-  { id: 'seteo', pregunta: 'F12', formato: 'horizontal', pide: 'El armado de rutas: seteo, lavado de presas o instalación de volúmenes.' },
-  { id: 'equipo', pregunta: 'F10', formato: 'horizontal', pide: 'El equipo: una foto de cada persona, o una grupal.' },
-  { id: 'clase', pregunta: 'F8', formato: 'horizontal', pide: 'Una clase guiada en acción.' },
-  { id: 'kuyencitos', pregunta: 'F9', formato: 'horizontal', pide: 'Kuyencit@s escalando, con autorización de sus apoderados.' },
-  { id: 'productos', pregunta: 'F13', formato: 'horizontal', pide: 'Los productos a la venta, cada uno sobre un fondo simple.' },
-  { id: 'recepcion', pregunta: 'F11', formato: 'horizontal', pide: 'La recepción y la zona de descanso.' },
-  { id: 'fachada', pregunta: 'F6', formato: 'horizontal', pide: 'La fachada y la entrada, para reconocer el lugar al llegar.' },
-]
-
-/**
- * Lo que falta y no es una foto para una sección: va en la lista de pendientes
- * del README, no en un recuadro dentro de la página.
- */
-export const MATERIAL_PENDIENTE = [
-  { pregunta: 'F3', pide: 'Los originales de la sesión de fotos de abril de 2026, con crédito de @vbizama.studio.' },
-  { pregunta: 'F14', pide: 'Videos cortos del muro o de gente escalando, de 10 a 30 segundos.' },
-]
-
-/**
- * Fotos entregadas que no se usan mientras Kuyen no autorice mostrar marcas de
- * terceros. Falta: permiso para las marcas patrocinadoras (pregunta 9).
+ * Fotos entregadas que no entran al sitio. Kuyen nunca respondió la pregunta 9,
+ * que pedía permiso para mostrar las marcas patrocinadoras, así que las que
+ * llevan una marca a la vista o se recortan (campo `recorte` en FOTOS) o quedan
+ * acá. Estas cinco no se pueden recortar: la marca está en el centro de la foto.
  */
 export const FOTOS_EXCLUIDAS = [
   { original: 'DSC_0165.JPG', motivo: 'Se ve el lienzo de Patagonia' },
   { original: 'DSC_0330.JPG', motivo: 'Se ven Patagonia y la tarima de Red Bull' },
+  { original: 'Competencia podio.JPG', motivo: 'El podio, con Patagonia y la tarima de Red Bull' },
+  { original: 'Competencia podio (2).JPG', motivo: 'El podio, con Patagonia y la tarima de Red Bull' },
+  { original: 'Competencia (6).JPG', motivo: 'Cuelga el lienzo de Patagonia sobre toda la parte de arriba' },
 ]
 
 /** Jerga que Kuyen usa en sus publicaciones, para la marquesina: una lista por fila. */

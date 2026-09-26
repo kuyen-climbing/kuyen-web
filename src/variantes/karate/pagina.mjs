@@ -38,7 +38,7 @@
  * - El acordeón abre con clic o toque (el template también abre con hover), para
  *   que la lista no salte al pasar el mouse.
  */
-import { cielo, luna, cordillera, presa, titulo, cifras, mapa, publicacion, fotoPendiente, valoracion } from '../../compartido/escena.mjs'
+import { cielo, luna, cordillera, presa, titulo, cifras, mapa, publicacion, fotoCaja, graduacion, telon, valoracion } from '../../compartido/escena.mjs'
 
 const trazo = (d, extra = '') =>
   `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"${extra}>${d}</svg>`
@@ -67,7 +67,6 @@ const mayusculaInicial = (texto) => texto.charAt(0).toUpperCase() + texto.slice(
 
 export default function pagina({ site, contenido, esc, foto, cabeza, leer, compartido }) {
   const {
-    POR_CONFIRMAR,
     MARCA,
     SEO,
     UBICACION,
@@ -96,23 +95,31 @@ export default function pagina({ site, contenido, esc, foto, cabeza, leer, compa
     RESENAS,
     VALORACION,
     TEXTOS,
-    FOTOS_PENDIENTES,
+    FOTOS,
   } = contenido
 
-  /* Hueco de una foto que Kuyen todavía no manda, por su id de FOTOS_PENDIENTES.
-     El build comprueba que estén los diez en la página. */
-  const falta = (id) => fotoPendiente(FOTOS_PENDIENTES.find((f) => f.id === id))
-  const faltas = (...ids) =>
-    `<div class="m-faltas${ids.length > 3 ? ' m-faltas--cuatro' : ids.length === 3 ? ' m-faltas--tres' : ''}">${ids.map(falta).join('\n            ')}</div>`
+  /* Galería de una sección, por ids de FOTOS. Toda la fila toma la orientación
+     de la primera foto, así las cajas quedan del mismo alto aunque los
+     originales no lo estén. Las filas se arman agrupando por orientación. */
+  const galeria = (...ids) => {
+    const orientacion = FOTOS.find((f) => f.id === ids[0])?.orientacion || 'horizontal'
+    const cajas = ids.map((id, n) => {
+      if (!FOTOS.some((f) => f.id === id)) throw new Error(`foto desconocida en una galería: "${id}"`)
+      return fotoCaja({
+        formato: orientacion,
+        retraso: n * 90,
+        medio: foto(id, { tamanos: '(min-width: 1024px) 24vw, (min-width: 640px) 45vw, 92vw' }),
+      })
+    })
+    const ancho = ids.length > 3 ? ' m-galeria--cuatro' : ids.length === 3 ? ' m-galeria--tres' : ids.length === 1 ? ' m-galeria--sola' : ''
+    return `<div class="m-galeria${ancho}">${cajas.join('\n            ')}</div>`
+  }
 
   const externo = ' target="_blank" rel="noopener"'
   const retraso = (ms) => (ms ? ` style="--m-retraso: ${ms}ms"` : '')
   const cifra = (id) => CIFRAS.find((c) => c.id === id)
   const servicio = (id) => SERVICIOS.find((s) => s.id === id)
   const acento = (texto) => ({ texto, clase: 'm-acento' })
-
-  /** Dato que Kuyen no confirmó: visible en la página y comentado en el código. */
-  const pendiente = (falta) => `<!-- POR CONFIRMAR: ${falta} --><span class="pendiente">${POR_CONFIRMAR}</span>`
 
   /** Botón de esquinas suaves con flecha que se corre en hover. */
   const boton = ({ texto, href, variante = 'primario', afuera = false, flecha = true, clase = '', extra = '' }) =>
@@ -319,7 +326,9 @@ ${cabeza({ estilos: `${compartido('movimiento.css')}\n${leer('estilos.css')}` })
           </article>`
           ).join('\n          ')}
         </div>
-        ${faltas('muro-vacio', 'presas-cerca', 'moonboard', 'seteo', 'productos', 'recepcion')}
+        ${graduacion({ datos: MURO.graduacion })}
+        ${galeria('muro-placa', 'muro-15', 'muro-25', 'moonboard')}
+        ${galeria('muro-desplomes', 'muro-placa-desplome', 'presa-cerca', 'presa-volumen')}
       </div>
     </section>
 
@@ -350,11 +359,11 @@ ${cabeza({ estilos: `${compartido('movimiento.css')}\n${leer('estilos.css')}` })
             <p class="ficha__texto">${esc(PANCITA.descripcion)}</p>
           </article>
         </div>
-        ${faltas('equipo')}
       </div>
     </section>
 
-    <section class="seccion programas-seccion" id="programas">
+    <section class="seccion m-con-telon programas-seccion" id="programas">
+      ${telon({ semilla: 13, presas: 4 })}
       <div class="contenedor">
         <div class="cabeza-seccion">
           <div>
@@ -366,22 +375,22 @@ ${cabeza({ estilos: `${compartido('movimiento.css')}\n${leer('estilos.css')}` })
         <div class="programas">
           ${programas
             .map(
-              (p, n) => `<a class="programa" href="${esc(CONTACTO.whatsapp)}"${externo}>
+              (p, n) => `<article class="programa">
             <div class="programa__medio m-foto"${retraso(n * 120)}>
               ${foto(p.foto, { tamanos: '(min-width: 1024px) 22rem, (min-width: 768px) 45vw, 100vw' })}
               <span class="programa__numero">N.º 0${n + 1}</span>
             </div>
-            <div class="programa__cabeza" data-m-aparece${retraso(n * 120 + 150)}>
+            <a class="programa__cabeza" href="${esc(CONTACTO.whatsapp)}"${externo} data-m-aparece${retraso(n * 120 + 150)}>
               <h3 class="programa__nombre">${esc(p.servicio.nombre)}</h3>
               <span class="programa__flecha">${ICONOS.diagonal}</span>
-            </div>
+            </a>
             <p class="programa__texto" data-m-aparece${retraso(n * 120 + 220)}>${p.texto}</p>
             <span class="programa__linea" aria-hidden="true"></span>
-          </a>`
+          </article>`
             )
             .join('\n          ')}
         </div>
-        ${faltas('clase')}
+        ${galeria('campus', 'competencia-escaladora')}
       </div>
     </section>
 
@@ -398,7 +407,7 @@ ${cabeza({ estilos: `${compartido('movimiento.css')}\n${leer('estilos.css')}` })
         <div class="fichas">
           <article class="ficha" data-m-aparece>
             <h3 class="ficha__titulo">Días y horario</h3>
-            <p class="ficha__texto">${pendiente('días y horario de Kuyencit@s: Kuyen está ajustando los horarios (K2)')}</p>
+            <p class="ficha__texto">${esc(servicio('kuyencitos').dias)}</p>
           </article>
           <article class="ficha" data-m-aparece style="--m-retraso: 80ms">
             <h3 class="ficha__titulo">Valores</h3>
@@ -417,7 +426,6 @@ ${cabeza({ estilos: `${compartido('movimiento.css')}\n${leer('estilos.css')}` })
             <p class="ficha__texto">${esc(PRIMERA_VISITA.menores)}</p>
           </article>
         </div>
-        ${faltas('kuyencitos')}
       </div>
     </section>
 
@@ -471,7 +479,7 @@ ${cabeza({ estilos: `${compartido('movimiento.css')}\n${leer('estilos.css')}` })
                 (p) => `<li class="valores__item" data-m-aparece>
               <span class="valores__nombre">${esc(p.nombre)}</span>
               <span class="valores__detalle">${esc(p.detalle)}</span>
-              <span class="valores__valor">${p.valor === POR_CONFIRMAR ? pendiente('valor del plan de clases guiadas: Kuyen confirmó el descuento del primer mes, no el precio (C2)') : esc(p.valor)}${p.valorEstudiante ? ` <span class="valores__estudiante">${esc(p.valorEstudiante)} estudiante</span>` : ''}</span>
+              <span class="valores__valor">${esc(p.valor)}${p.valorEstudiante ? ` <span class="valores__estudiante">${esc(p.valorEstudiante)} estudiante</span>` : ''}</span>
             </li>`
               )
               .join('\n            ')}
@@ -502,6 +510,7 @@ ${cabeza({ estilos: `${compartido('movimiento.css')}\n${leer('estilos.css')}` })
             .join('\n          ')}
         </ol>
         <p class="horario__nota" data-m-aparece>${esc(PRIMERA_VISITA.menores)} ${esc(LEGAL.privacidad)}</p>
+        ${galeria('fachada', 'galpon', 'descanso')}
       </div>
     </section>
 
@@ -555,10 +564,10 @@ ${cabeza({ estilos: `${compartido('movimiento.css')}\n${leer('estilos.css')}` })
             <p class="ficha__texto">${esc(EVENTOS_INFO.inscripcion)} ${esc(COMUNIDAD.anuncios)}</p>
           </article>
         </div>
-        <ul class="valores__lista" data-m-aparece>
-          <li class="valores__item"><span class="valores__nombre">${COMUNIDAD.valores.map(esc).join(' &middot; ')}</span></li>
+        <ul class="lema" data-m-aparece>
+          ${COMUNIDAD.valores.map((v) => `<li class="lema__item">${esc(v)}</li>`).join('\n          ')}
         </ul>
-        ${faltas('fachada')}
+        ${galeria('aniversario-escalador', 'aniversario-volumen', 'aniversario-travesia', 'competencia-publico')}
       </div>
     </section>
 
@@ -581,7 +590,7 @@ ${cabeza({ estilos: `${compartido('movimiento.css')}\n${leer('estilos.css')}` })
             </div>
           </div>
           <div class="carrusel" data-carrusel3d data-m-aparece style="--m-retraso: 150ms">
-            <div class="carrusel__fondo" aria-hidden="true">${foto('joven-escalando', { tamanos: '(min-width: 1024px) 34rem, 100vw', alt: '' })}</div>
+            <div class="carrusel__fondo" aria-hidden="true">${foto('aniversario-galpon', { tamanos: '(min-width: 1024px) 34rem, 100vw', alt: '' })}</div>
             <div class="carrusel__escena">
               ${RESENAS.map(
                 (r, n) => `<article class="resena" data-tarjeta="${n}" aria-label="Reseña ${n + 1} de ${RESENAS.length}">
@@ -623,7 +632,8 @@ ${cabeza({ estilos: `${compartido('movimiento.css')}\n${leer('estilos.css')}` })
       </div>
     </section>
 
-    <section class="seccion" id="instagram">
+    <section class="seccion m-con-telon" id="instagram">
+      ${telon({ semilla: 31, presas: 3 })}
       <div class="contenedor">
         <div class="cabeza-seccion">
           <div>
@@ -715,6 +725,7 @@ ${cabeza({ estilos: `${compartido('movimiento.css')}\n${leer('estilos.css')}` })
 
   <script>
 ${compartido('movimiento.js')};
+${compartido('visor.js')};
 ${compartido('instagram.js')};
 ${leer('script.js')};
   </script>

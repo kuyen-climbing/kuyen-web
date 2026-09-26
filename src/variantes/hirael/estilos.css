@@ -118,7 +118,8 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
   border-radius: 9999px;
   background: var(--primario);
   color: var(--primario-texto);
-  font-size: 0.6875rem;
+  /* 0.75rem es el piso de la página: más abajo no se lee en un teléfono. */
+  font-size: 0.75rem;
   font-weight: 600;
 }
 .insignia {
@@ -134,25 +135,10 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 }
 @media (min-width: 640px) {
   .etiqueta { margin-bottom: 2rem; }
-  .etiqueta__numero { width: 1.75rem; height: 1.75rem; font-size: 0.75rem; }
+  .etiqueta__numero { width: 1.75rem; height: 1.75rem; }
   .insignia { padding: 0.375rem 1rem; font-size: 0.8125rem; }
 }
 
-/* Dato sin confirmar: resaltado para ubicarlo fácil. */
-.pendiente {
-  display: inline-block;
-  padding: 0.0625rem 0.375rem;
-  border-radius: 4px;
-  background: rgb(247 231 180 / 0.2);
-  color: var(--kuyen-luna);
-  font-family: var(--fuente-texto);
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 0.02em;
-  line-height: 1.4;
-  white-space: nowrap;
-}
-.tono-claro .pendiente { background: rgb(247 231 180 / 0.7); color: var(--kuyen-tinta); }
 
 .enlace { color: var(--acento); text-decoration: underline; text-underline-offset: 3px; }
 
@@ -304,13 +290,14 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
   border-radius: 4px;
   background: var(--kuyen-tinta);
   color: var(--kuyen-blanco);
-  font-size: 0.625rem;
+  /* 0.75rem es el piso: más abajo no se lee en un teléfono. */
+  font-size: 0.75rem;
   white-space: nowrap;
 }
 @media (min-width: 640px) {
   .chip svg { width: 1.5rem; height: 1.5rem; }
   .chip__texto { font-size: 0.875rem; }
-  .chip__insignia { padding-inline: 0.5rem; font-size: 0.6875rem; }
+  .chip__insignia { padding-inline: 0.5rem; }
 }
 
 /* ---------- Cabecera en píldora, fija arriba ---------- */
@@ -448,13 +435,18 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
   .intro__cifras { margin-top: 4rem; }
 }
 @media (min-width: 1024px) {
-  .intro__titulo { margin-bottom: 7rem; }
+  .intro__titulo { margin-bottom: 4rem; }
   .intro__grilla {
     grid-template-columns: 24% minmax(0, 1fr) 44%;
     grid-template-areas: "chica texto grande";
+    /* Las tres columnas se estiran al alto de la más alta, que es el texto. Con
+       proporción fija y alineadas abajo quedaba medio metro de vacío debajo del
+       título, a los dos lados de la columna de texto. */
+    align-items: stretch;
     column-gap: 1.5rem;
     row-gap: 0;
   }
+  .intro__foto--chica, .intro__foto--grande { height: 100%; aspect-ratio: auto; min-height: 20rem; }
   .intro__texto { padding-bottom: 0.25rem; }
   .intro__parrafo { font-size: 1rem; line-height: 1.65; }
   .intro__cifras { margin-top: 5rem; }
@@ -475,10 +467,26 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
   .tarjetas__titulo { margin-bottom: 3.5rem; }
   .tarjetas { gap: 1.5rem; }
 }
-@media (min-width: 768px) { .tarjetas { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 768px) {
+  .tarjetas { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .tarjetas > .tarjeta:nth-child(2n + 1):last-child { grid-column: 1 / -1; }
+}
 @media (min-width: 1024px) {
   .tarjetas__titulo { margin-bottom: 4rem; }
   .tarjetas { gap: 1.75rem; }
+}
+
+/* Las tarjetas se levantan al pasar el mouse. El desplazamiento va en `translate`
+   y no en `transform`, que lo usa la animación de entrada de [data-m-aparece]. */
+@media (hover: hover) {
+  .tarjeta { transition: translate 400ms var(--m-curva); }
+  .tarjeta:hover, .tarjeta:focus-within { translate: 0 -4px; }
+  .tarjeta:hover .tarjeta__titulo, .tarjeta:focus-within .tarjeta__titulo { color: var(--kuyen-luna); }
+  .tarjeta__titulo { transition: color 300ms; }
+  /* Las columnas no tienen caja: son texto suelto en una grilla, así que
+     levantarlas se vería raro. El gesto es que se encienda su rótulo. */
+  .columna__titulo { transition: color 300ms; }
+  .columna:hover .columna__titulo { color: var(--kuyen-luna); }
 }
 
 .tarjeta__medio {
@@ -540,7 +548,12 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
   margin-top: 3rem;
 }
 .columna { display: flex; flex-direction: column; gap: 0.875rem; }
-.columna--ancha { grid-column: span 2; }
+/* Un elemento solo en la última fila se ve como un error de maquetación: con
+   cuatro en tres columnas, el cuarto queda abajo con dos huecos al lado. Con
+   cuatro se reparte 2 y 2; con cualquier otro resto de uno (7, 10...) el último
+   se lleva la fila entera, con tope de lectura para que la línea no cruce la
+   pantalla. `:has()` cuenta los hijos sin tocar el markup. */
+.columnas > .columna:nth-child(2n + 1):last-child { grid-column: 1 / -1; max-width: 46rem; }
 .columna__titulo { color: var(--texto-suave); font-family: var(--fuente-texto); font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; }
 .columna__lista { display: flex; flex-direction: column; gap: 0.625rem; font-size: 0.875rem; line-height: 1.5; }
 .columna__texto { font-size: 0.875rem; line-height: 1.55; }
@@ -550,7 +563,23 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 @media (min-width: 640px) { .columnas { margin-top: 4rem; } }
 @media (min-width: 1024px) {
   .columnas { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2.5rem 2rem; }
-  .columna--ancha { grid-column: auto; }
+  .columnas > .columna:nth-child(2n + 1):last-child { grid-column: auto; max-width: none; }
+  .columnas > .columna:nth-child(3n + 1):last-child { grid-column: 1 / -1; max-width: 46rem; }
+  .columnas:has(> :nth-child(4):last-child) { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .columnas:has(> :nth-child(4):last-child) > .columna:last-child { grid-column: auto; max-width: none; }
+  /* Resto de dos (5, 8, 11...): la última fila lleva dos, y para que llene el
+     ancho la grilla pasa a seis pistas y cada tarjeta ocupa dos, o tres cuando
+     es de las dos últimas. */
+  .columnas:has(> .columna:nth-child(3n + 1):nth-last-child(2)) { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+  .columnas:has(> .columna:nth-child(3n + 1):nth-last-child(2)) > .columna { grid-column: span 2; }
+  /* Las dos últimas van con el mismo prefijo :has que la regla de arriba: si no,
+     esa gana por especificidad y las deja en dos pistas, con un hueco al final. */
+  .columnas:has(> .columna:nth-child(3n + 1):nth-last-child(2)) > .columna:nth-child(3n + 1):nth-last-child(2),
+  .columnas:has(> .columna:nth-child(3n + 1):nth-last-child(2)) > .columna:nth-child(3n + 1):nth-last-child(2) ~ .columna { grid-column: span 3; }
+  /* Cuando el reparto ensancha una columna (2 x 2, o media fila) la línea se va a
+     95 caracteres. El tope es inerte en la grilla normal de tres, donde la
+     columna mide 427 px. */
+  .columna :where(.columna__texto, .columna__lista) { max-width: 38rem; }
 }
 
 /* ---------- Pie ---------- */
@@ -562,11 +591,15 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .etiqueta--pie { margin-bottom: 1.25rem; }
 .etiqueta__isotipo { width: 1.5rem; height: 1.5rem; border-radius: 9999px; }
 .pie__acciones { display: flex; flex-direction: column; align-items: flex-start; gap: 1rem; }
-.pie__enlace { color: var(--texto-suave); font-size: 0.875rem; transition: color 300ms; }
+/* Enlace suelto, no dentro de un párrafo: necesita área que se pueda tocar. */
+.pie__enlace { display: inline-flex; align-items: center; min-height: 2.75rem; color: var(--texto-suave); font-size: 0.875rem; transition: color 300ms; }
 .pie__enlace:hover { color: var(--kuyen-blanco); }
 
 .pie__grilla { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2.5rem 1.5rem; padding-block: 3rem; }
 .pie__marca { grid-column: span 2; display: flex; flex-direction: column; gap: 1.25rem; }
+/* La marca se lleva una fila entera, así que las columnas que siguen son impares
+   y la última queda sola: se lleva la fila. */
+.pie__grilla > :last-child:nth-child(2n) { grid-column: 1 / -1; }
 .pie__marca .marca__nombre { font-size: 1.1875rem; }
 .pie__bio { max-width: 20rem; color: var(--texto-suave); font-size: 0.875rem; line-height: 1.6; }
 .pie__estado {

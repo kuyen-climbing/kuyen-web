@@ -79,18 +79,70 @@ export function valoracion({ datos, clase = '' }) {
 }
 
 /**
- * Hueco de una foto que Kuyen todavía no manda: un recuadro del tamaño que va a
- * tener la foto, con lo que hay que sacar escrito adentro. Se ve en la página a
- * propósito, igual que POR_CONFIRMAR (22-09-2026).
+ * La escala de graduación del muro: una chapa de cada color con los grados que
+ * cubre, y la nota de los volúmenes. Sale de MURO.graduacion, que copia la
+ * gráfica que Kuyen publica en el muro (25-09-2026).
  */
-export const fotoPendiente = ({ id, pregunta, pide, formato = 'horizontal', clase = '' }) =>
-  `<figure class="m-falta m-falta--${formato}${clase ? ` ${clase}` : ''}" data-foto-pendiente="${esc(id)}" data-m-aparece>
-            <span class="m-falta__marca" aria-hidden="true">${ICONO_CAMARA}</span>
-            <figcaption class="m-falta__texto"><b>Falta esta foto</b> ${esc(pide)} <span class="m-falta__codigo">${esc(pregunta)}</span></figcaption>
+export function graduacion({ datos, clase = '' }) {
+  const fila = (g) => `<li class="m-grados__fila">
+              <span class="m-grados__chapa" style="--chapa: ${esc(g.muestra)}" aria-hidden="true"></span>
+              <span class="m-grados__color">${esc(g.color)}</span>
+              <span class="m-grados__valor">${esc(g.grados)}</span>
+            </li>`
+  return `<div class="m-grados${clase ? ` ${clase}` : ''}" data-m-aparece>
+          <h3 class="m-grados__titulo">${esc(datos.titulo)}</h3>
+          <p class="m-grados__intro">${esc(datos.intro)}</p>
+          <ul class="m-grados__lista">
+            ${datos.escala.map(fila).join('\n            ')}
+          </ul>
+          <p class="m-grados__nota">${esc(datos.nota)}</p>
+        </div>`
+}
+
+/**
+ * Una foto de la galería: proporción fija según su orientación y recorte al
+ * centro, para que una fila quede pareja aunque los originales tengan medidas
+ * distintas. `retraso` escalona la entrada de la fila, foto por foto.
+ *
+ * `data-m-puntero` hace que cada foto sea su propia zona de puntero: movimiento.js
+ * le publica --m-mx y --m-my y el CSS la inclina un poco hacia donde está el mouse.
+ */
+export const fotoCaja = ({ medio, formato = 'horizontal', clase = '', retraso = 0 }) =>
+  `<figure class="m-caja m-caja--${formato}${clase ? ` ${clase}` : ''}" data-m-aparece data-m-puntero${retraso ? ` style="--m-retraso: ${retraso}ms"` : ''}>
+            ${medio}
           </figure>`
 
-const ICONO_CAMARA =
-  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8.5A2.5 2.5 0 0 1 5.5 6h1.8l1.2-2h6.8l1.2 2h1.8A2.5 2.5 0 0 1 21 8.5v9A2.5 2.5 0 0 1 18.5 20h-13A2.5 2.5 0 0 1 3 17.5z"/><circle cx="12" cy="13" r="3.6"/></svg>'
+/**
+ * Telón de una sección de poco texto: una cordillera dibujada muy atenuada al
+ * pie y unas presas grandes flotando detrás del contenido. Es lo que evita que
+ * un fondo plano se lea como un hueco.
+ *
+ * Decorativo de punta a punta: sin texto, sin foco, aria-hidden y sin atrapar
+ * el puntero. El reparto sale de una semilla, así el build sigue siendo
+ * determinista y cada sección queda distinta sin escribir las posiciones a mano.
+ */
+export function telon({ semilla = 7, presas = 3, cumbre = true, clase = '' } = {}) {
+  const r = azar(semilla)
+  const FORMAS = ['canto', 'regleta', 'pinza', 'roma', 'volumen']
+  const COLORES = ['var(--kuyen-luna)', 'var(--kuyen-lila)', 'var(--kuyen-blanco)']
+  const piezas = Array.from({ length: presas }, (_, n) => {
+    const estilo = [
+      `left: ${(4 + r() * 88).toFixed(1)}%`,
+      `top: ${(6 + r() * 74).toFixed(1)}%`,
+      `width: ${(7 + r() * 9).toFixed(1)}%`,
+      `--color: ${COLORES[Math.floor(r() * COLORES.length)]}`,
+      `--giro: ${(r() * 70 - 35).toFixed(0)}deg`,
+      `--dur: ${(9 + r() * 7).toFixed(1)}s`,
+      `--m-retraso: ${n * 160}ms`,
+    ].join('; ')
+    const forma = FORMAS[Math.floor(r() * FORMAS.length)]
+    return `<span class="m-presa m-presa--telon" style="${estilo}" data-m-paralaje="${(0.06 + r() * 0.12).toFixed(2)}"><svg viewBox="0 0 100 100"><path d="${FORMAS_PRESA[forma]}"/></svg></span>`
+  })
+  const sierra = cumbre
+    ? `<svg class="m-telon__cumbre" viewBox="0 0 1200 220" preserveAspectRatio="none" focusable="false"><path d="M0 220 140 118 232 168 392 58 520 142 636 96 760 176 880 108 1010 162 1120 120 1200 170 1200 220Z"/></svg>`
+    : ''
+  return `<div class="m-telon${clase ? ` ${clase}` : ''}" aria-hidden="true">${sierra}${piezas.join('')}</div>`
+}
 
 /** Formas de presas de escalada, dibujadas para el sitio (viewBox de 100 x 100). */
 const FORMAS_PRESA = {

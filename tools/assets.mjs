@@ -55,12 +55,16 @@ function fotos() {
       console.error(`No está ${foto.original} en ${origen}.`)
       process.exit(1)
     }
+    // Recorte opcional, para dejar fuera una marca de terceros o reencuadrar.
+    // Va después de -auto-orient, así la geometría se lee sobre la foto derecha.
+    const recorte = foto.recorte ? ['-gravity', foto.recorte.desde, '-crop', foto.recorte.zona, '+repage'] : []
+
     manifiesto[foto.id] = {}
     for (const ancho of foto.anchos) {
       const salida = join(dir, `${foto.id}-${ancho}.webp`)
       // Se baja la calidad de a poco hasta quedar bajo el tope.
       for (const calidad of [78, 70, 62, 54]) {
-        convert(original, '-auto-orient', '-resize', `${ancho}x${ancho}>`, '-strip', '-quality', String(calidad), '-define', 'webp:method=6', salida)
+        convert(original, '-auto-orient', ...recorte, '-resize', `${ancho}x${ancho}>`, '-strip', '-quality', String(calidad), '-define', 'webp:method=6', salida)
         if (kb(salida) <= TOPE_KB) break
       }
       const [w, h] = identify('%w %h', salida).split(' ').map(Number)

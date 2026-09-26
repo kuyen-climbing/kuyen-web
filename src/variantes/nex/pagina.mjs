@@ -40,7 +40,7 @@
  * - El blog pasa a próximos eventos, y en móvil la portada es más alta que en el
  *   template para que se vea el muro.
  */
-import { cielo, luna, cordillera, presa, titulo, marquesina, mapa, publicacion, fotoPendiente, valoracion } from '../../compartido/escena.mjs'
+import { cielo, luna, cordillera, presa, titulo, marquesina, mapa, publicacion, fotoCaja, graduacion, telon, valoracion } from '../../compartido/escena.mjs'
 
 const ICONOS = {
   flecha:
@@ -69,15 +69,14 @@ const ICONOS = {
 const FOTO_EVENTO = {
   'encuentro-femenino': 'escaladora-desplome',
   'taller-routesetting': 'escalador-desplome-amarillo',
-  'aniversario-3': 'joven-escalando',
-  'competencia-escolar': 'nino-escalando',
+  'aniversario-3': 'aniversario-galpon',
+  'competencia-escolar': 'aniversario-escalador',
 }
 
 const mayusculaInicial = (texto) => texto.charAt(0).toUpperCase() + texto.slice(1)
 
 export default function pagina({ site, contenido, esc, foto, cabeza, leer, compartido }) {
   const {
-    POR_CONFIRMAR,
     MARCA,
     UBICACION,
     CONTACTO,
@@ -105,23 +104,31 @@ export default function pagina({ site, contenido, esc, foto, cabeza, leer, compa
     VALORACION,
     MARQUESINA,
     TEXTOS,
-    FOTOS_PENDIENTES,
+    FOTOS,
   } = contenido
 
-  /* Hueco de una foto que Kuyen todavía no manda, por su id de FOTOS_PENDIENTES.
-     El build comprueba que estén los diez en la página. */
-  const falta = (id) => fotoPendiente(FOTOS_PENDIENTES.find((f) => f.id === id))
-  const faltas = (...ids) =>
-    `<div class="m-faltas${ids.length > 3 ? ' m-faltas--cuatro' : ids.length === 3 ? ' m-faltas--tres' : ''}">${ids.map(falta).join('\n            ')}</div>`
+  /* Galería de una sección, por ids de FOTOS. Toda la fila toma la orientación
+     de la primera foto, así las cajas quedan del mismo alto aunque los
+     originales no lo estén. Las filas se arman agrupando por orientación. */
+  const galeria = (...ids) => {
+    const orientacion = FOTOS.find((f) => f.id === ids[0])?.orientacion || 'horizontal'
+    const cajas = ids.map((id, n) => {
+      if (!FOTOS.some((f) => f.id === id)) throw new Error(`foto desconocida en una galería: "${id}"`)
+      return fotoCaja({
+        formato: orientacion,
+        retraso: n * 90,
+        medio: foto(id, { tamanos: '(min-width: 1024px) 24vw, (min-width: 640px) 45vw, 92vw' }),
+      })
+    })
+    const ancho = ids.length > 3 ? ' m-galeria--cuatro' : ids.length === 3 ? ' m-galeria--tres' : ids.length === 1 ? ' m-galeria--sola' : ''
+    return `<div class="m-galeria${ancho}">${cajas.join('\n            ')}</div>`
+  }
 
   const externo = ' target="_blank" rel="noopener"'
   const retraso = (ms) => (ms ? ` style="--m-retraso: ${ms}ms"` : '')
   const cifra = (id) => CIFRAS.find((c) => c.id === id)
   const servicio = (id) => SERVICIOS.find((s) => s.id === id)
   const acento = (texto) => ({ texto, clase: 'm-acento' })
-
-  /** Dato que Kuyen no confirmó: visible en la página y comentado en el código. */
-  const pendiente = (falta) => `<!-- POR CONFIRMAR: ${falta} --><span class="pendiente">${POR_CONFIRMAR}</span>`
 
   /** Texto que rueda hacia arriba en hover: la segunda copia es solo visual. */
   const rueda = (texto) => `<span class="rueda"><span>${esc(texto)}</span><span aria-hidden="true">${esc(texto)}</span></span>`
@@ -290,11 +297,14 @@ ${cabeza({ estilos: `${compartido('movimiento.css')}\n${leer('estilos.css')}` })
             <p class="lista__texto">${esc(MURO.entrenamiento.join(', '))}.</p>
           </li>
         </ul>
-        ${faltas('muro-vacio', 'presas-cerca', 'moonboard', 'seteo')}
+        ${graduacion({ datos: MURO.graduacion })}
+        ${galeria('muro-placa', 'muro-15', 'muro-25', 'moonboard')}
+        ${galeria('muro-desplomes', 'muro-placa-desplome', 'presa-cerca', 'presa-volumen')}
       </div>
     </section>
 
-    <section class="seccion tono-oscuro" id="equipo">
+    <section class="seccion m-con-telon tono-oscuro" id="equipo">
+      ${telon({ semilla: 17, presas: 3 })}
       <div class="contenedor">
         <div class="lista__cabeza">
           <h2 class="titulo-seccion" data-m-revelar>${titulo([['Quiénes', acento('somos')]])}</h2>
@@ -322,7 +332,7 @@ ${cabeza({ estilos: `${compartido('movimiento.css')}\n${leer('estilos.css')}` })
             <p class="lista__texto">${esc(PANCITA.descripcion)}</p>
           </li>
         </ul>
-        ${faltas('equipo')}
+        ${galeria('pancita')}
       </div>
     </section>
 
@@ -338,7 +348,7 @@ ${cabeza({ estilos: `${compartido('movimiento.css')}\n${leer('estilos.css')}` })
           </li>`
           ).join('\n          ')}
         </ul>
-        ${faltas('clase')}
+        ${galeria('campus', 'competencia-escaladora', 'escaladora-muro-azul', 'escalador-desplome-gris')}
       </div>
     </section>
 
@@ -352,7 +362,7 @@ ${cabeza({ estilos: `${compartido('movimiento.css')}\n${leer('estilos.css')}` })
           <li class="lista__item" data-m-aparece>
             <span class="lista__marca">Horario</span>
             <h3 class="lista__nombre">Días y horario</h3>
-            <p class="lista__texto">${pendiente('días y horario de Kuyencit@s: Kuyen está ajustando los horarios (K2)')}</p>
+            <p class="lista__texto">${esc(servicio('kuyencitos').dias)}</p>
           </li>
           ${PRECIOS.filter((v) => v.id.startsWith('kuyencitos'))
             .map(
@@ -374,7 +384,7 @@ ${cabeza({ estilos: `${compartido('movimiento.css')}\n${leer('estilos.css')}` })
             <p class="lista__texto">${esc(servicio('kuyencitos').autorizacion)} ${esc(PRIMERA_VISITA.menores)}</p>
           </li>
         </ul>
-        ${faltas('kuyencitos')}
+        ${galeria('nino-escalando', 'joven-escalando')}
       </div>
     </section>
 
@@ -398,7 +408,7 @@ ${cabeza({ estilos: `${compartido('movimiento.css')}\n${leer('estilos.css')}` })
             (precio, n) => `<li class="lista__item" data-m-aparece${retraso((n + 2) * 90)}>
             <span class="lista__marca">Valor</span>
             <h3 class="lista__nombre">${esc(precio.nombre)}</h3>
-            <p class="lista__texto">${esc(precio.detalle)}. ${precio.valor === POR_CONFIRMAR ? `Valor: ${pendiente('valor del plan de clases guiadas: Kuyen confirmó el descuento del primer mes, no el precio (C2)')}` : `${esc(precio.valor)}${precio.valorEstudiante ? `, o ${esc(precio.valorEstudiante)} con credencial de estudiante` : ''}.`}</p>
+            <p class="lista__texto">${esc(precio.detalle)}. ${esc(precio.valor)}${precio.valorEstudiante ? `, o ${esc(precio.valorEstudiante)} con credencial de estudiante` : ''}.</p>
           </li>`
           ).join('\n          ')}
         </ul>
@@ -422,6 +432,7 @@ ${cabeza({ estilos: `${compartido('movimiento.css')}\n${leer('estilos.css')}` })
             .join('\n          ')}
         </ol>
         <p class="lista__bajada" data-m-aparece>${esc(PRIMERA_VISITA.menores)}</p>
+        ${galeria('fachada')}
       </div>
     </section>
 
@@ -468,10 +479,12 @@ ${cabeza({ estilos: `${compartido('movimiento.css')}\n${leer('estilos.css')}` })
             <p class="lista__texto">${esc(EVENTOS_INFO.inscripcion)} ${esc(COMUNIDAD.anuncios)}</p>
           </li>
         </ul>
+        ${galeria('comunidad-evento', 'aniversario-volumen', 'aniversario-travesia', 'competencia-publico')}
       </div>
     </section>
 
-    <section class="seccion proyectos tono-gradiente" id="competencias">
+    <section class="seccion m-con-telon proyectos tono-gradiente" id="competencias">
+      ${telon({ semilla: 29, presas: 3 })}
       <div class="contenedor">
         <h2 class="titulo-seccion proyectos__titulo" data-m-revelar>${titulo([['Competencias y', acento('encuentros')]])}</h2>
         <div class="proyectos__grilla">
@@ -480,9 +493,9 @@ ${cabeza({ estilos: `${compartido('movimiento.css')}\n${leer('estilos.css')}` })
               (e, n) => `<article class="proyecto">
             <h3 class="proyecto__titulo" data-m-aparece${retraso(n * 120)}><a href="${esc(CONTACTO.instagram)}"${externo}>${esc(e.nombre)}</a></h3>
             <div class="proyecto__meta" data-m-aparece${retraso(n * 120 + 80)}><span>${esc(e.formato || e.tipo)}</span><span>${esc(e.fechaTexto)}</span></div>
-            <a class="proyecto__foto m-foto m-foto--zoom" href="${esc(CONTACTO.instagram)}"${externo}${retraso(n * 120 + 150)} aria-label="${esc(e.nombre)} en Instagram">
+            <div class="proyecto__foto m-foto m-foto--zoom"${retraso(n * 120 + 150)}>
               ${foto(FOTO_EVENTO[e.id], { tamanos: '(min-width: 640px) 45vw, 100vw' })}
-            </a>
+            </div>
           </article>`
             )
             .join('\n          ')}
@@ -500,9 +513,9 @@ ${cabeza({ estilos: `${compartido('movimiento.css')}\n${leer('estilos.css')}` })
           ${proximos
             .map(
               (e, n) => `<article class="entrada">
-            <a class="entrada__foto m-foto m-foto--zoom" href="${esc(CONTACTO.instagram)}"${externo}${retraso(n * 120)} aria-label="${esc(e.nombre)} en Instagram">
+            <div class="entrada__foto m-foto m-foto--zoom"${retraso(n * 120)}>
               ${foto(FOTO_EVENTO[e.id], { tamanos: '(min-width: 640px) 45vw, 100vw' })}
-            </a>
+            </div>
             <div class="entrada__meta" data-m-aparece${retraso(n * 120 + 150)}><span>${esc(e.tipo)}</span><span>${esc(e.fechaTexto)}</span></div>
             <h3 class="entrada__titulo" data-m-aparece${retraso(n * 120 + 220)}><a href="${esc(CONTACTO.instagram)}"${externo}>${esc(e.nombre)}</a></h3>
           </article>`
@@ -567,11 +580,12 @@ ${cabeza({ estilos: `${compartido('movimiento.css')}\n${leer('estilos.css')}` })
           </li>`
           ).join('\n          ')}
         </ul>
-        ${faltas('productos', 'recepcion')}
+        ${galeria('galpon', 'descanso')}
       </div>
     </section>
 
-    <section class="seccion tono-oscuro" id="instagram">
+    <section class="seccion m-con-telon tono-oscuro" id="instagram">
+      ${telon({ semilla: 41, presas: 3 })}
       <div class="contenedor">
         <h2 class="titulo-seccion entradas__titulo" data-m-revelar>${titulo([['En', acento('Instagram')]])}</h2>
         <div class="entradas entradas--tres">
@@ -595,7 +609,8 @@ ${cabeza({ estilos: `${compartido('movimiento.css')}\n${leer('estilos.css')}` })
       </div>
     </section>
 
-    <section class="seccion tono-oscuro tono-noche visitanos" id="visitanos">
+    <section class="seccion m-con-telon tono-oscuro tono-noche visitanos" id="visitanos">
+      ${telon({ semilla: 59, presas: 3 })}
       <div class="contenedor">
         <div class="llamado__fila">
           <div class="llamado__mitad">
@@ -610,7 +625,6 @@ ${cabeza({ estilos: `${compartido('movimiento.css')}\n${leer('estilos.css')}` })
         </div>
         <p class="mapa__pie" data-m-aparece>${esc(UBICACION.calle)}, ${esc(UBICACION.comuna)}, ${esc(UBICACION.region)}. Plus code ${esc(UBICACION.plusCode)}. ${esc(UBICACION.referencia)}.</p>
         <p class="visitanos__contacto" data-m-aparece>Escríbenos por WhatsApp al <a class="enlace" href="${esc(CONTACTO.whatsapp)}"${externo}>${esc(CONTACTO.telefono)}</a>, por mensaje directo en Instagram, <a class="enlace" href="${esc(CONTACTO.instagram)}"${externo}>${esc(CONTACTO.instagramUsuario)}</a>, o a <a class="enlace" href="mailto:${esc(CONTACTO.correo)}">${esc(CONTACTO.correo)}</a>. ${esc(CONTACTO.horarioRespuesta)}</p>
-        ${faltas('fachada')}
       </div>
     </section>
 
@@ -690,6 +704,7 @@ ${cabeza({ estilos: `${compartido('movimiento.css')}\n${leer('estilos.css')}` })
 
   <script>
 ${compartido('movimiento.js')};
+${compartido('visor.js')};
 ${compartido('instagram.js')};
 ${leer('script.js')};
   </script>

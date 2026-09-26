@@ -7,12 +7,21 @@ Sigue el flujo de sitios estáticos documentado en
 `C:\Proyectos\INCBA\docs\Flujo-Sitios-Web-GitHub-Pages.md`: generador propio, verificación
 funcional y CI que impide publicar HTML desincronizado.
 
-## Estado (22-09-2026): etapa de contenido
+## Estado (25-09-2026): contenido cerrado, listo para elegir template
 
-Kuyen respondió la planilla de las 101 preguntas y el sitio ya publica sus datos reales:
-horarios, valores, clases, Kuyencit@s, el muro en detalle, quiénes lo construyeron y quiénes
-setean, la historia, los productos, las comodidades y el correo de contacto. Quedan dos
-pendientes a la vista: los días y el horario de Kuyencit@s, y las reseñas.
+Kuyen respondió la planilla de las 101 preguntas, mandó las fotos y las gráficas de precios, y
+con eso se cierra la etapa de contenido. **Las tres variantes se ven como producto terminado**:
+no queda ningún `[POR CONFIRMAR]` a la vista ni ningún hueco de foto. El sitio publica horarios,
+valores, los cuatro planes de clases, Kuyencit@s, el muro en detalle con su graduación por
+color de chapa, quiénes lo construyeron y quiénes setean, la historia, los productos, las
+comodidades, las reseñas de Google y el correo de contacto.
+
+Lo que Kuyen nunca fijó no se inventa ni se deja marcado: el horario de Kuyencit@s, que quedó
+sin definir, se resuelve mandando a escribir, que es lo que pasaba igual.
+
+Las 27 fotos entran una sola vez en cada variante: ninguna se repite dentro de una página y
+ninguna queda sin usar. Las galerías van por filas de la misma orientación, para que la fila
+quede pareja.
 
 Las tres variantes suman cuatro secciones armadas con ese material: **Quiénes somos** (los
 profes, el seteo, los dueños y Pancita), **Kuyencit@s** con lugar propio, **Comunidad e
@@ -159,6 +168,12 @@ En las variantes propias revisa además:
 - que la cabecera quede a la vista al bajar por la página;
 - que el logo de fondo del hero quede detrás del texto, difuminado y con poca opacidad, y que
   donde el logo no sea fondo ningún texto ni la marquesina lo tapen, en todos los anchos;
+- que ninguna grilla deje un elemento solo en la última fila: mide el ancho que queda sin usar
+  y reclama si sobra más de media columna, en los cinco anchos;
+- que todas las fotos de contenido se puedan ampliar, que avisen con su marco y no con el cursor
+  de lupa, y que el visor abra la foto en grande, cuente las de su grupo, avance con la flecha,
+  al cerrarse con Escape devuelva el foco y quede oculto sin atrapar clics;
+- que una galería de tres vaya en una sola fila desde 1024 px;
 - que no haya errores de JavaScript al cargar.
 
 Antes de medir el contraste recorre la página entera, porque los textos y las fotos que entran
@@ -179,7 +194,8 @@ markup, el CSS y el JavaScript de cada variante son propios.
 | Qué publicaciones de Instagram se muestran | `INSTAGRAM` en `src/contenido.mjs`: solo públicas, sin precios ni horarios sin confirmar y sin marcas de terceros sin permiso. La publicación va incrustada y carga sola; `src/compartido/instagram.js` solo ajusta el alto que avisa Instagram |
 | Paleta del logo 2.0, acento y tokens semánticos | `src/css/tokens.css` |
 | Tipografías (Rubik Dirt y Rubik, licencia OFL) | `fonts/` y `src/css/fuentes.css` |
-| Escena del logo y movimiento que comparten las variantes | `src/compartido/`: `escena.mjs` (cielo, luna, cordillera con los gatos, presas que flotan, títulos que se arman, marquesina y cifras), `movimiento.css` y `movimiento.js` (entrada del hero, profundidad con el puntero, paralaje, rastro de tiza y apariciones) |
+| Escena del logo y movimiento que comparten las variantes | `src/compartido/`: `escena.mjs` (cielo, luna, cordillera con los gatos, presas que flotan, telón de sección, títulos que se arman, marquesina y cifras), `movimiento.css` y `movimiento.js` (entrada del hero, profundidad con el puntero, paralaje, rastro de tiza y apariciones) |
+| Visor de fotos | `src/compartido/visor.js`, con sus estilos en `movimiento.css` |
 | Fotos y derivados de marca | `img/fotos/` e `img/marca/`, generados con `tools/assets.mjs` |
 
 Mientras un template no tenga `pagina.mjs`, `/t/<id>` sigue sirviendo su captura. Con
@@ -196,9 +212,24 @@ Mientras un template no tenga `pagina.mjs`, `/t/<id>` sigue sirviendo su captura
   tokens y el CSS de la variante (`estilos`).
 - `leer(nombre)`: un archivo de la carpeta de la variante.
 
-Lo que Kuyen no confirmó va como `[POR CONFIRMAR]`, con un comentario que dice qué falta. Cada
-dato que viene de la planilla de preguntas lleva el código de su pregunta entre paréntesis
-(`H4` es horarios y tarifas, `C1` clases, `M5` el muro, y así).
+- `galeria(...ids)`: una fila de fotos de `FOTOS`, todas con la proporción de la primera, que
+  entran escalonadas y se inclinan hacia el puntero.
+- `telon({ semilla, presas })`: fondo de escalada para una sección de poco texto, una cordillera
+  al pie y unas presas grandes flotando, todo muy atenuado. Va como primer hijo de la sección,
+  que además lleva la clase `m-con-telon`. Se puso en las secciones con menos texto por pantalla,
+  medidas sobre la página generada: en Hirael el muro, las clases, Instagram y Visítanos; en Nex
+  el equipo, las competencias, Instagram y Visítanos; en Karate los programas e Instagram.
+
+Las grillas de tarjetas no dejan un elemento solo en la última fila. Con cuatro en tres columnas
+pasan a dos por fila; cuando sobran dos, la última fila reparte el ancho entre las dos; y cuando
+sobra uno, se lleva la fila entera. Las reglas usan `:has()` para contar los hijos desde el CSS,
+así que agregar o sacar una tarjeta no obliga a tocar nada. La prueba de interfaz mide el ancho
+que queda sin usar en la última fila de cada grilla, en los cinco anchos del estándar.
+
+Cada dato que viene de la planilla de preguntas lleva el código de su pregunta entre paréntesis
+(`H4` es horarios y tarifas, `C1` clases, `M5` el muro, y así). `POR_CONFIRMAR` sigue en
+`src/contenido.mjs` como herramienta, pero ya no hay nada marcado: el sitio se entrega con lo
+que Kuyen alcanzó a confirmar.
 
 #### Fotos y marca
 
@@ -211,7 +242,9 @@ node tools/assets.mjs escena --origen=<carpeta con el arte de 15 x 20>
 ```
 
 `fotos` genera cada foto de `FOTOS` en WebP de 1600, 1200 y 800 px, con la orientación de la
-cámara aplicada y bajo 300 KB, más `img/fotos/fotos.json` con las medidas. `marca` recorta el
+cámara aplicada y bajo 300 KB, más `img/fotos/fotos.json` con las medidas. Si la foto trae
+`recorte: { desde, zona }`, se recorta antes de escalar: así se deja fuera una marca de terceros
+o se reencuadra sin tocar el original. `marca` recorta el
 isotipo del logo 2.0 y genera los favicons, el logo completo y la imagen para redes
 (`og-kuyen.jpg`, de 1200 x 630). Los TTF son las versiones de escritorio de las mismas familias
 de `fonts/`, porque ImageMagick no lee woff2.
@@ -221,8 +254,32 @@ gatos y la luna con su goteo (`img/escena/`). Separa por saturación: el cielo d
 gradiente muy saturado y lo demás es tinta, blanco o gris. Deja fuera las estrellas, porque el
 sitio dibuja las suyas, que titilan.
 
-Para agregar una foto: se suma a `FOTOS` en `src/contenido.mjs`, con su `id`, el archivo original
-y el texto alternativo, y se vuelve a correr `fotos`.
+Para agregar una foto: se suma a `FOTOS` en `src/contenido.mjs`, con su `id`, el archivo original,
+su `orientacion` y el texto alternativo, y se vuelve a correr `fotos`. El crédito por defecto es
+el de la sesión (`@vbizama.studio`); una foto puede traer el suyo.
+
+Cualquier foto de contenido se amplía al hacer clic, y las flechas recorren las de su grupo: la
+galería a la que pertenece o, si no está en una, su sección. Al pasar el mouse la foto crece
+dentro de su marco y el marco se enciende con un aro del amarillo de la luna: esa es la señal de
+que abre, no un cursor de lupa. El visor entra y sale con un fundido, y la foto que llega al
+cambiar de una a otra también. Lo resuelve `src/compartido/visor.js`,
+que arma el diálogo la primera vez que se abre, así la página generada no lleva nada oculto. Se
+maneja con teclado (`Escape`, `←`, `→`), con el dedo (arrastre horizontal) y con el puntero. Las
+dos fotos que Karate usa de fondo detrás de un texto van con `alt` vacío y quedan fuera, porque
+son una capa de fondo y no una foto para mirar.
+
+Kuyen entregó todo lo que tenía el 25-09-2026 y no va a subir más, así que el sitio se arma con
+eso: **27 fotos**, cada una usada una sola vez en cada variante. Vienen de tres jornadas con
+cámara y de un puñado de tomas de teléfono del propio equipo, que llevan su propio crédito.
+
+Cinco originales quedaron fuera, en `FOTOS_EXCLUIDAS`: se ve el lienzo de Patagonia o la tarima
+de Red Bull, y el permiso para mostrar marcas de terceros (pregunta 9) nunca llegó. Otras tres
+se rescataron con `recorte`, que deja la marca fuera al generar el WebP sin tocar el original:
+el panel del galpón lleva pegados los logos de @astroméridas y MORBID, y en un lienzo del fondo
+se lee Patagonia.
+
+No hay foto del equipo, del seteo, de los productos ni de una clase en acción. Esas secciones se
+quedan con su texto: no llevan hueco ni relleno.
 
 ### Capturar o actualizar un template
 
@@ -304,43 +361,21 @@ ni `tools/`.
 
 ## Pendientes
 
-### Fotos que tiene que subir Kuyen
-
-F3 a F14 de la planilla quedaron todas en blanco. Las diez que van en una sección se muestran
-en su sitio como un recuadro punteado que dice qué falta, con la misma lógica que
-`[POR CONFIRMAR]`: lo que no está se ve. Están en `FOTOS_PENDIENTES` de `src/contenido.mjs`, y
-el build falla si alguna deja de aparecer en cualquiera de las tres variantes.
-
-| Código | Qué falta | Dónde se ve el hueco |
-|---|---|---|
-| F5 | El muro completo sin gente, con buena luz | El muro |
-| F4 | Presas y volúmenes de cerca | El muro |
-| F7 | El moonboard completo, y con alguien escalando | El muro |
-| F12 | El armado de rutas: seteo, lavado de presas, volúmenes | El muro |
-| F10 | El equipo: una foto de cada persona, o una grupal | Quiénes somos |
-| F8 | Una clase guiada en acción | Clases |
-| F9 | Kuyencit@s escalando, con autorización de sus apoderados | Kuyencit@s |
-| F13 | Los productos a la venta, sobre fondo simple | En el lugar |
-| F11 | La recepción y la zona de descanso | En el lugar |
-| F6 | La fachada y la entrada | Visítanos |
-
-Dos pedidos más no son una foto de sección y van solo en `MATERIAL_PENDIENTE`: los originales
-de la sesión de abril de 2026 (F3) y videos cortos del muro, de 10 a 30 segundos (F14).
-
 ### Del sitio
 
-- **Elegir template**: es la decisión que desbloquea todo lo demás. Elegido uno, se sacan los
-  otros dos de `TEMAS` y se borran sus capturas de `temas/`.
-- **Adaptar el elegido**: reemplazar textos, fotos y marca por los de Kuyen. Recién ahí entra
-  el contenido real.
+- **Elegir template**: es lo único que falta para publicar. Las tres variantes están terminadas
+  y se ven como producto final. Elegido uno, se sacan los otros dos de `TEMAS`, se borran sus
+  capturas de `temas/` y se saca el `noindex`, que hoy está fijo en el generador porque son
+  tres propuestas y no un sitio.
 - **Dominio**: `kuyenclimbing.cl` está puesto en `SITES.cl` y en `CNAME` como valor
-  provisorio. No está comprado ni confirmado con Kuyen.
+  provisorio. No está comprado. Mientras no lo esté, el sitio vive en el espejo
+  `kuyen-climbing.github.io`, que funciona porque las rutas son absolutas desde `/`.
 - **DNS**: cuando exista el dominio, registros A a 185.199.108/109/110/111.153. Si el DNS
   queda en Cloudflare, tiene que estar "DNS only" (nube gris), nunca proxiado, o GitHub deja
   de renovar el certificado HTTPS.
 - **Marca**: el isotipo, los favicons, el logo completo y `og-kuyen.jpg` salen del logo 2.0 con
-  `tools/assets.mjs marca`. Falta el nombre de la tipografía del logo y el manual de marca, si
-  existe.
+  `tools/assets.mjs marca`. La tipografía del logo es Sherman: viene en el Drive de Andy como
+  `sherman Tipo de letra.zip` (L2). Falta el manual de marca, si existe.
 - **Peso del repo**: las capturas ocupan cerca de 24 MB en `temas/`. Se van con los templates
   descartados.
 
@@ -364,5 +399,10 @@ resto en la planilla de preguntas:
   pide bajar la suya se borra su entrada de `RESENAS`
 - **No se declara `aggregateRating`** en los datos estructurados: las guías de Google no
   permiten marcar como valoración propia una nota recogida en su propia ficha
-- El plan de clases guiadas es de 4 clases al mes, una vez por semana. El de 8 clases al mes
-  que Kuyen lanzó en marzo salió del sitio hasta saber si sigue existiendo y a qué valor
+- Clases guiadas: las tres gráficas de precios que Andy subió el 25-09-2026 confirman todos
+  los valores que ya estaban publicados y agregan tres que faltaban. 1 vez por semana $45.000,
+  2 veces $52.000, 3 veces $72.000 y clase suelta $13.500. El plan de dos veces por semana es
+  el que había salido del sitio en septiembre por no saber su valor
+- Graduación de boulder: la dificultad va por color de chapa, según la gráfica que Kuyen
+  publica en el muro. Azul V0-V1, verde V1-V2, amarillo V3-V4, rojo V5-V6, negro V7-V8 y
+  blanco V9-V10, y los volúmenes valen para todas las rutas (M7, M8)
