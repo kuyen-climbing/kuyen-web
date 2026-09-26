@@ -4,17 +4,13 @@
  *   npm run dev          (en otra terminal)
  *   npm run test:ui
  *
- * Comprueba el marco y el ToggleTheme: que arranque con el template por
- * defecto, que cada clic cargue el siguiente sin recargar la página de arriba,
- * que la elección se guarde y sobreviva a una recarga, y que cada /t/<id> cargue
- * de verdad su contenido y sus assets.
- *
- * Si /t/<id> es una variante propia, además: un solo <h1>, Rubik Dirt y Rubik
- * cargadas desde el sitio, ningún pedido a otros dominios al cargar, contraste AA
- * en todos los textos, sin desborde de 375 a 1440 px, ningún texto encima de los
- * gatos del logo, el menú móvil funcionando, y que el mapa y las publicaciones
- * de Instagram vengan incrustados y con carga diferida. Si es una captura, sus
- * ajustes.
+ * El sitio es una sola página, servida en la raíz. Lo que se comprueba: un solo
+ * <h1>, Rubik Dirt y Rubik cargadas desde el sitio, ningún pedido a otros
+ * dominios al cargar, contraste AA en todos los textos, sin desborde de 375 a
+ * 1440 px, ninguna grilla con un elemento solo en la última fila, ningún texto
+ * encima de los gatos del logo, el menú móvil funcionando, el mapa y las
+ * publicaciones de Instagram incrustados y con carga diferida, y el visor de
+ * fotos abriendo, recorriendo su grupo y cerrando.
  *
  * No saca capturas: todo se comprueba leyendo el DOM y el resultado es solo
  * texto. La verificación visual la hace una persona en su Chrome.
@@ -22,8 +18,7 @@
 import { spawn } from 'node:child_process'
 import { join } from 'node:path'
 import { tmpdir } from 'node:os'
-import { TEMAS, TEMA_POR_DEFECTO, rutaTema } from '../src/site.config.mjs'
-import { tieneVariante } from './build.mjs'
+import { VARIANTE } from '../src/site.config.mjs'
 
 const CHROME = process.env.CHROME || 'C:/Program Files/Google/Chrome/Application/chrome.exe'
 const PORT = 9333
@@ -84,11 +79,9 @@ const metrics = (width, height) =>
   send('Emulation.setDeviceMetricsOverride', { width, height, deviceScaleFactor: 1, mobile: width < 768 })
 const goto = async (path, espera = 5000) => { await send('Page.navigate', { url: BASE + path }); await sleep(espera) }
 
-/** Evalúa `expr` con `d` apuntando a un documento: el que carga el marco o la página abierta. */
-const MARCO = "document.getElementById('kt-marco').contentDocument"
+/** Evalúa `expr` con `d` apuntando al documento de la página abierta. */
 const PAGINA = 'document'
 const en = (doc, expr) => evaluate(`(function(){var d=${doc};return ${expr}})()`)
-const dentro = (expr) => en(MARCO, expr)
 
 const results = []
 const check = (nombre, ok, detalle = '') => { results.push([nombre, ok, detalle]); console.log(ok ? 'OK   ' : 'FALLA', nombre, detalle) }
@@ -321,155 +314,34 @@ async function revisarVariante(doc, p) {
 
 try {
   await metrics(1440, 900)
-  await goto('/')
-  // Chrome reusa su perfil entre corridas: sin esto la prueba arrancaría con
-  // el template que quedó elegido la vez anterior.
-  await evaluate('localStorage.removeItem("kuyen-tema"); "ok"')
-  await goto('/')
+  await goto('/', 2500)
+  await revisarVariante(PAGINA, '/')
 
-  check('el marco tiene un solo h1', (await evaluate('document.querySelectorAll("h1").length')) === 1)
-  check('el ToggleTheme está en el marco', await evaluate('!!document.querySelector("[data-tema-boton]")'))
-  check('arranca con el template por defecto',
-    (await evaluate('new URL(document.getElementById("kt-marco").src).pathname')) === rutaTema(TEMA_POR_DEFECTO))
-
-  // A la izquierda, a 1rem del borde, y con su centro en el centro vertical de la pantalla.
-  const POSICION_TOGGLE = `(function(){
-    var r = document.querySelector('[data-tema-boton]').getBoundingClientRect()
-    var centrado = Math.abs(r.top + r.height / 2 - window.innerHeight / 2) <= 1
-    var izquierda = Math.abs(r.left - 16) <= 1
-    return centrado && izquierda
-  })()`
-  check('el toggle queda a la izquierda y centrado verticalmente', await evaluate(POSICION_TOGGLE),
-    await evaluate(`(function(){var r=document.querySelector('[data-tema-boton]').getBoundingClientRect();return 'left ' + r.left + 'px, centro ' + (r.top + r.height / 2) + 'px de ' + window.innerHeight})()`))
-
-  const urlArriba = await evaluate('location.href')
-
-  for (let i = 0; i < TEMAS.length; i++) {
-    const tema = TEMAS[i]
-    const esVariante = tieneVariante(tema.id)
-    const que = esVariante ? 'la variante' : 'el template'
-
-    const siguiente = TEMAS[(i + 1) % TEMAS.length]
-    check(`${tema.id}: el title del toggle nombra el template activo`,
-      (await evaluate('document.querySelector("[data-tema-boton]").title')) === `Template ${tema.nombre}`)
-    check(`${tema.id}: el aria-label anuncia el siguiente, como en PP`,
-      (await evaluate('document.querySelector("[data-tema-boton]").getAttribute("aria-label")')) === `Cambiar a Template ${siguiente.nombre}`)
-    check(`${tema.id}: el pulsador está en su posición`,
-      (await evaluate('document.querySelector("[data-tema-knob]").style.transform')) === `translateX(${0.25 + 1.375 * i}rem)`)
-
-    // Lo cargado dentro del marco, con su contenido y sus assets.
-    check(`${tema.id}: ${que} cargó su contenido`, (await dentro('d.body.innerText.trim().length')) > 800)
-    check(`${tema.id}: ${que} trajo sus estilos`,
-      (await dentro('getComputedStyle(d.body).fontFamily')).length > 0 &&
-        (await dentro('getComputedStyle(d.body).fontFamily')) !== 'Times New Roman')
-    check(`${tema.id}: sin imágenes rotas`, (await dentro('[].slice.call(d.images).filter(function(i){return i.complete && i.naturalWidth === 0}).length')) === 0,
-      `${await dentro('d.images.length')} imágenes`)
-
-    // Si la página no pinta fondo propio (NexStudio), lo que se ve detrás es el
-    // iframe: tiene que ser el blanco por defecto del navegador, igual que al abrirla
-    // sola. La comparación de píxeles mide /t/<id> suelto y no ve este caso.
-    check(`${tema.id}: el fondo detrás del contenido es el mismo que abriéndolo solo`, await evaluate(`(function(){
-      var marco = document.getElementById('kt-marco'), d = marco.contentDocument, w = d.defaultView
-      var el = d.elementFromPoint(720, 450)
-      while (el) {
-        var b = w.getComputedStyle(el).backgroundColor
-        if (b !== 'rgba(0, 0, 0, 0)' && b !== 'transparent') return true
-        if (w.getComputedStyle(el).backgroundImage.indexOf('gradient') !== -1) return true
-        el = el.parentElement
-      }
-      return getComputedStyle(marco).backgroundColor === 'rgb(255, 255, 255)'
-    })()`))
-
-    if (esVariante) {
-      await revisarVariante(MARCO, tema.id)
-    } else {
-      check(`${tema.id}: el router no cayó en su página de error`,
-        !(await dentro('d.body.innerText')).match(/Page Not Found|404 - |Esta p[aá]gina no existe/i))
-
-      // Lo que se pidió sacar de un template (ver `ajustes` en TEMAS) no se ve, y
-      // no deja hueco.
-      if (tema.ajustes?.ocultar) {
-        // El texto sigue en el DOM (se oculta, no se borra), pero ningún
-        // elemento que lo contenga se pinta.
-        const texto = JSON.stringify(tema.ajustes.ocultar)
-        check(`${tema.id}: no se ve "${tema.ajustes.ocultar}"`, await dentro(`(function () {
-          var recorrido = d.createTreeWalker(d.body, NodeFilter.SHOW_TEXT), nodo, hallados = 0
-          while ((nodo = recorrido.nextNode())) {
-            if (nodo.nodeValue.indexOf(${texto}) === -1) continue
-            hallados++
-            if (nodo.parentElement && nodo.parentElement.getClientRects().length > 0) return false
-          }
-          return hallados > 0
-        })()`))
-      }
-      if (tema.ajustes?.sinMargen) {
-        check(`${tema.id}: no quedó el margen de lo que se sacó`,
-          await dentro(`[].slice.call(d.querySelectorAll(${JSON.stringify(tema.ajustes.sinMargen)})).every(function (el) { return getComputedStyle(el).marginTop === '0px' })`))
-      }
-      if (tema.ajustes?.contiguos) {
-        const [antes, despues] = tema.ajustes.contiguos
-        const selector = (nombre) => JSON.stringify(`[data-framer-name="${nombre}"]`)
-        check(`${tema.id}: "${antes}" y "${despues}" quedan seguidos, sin hueco`, await dentro(`(function () {
-          var a = d.querySelector(${selector(antes)}), b = d.querySelector(${selector(despues)})
-          if (!a || !b) return false
-          var separacion = parseFloat(getComputedStyle(a.parentElement).rowGap) || 0
-          return Math.abs(b.getBoundingClientRect().top - a.getBoundingClientRect().bottom - separacion) <= 2
-        })()`), await dentro(`(function () {
-          var a = d.querySelector(${selector(antes)}), b = d.querySelector(${selector(despues)})
-          if (!a || !b) return 'no encontré las secciones'
-          return 'distancia ' + Math.round(b.getBoundingClientRect().top - a.getBoundingClientRect().bottom) + 'px, separación del contenedor ' + getComputedStyle(a.parentElement).rowGap
-        })()`))
-      }
-    }
-
-    await evaluate('document.querySelector("[data-tema-boton]").click(); "ok"')
-    await sleep(5000)
-  }
-
-  check('cambiar de template no recarga la página de arriba', (await evaluate('location.href')) === urlArriba)
-  check('vuelve al primero al completar el ciclo',
-    (await evaluate('new URL(document.getElementById("kt-marco").src).pathname')) === rutaTema(TEMAS[0].id))
-
-  // La elección sobrevive a la recarga.
-  await evaluate('document.querySelector("[data-tema-boton]").click(); "ok"')
-  await sleep(1500)
-  const elegido = await evaluate('localStorage.getItem("kuyen-tema")')
-  check('la elección queda guardada', elegido === TEMAS[1].id, String(elegido))
-  await goto('/')
-  check('la recarga abre con el template elegido',
-    (await evaluate('new URL(document.getElementById("kt-marco").src).pathname')) === rutaTema(elegido))
-
-  // Móvil.
-  await metrics(390, 844)
-  await goto('/')
-  check('en móvil el toggle también queda a la izquierda y centrado verticalmente', await evaluate(POSICION_TOGGLE))
-
-  // Cada variante abierta sola: sin desborde en los anchos del estándar INCBA, y
-  // sus interacciones en móvil.
-  for (const tema of TEMAS.filter((t) => tieneVariante(t.id))) {
+  // El sitio en los anchos del estándar INCBA, y sus interacciones en móvil.
+  {
     for (const ancho of [375, 640, 768, 1024, 1440]) {
       await metrics(ancho, 900)
-      await goto(rutaTema(tema.id), 2000)
-      check(`${tema.id} a ${ancho} px: no se desborda a lo ancho`, await en(PAGINA, DESBORDE), await en(PAGINA, DETALLE_DESBORDE))
+      await goto('/', 2000)
+      check(`a ${ancho} px: no se desborda a lo ancho`, await en(PAGINA, DESBORDE), await en(PAGINA, DETALLE_DESBORDE))
       const encima = await en(PAGINA, SOBRE_GATOS)
-      check(`${tema.id} a ${ancho} px: el logo con los gatos, atenuado y detrás del texto`, encima.length === 0, encima.slice(0, 4).join(', '))
+      check(`a ${ancho} px: el logo con los gatos, atenuado y detrás del texto`, encima.length === 0, encima.slice(0, 4).join(', '))
       const huerfanos = await en(PAGINA, HUERFANOS)
-      check(`${tema.id} a ${ancho} px: ninguna grilla deja un elemento solo en la última fila`,
+      check(`a ${ancho} px: ninguna grilla deja un elemento solo en la última fila`,
         huerfanos.length === 0, [...new Set(huerfanos)].slice(0, 4).join(' | '))
     }
 
     await metrics(375, 812)
     erroresJs.length = 0
-    await goto(rutaTema(tema.id), 2000)
-    check(`${tema.id}: sin errores de JavaScript al cargar`, erroresJs.length === 0, erroresJs.slice(0, 3).join(' | '))
+    await goto('/', 2000)
+    check(`sin errores de JavaScript al cargar`, erroresJs.length === 0, erroresJs.slice(0, 3).join(' | '))
     if (await en(PAGINA, '!!d.querySelector("[data-menu-abrir]")')) {
       await en(PAGINA, '(d.querySelector("[data-menu-abrir]").click(), true)')
       await sleep(700)
-      check(`${tema.id} a 375 px: el menú móvil se abre`,
+      check(`a 375 px: el menú móvil se abre`,
         await en(PAGINA, 'd.querySelector("[data-menu]").classList.contains("abierto") && !d.querySelector("[data-menu]").inert'))
       await en(PAGINA, '(d.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape" })), true)')
       await sleep(700)
-      check(`${tema.id} a 375 px: el menú móvil se cierra con Escape`,
+      check(`a 375 px: el menú móvil se cierra con Escape`,
         await en(PAGINA, '!d.querySelector("[data-menu]").classList.contains("abierto") && d.querySelector("[data-menu]").inert'))
     }
     // Desde el 22-09-2026 el mapa y las publicaciones vienen incrustados y no
@@ -481,29 +353,29 @@ try {
     })`)
     const mapaIncrustado = incrustados.filter((m) => m.src.includes('google.com/maps'))
     const publicaciones = incrustados.filter((m) => m.src.includes('instagram.com/'))
-    check(`${tema.id}: el mapa viene incrustado, sin clic`, mapaIncrustado.length === 1, `${mapaIncrustado.length} mapas`)
-    check(`${tema.id}: las publicaciones de Instagram vienen incrustadas, sin clic`,
+    check(`el mapa viene incrustado, sin clic`, mapaIncrustado.length === 1, `${mapaIncrustado.length} mapas`)
+    check(`las publicaciones de Instagram vienen incrustadas, sin clic`,
       publicaciones.length === 3, `${publicaciones.length} publicaciones`)
     // Las reseñas se publican citando Google: la ficha tiene que estar enlazada,
     // que es lo que sostiene la nota y deja comprobarlas.
-    check(`${tema.id}: la nota de Google enlaza a la ficha`,
+    check(`la nota de Google enlaza a la ficha`,
       await en(PAGINA, `!!d.querySelector('a[href*="maps.app.goo.gl"], a[href*="google.com/maps"]')`))
 
-    check(`${tema.id}: el mapa y las publicaciones van con loading lazy`,
+    check(`el mapa y las publicaciones van con loading lazy`,
       [...mapaIncrustado, ...publicaciones].every((m) => m.lazy),
       [...mapaIncrustado, ...publicaciones].filter((m) => !m.lazy).map((m) => m.src).join(', '))
 
     // Visor de fotos (25-09-2026): cualquier foto de contenido se amplía y las
     // flechas recorren las de su grupo.
     await metrics(1440, 900)
-    await goto(rutaTema(tema.id), 2000)
+    await goto('/', 2000)
     const ampliables = await en(PAGINA, FOTOS_AMPLIABLES)
-    check(`${tema.id}: todas las fotos de contenido se pueden ampliar`,
+    check(`todas las fotos de contenido se pueden ampliar`,
       ampliables.total > 0 && ampliables.sinVisor === 0, `${ampliables.sinVisor} de ${ampliables.total} sin visor`)
-    check(`${tema.id}: las fotos avisan con su marco y no con el cursor de lupa`,
+    check(`las fotos avisan con su marco y no con el cursor de lupa`,
       ampliables.conLupa === 0 && ampliables.sinMarco === 0,
       `${ampliables.conLupa} con lupa, ${ampliables.sinMarco} sin marco`)
-    check(`${tema.id}: el visor no deja nada en la página hasta que se abre`,
+    check(`el visor no deja nada en la página hasta que se abre`,
       await en(PAGINA, '!d.querySelector(".visor")'))
     // Una galería de tres va en una sola fila desde 1024 px: la regla que
     // reparte la tercera cuando hay dos columnas no puede pasarse de ancho.
@@ -514,7 +386,7 @@ try {
       return cajas.every(function (r) { return Math.min(r.bottom, cajas[0].bottom) - Math.max(r.top, cajas[0].top) > 1 })
     })()`)
     if (galeriaTres !== 'sin galería de tres') {
-      check(`${tema.id} a 1440 px: la galería de tres va en una sola fila`, galeriaTres === true)
+      check('a 1440 px: la galería de tres va en una sola fila', galeriaTres === true)
     }
 
     // Se abre la segunda foto de una galería de cuatro, que es donde el carrusel
@@ -536,15 +408,15 @@ try {
         foco: d.activeElement === v.querySelector('[data-visor-cerrar]'),
       }
     })()`)
-    check(`${tema.id}: el visor abre la foto en grande`,
+    check(`el visor abre la foto en grande`,
       typeof abierto === 'object' && abierto.dialogo === 'dialog/true' && abierto.grande && abierto.h1 === 1 && abierto.foco,
       JSON.stringify(abierto))
-    check(`${tema.id}: el visor cuenta las fotos del grupo, no las de la página`,
+    check(`el visor cuenta las fotos del grupo, no las de la página`,
       typeof abierto === 'object' && abierto.contador === '2 de 4', typeof abierto === 'object' ? abierto.contador : String(abierto))
 
     await en(PAGINA, '(d.querySelector("[data-visor-siguiente]").click(), true)')
     await sleep(300)
-    check(`${tema.id}: la flecha siguiente avanza en el grupo`,
+    check(`la flecha siguiente avanza en el grupo`,
       (await en(PAGINA, 'd.querySelector("[data-visor-contador]").textContent')) === '3 de 4')
 
     await en(PAGINA, '(d.querySelector(".visor").dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true })), true)')
@@ -559,7 +431,7 @@ try {
         foco: d.activeElement === d.querySelector('[data-prueba-origen]'),
       }
     })()`)
-    check(`${tema.id}: Escape cierra el visor y el foco vuelve a la foto`,
+    check(`Escape cierra el visor y el foco vuelve a la foto`,
       !cerrado.abierto && !cerrado.cuerpo && cerrado.foco, JSON.stringify(cerrado))
     // Cerrado se funde hasta desaparecer: queda en el DOM, pero oculto, sin
     // opacidad y sin atrapar clics.
@@ -567,7 +439,7 @@ try {
       var cs = getComputedStyle(d.querySelector('.visor'))
       return { visibilidad: cs.visibility, opacidad: cs.opacity, puntero: cs.pointerEvents }
     })()`)
-    check(`${tema.id}: el visor cerrado no se ve ni atrapa clics`,
+    check(`el visor cerrado no se ve ni atrapa clics`,
       oculto.visibilidad === 'hidden' && oculto.opacidad === '0' && oculto.puntero === 'none',
       JSON.stringify(oculto))
   }
