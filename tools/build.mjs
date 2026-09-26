@@ -568,7 +568,11 @@ export async function build({ siteId, out, referencias = false }) {
   for (const pagina of paginas) escribir(dir, pagina.ruta, pagina.html)
 
   writeFileSync(join(dir, 'robots.txt'), robotsTxt(site))
+  // El sitemap se borra cuando el sitio deja de indexarse: el build escribe
+  // sobre la raíz del repo, así que uno viejo quedaría servido y comiteado,
+  // contradiciendo al robots.txt que acaba de decir que no se indexe.
   if (site.sitemap) writeFileSync(join(dir, 'sitemap.xml'), sitemapXml(site))
+  else rmSync(join(dir, 'sitemap.xml'), { force: true })
 
   return { site, variantes: contar('variante'), capturas: contar('captura'), referencias: contar('referencia'), dir: out }
 }
