@@ -1,18 +1,16 @@
 /**
  * Generador del sitio de Kuyen Climbing.
  *
- *   node tools/build.mjs [--site=cl|preview] [--out=DIR] [--referencias]
+ *   node tools/build.mjs [--site=cl|preview] [--out=DIR]
  *
- * Etapa de contenido (15-09-2026): cada template de TEMAS pasa a tener una
- * variante propia con el contenido, la tipografía y los colores de Kuyen, que
- * conserva la estructura del template. El marco de la raíz la muestra en /t/<id>
- * con el ToggleTheme encima.
+ * El sitio es una sola página, servida en la raíz: la variante de VARIANTE, con
+ * markup, CSS y JavaScript propios, las fotos de img/ y las fuentes de fonts/.
+ * Sale de src/variantes/<id>/pagina.mjs y toma sus textos de src/contenido.mjs.
  *
- * - Si existe src/variantes/<id>/pagina.mjs, /t/<id> es la variante: markup, CSS
- *   y JavaScript propios, con las fotos de img/ y las fuentes de fonts/.
- * - Si todavía no existe, /t/<id> sigue siendo la captura del template.
- * - Con --referencias (lo usa npm run dev) también se escribe la captura en
- *   /ref/<id>, para compararla con la variante. build y preview no la llevan.
+ * Hasta el 26-09-2026 la raíz era un marco con un selector que mostraba tres
+ * templates candidatos en /t/<id>. Kuyen eligió Hirael y eso se fue: el marco,
+ * las rutas /t/, las capturas de los templates y las herramientas para
+ * capturarlos. Siguen en el historial, en 8dd4bad.
  *
  * El build es determinista y valida antes de escribir: si algo no cumple,
  * aborta sin tocar el disco y dice qué.
@@ -21,7 +19,7 @@
 import { readFileSync, writeFileSync, rmSync, mkdirSync, cpSync, existsSync } from 'node:fs'
 import { join, dirname, resolve, sep } from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
-import { SITES, TEMAS, TEMA_POR_DEFECTO, PAGINA, LIMITES, rutaTema, rutaReferencia } from '../src/site.config.mjs'
+import { SITES, VARIANTE, LIMITES } from '../src/site.config.mjs'
 import * as contenido from '../src/contenido.mjs'
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..')
@@ -34,38 +32,12 @@ function fill(tpl, vars) {
   return tpl.replace(/\{\{(\w+)\}\}/g, (m, k) => (k in vars ? vars[k] : m))
 }
 
-/** El marco: la página de la raíz, con el template activo y el toggle. */
-function buildMarco(site, partials) {
-  const porDefecto = TEMAS.find((t) => t.id === TEMA_POR_DEFECTO) || TEMAS[0]
-
-  const head = fill(partials.head, {
-    lang: site.lang,
-    locale: site.locale,
-    robots: site.robots,
-    host: site.host,
-    title: esc(PAGINA.title),
-    description: esc(PAGINA.description),
-    canonical: `${site.host}/`,
-  })
-
-  const marco = fill(partials.marco, {
-    temasJson: JSON.stringify(TEMAS.map((t) => ({ id: t.id, nombre: t.nombre, icono: t.icono, ruta: rutaTema(t.id) }))),
-    temaInicialRuta: rutaTema(porDefecto.id),
-    temaIconoInicial: porDefecto.icono,
-    temaNombreInicial: porDefecto.nombre,
-    temaTotal: String(TEMAS.length),
-  })
-
-  return [head, marco, '</body>', '</html>', ''].join('\n')
-}
-
 /* ------------------------------------------------------------------ */
 /* Variantes propias                                                   */
 /* ------------------------------------------------------------------ */
 
 /** La variante propia de un template, si existe. */
 export const archivoVariante = (id) => join(SRC, 'variantes', id, 'pagina.mjs')
-export const tieneVariante = (id) => existsSync(archivoVariante(id))
 
 /**
  * Lo que no puede aparecer en una variante: rutas de las capturas, marcas de las
@@ -73,7 +45,6 @@ export const tieneVariante = (id) => existsSync(archivoVariante(id))
  * dominios de los templates originales.
  */
 export const TERCEROS = [
-  '/temas/',
   '_next',
   'framer',
   'tailwind',
@@ -81,7 +52,7 @@ export const TERCEROS = [
   'shadcn',
   'fonts.googleapis',
   'fonts.gstatic',
-  ...TEMAS.map((t) => new URL(t.fuente).hostname),
+  new URL(VARIANTE.fuente).hostname,
 ]
 
 let medidasFotos = null
@@ -174,8 +145,7 @@ function cabeza(site, { ruta, estilos = '', titulo = contenido.SEO.titulo, descr
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>${esc(titulo)}</title>
   <meta name="description" content="${esc(descripcion)}">
-  <!-- Variante en comparación: fuera del índice hasta que se elija una. -->
-  <meta name="robots" content="noindex, nofollow">
+  <meta name="robots" content="${site.robots}">
   <link rel="canonical" href="${url}">
   <meta name="theme-color" content="#2b2e83">
 
@@ -217,7 +187,7 @@ ${estilos}
  * Página de una variante. src/variantes/<id>/pagina.mjs exporta por defecto una
  * función que recibe el contexto y devuelve el HTML completo como texto:
  *
- *   site, tema, ruta   la variante de sitio, la entrada de TEMAS y su ruta
+ *   site, tema, ruta   la variante de sitio, la entrada de VARIANTE y su ruta
  *   contenido          todo src/contenido.mjs
  *   esc(texto)         escapa texto para HTML
  *   foto(id, opciones) <img> responsiva de una foto de FOTOS
@@ -227,7 +197,7 @@ ${estilos}
  *                      que usan todas las variantes)
  */
 async function buildVariante(site, tema) {
-  const ruta = rutaTema(tema.id)
+  const ruta = '/'
   const carpeta = join(SRC, 'variantes', tema.id)
   const { default: pagina } = await import(pathToFileURL(archivoVariante(tema.id)).href)
 
@@ -252,129 +222,20 @@ async function buildVariante(site, tema) {
 /* Capturas de los templates                                           */
 /* ------------------------------------------------------------------ */
 
-/**
- * Lo único que se le inyecta a un template, y va primero de todo en el <head>
- * para correr antes que sus bundles. Son dos arreglos para que el template se
- * comporte igual que en su sitio, sirviéndose desde otra ruta:
- *
- * 1. La ruta. El template se sirve en /t/<id> o /ref/<id>, pero su router espera
- *    la ruta original: sin esto, NexStudio no encuentra ninguna coincidencia y
- *    muestra su propia página de 404.
- * 2. Las imágenes de Next.js. Al hidratar, el componente de imagen vuelve a
- *    pedirlas a /_next/image?url=...&w=..., un endpoint que en un sitio
- *    estático no existe. Se reapuntan a la imagen original ya descargada.
- */
-function arranque(tema) {
-  const prefijo = `/temas/${tema.id}`
-  const ruta = new URL(tema.fuente).pathname
-  const ajustes = tema.ajustes || {}
-
-  // Ajustes pedidos para un template puntual (ver `ajustes` en TEMAS): una
-  // cookie que el template lee para cambiar su propio estado, y CSS para ocultar
-  // lo que se pidió sacar sin tocar el markup que el template hidrata.
-  const cookie = ajustes.cookie
-    ? `\n    try { document.cookie = ${JSON.stringify(`${ajustes.cookie}; path=/; max-age=31536000; SameSite=Lax`)} } catch (e) {}`
-    : ''
-  const estilos = ajustes.css ? `  <style>${ajustes.css}</style>\n` : ''
-
-  return `${estilos}  <script>
-  (function () {
-    try { history.replaceState(null, '', ${JSON.stringify(ruta)}) } catch (e) {}${cookie}
-
-    var PREFIJO = ${JSON.stringify(prefijo)}
-    var OPTIMIZADOR = /(?:\\/temas\\/[\\w-]+)?\\/_next\\/image\\?[^"'\\s,]*url=([^&"'\\s,]+)[^"'\\s,]*/g
-
-    function reapuntar(valor) {
-      return valor.replace(OPTIMIZADOR, function (todo, codificada) {
-        try { return PREFIJO + decodeURIComponent(codificada) } catch (e) { return todo }
-      })
-    }
-    function arreglar(el) {
-      if (!el || !el.getAttribute) return
-      for (var i = 0; i < 2; i++) {
-        var attr = i ? 'srcset' : 'src'
-        var v = el.getAttribute(attr)
-        if (!v || v.indexOf('/_next/image') === -1) continue
-        var n = reapuntar(v)
-        if (n !== v) el.setAttribute(attr, n)
-      }
-    }
-    function barrer(raiz) {
-      if (!raiz || !raiz.querySelectorAll) return
-      var imgs = raiz.querySelectorAll('img, source')
-      for (var i = 0; i < imgs.length; i++) arreglar(imgs[i])
-    }
-
-    new MutationObserver(function (cambios) {
-      for (var i = 0; i < cambios.length; i++) {
-        var c = cambios[i]
-        if (c.type === 'attributes') arreglar(c.target)
-        for (var j = 0; j < c.addedNodes.length; j++) {
-          arreglar(c.addedNodes[j])
-          barrer(c.addedNodes[j])
-        }
-      }
-    }).observe(document.documentElement, {
-      childList: true, subtree: true, attributes: true, attributeFilter: ['src', 'srcset'],
-    })
-
-    document.addEventListener('DOMContentLoaded', function () { barrer(document) })
-    window.addEventListener('load', function () { barrer(document) })
-  })()
-  </script>`
-}
-
-/**
- * Página de un template: el HTML capturado, tal cual, con el arranque de
- * arriba y el noindex, porque es markup de terceros y no tiene por qué
- * aparecer en buscadores.
- */
-function buildTema(tema) {
-  const archivo = join(SRC, 'temas', tema.id, 'pagina.html')
-  if (!existsSync(archivo)) {
-    throw new Error(
-      `falta la captura de "${tema.id}". Corré: node --experimental-websocket tools/capturar-tema.mjs ${tema.id} ${tema.fuente}`
-    )
-  }
-  let html = readFileSync(archivo, 'utf8')
-
-  html = html.replace(/<head([^>]*)>/i, `<head$1>\n${arranque(tema)}`)
-
-  const noindex = '<meta name="robots" content="noindex, nofollow">'
-  if (/<meta[^>]+name=["']robots["'][^>]*>/i.test(html)) {
-    html = html.replace(/<meta[^>]+name=["']robots["'][^>]*>/gi, noindex)
-  } else if (/<head[^>]*>/i.test(html)) {
-    html = html.replace(/<head([^>]*)>/i, `<head$1>\n${noindex}`)
-  }
-
-  return html
-}
-
 /* ------------------------------------------------------------------ */
 /* Validaciones                                                        */
 /* ------------------------------------------------------------------ */
 
-function validar(marco, capturas) {
+/** Título y descripción, contra los puntos donde Google los trunca. */
+function validarSeo() {
   const problemas = []
-
-  if (PAGINA.title.length > LIMITES.title) {
-    problemas.push(`título de ${PAGINA.title.length} caracteres (máximo ${LIMITES.title})`)
+  const { SEO } = contenido
+  if (SEO.titulo.length > LIMITES.title) {
+    problemas.push(`SEO.titulo tiene ${SEO.titulo.length} caracteres (máximo ${LIMITES.title})`)
   }
-  if (PAGINA.description.length > LIMITES.description) {
-    problemas.push(`descripción de ${PAGINA.description.length} caracteres (máximo ${LIMITES.description})`)
+  if (SEO.descripcion.length > LIMITES.description) {
+    problemas.push(`SEO.descripcion tiene ${SEO.descripcion.length} caracteres (máximo ${LIMITES.description})`)
   }
-
-  const h1 = (marco.match(/<h1[\s>]/g) || []).length
-  if (h1 !== 1) problemas.push(`el marco tiene ${h1} etiquetas <h1> (tiene que haber exactamente 1)`)
-
-  const sinResolver = marco.match(/\{\{\w+\}\}/g)
-  if (sinResolver) problemas.push(`tokens sin resolver en el marco: ${[...new Set(sinResolver)].join(', ')}`)
-
-  // Cada captura que se sirve tiene que tener sus assets en su lugar.
-  for (const id of capturas) {
-    if (!existsSync(join(ROOT, 'temas', id))) problemas.push(`faltan los assets de "${id}" en temas/${id}/`)
-  }
-
   return problemas
 }
 
@@ -453,13 +314,15 @@ function validarContenido() {
  * sin confirmar, sin nada de los templates ni de terceros, y con todos sus assets
  * locales en el repo.
  */
-function validarVariante({ ruta, html }) {
+function validarVariante(site, { ruta, html }) {
   const problemas = []
 
   const h1 = (html.match(/<h1[\s>]/g) || []).length
   if (h1 !== 1) problemas.push(`${ruta}: ${h1} etiquetas <h1> (tiene que haber exactamente 1)`)
   if (!/<html lang="es-CL"/.test(html)) problemas.push(`${ruta}: falta lang="es-CL" en <html>`)
-  if (!/<meta name="robots" content="noindex/.test(html)) problemas.push(`${ruta}: falta el noindex`)
+  if (!html.includes(`<meta name="robots" content="${site.robots}">`)) {
+    problemas.push(`${ruta}: el robots del <head> no es "${site.robots}", que es lo que declara el sitio`)
+  }
 
   const tokens = html.match(/\{\{\w+\}\}/g)
   if (tokens) problemas.push(`${ruta}: tokens sin resolver: ${[...new Set(tokens)].join(', ')}`)
@@ -493,8 +356,7 @@ function validarVariante({ ruta, html }) {
 
 function robotsTxt(site) {
   if (!site.sitemap) return '# Preview interno: no indexar.\nUser-agent: *\nDisallow: /\n'
-  // Los templates son de terceros: fuera del índice.
-  return `User-agent: *\nAllow: /$\nDisallow: /t/\nDisallow: /temas/\nSitemap: ${site.host}/sitemap.xml\n`
+  return `User-agent: *\nAllow: /\nSitemap: ${site.host}/sitemap.xml\n`
 }
 
 const sitemapXml = (site) =>
@@ -502,12 +364,14 @@ const sitemapXml = (site) =>
 
 /** Escribe una página en su ruta pública (/t/karate -> t/karate.html). */
 function escribir(dir, ruta, html) {
-  const archivo = join(dir, `${ruta.replace(/^\//, '')}.html`)
+  // La raíz es index.html; cualquier otra ruta, su propio .html.
+  const relativa = ruta === '/' ? 'index.html' : `${ruta.replace(/^\//, '')}.html`
+  const archivo = join(dir, relativa)
   mkdirSync(dirname(archivo), { recursive: true })
   writeFileSync(archivo, html)
 }
 
-export async function build({ siteId, out, referencias = false }) {
+export async function build({ siteId, out }) {
   const site = SITES[siteId]
   if (!site) throw new Error(`sitio desconocido: ${siteId}`)
 
@@ -516,29 +380,13 @@ export async function build({ siteId, out, referencias = false }) {
     throw new Error(`--out=${out} contiene al repo: se borraría entero`)
   }
 
-  const partials = {
-    head: read('partials', 'head.html'),
-    marco: read('partials', 'marco.html'),
-  }
-
-  const marco = buildMarco(site, partials)
-
-  const paginas = []
-  for (const tema of TEMAS) {
-    if (tieneVariante(tema.id)) {
-      paginas.push({ tipo: 'variante', tema, ruta: rutaTema(tema.id), html: await buildVariante(site, tema) })
-    } else {
-      paginas.push({ tipo: 'captura', tema, ruta: rutaTema(tema.id), html: buildTema(tema) })
-    }
-    if (referencias) paginas.push({ tipo: 'referencia', tema, ruta: rutaReferencia(tema.id), html: buildTema(tema) })
-  }
-  const contar = (tipo) => paginas.filter((p) => p.tipo === tipo).length
-  const capturas = [...new Set(paginas.filter((p) => p.tipo !== 'variante').map((p) => p.tema.id))]
+  // El sitio es una sola página: la variante elegida, servida en la raíz.
+  const paginas = [{ ruta: '/', html: await buildVariante(site, VARIANTE) }]
 
   const problemas = [
-    ...validar(marco, capturas),
+    ...validarSeo(),
     ...validarContenido(),
-    ...paginas.filter((p) => p.tipo === 'variante').flatMap(validarVariante),
+    ...paginas.flatMap((pagina) => validarVariante(site, pagina)),
   ]
   if (problemas.length) {
     console.error(`\nEl build no pasa las validaciones:\n`)
@@ -553,18 +401,12 @@ export async function build({ siteId, out, referencias = false }) {
     for (const asset of ['img', 'fonts']) {
       if (existsSync(join(ROOT, asset))) cpSync(join(ROOT, asset), join(dir, asset), { recursive: true })
     }
-    // Las capturas viajan solo si alguna página las usa: un template que todavía
-    // no tiene variante, o /ref/ en local.
-    for (const id of capturas) {
-      cpSync(join(ROOT, 'temas', id), join(dir, 'temas', id), { recursive: true })
-    }
     // El preview vive en kuyen-climbing.github.io y se sirve en la raíz, así
     // que va sin CNAME: con CNAME, GitHub Pages redirige al dominio propio.
     if (site.cname) writeFileSync(join(dir, 'CNAME'), `${site.cname}\n`)
     writeFileSync(join(dir, '.nojekyll'), '')
   }
 
-  writeFileSync(join(dir, 'index.html'), marco)
   for (const pagina of paginas) escribir(dir, pagina.ruta, pagina.html)
 
   writeFileSync(join(dir, 'robots.txt'), robotsTxt(site))
@@ -574,7 +416,7 @@ export async function build({ siteId, out, referencias = false }) {
   if (site.sitemap) writeFileSync(join(dir, 'sitemap.xml'), sitemapXml(site))
   else rmSync(join(dir, 'sitemap.xml'), { force: true })
 
-  return { site, variantes: contar('variante'), capturas: contar('captura'), referencias: contar('referencia'), dir: out }
+  return { site, paginas: paginas.length, dir: out }
 }
 
 const DEFAULT_OUT = { cl: 'dist', preview: 'dist-preview' }
@@ -591,8 +433,6 @@ if (process.argv[1] && fileURLToPath(import.meta.url) === resolve(process.argv[1
   )
   const siteId = args.site || 'cl'
   const out = args.out || DEFAULT_OUT[siteId]
-  const r = await build({ siteId, out, referencias: Boolean(args.referencias) })
-  const partes = ['marco', `${r.variantes} variantes`, `${r.capturas} capturas`]
-  if (r.referencias) partes.push(`${r.referencias} referencias`)
-  console.log(`${siteId}: ${partes.join(' + ')} en ${r.dir}/ (${r.site.cname || r.site.host})`)
+  const r = await build({ siteId, out })
+  console.log(`${siteId}: ${r.paginas} página en ${r.dir}/ (${r.site.cname || r.site.host})`)
 }

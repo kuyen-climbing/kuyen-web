@@ -2,15 +2,19 @@
  * Verificación funcional del sitio generado, contra un servidor levantado con
  * tools/serve.mjs (que resuelve las URLs igual que GitHub Pages).
  *
- *   node tools/serve.mjs dist --port=8100 &
+ *   node tools/serve.mjs . --port=8100 &
  *   node tools/verify.mjs --port=8100
  *
- * Cada /t/<id> es la variante propia del template, si ya existe, o la captura.
+ * El sitio es una sola página, servida en la raíz: la variante de Hirael con el
+ * contenido de Kuyen. Lo que se revisa es que responda, que esté bien formada,
+ * que no arrastre nada de terceros y que cada asset que nombra exista.
  */
-import { TEMAS, TEMA_POR_DEFECTO, rutaTema } from '../src/site.config.mjs'
-import { tieneVariante, TERCEROS } from './build.mjs'
+import { SITES, VARIANTE } from '../src/site.config.mjs'
+import { TERCEROS } from './build.mjs'
 
 const port = Number((process.argv.find((a) => a.startsWith('--port=')) || '--port=8100').split('=')[1])
+const siteId = (process.argv.find((a) => a.startsWith('--site=')) || '--site=cl').split('=')[1]
+const site = SITES[siteId]
 const BASE = `http://localhost:${port}`
 
 const fallas = []
@@ -22,60 +26,56 @@ async function responde(ruta, donde) {
   return r.status === 200
 }
 
-// El marco.
 const res = await fetch(`${BASE}/`)
 if (res.status !== 200) {
   falla(`/: respondió ${res.status}`)
 } else {
   const html = await res.text()
+
   if ((html.match(/<h1[\s>]/g) || []).length !== 1) falla('/: tiene que haber exactamente un <h1>')
-  if (!/<html lang="es-[A-Z]{2}"[^>]*>/.test(html)) falla('/: falta lang="es-*" en <html>')
-  if (!html.includes('data-tema-boton')) falla('/: sin el ToggleTheme')
-  if (!html.includes(`src="${rutaTema(TEMA_POR_DEFECTO)}"`)) falla('/: el marco no abre con el template por defecto')
-  for (const t of TEMAS) {
-    if (!html.includes(`"id":"${t.id}"`)) falla(`/: el toggle no conoce el template ${t.id}`)
+  if (!/<html lang="es-CL"/.test(html)) falla('/: falta lang="es-CL" en <html>')
+  if (!html.includes('"@type": "SportsActivityLocation"')) falla('/: faltan los datos estructurados')
+  if (!html.includes(`<meta name="robots" content="${site.robots}">`)) {
+    falla(`/: el robots del <head> no es "${site.robots}"`)
   }
-  for (const m of html.matchAll(/href="(\/img\/[^"]+)"/g)) await responde(m[1], '/')
+  if (!html.includes(`<link rel="canonical" href="${site.host}/">`)) {
+    falla(`/: la canónica no apunta a ${site.host}/`)
+  }
+
+  // Nada del template original ni de otros dominios: el markup es propio.
+  const minusculas = html.toLowerCase()
+  for (const t of TERCEROS) if (minusculas.includes(t.toLowerCase())) falla(`/: referencia a "${t}"`)
+
+  // Cada asset que la página nombra tiene que existir en el sitio.
+  const refs = new Set()
+  for (const m of html.matchAll(/(?:src|href)="(\/[^"#?]*)/g)) refs.add(m[1])
+  for (const m of html.matchAll(/srcset="([^"]+)"/g)) for (const p of m[1].split(',')) refs.add(p.trim().split(/\s+/)[0])
+  for (const m of html.matchAll(/url\(["']?(\/[^"')?#]+)/g)) refs.add(m[1])
+  for (const ref of refs) if (/\.\w+$/.test(ref)) await responde(ref, '/')
 }
 
-let variantes = 0
-for (const tema of TEMAS) {
-  const ruta = rutaTema(tema.id)
+// robots.txt y sitemap tienen que decir lo mismo que la configuración del sitio.
+const robots = await fetch(`${BASE}/robots.txt`)
+if (robots.status !== 200) falla(`/robots.txt: respondió ${robots.status}`)
+else {
+  const txt = await robots.text()
+  if (site.sitemap && !txt.includes(`${site.host}/sitemap.xml`)) falla('/robots.txt: no declara el sitemap')
+  if (!site.sitemap && !/Disallow: \/\s*$/m.test(txt)) falla('/robots.txt: tendría que cerrar el sitio entero')
+}
+
+const sitemap = await fetch(`${BASE}/sitemap.xml`)
+if (site.sitemap) {
+  if (sitemap.status !== 200) falla(`/sitemap.xml: respondió ${sitemap.status}`)
+  else if (!(await sitemap.text()).includes(`${site.host}/`)) falla('/sitemap.xml: no lista la raíz')
+} else if (sitemap.status === 200) {
+  falla('/sitemap.xml: existe, y este sitio no se indexa')
+}
+
+// Lo que se fue con la elección del template: si algo de esto sigue en pie, es
+// que quedó material viejo servido.
+for (const ruta of ['/t/hirael', '/t/karate', '/t/nex', '/temas/hirael/', '/ref/hirael']) {
   const r = await fetch(BASE + ruta)
-  if (r.status !== 200) {
-    falla(`${ruta}: respondió ${r.status}`)
-    continue
-  }
-  const html = await r.text()
-  if (!/name="robots"[^>]*noindex/.test(html)) falla(`${ruta}: sin noindex`)
-
-  if (tieneVariante(tema.id)) {
-    // La variante propia: un <h1>, datos estructurados, nada de terceros y todos
-    // sus assets locales respondiendo.
-    variantes++
-    if ((html.match(/<h1[\s>]/g) || []).length !== 1) falla(`${ruta}: tiene que haber exactamente un <h1>`)
-    if (!/<html lang="es-CL"/.test(html)) falla(`${ruta}: falta lang="es-CL" en <html>`)
-    if (!html.includes('"@type": "SportsActivityLocation"')) falla(`${ruta}: faltan los datos estructurados`)
-    const minusculas = html.toLowerCase()
-    for (const t of TERCEROS) if (minusculas.includes(t.toLowerCase())) falla(`${ruta}: referencia a "${t}"`)
-
-    const refs = new Set()
-    for (const m of html.matchAll(/(?:src|href)="(\/[^"#?]*)/g)) refs.add(m[1])
-    for (const m of html.matchAll(/srcset="([^"]+)"/g)) for (const p of m[1].split(',')) refs.add(p.trim().split(/\s+/)[0])
-    for (const m of html.matchAll(/url\(["']?(\/[^"')?#]+)/g)) refs.add(m[1])
-    for (const ref of refs) if (/\.\w+$/.test(ref)) await responde(ref, ruta)
-    continue
-  }
-
-  // La captura: que lleve el arranque y que sus assets estén donde el HTML dice.
-  if (!html.includes('history.replaceState')) falla(`${ruta}: sin el arranque que fija la ruta del router`)
-
-  const assets = [...new Set([...html.matchAll(new RegExp(`/temas/${tema.id}/[\\w./@-]+`, 'g'))].map((m) => m[0]))]
-  if (assets.length < 3) falla(`${ruta}: solo ${assets.length} assets locales referenciados`)
-
-  // Una muestra, y siempre el JavaScript, que es lo que se rompía al moverlo.
-  const js = assets.filter((a) => a.endsWith('.js')).slice(0, 4)
-  for (const a of [...assets.slice(0, 6), ...js]) await responde(a, ruta)
+  if (r.status === 200) falla(`${ruta}: sigue publicado, y ya no debería existir`)
 }
 
 if (fallas.length) {
@@ -83,4 +83,4 @@ if (fallas.length) {
   console.error(fallas.map((f) => `  ${f}`).join('\n'))
   process.exit(1)
 }
-console.log(`Verificación OK: el marco, ${variantes} variantes y ${TEMAS.length - variantes} capturas.`)
+console.log(`Verificación OK: ${site.host}/ sirve la variante ${VARIANTE.nombre}.`)

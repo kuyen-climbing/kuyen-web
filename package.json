@@ -6,10 +6,9 @@
     "dev": "node tools/dev.mjs",
     "build": "node tools/build.mjs --out=.",
     "preview": "node tools/build.mjs --site=preview --out=dist-preview",
-    "serve": "node tools/serve.mjs dist",
+    "serve": "node tools/serve.mjs .",
     "verify": "node tools/verify.mjs --port=8100",
     "test:ui": "node --experimental-websocket tools/pruebas-ui.mjs http://localhost:8100",
-    "preview:publicar": "npm run preview && node tools/publicar-preview.mjs",
-    "capturar": "node --experimental-websocket tools/capturar-tema.mjs"
+    "preview:publicar": "npm run preview && node tools/publicar-preview.mjs"
   }
 }
