@@ -19,7 +19,7 @@
 import { readFileSync, writeFileSync, rmSync, mkdirSync, cpSync, existsSync } from 'node:fs'
 import { join, dirname, resolve, sep } from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
-import { SITES, VARIANTE, LIMITES } from '../src/site.config.mjs'
+import { SITES, VARIANTE, LIMITES, VERIFICACION_GOOGLE } from '../src/site.config.mjs'
 import * as contenido from '../src/contenido.mjs'
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..')
@@ -147,7 +147,7 @@ function cabeza(site, { ruta, estilos = '', titulo = contenido.SEO.titulo, descr
   <meta name="description" content="${esc(descripcion)}">
   <meta name="robots" content="${site.robots}">
   <link rel="canonical" href="${url}">
-  <meta name="theme-color" content="#2b2e83">
+  <meta name="theme-color" content="#2b2e83">${VERIFICACION_GOOGLE ? `\n  <meta name="google-site-verification" content="${esc(VERIFICACION_GOOGLE)}">` : ''}
 
   <link rel="icon" type="image/png" sizes="32x32" href="/img/marca/favicon-32.png">
   <link rel="icon" type="image/png" sizes="192x192" href="/img/marca/favicon-192.png">

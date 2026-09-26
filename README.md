@@ -258,6 +258,18 @@ con un `CNAME` al dominio por defecto de la organización.
 Si el DNS queda en Cloudflare, los registros van en **"DNS only"** (nube gris). Con el proxy
 activado, GitHub no puede emitir ni renovar el certificado HTTPS.
 
+### Search Console
+
+Para dar de alta `kuyenclimbing.cl` en Search Console hay dos caminos:
+
+- **Por DNS**, que verifica el dominio entero, `www` incluido: se agrega el registro TXT que
+  Google entrega, en Cloudflare, y no hay que tocar el repo.
+- **Por etiqueta**, si se prefiere no tocar el DNS: se pega el token en `VERIFICACION_GOOGLE`
+  de `src/site.config.mjs` y el build lo emite en el `<head>`. Con la cadena vacía no se emite
+  nada y el HTML queda idéntico.
+
+Verificada la propiedad, se manda `https://kuyenclimbing.cl/sitemap.xml` desde "Sitemaps".
+
 ### Comprobarlo
 
 ```bash

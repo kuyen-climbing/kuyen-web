@@ -20,6 +20,17 @@
 
 export const HOST = 'https://kuyenclimbing.cl'
 
+/**
+ * Token de Search Console, si la propiedad se verifica con la etiqueta del
+ * <head>. Google lo entrega al agregar kuyenclimbing.cl como propiedad de tipo
+ * "prefijo de URL": es el `content` de su <meta name="google-site-verification">.
+ *
+ * Con la cadena vacía no se emite ninguna etiqueta. Si la propiedad se verifica
+ * por DNS, que cubre el dominio entero y no solo esta dirección, esto se queda
+ * vacío y no hace falta tocar nada.
+ */
+export const VERIFICACION_GOOGLE = ''
+
 export const SITES = {
   cl: {
     id: 'cl',
