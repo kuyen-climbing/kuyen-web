@@ -14,6 +14,8 @@
  */
 import { Resolver } from 'node:dns/promises'
 import { connect } from 'node:net'
+import * as http from 'node:http'
+import * as https from 'node:https'
 import { SITES } from '../src/site.config.mjs'
 
 const dominio = process.argv[2] || SITES.cl.cname
@@ -81,23 +83,37 @@ let www = []
 try { www = await dns.resolveCname(`www.${dominio}`) } catch {}
 paso(`www.${dominio} apunta a GitHub`, www.some((v) => /github\.io$/i.test(v)), www.join(', ') || 'sin registro CNAME')
 
-/** Un HEAD basta para ver el estado, el certificado y a dónde redirige. */
-async function pedir(url) {
-  try {
-    const r = await fetch(url, { redirect: 'manual' })
-    return { estado: r.status, destino: r.headers.get('location') || '', servidor: r.headers.get('server') || '' }
-  } catch (e) {
-    return { error: String(e.cause?.code || e.message) }
-  }
+/**
+ * Un GET que no sigue la redirección, para ver el estado real y el Location.
+ *
+ * No se usa fetch: con redirect 'manual' igual devuelve 200 y el Location en
+ * null, así que un 301 bien puesto se ve como si no existiera.
+ */
+function pedir(url) {
+  return new Promise((resolve) => {
+    const { request } = url.startsWith('https:') ? https : http
+    const req = request(url, { method: 'GET', timeout: 20000 }, (res) => {
+      let cuerpo = ''
+      res.on('data', (t) => { cuerpo += t })
+      res.on('end', () => resolve({
+        estado: res.statusCode,
+        destino: res.headers.location || '',
+        servidor: res.headers.server || '',
+        cuerpo,
+      }))
+    })
+    req.on('timeout', () => { req.destroy(); resolve({ error: 'timeout' }) })
+    req.on('error', (e) => resolve({ error: String(e.code || e.message) }))
+    req.end()
+  })
 }
 
-const https = await pedir(`https://${dominio}/`)
-paso('responde por HTTPS con certificado válido', https.estado >= 200 && https.estado < 400,
-  https.error ? https.error : `${https.estado}${https.servidor ? ` (${https.servidor})` : ''}`)
+const seguro = await pedir(`https://${dominio}/`)
+paso('responde por HTTPS con certificado válido', seguro.estado >= 200 && seguro.estado < 400,
+  seguro.error ? seguro.error : `${seguro.estado}${seguro.servidor ? ` (${seguro.servidor})` : ''}`)
 
-if (!https.error) {
-  const r = await fetch(`https://${dominio}/`).catch(() => null)
-  const html = r ? await r.text() : ''
+if (!seguro.error) {
+  const html = seguro.cuerpo || ''
   paso('sirve el sitio de Kuyen', html.includes('Kuyen'), html ? `${html.length} bytes` : 'sin cuerpo')
   paso('no se indexa mientras sean tres propuestas',
     /<meta name="robots" content="noindex/.test(html) || SITES.cl.sitemap,
@@ -109,8 +125,8 @@ if (!wwwResp.error) {
   paso('el www redirige al dominio desnudo', wwwResp.estado >= 300 && wwwResp.estado < 400, wwwResp.destino)
 }
 
-const http = await pedir(`http://${dominio}/`)
-if (!http.error) paso('el http redirige a https', /^https:/.test(http.destino), http.destino)
+const claro = await pedir(`http://${dominio}/`)
+if (!claro.error) paso('el http redirige a https', /^https:/.test(claro.destino), `${claro.estado} ${claro.destino}`)
 
 const faltan = resultados.filter(([, ok]) => !ok)
 console.log(`\n${resultados.length - faltan.length}/${resultados.length} comprobaciones OK`)
