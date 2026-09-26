@@ -17,18 +17,30 @@
 
 export const HOST = 'https://kuyenclimbing.cl'
 
+/**
+ * Interruptor de la etapa: en false, el sitio del dominio propio sale sin
+ * indexar y sin sitemap, porque lo que muestra son las tres propuestas con el
+ * selector encima. Se pone en true cuando Kuyen elija un template, junto con
+ * sacar los otros dos de TEMAS.
+ */
+export const TEMPLATE_ELEGIDO = false
+
 export const SITES = {
   cl: {
     id: 'cl',
     host: HOST,
     lang: 'es-CL',
     locale: 'es_CL',
-    addressCountry: 'CL',
-    robots: 'index, follow',
-    sitemap: true,
+    // Mientras el marco muestre las tres propuestas, el dominio no se indexa.
+    // Las variantes ya van con noindex, pero el marco de la raíz no, y es el
+    // que entra al sitemap: sin esto, lo primero que Google conocería de
+    // kuyenclimbing.cl sería un selector con tres templates de terceros.
+    // Se pasa a 'index, follow' y sitemap el mismo día que Kuyen elija uno.
+    robots: TEMPLATE_ELEGIDO ? 'index, follow' : 'noindex, nofollow',
+    sitemap: TEMPLATE_ELEGIDO,
     // Kuyen confirmó el dominio el 22-09-2026 (pregunta L4) y queda a nombre de
-    // Andrés Muñoz Castillo. Falta comprarlo; si termina siendo otro, se cambia
-    // acá y en el archivo CNAME de la raíz.
+    // Andrés Muñoz Castillo. Si termina siendo otro, se cambia acá y en el
+    // archivo CNAME de la raíz.
     cname: 'kuyenclimbing.cl',
   },
   preview: {

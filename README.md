@@ -339,6 +339,44 @@ los valores de `DATOS_SIN_CONFIRMAR`. Esa búsqueda la hace `apareceDatoViejo`, 
 frontera a la izquierda del valor: así `2.000`, que es un dato viejo, no salta dentro de
 `$32.000`, que sí es un precio vigente.
 
+## El dominio
+
+`kuyenclimbing.cl` queda a nombre de Andrés Muñoz Castillo (pregunta L4, confirmada el
+22-09-2026). Está puesto en `SITES.cl` y en el archivo `CNAME` de la raíz.
+
+**Mientras el marco muestre las tres propuestas, el dominio no se indexa.** Lo controla
+`TEMPLATE_ELEGIDO` en `src/site.config.mjs`: en `false`, el marco sale con `noindex`, el
+`robots.txt` sale con `Disallow: /` y no se genera `sitemap.xml`. Las variantes ya iban con
+`noindex` por su cuenta, pero el marco no, y era el que entraba al sitemap: sin ese interruptor,
+lo primero que Google conocería del dominio sería un selector con tres templates de terceros.
+
+### Los registros del DNS
+
+Para un dominio desnudo, GitHub Pages pide sus cuatro direcciones. El `www` se resuelve solo,
+con un `CNAME` al dominio por defecto de la organización.
+
+| Tipo | Nombre | Valor |
+|---|---|---|
+| A | @ | 185.199.108.153 |
+| A | @ | 185.199.109.153 |
+| A | @ | 185.199.110.153 |
+| A | @ | 185.199.111.153 |
+| CNAME | www | kuyen-climbing.github.io |
+
+Si el DNS queda en Cloudflare, los registros van en **"DNS only"** (nube gris). Con el proxy
+activado, GitHub no puede emitir ni renovar el certificado HTTPS.
+
+### Comprobarlo
+
+```bash
+node tools/verificar-dominio.mjs
+```
+
+Revisa en orden si el dominio está inscrito en NIC Chile, a qué servidores de nombre quedó
+delegado, si los cuatro registros A son los de GitHub, si el `www` redirige, si responde por
+HTTPS con certificado válido y si sirve lo de este repo. Sirve para saber en qué paso va la
+configuración mientras el DNS propaga, que puede tardar hasta 24 horas.
+
 ## Publicación
 
 Push a `main` publica desde la raíz del repo. El workflow `verificar.yml` corre en cada push y
@@ -363,16 +401,10 @@ ni `tools/`.
 
 ### Del sitio
 
-- **Elegir template**: es lo único que falta para publicar. Las tres variantes están terminadas
-  y se ven como producto final. Elegido uno, se sacan los otros dos de `TEMAS`, se borran sus
-  capturas de `temas/` y se saca el `noindex`, que hoy está fijo en el generador porque son
-  tres propuestas y no un sitio.
-- **Dominio**: `kuyenclimbing.cl` está puesto en `SITES.cl` y en `CNAME` como valor
-  provisorio. No está comprado. Mientras no lo esté, el sitio vive en el espejo
-  `kuyen-climbing.github.io`, que funciona porque las rutas son absolutas desde `/`.
-- **DNS**: cuando exista el dominio, registros A a 185.199.108/109/110/111.153. Si el DNS
-  queda en Cloudflare, tiene que estar "DNS only" (nube gris), nunca proxiado, o GitHub deja
-  de renovar el certificado HTTPS.
+- **Elegir template**: es lo único que falta para publicar de verdad. Las tres variantes están
+  terminadas y se ven como producto final. Elegido uno: se sacan los otros dos de `TEMAS`, se
+  borran sus capturas de `temas/`, se saca el `noindex` fijo del generador y se pone
+  `TEMPLATE_ELEGIDO` en `true`.
 - **Marca**: el isotipo, los favicons, el logo completo y `og-kuyen.jpg` salen del logo 2.0 con
   `tools/assets.mjs marca`. La tipografía del logo es Sherman: viene en el Drive de Andy como
   `sherman Tipo de letra.zip` (L2). Falta el manual de marca, si existe.
