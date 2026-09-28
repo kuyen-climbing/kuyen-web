@@ -72,6 +72,12 @@ export const VARIANTE = {
   fuente: 'https://hirael.com/embed/templates/agency-landing',
 }
 
+/** Quién desarrolló el sitio, para el crédito del pie. */
+export const DESARROLLO = {
+  nombre: 'INCBA',
+  url: 'https://incba.cl',
+}
+
 /**
  * Topes de SEO: los puntos donde Google trunca título y descripción.
  */
