@@ -90,7 +90,8 @@ node --experimental-websocket tools/pruebas-ui.mjs http://localhost:8100
 
 `verify.mjs` comprueba que la página responda, que esté bien formada, que no arrastre nada de
 terceros, que cada asset que nombra exista, que `robots.txt` y `sitemap.xml` digan lo mismo que
-la configuración y que no haya quedado material viejo publicado.
+la configuración, que la política de seguridad corresponda a los scripts de la página y que no
+haya quedado material viejo publicado.
 
 `pruebas-ui.mjs` no saca capturas: todo se comprueba leyendo el DOM y el resultado es texto.
 Revisa:
@@ -113,7 +114,9 @@ Revisa:
   de lupa, y que el visor abra la foto en grande, cuente las de su grupo, avance con la flecha,
   al cerrarse con Escape devuelva el foco y quede oculto sin atrapar clics;
 - que una galería de tres vaya en una sola fila desde 1024 px;
-- que no haya errores de JavaScript al cargar.
+- que no haya errores de JavaScript al cargar;
+- que la política de seguridad no bloquee nada al recorrer la página entera, mapa e Instagram
+  incluidos.
 
 Antes de medir el contraste recorre la página entera, porque los textos y las fotos que entran
 al hacer scroll están invisibles hasta aparecer.
@@ -231,6 +234,30 @@ dominios de los templates, fuentes pedidas a Google) ni datos sin confirmar. En
 los valores de `DATOS_SIN_CONFIRMAR`. Esa búsqueda la hace `apareceDatoViejo`, que exige una
 frontera a la izquierda del valor: así `2.000`, que es un dato viejo, no salta dentro de
 `$32.000`, que sí es un precio vigente.
+
+## Seguridad
+
+GitHub Pages no deja mandar cabeceras, así que la política va como `<meta>` en el `<head>`, y la
+agrega el build (`politicaDeSeguridad` en `tools/build.mjs`):
+
+- **Scripts**: solo los del sitio y los inline que salieron del build, cada uno por su hash
+  SHA-256. Un script inyectado en el HTML no corre. Si cambia el JavaScript de la página, el
+  build recalcula los hashes solo.
+- **Estilos**: los del sitio y los inline, porque el CSS va en el `<head>` y hay variables en
+  atributos `style`.
+- **Imágenes, fuentes y conexiones**: solo del propio sitio (más `data:` para dos SVG del CSS).
+- **Marcos**: `www.google.com` (el mapa) y `www.instagram.com` (las publicaciones). Si se suma
+  otro embed, su origen va en `MARCOS_PERMITIDOS`.
+- Sin plugins, sin formularios y sin `<base>` ajeno.
+
+Va también `Referrer-Policy: strict-origin-when-cross-origin`: los sitios a los que se sale ven
+el dominio, no la ruta.
+
+Lo que un `<meta>` no puede declarar queda fuera: HSTS y `frame-ancestors` (que otro sitio no
+pueda meter este en un marco). Harían falta cabeceras, y eso pide un proxy delante de GitHub
+Pages. La página no tiene acciones ni datos de usuarios, así que el riesgo es bajo.
+
+El workflow de CI corre con `permissions: contents: read`: puede leer el repo y nada más.
 
 ## El dominio
 

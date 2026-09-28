@@ -10,7 +10,7 @@
  * que no arrastre nada de terceros y que cada asset que nombra exista.
  */
 import { SITES, VARIANTE } from '../src/site.config.mjs'
-import { TERCEROS } from './build.mjs'
+import { TERCEROS, politicaDeSeguridad } from './build.mjs'
 
 const port = Number((process.argv.find((a) => a.startsWith('--port=')) || '--port=8100').split('=')[1])
 const siteId = (process.argv.find((a) => a.startsWith('--site=')) || '--site=cl').split('=')[1]
@@ -41,6 +41,13 @@ if (res.status !== 200) {
   if (!html.includes(`<link rel="canonical" href="${site.host}/">`)) {
     falla(`/: la canónica no apunta a ${site.host}/`)
   }
+
+  // La política de seguridad tiene que cubrir los scripts inline que la página
+  // lleva ahora: si alguien toca el HTML a mano, el hash deja de coincidir.
+  const csp = html.match(/<meta http-equiv="Content-Security-Policy" content="([^"]*)">/)
+  if (!csp) falla('/: falta la política de seguridad (Content-Security-Policy)')
+  else if (csp[1] !== politicaDeSeguridad(html)) falla('/: la política de seguridad no corresponde a los scripts de la página')
+  if (!html.includes('<meta name="referrer" content="strict-origin-when-cross-origin">')) falla('/: falta la política de referrer')
 
   // Nada del template original ni de otros dominios: el markup es propio.
   const minusculas = html.toLowerCase()
