@@ -46,6 +46,7 @@
  *   cerrado.
  */
 import { cielo, luna, cordillera, presa, titulo, marquesina, cifras, mapa, publicacion, fotoCaja, graduacion, telon, valoracion } from '../../compartido/escena.mjs'
+import { DESARROLLO } from '../../site.config.mjs'
 
 const ICONOS = {
   flecha:
@@ -691,6 +692,7 @@ ${cabeza({ estilos: `${compartido('movimiento.css')}\n${leer('estilos.css')}` })
 
       <div class="pie__legal">
         <p>© 2026 ${esc(MARCA.nombre)}. ${esc(LEGAL.razonSocial)}.</p>
+        <p class="pie__credito">Desarrollado por <a href="${esc(DESARROLLO.url)}"${externo}>${esc(DESARROLLO.nombre)}</a></p>
         <div class="pie__legal-enlaces">
           <a href="${esc(CONTACTO.instagram)}"${externo}>Instagram</a>
           <a href="${esc(CONTACTO.whatsapp)}"${externo}>WhatsApp</a>
