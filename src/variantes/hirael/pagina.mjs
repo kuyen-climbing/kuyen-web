@@ -692,7 +692,7 @@ ${cabeza({ estilos: `${compartido('movimiento.css')}\n${leer('estilos.css')}` })
 
       <div class="pie__legal">
         <p>© 2026 ${esc(MARCA.nombre)}. ${esc(LEGAL.razonSocial)}.</p>
-        <p class="pie__credito">Desarrollado por <a href="${esc(DESARROLLO.url)}"${externo}>${esc(DESARROLLO.nombre)}</a></p>
+        <p class="pie__credito">Desarrollado por <a href="${esc(DESARROLLO.url)}"${externo}><img class="pie__credito-logo" src="${esc(DESARROLLO.logo.src)}" width="${DESARROLLO.logo.ancho}" height="${DESARROLLO.logo.alto}" alt="${esc(DESARROLLO.nombre)}" loading="lazy" decoding="async"></a></p>
         <div class="pie__legal-enlaces">
           <a href="${esc(CONTACTO.instagram)}"${externo}>Instagram</a>
           <a href="${esc(CONTACTO.whatsapp)}"${externo}>WhatsApp</a>

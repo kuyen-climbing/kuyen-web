@@ -78,6 +78,7 @@ solo recargar, sin esperar los 10 minutos que GitHub Pages guarda cada versión 
 | Las piezas compartidas: escena, movimiento y visor | `src/compartido/` |
 | Paleta, acento y tokens | `src/css/tokens.css` |
 | El dominio y si el sitio se indexa | `SITES` en `src/site.config.mjs` |
+| El crédito del pie (logo de INCBA y su enlace) | `DESARROLLO` en `src/site.config.mjs`, con el logo en `img/marca/incba-consultora.webp` |
 
 Para verlo local con las URLs resueltas como las resuelve GitHub Pages:
 

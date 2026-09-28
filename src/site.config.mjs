@@ -72,10 +72,14 @@ export const VARIANTE = {
   fuente: 'https://hirael.com/embed/templates/agency-landing',
 }
 
-/** Quién desarrolló el sitio, para el crédito del pie. */
+/**
+ * Quién desarrolló el sitio, para el crédito del pie. El logo es la versión
+ * clara (letras blancas sobre transparente), porque el pie es de noche.
+ */
 export const DESARROLLO = {
-  nombre: 'INCBA',
-  url: 'https://incba.cl',
+  nombre: 'INCBA Consultora Tecnológica',
+  url: 'https://incba.com.ar',
+  logo: { src: '/img/marca/incba-consultora.webp', ancho: 226, alto: 80 },
 }
 
 /**
