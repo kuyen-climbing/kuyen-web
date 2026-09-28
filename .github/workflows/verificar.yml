@@ -10,6 +10,10 @@ on:
   pull_request:
   workflow_dispatch:
 
+# Solo lee el repo: no comitea, no publica y no toca issues ni PRs.
+permissions:
+  contents: read
+
 jobs:
   verificar:
     runs-on: ubuntu-latest

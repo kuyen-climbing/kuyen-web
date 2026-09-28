@@ -52,11 +52,16 @@ let id = 0
 const pending = new Map()
 // Errores de JavaScript de la página abierta (y de lo que cargue su iframe).
 const erroresJs = []
+// Lo que el navegador bloquea por la política de seguridad de la página.
+const bloqueosCsp = []
 ws.onmessage = (m) => {
   const d = JSON.parse(m.data)
   if (d.method === 'Runtime.exceptionThrown') {
     const e = d.params.exceptionDetails
     erroresJs.push(e.exception?.description?.split('\n')[0] || e.text)
+  }
+  if (d.method === 'Log.entryAdded' && /Content Security Policy/.test(d.params.entry.text)) {
+    bloqueosCsp.push(d.params.entry.text.slice(0, 160))
   }
   if (d.id && pending.has(d.id)) { pending.get(d.id)(d); pending.delete(d.id) }
 }
@@ -64,6 +69,7 @@ const send = (method, params = {}) =>
   new Promise((res) => { const i = ++id; pending.set(i, res); ws.send(JSON.stringify({ id: i, method, params })) })
 await send('Page.enable')
 await send('Runtime.enable')
+await send('Log.enable')
 // Sin caché: el perfil de Chrome se reusa entre corridas y GitHub Pages manda
 // max-age=600, así que contra el sitio publicado la prueba podía leer la
 // versión anterior y fallar por algo que ya estaba corregido.
@@ -332,8 +338,23 @@ try {
 
     await metrics(375, 812)
     erroresJs.length = 0
+    bloqueosCsp.length = 0
     await goto('/', 2000)
     check(`sin errores de JavaScript al cargar`, erroresJs.length === 0, erroresJs.slice(0, 3).join(' | '))
+    // Toda la página, de a una pantalla, para que carguen el mapa y las
+    // publicaciones, que van con loading="lazy".
+    await en(PAGINA, `new Promise(function (listo) {
+      var y = 0
+      ;(function paso() {
+        window.scrollTo(0, y += innerHeight)
+        if (y < d.documentElement.scrollHeight) setTimeout(paso, 150)
+        else listo(true)
+      })()
+    })`)
+    await sleep(3000)
+    check(`la política de seguridad no bloquea nada de la página`, bloqueosCsp.length === 0, bloqueosCsp.slice(0, 3).join(' | '))
+    await en(PAGINA, '(window.scrollTo(0, 0), true)')
+    await sleep(500)
     if (await en(PAGINA, '!!d.querySelector("[data-menu-abrir]")')) {
       await en(PAGINA, '(d.querySelector("[data-menu-abrir]").click(), true)')
       await sleep(700)

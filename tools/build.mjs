@@ -16,6 +16,7 @@
  * aborta sin tocar el disco y dice qué.
  */
 
+import { createHash } from 'node:crypto'
 import { readFileSync, writeFileSync, rmSync, mkdirSync, cpSync, existsSync } from 'node:fs'
 import { join, dirname, resolve, sep } from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
@@ -181,6 +182,54 @@ ${read('css', 'tokens.css')}
 ${estilos}
   </style>
 </head>`
+}
+
+/**
+ * Política de seguridad de la página, como <meta> porque GitHub Pages no deja
+ * mandar cabeceras. Scripts: solo los del propio sitio y los inline que salieron
+ * del build, cada uno por su hash, así que uno inyectado no corre. Estilos con
+ * 'unsafe-inline' porque la página lleva su CSS en el <head> y variables en
+ * atributos style. Marcos: el mapa de Google y las publicaciones de Instagram.
+ *
+ * Lo que un <meta> no puede declarar (frame-ancestors, HSTS) queda fuera: haría
+ * falta un proxy delante de GitHub Pages.
+ */
+const MARCOS_PERMITIDOS = ['https://www.google.com', 'https://www.instagram.com']
+
+function hashesDeScripts(html) {
+  const hashes = []
+  for (const m of html.matchAll(/<script(\s[^>]*)?>([\s\S]*?)<\/script>/g)) {
+    const atributos = m[1] || ''
+    // Los datos estructurados no se ejecutan y los externos van por 'self'.
+    if (/\ssrc=/.test(atributos) || /type="application\/ld\+json"/.test(atributos)) continue
+    hashes.push(`'sha256-${createHash('sha256').update(m[2]).digest('base64')}'`)
+  }
+  return hashes
+}
+
+export function politicaDeSeguridad(html) {
+  return [
+    "default-src 'self'",
+    `script-src 'self' ${hashesDeScripts(html).join(' ')}`,
+    "style-src 'self' 'unsafe-inline'",
+    "img-src 'self' data:",
+    "font-src 'self'",
+    "connect-src 'self'",
+    `frame-src ${MARCOS_PERMITIDOS.join(' ')}`,
+    "object-src 'none'",
+    "base-uri 'self'",
+    "form-action 'none'",
+    'upgrade-insecure-requests',
+  ].join('; ')
+}
+
+function conPoliticas(html) {
+  const metas =
+    `\n  <meta http-equiv="Content-Security-Policy" content="${politicaDeSeguridad(html)}">` +
+    '\n  <meta name="referrer" content="strict-origin-when-cross-origin">'
+  const charset = '<meta charset="UTF-8">'
+  if (!html.includes(charset)) throw new Error(`la página no lleva ${charset}, y la política va justo después`)
+  return html.replace(charset, charset + metas)
 }
 
 /**
@@ -381,7 +430,7 @@ export async function build({ siteId, out }) {
   }
 
   // El sitio es una sola página: la variante elegida, servida en la raíz.
-  const paginas = [{ ruta: '/', html: await buildVariante(site, VARIANTE) }]
+  const paginas = [{ ruta: '/', html: conPoliticas(await buildVariante(site, VARIANTE)) }]
 
   const problemas = [
     ...validarSeo(),
